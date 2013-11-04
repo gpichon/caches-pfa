@@ -1,0 +1,13 @@
+Tout le temps des accolades (if, for, while)
+Tout en anglais
+4 espaces de tabulation
+Accolades ouvrantes fin de ligne
+makefile
+doxygen avec .h
+git - github
+pas de gros fichiers sur le depot: serveur à cote?
+C
+
+A debattre:
+Nom de fonctions: minuscules_minuscules? 2 pour
+typedef? 3 pour
