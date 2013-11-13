@@ -8,6 +8,5 @@ git - github
 pas de gros fichiers sur le depot: serveur à cote?
 C
 
-A debattre:
-Nom de fonctions: minuscules_minuscules? 2 pour
-typedef? 3 pour
+Nom de fonctions: minuscules_minuscules
+typedef: pas devant les structures
