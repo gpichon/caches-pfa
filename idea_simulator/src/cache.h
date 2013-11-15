@@ -8,6 +8,10 @@
 
 #define ARCH 64
 
+static int misses = 0;
+static int hits = 0;
+static int writes = 0;
+
 /*
   Module utilisé pour la gestion d'un cache.
   Gère lecture/écriture au sein du cache.
@@ -32,6 +36,7 @@ struct line {
   int first_case;
   int valid;
   int use;
+  int writed;
 };
 
 /* Data allocations */
@@ -46,9 +51,11 @@ void delete_lines(struct line **, int);
 
 int block_id(struct cache *, int);
 int is_in_cache(struct cache *, int);
-void add_line_cache(struct cache *, int);
+void add_line_cache(struct cache *, int, int);
 
 int id_line_to_replace(struct block *);
 void add_line_block(struct block *, struct line *);
+
+void print_infos();
 
 #endif

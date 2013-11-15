@@ -34,6 +34,7 @@ struct line** init_line(int nb_ways) {
     line->first_case = 0;
     line->valid = 0;
     line->use = 0;
+    line->writed = 0;
     lines[i] = line;
   }
   return lines;
@@ -78,13 +79,16 @@ int is_in_cache(struct cache *cache, int entry) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
+#ifdef DEBUG
+    printf("Entry:%d, Line in cache:%d\n", entry, line->first_case);
+#endif
     if (line->valid && (line->first_case == entry / ARCH * ARCH))
       return 1;
   }    
   return 0;
 }
 
-void add_line_cache(struct cache *cache, int entry) {
+void add_line_cache(struct cache *cache, int entry, int w) {
   int id_block = block_id(cache, entry);
   
   struct line *line = malloc(sizeof(struct line));
@@ -92,9 +96,18 @@ void add_line_cache(struct cache *cache, int entry) {
   line->first_case = entry / ARCH * ARCH;
   line->valid = 1;
   line->use = 1;
+  line->writed = w;
 
+#ifdef DEBUG
   printf("Block:%d, Line:%d\n", id_block, line->first_case);
-  add_line_block(cache->blocks[id_block], line);
+#endif
+  if (!is_in_cache(cache, entry)) {
+    add_line_block(cache->blocks[id_block], line);
+    misses++;
+  }
+  else {
+    hits++;
+  }
 }
 
 int id_line_to_replace(struct block *block) {
@@ -109,13 +122,26 @@ int id_line_to_replace(struct block *block) {
       id = i;
     }
   }
+#ifdef DEBUG
   printf("Line to replace:%d\n", id);
+#endif
   return id;
 }
 
 void add_line_block(struct block *block, struct line *line) {
   int id_line = id_line_to_replace(block);
-  struct line *del_line = block->lines[id_line]; // A TRAITER !
-
+  struct line *del_line = block->lines[id_line];
+  if (del_line->writed) {
+    writes ++;
+  }
+  free(del_line);  
   block->lines[id_line] = line;
+}
+
+
+void print_infos() {
+  printf("Caches misses:%d\n", misses);
+  printf("Caches hits:%d\n", hits);
+  printf("Caches writes back:%d\n", writes);
+
 }
