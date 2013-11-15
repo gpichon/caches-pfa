@@ -1,3 +1,6 @@
+#ifndef REPLACE_LINE_H
+#define REPLACE_LINE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12,3 +15,5 @@
   get_higher_cache()
   search_into()
 */
+
+#endif

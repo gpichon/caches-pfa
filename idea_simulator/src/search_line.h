@@ -1,3 +1,6 @@
+#ifndef SEARCH_LINE_H
+#define SEARCH_LINE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12,3 +15,5 @@
   save_stats()
   change_into_higher(s)_cache(s)()
 */
+
+#endif

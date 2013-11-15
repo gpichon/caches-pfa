@@ -1,3 +1,6 @@
+#ifndef DEF_ARCHITECTURE_H
+#define DEF_ARCHITECTURE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12,3 +15,5 @@
   get_depth()
   add_cache(depth, links, size, line size, associativity)
 */
+
+#endif

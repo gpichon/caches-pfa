@@ -1,3 +1,6 @@
+#ifndef ADD_LINE_H
+#define ADD_LINE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,3 +14,6 @@
   init_new_line(flags)
   assert_coherency()
 */
+
+
+#endif

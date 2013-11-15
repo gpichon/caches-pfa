@@ -1,6 +1,12 @@
+#ifndef CACHE_H
+#define CACHE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "add_line.h"
+
+#define ARCH 64
 
 /*
   Module utilisé pour la gestion d'un cache.
@@ -10,7 +16,7 @@
 
 struct cache {
   int size;
-  int linesize;
+  int linesize; // linesize = ARCH ?
   int nb_ways;
   int nb_blocks;
   struct block **blocks;
@@ -25,14 +31,24 @@ struct line {
   int label;
   int first_case;
   int valid;
+  int use;
 };
 
+/* Data allocations */
 struct cache *init_cache(int, int, int, int);
 struct block **init_block(int, int);
 struct line** init_line(int);
 
+/* Data removal */
 void delete_cache(struct cache *);
 void delete_blocks(struct block **, int);
 void delete_lines(struct line **, int);
 
-int get_size(struct cache *);
+int block_id(struct cache *, int);
+int is_in_cache(struct cache *, int);
+void add_line_cache(struct cache *, int);
+
+int id_line_to_replace(struct block *);
+void add_line_block(struct block *, struct line *);
+
+#endif
