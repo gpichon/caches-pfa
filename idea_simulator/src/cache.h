@@ -12,6 +12,11 @@ static int misses = 0;
 static int hits = 0;
 static int writes = 0;
 
+static int misses_L2 = 0;
+static int hits_L2 = 0;
+static int writes_L2 = 0;
+
+
 /*
   Module utilisé pour la gestion d'un cache.
   Gère lecture/écriture au sein du cache.
@@ -51,11 +56,14 @@ void delete_lines(struct line **, int);
 
 int block_id(struct cache *, int);
 int is_in_cache(struct cache *, int);
-void add_line_cache(struct cache *, int, int);
+int add_line_cache(struct cache *, int, int);
 
 int id_line_to_replace(struct block *);
 void add_line_block(struct block *, struct line *);
 
 void print_infos();
+
+int is_in_higher_cache(struct cache *, int, int);
+void add_line_2caches(struct cache *, struct cache *, int, int);
 
 #endif

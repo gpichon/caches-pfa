@@ -82,13 +82,39 @@ int is_in_cache(struct cache *cache, int entry) {
 #ifdef DEBUG
     printf("Entry:%d, Line in cache:%d\n", entry, line->first_case);
 #endif
-    if (line->valid && (line->first_case == entry / ARCH * ARCH))
+    if (line->valid && (line->first_case == entry / ARCH * ARCH)) {
+      line->use++;
       return 1;
+    }
   }    
   return 0;
 }
 
-void add_line_cache(struct cache *cache, int entry, int w) {
+int add_line_cache(struct cache *cache, int entry, int w) {
+  int id_block = block_id(cache, entry);
+  
+  struct line *line = malloc(sizeof(struct line));
+  line->label = 0;
+  line->first_case = entry / ARCH * ARCH;
+  line->valid = 1;
+  line->use = 1;
+  line->writed = w;
+
+#ifdef DEBUG
+  printf("Block:%d, Line:%d\n", id_block, line->first_case);
+#endif
+  if (!is_in_cache(cache, entry)) {
+    add_line_block(cache->blocks[id_block], line);
+    /* misses++; */
+    return 0;
+  }
+  else { //gérer le cas du store plus précisement!
+    /* hits++; */
+    return 1;
+  }
+}
+
+int add_line_cache_L1(struct cache *cache, int entry, int w) {
   int id_block = block_id(cache, entry);
   
   struct line *line = malloc(sizeof(struct line));
@@ -104,9 +130,35 @@ void add_line_cache(struct cache *cache, int entry, int w) {
   if (!is_in_cache(cache, entry)) {
     add_line_block(cache->blocks[id_block], line);
     misses++;
+    return 0;
   }
-  else {
+  else { //gérer le cas du store plus précisement!
     hits++;
+    return 1;
+  }
+}
+
+int add_line_cache_L2(struct cache *cache, int entry, int w) {
+  int id_block = block_id(cache, entry);
+  
+  struct line *line = malloc(sizeof(struct line));
+  line->label = 0;
+  line->first_case = entry / ARCH * ARCH;
+  line->valid = 1;
+  line->use = 1;
+  line->writed = w;
+
+#ifdef DEBUG
+  printf("Block:%d, Line:%d\n", id_block, line->first_case);
+#endif
+  if (!is_in_cache(cache, entry)) {
+    add_line_block(cache->blocks[id_block], line);
+    misses_L2++;
+    return 0;
+  }
+  else { //gérer le cas du store plus précisement!
+    hits_L2++;
+    return 1;
   }
 }
 
@@ -138,10 +190,29 @@ void add_line_block(struct block *block, struct line *line) {
   block->lines[id_line] = line;
 }
 
+int is_in_higher_cache(struct cache *cache, int entry, int w) {
+  int r = is_in_cache(cache, entry);
+  if (r) {
+    hits_L2 ++;
+  }
+  else {
+    add_line_cache(cache, entry, w);
+    misses_L2 ++;
+  }
+}
+
+void add_line_2caches(struct cache *cache1, struct cache *cache2, int entry, int w) {
+  if (!add_line_cache_L1(cache1, entry, w)) {
+    add_line_cache_L2(cache2, entry, w);
+    /* is_in_higher_cache(cache2, entry, w); */
+  }
+}
 
 void print_infos() {
   printf("Caches misses:%d\n", misses);
   printf("Caches hits:%d\n", hits);
   printf("Caches writes back:%d\n", writes);
-
+  printf("Caches L2 misses:%d\n", misses_L2);
+  printf("Caches L2 hits:%d\n", hits_L2);
+  printf("Caches L2 writes back:%d\n", writes_L2);
 }

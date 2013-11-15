@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
   fprintf(stdout, "Line:%d Block: %d\n", (64*35+25)/ARCH, block_id(L1, 64*35+25));
 
 
-  add_line_cache(L1, 163, 0);
+  add_line_cache(L1, 163, 1);
   fprintf(stdout, "Is in cache is true: %d\n", is_in_cache(L1, 163));
   fprintf(stdout, "Is in cache is true: %d\n", is_in_cache(L1, 158));
   fprintf(stdout, "Is in cache is false: %d\n", is_in_cache(L1, 193));
@@ -35,6 +35,8 @@ int main(int argc, char *argv[]) {
   fprintf(stdout, "Is in cache is true: %d\n", is_in_cache(L1, 2230));
   fprintf(stdout, "Is in cache is false: %d\n", is_in_cache(L1, 158));
 
+
+  print_infos();
 
   delete_cache(L1);
   return EXIT_SUCCESS;

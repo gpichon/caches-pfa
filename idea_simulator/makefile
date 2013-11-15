@@ -8,11 +8,13 @@ SRC_DIR=src
 DATA_DIR=bin
 
 EXE=main
-TESTS=test_cache1
+TESTS1=test_cache1
+TESTS2=test_2caches
 
 # main rules
 all: $(BUILD_DIR) $(DATA_DIR)/$(EXE)
-tests: $(BUILD_DIR) $(DATA_DIR)/$(TESTS)
+tests1: $(BUILD_DIR) $(DATA_DIR)/$(TESTS1)
+tests2: $(BUILD_DIR) $(DATA_DIR)/$(TESTS2)
 
 # executable files
 $(DATA_DIR)/$(EXE): $(SRC_DIR)/$(addsuffix .c,$(EXE)) $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(OBJS))) 
@@ -35,5 +37,8 @@ clean:
 	rm -rf $(BUILD_DIR) $(DATA_DIR) *~ */*~ *.mod $(EXE) $(TESTS)
 
 # tests
-$(DATA_DIR)/$(TESTS): $(SRC_DIR)/$(addsuffix .c,$(TESTS)) $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(OBJS))) 
+$(DATA_DIR)/$(TESTS1): $(SRC_DIR)/$(addsuffix .c,$(TESTS1)) $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(OBJS))) 
+	${CC} ${FLAGS} $^ -o $@ ${LIBS}
+
+$(DATA_DIR)/$(TESTS2): $(SRC_DIR)/$(addsuffix .c,$(TESTS2)) $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(OBJS))) 
 	${CC} ${FLAGS} $^ -o $@ ${LIBS}
