@@ -13,6 +13,7 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks) {
   cache->misses         = 0;
   cache->hits           = 0;
   cache->writes         = 0;
+  cache->writes_back    = 0;
   return cache;
 }
 
@@ -73,11 +74,11 @@ int add_line_cache(struct cache *cache, int entry, int w) {
   
   if (!is_in_cache(cache, entry)) {
     struct line *line = malloc(sizeof(struct line));
-    line->label = 0;
     line->first_case = entry / ARCH * ARCH;
     line->valid = 1;
     line->use = 1;
     line->writed = w;
+    line->shared = 0;
 
     if (add_line_block(cache->blocks[id_block], line)) {
       cache->writes++;
@@ -97,5 +98,22 @@ int add_line_cache(struct cache *cache, int entry, int w) {
 void print_infos(struct cache *cache) {
   printf("misses:%d\n", cache->misses);
   printf("hits:%d\n", cache->hits);
-  printf("writes back:%d\n\n", cache->writes);
+  printf("deleted writed lines:%d\n", cache->writes);
+  printf("writes back:%d\n\n", cache->writes_back);
+}
+
+struct line *line_in_cache(struct cache *cache, int entry) {
+  int id_block = block_id(cache, entry);
+  struct block *block = cache->blocks[id_block];
+  int nb_ways = cache->nb_ways;
+
+  struct line *line;
+  int i;
+  for (i=0; i<nb_ways; i++) {
+    line = block->lines[i];
+    if (line->valid && (line->first_case == entry / ARCH * ARCH)) {
+      return line;
+    }
+  }    
+  assert(0);
 }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "add_line_hierarchy.h"
+#include "../src/add_line_hierarchy.h"
 
 int main(int argc, char *argv[]) {
 

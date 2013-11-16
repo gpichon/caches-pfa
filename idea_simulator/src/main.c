@@ -5,13 +5,12 @@
 
 int main(int argc, char *argv[]) {
 
-  if (argc != 3) {
-    fprintf(stdout, "Please enter a trace and an hierarchy\n");
+  if (argc != 2) {
+    fprintf(stdout, "Please enter an hierarchy\n");
     assert(0);
   }
 
-  FILE *f1 = fopen(argv[1], "r");
-  FILE *f2 = fopen(argv[2], "r");
+  FILE *f2 = fopen(argv[1], "r");
 
   struct list **caches = NULL;
   int nb_threads= 0;
@@ -55,35 +54,37 @@ int main(int argc, char *argv[]) {
     c = fgetc(f2);
   }
 
-  for (i=1; i<5; i++) {
-    add_line(caches[0], 163+2048*i, 0);
-    add_line(caches[1], 163+2048*i, 0);
-  }
+  load_line_hierarchy(caches, nb_threads, caches[0], 163+2048);
+  load_line_hierarchy(caches, nb_threads, caches[1], 163+2048);
+  load_line_hierarchy(caches, nb_threads, caches[2], 163+2048);
 
-  for (i=1; i<3; i++) {
-    add_line(caches[0], 163+2048*i, 0);
-    add_line(caches[1], 163+2048*i, 0);
-  }
+  add_line(caches[0], 163+2048, 1);
+  load_line_hierarchy(caches, nb_threads, caches[1], 163+2048);
 
-  for (i=1; i<19; i++) {
-    add_line(caches[0], 163+2048*i, 0);
-    add_line(caches[1], 163+2048*i, 0);
-  }
-
-  add_line(caches[1], 163+2048*2, 0);
-
+  /* Informations about caches */
   fprintf(stdout, "L1_0:\n");
   print_infos(caches[0]->cache);
 
   fprintf(stdout, "L1_1:\n");
   print_infos(caches[1]->cache);
 
+  fprintf(stdout, "L1_2:\n");
+  print_infos(caches[2]->cache);
+
+  fprintf(stdout, "L1_3:\n");
+  print_infos(caches[3]->cache);
+
   fprintf(stdout, "L2_0:\n");
   print_infos(caches[0]->next->cache);
+
+  fprintf(stdout, "L2_1:\n");
+  print_infos(caches[2]->next->cache);
 
   fprintf(stdout, "L3:\n");
   print_infos(caches[0]->next->next->cache);
 
+
+  /* Free: TODO modify! */
   delete_cache(caches[0]->next->next->cache);
   delete_cache(caches[0]->next->cache);
   delete_cache(caches[2]->next->cache);
@@ -106,8 +107,6 @@ int main(int argc, char *argv[]) {
   free(caches[3]);
 
   free(caches);
-  
-  fclose(f1);
   fclose(f2);
   return EXIT_SUCCESS;
 }

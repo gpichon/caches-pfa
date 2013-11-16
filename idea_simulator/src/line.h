@@ -11,11 +11,12 @@
 */
 
 struct line {
-  int label;
   int first_case;
-  int valid;
   int use;
+
+  int valid;
   int writed;
+  int shared; //1 if shared, 0 if exclusive
 };
 
 /* Data allocation */
@@ -25,5 +26,9 @@ struct line** init_line(int);
 void delete_lines(struct line **, int);
 
 void update_line(struct line *);
+void invalid_line(struct line *);
+void modify_line(struct line *);
+void share_line(struct line *);
+void exclusive_line(struct line *);
 
 #endif

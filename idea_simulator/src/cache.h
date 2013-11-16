@@ -24,6 +24,7 @@ struct cache {
   int misses;
   int hits;
   int writes;  
+  int writes_back;
 };
 
 /* Data allocations */
@@ -37,5 +38,7 @@ int is_in_cache(struct cache *, int);
 int add_line_cache(struct cache *, int, int);
 
 void print_infos(struct cache *);
+
+struct line *line_in_cache(struct cache *, int);
 
 #endif
