@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
   fprintf(stdout, "Is in cache is false: %d\n", is_in_cache(L1, 158));
 
 
-  print_infos();
+  print_infos(L1);
 
   delete_cache(L1);
   return EXIT_SUCCESS;

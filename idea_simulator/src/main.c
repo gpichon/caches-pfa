@@ -34,7 +34,8 @@ int main(int argc, char *argv[]) {
 
   /* add_line_cache(L1, 163, 0); */
 
-  print_infos();
+  fprintf(stdout, "Infos cache L1:\n");
+  print_infos(L1);
 
   delete_cache(L1);
   fclose(f);

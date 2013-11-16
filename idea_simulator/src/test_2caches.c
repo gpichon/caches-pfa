@@ -24,7 +24,11 @@ int main(int argc, char *argv[]) {
   /*   fprintf(stdout, "Is in cache is true: %d\n", is_in_cache(L1, 163+2048*i)); */
   /* } */
 
-  print_infos();
+  fprintf(stdout, "Infos cache L1:\n");
+  print_infos(L1);
+
+  fprintf(stdout, "Infos cache L2:\n");
+  print_infos(L2);
 
   delete_cache(L1);
   delete_cache(L2);
