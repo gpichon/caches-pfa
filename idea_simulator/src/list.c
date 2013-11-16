@@ -11,22 +11,24 @@ struct list* init_list(struct cache *cache) {
 /* Data removal */
 void delete_list(struct list *list) {
   struct list *current = list;
+  struct list *del;
   while(current->next != NULL) {
     delete_cache(current->cache);
+    del = current;
     current = current->next;
+    free(del);
   }
   delete_cache(current->cache);
-  free(list);
+  free(current);
 }
 
 void add_list(struct list *list, struct cache *cache) {
   struct list *next = init_list(cache);
 
   struct list *try = list;
-  while(try->next->next != NULL) {
+  while(try->next != NULL) {
     try = try->next;
   }
-
   try->next = next;
 }
 

@@ -92,12 +92,6 @@ int add_line_cache(struct cache *cache, int entry, int w) {
   }
 }
 
-void add_line_2caches(struct cache *cache1, struct cache *cache2, int entry, int w) {
-  if (!add_line_cache(cache1, entry, w)) {
-    add_line_cache(cache2, entry, w);
-  }
-}
-
 void print_infos(struct cache *cache) {
   printf("Caches misses:%d\n", cache->misses);
   printf("Caches hits:%d\n", cache->hits);

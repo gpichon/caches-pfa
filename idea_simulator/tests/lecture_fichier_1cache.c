@@ -40,20 +40,24 @@ int main(int argc, char *argv[]) {
     c = fgetc(f2);
   }
 
-  int i;
-  for (i=1; i<9; i++) {
-    add_line(caches, 163+2048*i, 0);
-  }
+  char c1, c2;
+  int r;
+  c1 = fgetc(f1);
+  while (c1!=EOF) {
+    c2 = fgetc(f1);
+    fscanf(f1, "%x", &r);
+    c1 = fgetc(f1);
 
-  for (i=1; i<9; i++) {
-    add_line(caches, 163+2048*i, 0);
+    if (c2 == 'L') {
+      add_line_cache(caches->cache, r, 0);
+    }
+    if (c2 == 'S') {
+      add_line_cache(caches->cache, r, 1);
+    }
   }
 
   fprintf(stdout, "Infos cache L1:\n");
   print_infos(caches->cache);
-
-  fprintf(stdout, "Infos cache L2:\n");
-  print_infos(caches->next->cache);
 
   free(s);
   delete_list(caches);
