@@ -95,7 +95,7 @@ int add_line_cache(struct cache *cache, int entry, int w) {
 }
 
 void print_infos(struct cache *cache) {
-  printf("Caches misses:%d\n", cache->misses);
-  printf("Caches hits:%d\n", cache->hits);
-  printf("Caches writes back:%d\n", cache->writes);
+  printf("misses:%d\n", cache->misses);
+  printf("hits:%d\n", cache->hits);
+  printf("writes back:%d\n\n", cache->writes);
 }

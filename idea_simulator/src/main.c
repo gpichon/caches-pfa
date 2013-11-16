@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 
   int nb_caches, nb_links, size, linesize, nb_ways, nb_blocks;
   char c = 'a';
-  int i;
+  int i, j;
 
   while (c!=EOF) {
     c = fscanf(f2, "%d", &nb_caches);
@@ -40,11 +40,14 @@ int main(int argc, char *argv[]) {
       }
       
       else {
+	int where = 0;
 	for (i=0; i<nb_caches; i++) {
 	  struct cache *cache;
 	  cache = init_cache(size, linesize, nb_ways, nb_blocks);
-	  
-	  add_list(caches[i], cache);	  
+	  for(j=0; j<nb_links; j++) {
+	    add_list(caches[where], cache);
+	    where++;
+	  }
 	}
       }      
       /* fprintf(stdout, "Nb_cache:%d, Links:%d, Size:%d, Linesize:%d, Ways:%d, Blocks:%d\n", nb_caches, nb_links, size, linesize, nb_ways, nb_blocks); */
@@ -52,28 +55,56 @@ int main(int argc, char *argv[]) {
     c = fgetc(f2);
   }
 
-  for (i=1; i<9; i++) {
+  for (i=1; i<5; i++) {
     add_line(caches[0], 163+2048*i, 0);
     add_line(caches[1], 163+2048*i, 0);
   }
 
-  for (i=1; i<9; i++) {
+  for (i=1; i<3; i++) {
     add_line(caches[0], 163+2048*i, 0);
     add_line(caches[1], 163+2048*i, 0);
   }
 
-  fprintf(stdout, "Infos cache L1_0:\n");
+  for (i=1; i<19; i++) {
+    add_line(caches[0], 163+2048*i, 0);
+    add_line(caches[1], 163+2048*i, 0);
+  }
+
+  add_line(caches[1], 163+2048*2, 0);
+
+  fprintf(stdout, "L1_0:\n");
   print_infos(caches[0]->cache);
 
-  fprintf(stdout, "Infos cache L1_1:\n");
+  fprintf(stdout, "L1_1:\n");
   print_infos(caches[1]->cache);
 
-  fprintf(stdout, "Infos cache L2_0:\n");
+  fprintf(stdout, "L2_0:\n");
   print_infos(caches[0]->next->cache);
 
-  for (i=0; i<nb_threads; i++) {
-    delete_list(caches[i]);
-  }
+  fprintf(stdout, "L3:\n");
+  print_infos(caches[0]->next->next->cache);
+
+  delete_cache(caches[0]->next->next->cache);
+  delete_cache(caches[0]->next->cache);
+  delete_cache(caches[2]->next->cache);
+  delete_cache(caches[0]->cache);
+  delete_cache(caches[1]->cache);
+  delete_cache(caches[2]->cache);
+  delete_cache(caches[3]->cache);
+
+  free(caches[0]->next->next);
+  free(caches[1]->next->next);
+  free(caches[2]->next->next);
+  free(caches[3]->next->next);
+  free(caches[0]->next);
+  free(caches[1]->next);
+  free(caches[2]->next);
+  free(caches[3]->next);
+  free(caches[0]);
+  free(caches[1]);
+  free(caches[2]);
+  free(caches[3]);
+
   free(caches);
   
   fclose(f1);
