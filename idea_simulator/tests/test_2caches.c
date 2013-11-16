@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "cache.h"
+#include "../src/cache.h"
 
 int main(int argc, char *argv[]) {
 
