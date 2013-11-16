@@ -11,8 +11,6 @@ DATA_DIR=bin
 TESTS_DIR=tests
 
 EXE=main
-TEST1=test_cache1
-TEST2=test_2caches
 
 # main rules
 all: $(BUILD_DIR) $(DATA_DIR)/$(EXE)
@@ -39,8 +37,3 @@ clean:
 	rm -rf $(BUILD_DIR) $(DATA_DIR) *~ */*~ *.mod $(EXE) $(TESTS)
 
 # tests
-$(DATA_DIR)/$(TEST1): $(TESTS_DIR)/$(addsuffix .c,$(TEST1)) $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(OBJS))) 
-	${CC} ${FLAGS} $^ -o $@ ${LIBS}
-
-$(DATA_DIR)/$(TEST2): $(TESTS_DIR)/$(addsuffix .c,$(TEST2)) $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(OBJS))) 
-	${CC} ${FLAGS} $^ -o $@ ${LIBS}

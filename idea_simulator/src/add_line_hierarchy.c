@@ -20,20 +20,36 @@ void load_line_hierarchy(struct list **caches, int nb_threads, struct list *cach
   }
   else {
     int i;
-    struct cache *current_cache;
+    int res = 0;
+    struct list *current;
+    struct cache *cache_bis;
+
     for (i=0; i<nb_threads; i++) {
-      current_cache = caches[i]->cache;
-      if (current_cache != cache->cache) {
-	if (is_in_cache(current_cache, entry)) {
-	  line = line_in_cache(current_cache, entry);
-	  if (line->writed) {
-	    current_cache->writes_back++;
-	    line->writed = 0;
+      current = caches[i];
+
+      while (current != NULL) {
+      cache_bis = current->cache;
+
+	if (cache_bis != cache->cache) {
+	  if (is_in_cache(cache_bis, entry)) {
+	    line = line_in_cache(cache_bis, entry);
+	    if (line->writed) {
+	      cache_bis->writes_back++;
+	      line->writed = 0;
+	    }
+	    share_line(line);
+	    res ++;
 	  }
-	  share_line(line);
 	}
+	current = current->next;
       }
+
     }
+    
     add_line(cache, entry, 0);
+    if (res) {
+      line = line_in_cache(cache->cache, entry);
+      share_line(line);
+    }
   }
 }
