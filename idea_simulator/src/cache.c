@@ -38,12 +38,14 @@ int is_in_cache(struct cache *cache, int entry) {
   struct line *line;
   int i;
   for (i=0; i<nb_ways; i++) {
+#ifndef LFU
+    update_line(line);
+#endif 
     line = block->lines[i];
-#ifdef DEBUG
-    printf("Entry:%d, Line in cache:%d\n", entry, line->first_case);
-#endif
     if (line->valid && (line->first_case == entry / ARCH * ARCH)) {
+#ifdef LFU
       update_line(line);
+#endif
       res = 1;
     }
   }    

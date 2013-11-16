@@ -1,36 +1,63 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "../src/cache.h"
+#include "add_line_hierarchy.h"
 
 int main(int argc, char *argv[]) {
 
-  struct cache *L1;
-  L1 = init_cache(8192, 64, 4, 32);
+  if (argc != 3) {
+    fprintf(stdout, "Please enter a trace and an hierarchy\n");
+    assert(0);
+  }
 
-  struct cache *L2;
-  L2 = init_cache(65536, 64, 8, 128);
+  FILE *f1 = fopen(argv[1], "r");
+  FILE *f2 = fopen(argv[2], "r");
+
+  char *s = malloc(3*sizeof(char));
+  int size, linesize, nb_ways, nb_blocks;
+  char c = 'a';
+
+  struct list *caches = NULL;
+
+  while (c!=EOF) {
+    c = fscanf(f2, "%s", s);
+    fscanf(f2, "%d", &size);
+    fscanf(f2, "%d", &linesize);
+    fscanf(f2, "%d", &nb_ways);
+    fscanf(f2, "%d", &nb_blocks);
+
+    if (c!=EOF) {
+      struct cache *cache;
+      cache = init_cache(size, linesize, nb_ways, nb_blocks);
+      if (caches == NULL) {
+  	caches = init_list(cache);
+      }
+      else {
+  	add_list(caches, cache);
+      }
+      fprintf(stdout, "Infos cache %s Size:%d, Linesize:%d, Ways:%d, Blocks:%d\n", s, size, linesize, nb_ways, nb_blocks);
+    }
+    c = fgetc(f2);
+  }
 
   int i;
   for (i=1; i<9; i++) {
-    add_line_2caches(L1, L2, 163+2048*i, 0);
+    add_line(caches, 163+2048*i, 0);
   }
 
   for (i=1; i<9; i++) {
-    add_line_2caches(L1, L2, 163+2048*i, 0);
+    add_line(caches, 163+2048*i, 0);
   }
 
-  /* for (i=1; i<5; i++, 0) { */
-  /*   fprintf(stdout, "Is in cache is true: %d\n", is_in_cache(L1, 163+2048*i)); */
-  /* } */
-
   fprintf(stdout, "Infos cache L1:\n");
-  print_infos(L1);
+  print_infos(caches->cache);
 
   fprintf(stdout, "Infos cache L2:\n");
-  print_infos(L2);
+  print_infos(caches->next->cache);
 
-  delete_cache(L1);
-  delete_cache(L2);
+  free(s);
+  delete_list(caches);
+  fclose(f1);
+  fclose(f2);
   return EXIT_SUCCESS;
 }

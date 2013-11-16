@@ -13,50 +13,69 @@ int main(int argc, char *argv[]) {
   FILE *f1 = fopen(argv[1], "r");
   FILE *f2 = fopen(argv[2], "r");
 
-  char *s = malloc(3*sizeof(char));
-  int size, linesize, nb_ways, nb_blocks;
-  char c = 'a';
+  struct list **caches = NULL;
+  int nb_threads= 0;
 
-  struct list *caches = NULL;
+  int nb_caches, nb_links, size, linesize, nb_ways, nb_blocks;
+  char c = 'a';
+  int i;
 
   while (c!=EOF) {
-    c = fscanf(f2, "%s", s);
+    c = fscanf(f2, "%d", &nb_caches);
+    fscanf(f2, "%d", &nb_links);
     fscanf(f2, "%d", &size);
     fscanf(f2, "%d", &linesize);
     fscanf(f2, "%d", &nb_ways);
     fscanf(f2, "%d", &nb_blocks);
 
     if (c!=EOF) {
-      struct cache *cache;
-      cache = init_cache(size, linesize, nb_ways, nb_blocks);
       if (caches == NULL) {
-  	caches = init_list(cache);
+	caches = malloc(nb_caches * sizeof(struct list *));
+	for (i=0; i<nb_caches; i++) {
+	  struct cache *cache;
+	  cache = init_cache(size, linesize, nb_ways, nb_blocks);	  
+	  nb_threads = nb_caches;
+	  caches[i] = init_list(cache);
+	}
       }
+      
       else {
-  	add_list(caches, cache);
-      }
-      fprintf(stdout, "Infos cache %s Size:%d, Linesize:%d, Ways:%d, Blocks:%d\n", s, size, linesize, nb_ways, nb_blocks);
+	for (i=0; i<nb_caches; i++) {
+	  struct cache *cache;
+	  cache = init_cache(size, linesize, nb_ways, nb_blocks);
+	  
+	  add_list(caches[i], cache);	  
+	}
+      }      
+      /* fprintf(stdout, "Nb_cache:%d, Links:%d, Size:%d, Linesize:%d, Ways:%d, Blocks:%d\n", nb_caches, nb_links, size, linesize, nb_ways, nb_blocks); */
     }
     c = fgetc(f2);
   }
 
-  int i;
   for (i=1; i<9; i++) {
-    add_line(caches, 163+2048*i, 0);
+    add_line(caches[0], 163+2048*i, 0);
+    add_line(caches[1], 163+2048*i, 0);
   }
 
   for (i=1; i<9; i++) {
-    add_line(caches, 163+2048*i, 0);
+    add_line(caches[0], 163+2048*i, 0);
+    add_line(caches[1], 163+2048*i, 0);
   }
 
-  fprintf(stdout, "Infos cache L1:\n");
-  print_infos(caches->cache);
+  fprintf(stdout, "Infos cache L1_0:\n");
+  print_infos(caches[0]->cache);
 
-  fprintf(stdout, "Infos cache L2:\n");
-  print_infos(caches->next->cache);
+  fprintf(stdout, "Infos cache L1_1:\n");
+  print_infos(caches[1]->cache);
 
-  free(s);
-  delete_list(caches);
+  fprintf(stdout, "Infos cache L2_0:\n");
+  print_infos(caches[0]->next->cache);
+
+  for (i=0; i<nb_threads; i++) {
+    delete_list(caches[i]);
+  }
+  free(caches);
+  
   fclose(f1);
   fclose(f2);
   return EXIT_SUCCESS;

@@ -1,5 +1,7 @@
+include config.in
+
 CC=gcc 
-FLAGS=-g -W -Wall
+FLAGS=-g -W -Wall $(CONF)
 
 OBJS=cache block line list add_line_hierarchy
 
