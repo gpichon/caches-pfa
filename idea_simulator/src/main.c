@@ -54,12 +54,20 @@ int main(int argc, char *argv[]) {
     c = fgetc(f2);
   }
 
-  load_line_hierarchy(caches, nb_threads, caches[0], 163+2048);
-  load_line_hierarchy(caches, nb_threads, caches[1], 163+2048);
-  load_line_hierarchy(caches, nb_threads, caches[2], 163+2048);
+  load_line_hierarchy(caches, nb_threads, caches[0], 163+2048, 0); /* Miss L1_0, L2_0, L3_0 */
+  load_line_hierarchy(caches, nb_threads, caches[1], 163+2048, 0); /* Miss L1_1 Hit L2_0*/
+  load_line_hierarchy(caches, nb_threads, caches[2], 163+2048, 0); /* Miss L1_2, L2_1 Hit L3_0*/
 
-  add_line(caches[0], 163+2048, 1);
-  load_line_hierarchy(caches, nb_threads, caches[1], 163+2048);
+  store_line_hierarchy(caches, nb_threads, caches[0], 163+2048);   /* Hit L1_0 */
+
+  /* Invalid line in cache -> miss */
+  load_line_hierarchy(caches, nb_threads, caches[1], 163+2048, 0); /* WB L1_0 Miss L1_1, L2_0, L3_0 */
+
+  load_line_hierarchy(caches, nb_threads, caches[0], 163+2048, 0); /* Hit L1_0 */
+
+  store_line_hierarchy(caches, nb_threads, caches[2], 163+2048);   /* Miss L1_2, L2_1 Hit L3_0*/
+
+
 
   /* Informations about caches */
   fprintf(stdout, "L1_0:\n");

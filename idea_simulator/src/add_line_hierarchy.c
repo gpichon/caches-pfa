@@ -12,12 +12,19 @@ void add_line(struct list *caches, int entry, int w) {
   }
 }
 
-void load_line_hierarchy(struct list **caches, int nb_threads, struct list *cache, int entry) {
+void load_line_hierarchy(struct list **caches, int nb_threads, struct list *cache, int entry, int use_in_store) {
   struct line *line;
+
+  /* Hit: Ok! */
   if (is_in_cache(cache->cache, entry)) {
     line = line_in_cache(cache->cache, entry);
     cache->cache->hits++;
   }
+
+  /* Miss: 
+     if data is not in any cache: Exclusive
+     else Shared, as other values in caches
+  */
   else {
     int i;
     int res = 0;
@@ -33,7 +40,7 @@ void load_line_hierarchy(struct list **caches, int nb_threads, struct list *cach
 	if (cache_bis != cache->cache) {
 	  if (is_in_cache(cache_bis, entry)) {
 	    line = line_in_cache(cache_bis, entry);
-	    if (line->writed) {
+	    if (line->writed && (use_in_store==0)) {
 	      cache_bis->writes_back++;
 	      line->writed = 0;
 	    }
@@ -50,6 +57,74 @@ void load_line_hierarchy(struct list **caches, int nb_threads, struct list *cach
     if (res) {
       line = line_in_cache(cache->cache, entry);
       share_line(line);
+    }
+  }
+}
+
+
+void store_line_hierarchy(struct list **caches, int nb_threads, struct list *cache, int entry) {
+  struct line *line;
+    int i;
+    struct list *current;
+    struct cache *cache_bis;
+
+  /* Hit:
+     if modified line, nothing to do
+     if exclusive line, add state writed
+     if shared line, add state writed and invalidate others lines
+   */
+  if (is_in_cache(cache->cache, entry)) {
+    line = line_in_cache(cache->cache, entry);
+    modify_line(line);
+    cache->cache->hits++;
+
+    if (line->shared) {
+      for (i=0; i<nb_threads; i++) {
+	current = caches[i];
+	
+	while (current != NULL) {
+	  cache_bis = current->cache;
+	  
+	  if (cache_bis != cache->cache) {
+	    if (is_in_cache(cache_bis, entry)) {
+	      line = line_in_cache(cache_bis, entry);
+	      invalid_line(line);
+	    }
+	  }
+	  current = current->next;
+	}
+	
+      }      
+    }
+  }
+  
+  /* Miss:
+     if no copy, no problem!
+     if modified copy, write back
+     if exclusive/shared copy, add writed line
+  */
+  else {
+    load_line_hierarchy(caches, nb_threads, cache, entry, 1);
+    line = line_in_cache(cache->cache, entry);
+    modify_line(line);
+
+    for (i=0; i<nb_threads; i++) {
+      current = caches[i];
+      
+      while (current != NULL) {
+	cache_bis = current->cache;
+	
+	if (cache_bis != cache->cache) {
+	  if (is_in_cache(cache_bis, entry)) {
+	    line = line_in_cache(cache_bis, entry);
+	    if (line->writed) {
+	      cache_bis->writes_back++;
+	    }
+	    modify_line(line);
+	  }
+	}
+	current = current->next;
+      }      
     }
   }
 }

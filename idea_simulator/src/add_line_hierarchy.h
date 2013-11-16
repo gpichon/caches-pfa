@@ -13,6 +13,7 @@
 
 void add_line(struct list *, int, int);
 
-void load_line_hierarchy(struct list **, int, struct list *, int);
+void load_line_hierarchy(struct list **, int, struct list *, int, int);
+void store_line_hierarchy(struct list **, int, struct list *, int);
 
 #endif
