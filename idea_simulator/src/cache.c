@@ -33,6 +33,7 @@ int is_in_cache(struct cache *cache, int entry) {
   int id_block = block_id(cache, entry);
   struct block *block = cache->blocks[id_block];
   int nb_ways = cache->nb_ways;
+  int res=0;
 
   struct line *line;
   int i;
@@ -43,26 +44,39 @@ int is_in_cache(struct cache *cache, int entry) {
 #endif
     if (line->valid && (line->first_case == entry / ARCH * ARCH)) {
       update_line(line);
-      return 1;
+      res = 1;
     }
   }    
-  return 0;
+  return res;
+}
+
+void write_in_cache(struct cache *cache, int entry) {
+  int id_block = block_id(cache, entry);
+  struct block *block = cache->blocks[id_block];
+  int nb_ways = cache->nb_ways;
+
+  struct line *line;
+  int i;
+  for (i=0; i<nb_ways; i++) {
+    line = block->lines[i];
+    if (line->valid && (line->first_case == entry / ARCH * ARCH)) {
+      line->writed = 1;
+      return;
+    }
+  }    
 }
 
 int add_line_cache(struct cache *cache, int entry, int w) {
   int id_block = block_id(cache, entry);
   
-  struct line *line = malloc(sizeof(struct line));
-  line->label = 0;
-  line->first_case = entry / ARCH * ARCH;
-  line->valid = 1;
-  line->use = 1;
-  line->writed = w;
-
-#ifdef DEBUG
-  printf("Block:%d, Line:%d\n", id_block, line->first_case);
-#endif
   if (!is_in_cache(cache, entry)) {
+    struct line *line = malloc(sizeof(struct line));
+    line->label = 0;
+    line->first_case = entry / ARCH * ARCH;
+    line->valid = 1;
+    line->use = 1;
+    line->writed = w;
+
     if (add_line_block(cache->blocks[id_block], line)) {
       cache->writes++;
     }
@@ -70,30 +84,17 @@ int add_line_cache(struct cache *cache, int entry, int w) {
     return 0;
   }
   else {
+    if (w) {
+      write_in_cache(cache, entry);
+    }
     cache->hits++;
     return 1;
-  }
-}
-
-int is_in_higher_cache(struct cache *cache, int entry, int w) {
-  int r = is_in_cache(cache, entry);
-  if (r) {
-    cache->hits ++;
-    return 1;
-  }
-  else {
-    if (add_line_cache(cache, entry, w)) {
-      cache->writes++;
-    }
-    cache->misses ++;
-    return 0;
   }
 }
 
 void add_line_2caches(struct cache *cache1, struct cache *cache2, int entry, int w) {
   if (!add_line_cache(cache1, entry, w)) {
     add_line_cache(cache2, entry, w);
-    /* is_in_higher_cache(cache2, entry, w); */
   }
 }
 

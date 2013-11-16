@@ -2,42 +2,67 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "cache.h"
+#include "list.h"
 
 int main(int argc, char *argv[]) {
 
-  if (argc != 2) {
-    fprintf(stdout, "Please enter a trace\n");
+  if (argc != 3) {
+    fprintf(stdout, "Please enter a trace and an hierarchy\n");
     assert(0);
   }
 
-  FILE *f = fopen(argv[1], "r");
-  struct cache *L1;
-  L1 = init_cache(8192, 64, 4, 32);
+  FILE *f1 = fopen(argv[1], "r");
+  FILE *f2 = fopen(argv[2], "r");
+
+  char *s = malloc(3*sizeof(char));
+  int size, linesize, nb_ways, nb_blocks;
+  char c = 'a';
+
+  struct list *caches = NULL;
+
+  while (c!=EOF) {
+    c = fscanf(f2, "%s", s);
+    fscanf(f2, "%d", &size);
+    fscanf(f2, "%d", &linesize);
+    fscanf(f2, "%d", &nb_ways);
+    fscanf(f2, "%d", &nb_blocks);
+
+    if (c!=EOF) {
+      struct cache *cache;
+      cache = init_cache(size, linesize, nb_ways, nb_blocks);
+      if (caches == NULL) {
+  	caches = init_list(cache);
+      }
+      else {
+  	add_list(caches, cache);
+      }
+      fprintf(stdout, "Infos cache %s Size:%d, Linesize:%d, Ways:%d, Blocks:%d\n", s, size, linesize, nb_ways, nb_blocks);
+    }
+    c = fgetc(f2);
+  }
 
   char c1, c2;
   int r;
-  c1 = fgetc(f);
+  c1 = fgetc(f1);
   while (c1!=EOF) {
-    c2 = fgetc(f);
-    fscanf(f, "%x", &r);
-    c1 = fgetc(f);
+    c2 = fgetc(f1);
+    fscanf(f1, "%x", &r);
+    c1 = fgetc(f1);
 
-    /* fprintf(stdout, "Value: %d\n Char:%c", r, c2); */
     if (c2 == 'L') {
-      add_line_cache(L1, r, 0);
+      add_line_cache(caches->cache, r, 0);
     }
     if (c2 == 'S') {
-      add_line_cache(L1, r, 1);
+      add_line_cache(caches->cache, r, 1);
     }
   }
 
-
-  /* add_line_cache(L1, 163, 0); */
-
   fprintf(stdout, "Infos cache L1:\n");
-  print_infos(L1);
+  print_infos(caches->cache);
 
-  delete_cache(L1);
-  fclose(f);
+  free(s);
+  delete_list(caches);
+  fclose(f1);
+  fclose(f2);
   return EXIT_SUCCESS;
 }

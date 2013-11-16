@@ -1,7 +1,7 @@
 CC=gcc 
 FLAGS=-g -W -Wall
- 
-OBJS=cache block line
+
+OBJS=cache block line list
 
 BUILD_DIR=obj
 SRC_DIR=src

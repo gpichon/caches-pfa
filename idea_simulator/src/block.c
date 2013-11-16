@@ -45,10 +45,11 @@ int id_line_to_replace(struct block *block) {
 int add_line_block(struct block *block, struct line *line) {
   int id_line = id_line_to_replace(block);
   struct line *del_line = block->lines[id_line];
-  free(del_line);  
   block->lines[id_line] = line;
   if (del_line->writed) {
+    free(del_line);
     return 1;
   }
+  free(del_line);
   return 0;
 }

@@ -36,7 +36,6 @@ int block_id(struct cache *, int);
 int is_in_cache(struct cache *, int);
 int add_line_cache(struct cache *, int, int);
 
-int is_in_higher_cache(struct cache *, int, int);
 void add_line_2caches(struct cache *, struct cache *, int, int);
 
 void print_infos(struct cache *);
