@@ -67,6 +67,8 @@ void store_line_hierarchy(struct list **caches, int nb_threads, struct list *cac
     int i;
     struct list *current;
     struct cache *cache_bis;
+    struct line *line_to_modify[10]; //TODO change!
+    int tab_id = 0;
 
   /* Hit:
      if modified line, nothing to do
@@ -105,9 +107,12 @@ void store_line_hierarchy(struct list **caches, int nb_threads, struct list *cac
   */
   else {
     load_line_hierarchy(caches, nb_threads, cache, entry, 1);
+
+    add_line_cache(cache->cache, entry, 1);
     line = line_in_cache(cache->cache, entry);
     modify_line(line);
 
+    /* Problem: same line not threated once */
     for (i=0; i<nb_threads; i++) {
       current = caches[i];
       
@@ -119,12 +124,25 @@ void store_line_hierarchy(struct list **caches, int nb_threads, struct list *cac
 	    line = line_in_cache(cache_bis, entry);
 	    if (line->writed) {
 	      cache_bis->writes_back++;
+	      line->writed = 0;
 	    }
-	    modify_line(line);
+
+	    /* Save lines to modify */
+	    line_to_modify[tab_id] = line;
+	    tab_id ++;
+	    if (tab_id > 10) {
+	      printf("Erreur ici...\n");
+	    }
+
 	  }
 	}
 	current = current->next;
-      }      
+      }
     }
+   
+    for (i=0; i<tab_id; i++) {
+      modify_line(line_to_modify[i]);
+    }
+    
   }
 }

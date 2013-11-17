@@ -65,9 +65,7 @@ int main(int argc, char *argv[]) {
 
   load_line_hierarchy(caches, nb_threads, caches[0], 163+2048, 0); /* Hit L1_0 */
 
-  store_line_hierarchy(caches, nb_threads, caches[2], 163+2048);   /* Miss L1_2, L2_1 Hit L3_0*/
-
-
+  store_line_hierarchy(caches, nb_threads, caches[2], 163+2048);   /* Miss L1_2, L2_1 Hit L3_0 */
 
   /* Informations about caches */
   fprintf(stdout, "L1_0:\n");
