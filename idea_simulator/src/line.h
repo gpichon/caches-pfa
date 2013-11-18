@@ -14,7 +14,7 @@ struct line {
   int first_case;
   int use;
   int valid;
-  int writed;
+  int written;
   int shared; //1 if shared, 0 if exclusive
 };
 

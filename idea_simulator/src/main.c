@@ -18,7 +18,6 @@ int main(int argc, char *argv[]) {
   }
 
   struct cache *cache_L2_0, *cache_L2_1, *cache_L3;
-
   cache_L2_0 = init_cache(32768, 64, 8, 64);	  
   cache_L2_1 = init_cache(32768, 64, 8, 64);	  
   cache_L3 = init_cache(130172, 64, 16, 128);
@@ -30,17 +29,23 @@ int main(int argc, char *argv[]) {
   for (i=0; i<4; i++) {
     add_list(caches[i], cache_L3);
   }
-  
+
+  /* Classics loads */
   load_line_hierarchy(caches, nb_threads, caches[0], 163+2048, 0); /* Miss L1_0, L2_0, L3_0 */
   load_line_hierarchy(caches, nb_threads, caches[1], 163+2048, 0); /* Miss L1_1 Hit L2_0 */
   load_line_hierarchy(caches, nb_threads, caches[2], 163+2048, 0); /* Miss L1_2, L2_1 Hit L3_0 */
+
+  /* Store value in cache -> Hit */
+  /* Others caches are invalidated */
   store_line_hierarchy(caches, nb_threads, caches[0], 163+2048);   /* Hit L1_0 */
 
-  /* Invalid line in cache -> miss */
+  /* Invalid line in cache -> miss. Modified copy in cache -> WB + update data*/
   load_line_hierarchy(caches, nb_threads, caches[1], 163+2048, 0); /* WB L1_0 Miss L1_1, L2_0, L3_0 */
 
+  /* Data was updated with last load */
   load_line_hierarchy(caches, nb_threads, caches[0], 163+2048, 0); /* Hit L1_0 */
 
+  /* Invalidated caches */
   store_line_hierarchy(caches, nb_threads, caches[2], 163+2048);   /* Miss L1_2, L2_1 Hit L3_0 */
 
 

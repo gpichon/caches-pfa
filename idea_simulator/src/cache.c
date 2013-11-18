@@ -62,7 +62,7 @@ void write_in_cache(struct cache *cache, int entry) {
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
     if (line->valid && (line->first_case == entry / ARCH * ARCH)) {
-      line->writed = 1;
+      line->written = 1;
       return;
     }
   }    
@@ -76,7 +76,7 @@ int add_line_cache(struct cache *cache, int entry, int w) {
     line->first_case = entry / ARCH * ARCH;
     line->valid = 1;
     line->use = 1;
-    line->writed = w;
+    line->written = w;
     line->shared = 0;
 
     if (add_line_block(cache->blocks[id_block], line)) {

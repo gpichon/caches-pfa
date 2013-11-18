@@ -9,7 +9,7 @@ struct line** init_line(int nb_ways) {
     line->first_case = 0;
     line->valid = 0;
     line->use = 0;
-    line->writed = 0;
+    line->written = 0;
     line->shared = 0;
     lines[i] = line;
   }
@@ -34,7 +34,7 @@ void invalid_line(struct line *line) {
 }
 
 void modify_line(struct line *line) {
-  line->writed = 1;
+  line->written = 1;
 }
 
 void share_line(struct line *line) {

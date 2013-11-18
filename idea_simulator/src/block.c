@@ -60,7 +60,7 @@ int add_line_block(struct block *block, struct line *line) {
   int id_line = id_line_to_replace(block);
   struct line *del_line = block->lines[id_line];
   block->lines[id_line] = line;
-  if (del_line->writed) {
+  if (del_line->written) {
     free(del_line);
     return 1;
   }

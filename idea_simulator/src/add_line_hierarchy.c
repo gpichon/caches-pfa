@@ -40,9 +40,9 @@ void load_line_hierarchy(struct list **caches, int nb_threads, struct list *cach
 	if (cache_bis != cache->cache) {
 	  if (is_in_cache(cache_bis, entry)) {
 	    line = line_in_cache(cache_bis, entry);
-	    if (line->writed && (use_in_store==0)) {
+	    if (line->written && (use_in_store==0)) {
 	      cache_bis->writes_back++;
-	      line->writed = 0;
+	      line->written = 0;
 	    }
 	    share_line(line);
 	    res ++;
@@ -62,6 +62,7 @@ void load_line_hierarchy(struct list **caches, int nb_threads, struct list *cach
 }
 
 
+/* Warning: caches are supposed to be inclusive -> if store L1 then store L2, L3... */
 void store_line_hierarchy(struct list **caches, int nb_threads, struct list *cache, int entry) {
   struct line *line;
     int i;
@@ -72,8 +73,8 @@ void store_line_hierarchy(struct list **caches, int nb_threads, struct list *cac
 
   /* Hit:
      if modified line, nothing to do
-     if exclusive line, add state writed
-     if shared line, add state writed and invalidate others lines
+     if exclusive line, add state written
+     if shared line, add state written and invalidate others lines
    */
   if (is_in_cache(cache->cache, entry)) {
     line = line_in_cache(cache->cache, entry);
@@ -94,8 +95,7 @@ void store_line_hierarchy(struct list **caches, int nb_threads, struct list *cac
 	    }
 	  }
 	  current = current->next;
-	}
-	
+	}	
       }      
     }
   }
@@ -103,12 +103,11 @@ void store_line_hierarchy(struct list **caches, int nb_threads, struct list *cac
   /* Miss:
      if no copy, no problem!
      if modified copy, write back
-     if exclusive/shared copy, add writed line
+     if exclusive/shared copy, add written line
   */
   else {
     load_line_hierarchy(caches, nb_threads, cache, entry, 1);
 
-    add_line_cache(cache->cache, entry, 1);
     line = line_in_cache(cache->cache, entry);
     modify_line(line);
 
@@ -122,18 +121,17 @@ void store_line_hierarchy(struct list **caches, int nb_threads, struct list *cac
 	if (cache_bis != cache->cache) {
 	  if (is_in_cache(cache_bis, entry)) {
 	    line = line_in_cache(cache_bis, entry);
-	    if (line->writed) {
+
+	    if (line->written) {
 	      cache_bis->writes_back++;
-	      line->writed = 0;
+	      line->valid = 0;
 	    }
 
 	    /* Save lines to modify */
-	    line_to_modify[tab_id] = line;
-	    tab_id ++;
-	    if (tab_id > 10) {
-	      printf("Erreur ici...\n");
+	    else {
+	      line_to_modify[tab_id] = line;
+	      tab_id ++;
 	    }
-
 	  }
 	}
 	current = current->next;
@@ -143,6 +141,5 @@ void store_line_hierarchy(struct list **caches, int nb_threads, struct list *cac
     for (i=0; i<tab_id; i++) {
       modify_line(line_to_modify[i]);
     }
-    
   }
 }
