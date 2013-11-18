@@ -1,0 +1,3 @@
+Pour compiler, faire make
+
+Pour executer le code, faire ./bin/main data/dell.txt

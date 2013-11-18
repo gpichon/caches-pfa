@@ -23,7 +23,6 @@ struct cache {
 
   int misses;
   int hits;
-  int writes;  
   int writes_back;
 };
 

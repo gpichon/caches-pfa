@@ -67,7 +67,7 @@ void store_line_hierarchy(struct list **caches, int nb_threads, struct list *cac
     int i;
     struct list *current;
     struct cache *cache_bis;
-    struct line *line_to_modify[10]; //TODO change!
+    struct line *line_to_modify[128]; //TODO change!
     int tab_id = 0;
 
   /* Hit:

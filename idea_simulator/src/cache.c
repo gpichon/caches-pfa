@@ -12,7 +12,6 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks) {
   cache->blocks         = blocks;
   cache->misses         = 0;
   cache->hits           = 0;
-  cache->writes         = 0;
   cache->writes_back    = 0;
   return cache;
 }
@@ -81,7 +80,7 @@ int add_line_cache(struct cache *cache, int entry, int w) {
     line->shared = 0;
 
     if (add_line_block(cache->blocks[id_block], line)) {
-      cache->writes++;
+      cache->writes_back++;
     }
     cache->misses++;
     return 0;
@@ -98,7 +97,6 @@ int add_line_cache(struct cache *cache, int entry, int w) {
 void print_infos(struct cache *cache) {
   printf("misses:%d\n", cache->misses);
   printf("hits:%d\n", cache->hits);
-  printf("deleted writed lines:%d\n", cache->writes);
   printf("writes back:%d\n\n", cache->writes_back);
 }
 
