@@ -5,55 +5,32 @@
 
 int main(int argc, char *argv[]) {
 
-  if (argc != 2) {
-    fprintf(stdout, "Please enter an hierarchy\n");
-    assert(0);
-  }
-
-  FILE *f2 = fopen(argv[1], "r");
-
   struct list **caches = NULL;
-  int nb_threads = 0;
+  int nb_threads = 4;
 
-  int nb_caches, nb_links, size, linesize, nb_ways, nb_blocks;
-  char c = 'a';
-  int i, j;
+  caches = malloc(nb_threads * sizeof(struct list *));
 
-  while (c!=EOF) {
-    c = fscanf(f2, "%d", &nb_caches);
-    fscanf(f2, "%d", &nb_links);
-    fscanf(f2, "%d", &size);
-    fscanf(f2, "%d", &linesize);
-    fscanf(f2, "%d", &nb_ways);
-    fscanf(f2, "%d", &nb_blocks);
-
-    if (c!=EOF) {
-      if (caches == NULL) {
-	caches = malloc(nb_caches * sizeof(struct list *));
-	for (i=0; i<nb_caches; i++) {
-	  struct cache *cache;
-	  cache = init_cache(size, linesize, nb_ways, nb_blocks);	  
-	  nb_threads = nb_caches;
-	  caches[i] = init_list(cache);
-	}
-      }
-      
-      else {
-	int where = 0;
-	for (i=0; i<nb_caches; i++) {
-	  struct cache *cache;
-	  cache = init_cache(size, linesize, nb_ways, nb_blocks);
-	  for(j=0; j<nb_links; j++) {
-	    add_list(caches[where], cache);
-	    where++;
-	  }
-	}
-      }      
-      /* fprintf(stdout, "Nb_cache:%d, Links:%d, Size:%d, Linesize:%d, Ways:%d, Blocks:%d\n", nb_caches, nb_links, size, linesize, nb_ways, nb_blocks); */
-    }
-    c = fgetc(f2);
+  int i;
+  for (i=0; i<4; i++) {
+    struct cache *cache;
+    cache = init_cache(8192, 64, 4, 32);
+    caches[i] = init_list(cache);
   }
 
+  struct cache *cache_L2_0, *cache_L2_1, *cache_L3;
+
+  cache_L2_0 = init_cache(32768, 64, 8, 64);	  
+  cache_L2_1 = init_cache(32768, 64, 8, 64);	  
+  cache_L3 = init_cache(130172, 64, 16, 128);
+  
+  for (i=0; i<2; i++) {
+    add_list(caches[i], cache_L2_0);
+    add_list(caches[i+2], cache_L2_1);
+  }
+  for (i=0; i<4; i++) {
+    add_list(caches[i], cache_L3);
+  }
+  
   load_line_hierarchy(caches, nb_threads, caches[0], 163+2048, 0); /* Miss L1_0, L2_0, L3_0 */
   load_line_hierarchy(caches, nb_threads, caches[1], 163+2048, 0); /* Miss L1_1 Hit L2_0 */
   load_line_hierarchy(caches, nb_threads, caches[2], 163+2048, 0); /* Miss L1_2, L2_1 Hit L3_0 */
@@ -66,52 +43,32 @@ int main(int argc, char *argv[]) {
 
   store_line_hierarchy(caches, nb_threads, caches[2], 163+2048);   /* Miss L1_2, L2_1 Hit L3_0 */
 
+
   /* Informations about caches */
-  fprintf(stdout, "L1_0:\n");
-  print_infos(caches[0]->cache);
-
-  fprintf(stdout, "L1_1:\n");
-  print_infos(caches[1]->cache);
-
-  fprintf(stdout, "L1_2:\n");
-  print_infos(caches[2]->cache);
-
-  fprintf(stdout, "L1_3:\n");
-  print_infos(caches[3]->cache);
-
-  fprintf(stdout, "L2_0:\n");
-  print_infos(caches[0]->next->cache);
-
-  fprintf(stdout, "L2_1:\n");
-  print_infos(caches[2]->next->cache);
+  for (i=0; i<4; i++) {
+    fprintf(stdout, "L1 %d:\n", i);
+    print_infos(caches[i]->cache);
+  }
+  
+  for (i=0; i<2; i++) {
+    fprintf(stdout, "L2 %d:\n", i);
+    print_infos(caches[2*i]->next->cache);
+  }
 
   fprintf(stdout, "L3:\n");
   print_infos(caches[0]->next->next->cache);
 
+  delete_cache(cache_L2_0);
+  delete_cache(cache_L2_1);
+  delete_cache(cache_L3);
 
-  /* Free: TODO modify! */
-  delete_cache(caches[0]->next->next->cache);
-  delete_cache(caches[0]->next->cache);
-  delete_cache(caches[2]->next->cache);
-  delete_cache(caches[0]->cache);
-  delete_cache(caches[1]->cache);
-  delete_cache(caches[2]->cache);
-  delete_cache(caches[3]->cache);
-
-  free(caches[0]->next->next);
-  free(caches[1]->next->next);
-  free(caches[2]->next->next);
-  free(caches[3]->next->next);
-  free(caches[0]->next);
-  free(caches[1]->next);
-  free(caches[2]->next);
-  free(caches[3]->next);
-  free(caches[0]);
-  free(caches[1]);
-  free(caches[2]);
-  free(caches[3]);
+  for (i=0; i<4; i++) {
+    delete_cache(caches[i]->cache);
+    free(caches[i]->next->next);
+    free(caches[i]->next);
+    free(caches[i]);
+  }
 
   free(caches);
-  fclose(f2);
   return EXIT_SUCCESS;
 }
