@@ -42,7 +42,7 @@ int is_in_cache(struct cache *cache, int entry) {
 #ifndef LFU
     update_line(line);
 #endif 
-    if (line->valid && (line->first_case == entry / ARCH * ARCH)) {
+    if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
 #ifdef LFU
       update_line(line);
 #endif
@@ -61,8 +61,8 @@ void write_in_cache(struct cache *cache, int entry) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-    if (line->valid && (line->first_case == entry / ARCH * ARCH)) {
-      line->written = 1;
+    if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
+      modify_line(line);
       return;
     }
   }    
@@ -74,10 +74,14 @@ int add_line_cache(struct cache *cache, int entry, int w) {
   if (!is_in_cache(cache, entry)) {
     struct line *line = malloc(sizeof(struct line));
     line->first_case = entry / ARCH * ARCH;
-    line->valid = 1;
     line->use = 1;
-    line->written = w;
-    line->shared = 0;
+
+    if (w) {
+      modify_line(line);
+    }
+    else {
+      exclusive_line(line);
+    }
 
     if (add_line_block(cache->blocks[id_block], line)) {
       cache->writes_back++;
@@ -109,7 +113,7 @@ struct line *line_in_cache(struct cache *cache, int entry) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-    if (line->valid && (line->first_case == entry / ARCH * ARCH)) {
+    if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
       return line;
     }
   }    

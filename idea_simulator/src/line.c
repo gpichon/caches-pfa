@@ -7,10 +7,8 @@ struct line** init_line(int nb_ways) {
   for (i=0; i<nb_ways; i++) {
     struct line *line = malloc(sizeof(struct line));
     line->first_case = 0;
-    line->valid = 0;
     line->use = 0;
-    line->written = 0;
-    line->shared = 0;
+    line->status = 0;
     lines[i] = line;
   }
   return lines;
@@ -30,17 +28,34 @@ void update_line(struct line *line) {
 }
 
 void invalid_line(struct line *line) {
-  line->valid = 0;
+  line->status = 0;
 }
 
 void modify_line(struct line *line) {
-  line->written = 1;
+  line->status = 3;
 }
 
 void share_line(struct line *line) {
-  line->shared = 1;
+  line->status = 2;
 }
 
 void exclusive_line(struct line *line) {
-  line->shared = 0;
+  line->status = 1;
 }
+
+int is_valid(struct line *line) {
+  return (line->status > 0);
+}
+
+int is_exclusive(struct line *line) {
+  return (line->status == 2);
+}
+
+int is_modified(struct line *line) {
+  return (line->status == 3);
+}
+
+int is_shared(struct line *line) {
+  return (line->status == 1);
+}
+

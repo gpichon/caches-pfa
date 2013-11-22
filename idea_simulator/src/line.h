@@ -10,12 +10,11 @@
   Gère lecture/écriture au sein d'une ligne.
 */
 
+/* Status: 0 invalid, 1 shared, 2 exclusive, 3 modified */
 struct line {
   int first_case;
   int use;
-  int valid;
-  int written;
-  int shared; //1 if shared, 0 if exclusive
+  int status;
 };
 
 /* Data allocation */
@@ -25,9 +24,16 @@ struct line** init_line(int);
 void delete_lines(struct line **, int);
 
 void update_line(struct line *);
+
+
 void invalid_line(struct line *);
 void modify_line(struct line *);
 void share_line(struct line *);
 void exclusive_line(struct line *);
+
+int is_valid(struct line *);
+int is_exclusive(struct line *);
+int is_modified(struct line *);
+int is_shared(struct line *);
 
 #endif
