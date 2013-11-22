@@ -38,10 +38,10 @@ int is_in_cache(struct cache *cache, int entry) {
   struct line *line;
   int i;
   for (i=0; i<nb_ways; i++) {
+    line = block->lines[i];
 #ifndef LFU
     update_line(line);
 #endif 
-    line = block->lines[i];
     if (line->valid && (line->first_case == entry / ARCH * ARCH)) {
 #ifdef LFU
       update_line(line);

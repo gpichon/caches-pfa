@@ -1,4 +1,3 @@
-
 #Replacing lines
 CONF = -DLFU
-#-DFIFO
+#CONF = -DFIFO

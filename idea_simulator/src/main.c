@@ -6,15 +6,25 @@
 int main(int argc, char *argv[]) {
 
   struct list **caches = NULL;
+  struct list **levels = NULL;
   int nb_threads = 4;
+  int nb_levels = 3;
 
   caches = malloc(nb_threads * sizeof(struct list *));
+  levels = malloc(nb_levels * sizeof(struct list *));
 
+
+  /* Creation of cache hierarchy */
   int i;
   for (i=0; i<4; i++) {
     struct cache *cache;
     cache = init_cache(8192, 64, 4, 32);
     caches[i] = init_list(cache);
+
+    if (i == 0)
+      levels[0] = init_list(cache);
+    else
+      add_list(levels[0], cache);
   }
 
   struct cache *cache_L2_0, *cache_L2_1, *cache_L3;
@@ -29,6 +39,12 @@ int main(int argc, char *argv[]) {
   for (i=0; i<4; i++) {
     add_list(caches[i], cache_L3);
   }
+
+  levels[1] = init_list(cache_L2_0);
+  add_list(levels[1], cache_L2_1);
+  levels[2] = init_list(cache_L3);
+
+
 
   /* Classics loads */
   load_line_hierarchy(caches, nb_threads, caches[0], 163+2048, 0); /* Miss L1_0, L2_0, L3_0 */
@@ -63,17 +79,17 @@ int main(int argc, char *argv[]) {
   fprintf(stdout, "L3:\n");
   print_infos(caches[0]->next->next->cache);
 
-  delete_cache(cache_L2_0);
-  delete_cache(cache_L2_1);
-  delete_cache(cache_L3);
+
 
   for (i=0; i<4; i++) {
-    delete_cache(caches[i]->cache);
-    free(caches[i]->next->next);
-    free(caches[i]->next);
-    free(caches[i]);
+    delete_list(caches[i]);
+  }
+
+  for (i=0; i<3; i++) {
+    delete_list_def(levels[i]);
   }
 
   free(caches);
+  free(levels);
   return EXIT_SUCCESS;
 }

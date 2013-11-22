@@ -21,6 +21,7 @@ struct list* init_list(struct cache *);
 
 /* Data removal */
 void delete_list(struct list *);
+void delete_list_def(struct list *);
 
 void add_list(struct list *, struct cache *);
 

@@ -8,8 +8,21 @@ struct list* init_list(struct cache *cache) {
   return list;
 }
 
-/* Data removal */
+/* List removal
+   Warning, data is not free!*/
 void delete_list(struct list *list) {
+  struct list *current = list;
+  struct list *del;
+  while(current->next != NULL) {
+    del = current;
+    current = current->next;
+    free(del);
+  }
+  free(current);
+}
+
+/* List removal */
+void delete_list_def(struct list *list) {
   struct list *current = list;
   struct list *del;
   while(current->next != NULL) {
@@ -21,6 +34,7 @@ void delete_list(struct list *list) {
   delete_cache(current->cache);
   free(current);
 }
+
 
 void add_list(struct list *list, struct cache *cache) {
   struct list *next = init_list(cache);

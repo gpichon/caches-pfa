@@ -12,6 +12,13 @@ void add_line(struct list *caches, int entry, int w) {
   }
 }
 
+/* Return 1 if there is entry is somewhere else in level */
+int share_level(struct list *level, struct cache *cache, int entry) {
+
+}
+
+
+
 void load_line_hierarchy(struct list **caches, int nb_threads, struct list *cache, int entry, int use_in_store) {
   struct line *line;
 
