@@ -8,6 +8,13 @@ int main(int argc, char *argv[]) {
   (void) argc;
   (void) argv;
 
+  /* Hierarchy */
+  /*    L3
+     |      |
+     L2     L2
+   |   |  |   |
+   L1  L1 L1  L1 */
+
   struct list **caches = NULL;
   struct list **levels = NULL;
   int nb_threads = 4;
@@ -16,9 +23,8 @@ int main(int argc, char *argv[]) {
   caches = malloc(nb_threads * sizeof(struct list *));
   levels = malloc(nb_levels * sizeof(struct list *));
 
-
   /* Creation of cache hierarchy */
-  int i;
+  int i, j;
   for (i=0; i<4; i++) {
     struct cache *cache;
     cache = init_cache(8192, 64, 4, 32);
@@ -66,20 +72,16 @@ int main(int argc, char *argv[]) {
 
 
   /* Informations about caches */
-  for (i=0; i<4; i++) {
-    fprintf(stdout, "L1 %d:\n", i);
-    print_infos(caches[i]->cache);
+  struct list *current;
+  for (i=0; i<3; i++){
+    j = 0;
+    current = levels[i];
+    while (current != NULL){
+      printf("Niveau: %d, Cache: %d\n", i+1, j++);
+      print_infos(current->cache);
+      current = current->next;
+    }
   }
-
-  for (i=0; i<2; i++) {
-    fprintf(stdout, "L2 %d:\n", i);
-    print_infos(caches[2*i]->next->cache);
-  }
-
-  fprintf(stdout, "L3:\n");
-  print_infos(caches[0]->next->next->cache);
-
-
 
   for (i=0; i<4; i++) {
     delete_list(caches[i]);
