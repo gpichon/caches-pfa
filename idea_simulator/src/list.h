@@ -17,12 +17,15 @@ struct list {
 
 
 /* Data allocation */
-struct list* init_list(struct cache *);
+struct list* init_list(struct cache *cache);
 
-/* Data removal */
-void delete_list(struct list *);
-void delete_list_def(struct list *);
+/* List removal without delete data */
+void delete_list(struct list *list);
 
-void add_list(struct list *, struct cache *);
+/* List removal */
+void delete_list_def(struct list *list);
+
+/* Add a cache in the list */
+void add_list(struct list *list, struct cache *cache);
 
 #endif

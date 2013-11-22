@@ -11,7 +11,10 @@
   Gère lecture/écriture de cette ligne dans l'ensemble des caches.
 */
 
-void load_line_hierarchy(struct list **, struct list *, int);
-void store_line_hierarchy(struct list **, struct list *, int);
+/* Loads the entry in the cache and applies MESI protocol */
+void load_line_hierarchy(struct list **levels, struct list *cache, int entry);
+
+/* Stores the entry in the cache and applies MESI protocol */
+void store_line_hierarchy(struct list **levels, struct list *cache, int entry);
 
 #endif

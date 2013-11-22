@@ -17,23 +17,26 @@ struct line {
   int status;
 };
 
-/* Data allocation */
-struct line** init_line(int);
+/* Data allocation: nb_ways new lines */
+struct line** init_line(int nb_ways);
 
 /* Data removal */
-void delete_lines(struct line **, int);
+void delete_lines(struct line **lines, int nb_ways);
 
-void update_line(struct line *);
+/* Update replacement flag */
+void update_line(struct line *line);
 
 
-void invalid_line(struct line *);
-void modify_line(struct line *);
-void share_line(struct line *);
-void exclusive_line(struct line *);
+/* Setters */
+void invalid_line(struct line *line);
+void modify_line(struct line *line);
+void share_line(struct line *line);
+void exclusive_line(struct line *line);
 
-int is_valid(struct line *);
-int is_exclusive(struct line *);
-int is_modified(struct line *);
-int is_shared(struct line *);
+/* Getters */
+int is_valid(struct line *line);
+int is_exclusive(struct line *line);
+int is_modified(struct line *line);
+int is_shared(struct line *line);
 
 #endif

@@ -54,7 +54,6 @@ int main(int argc, char *argv[]) {
   levels[2] = init_list(cache_L3);
 
 
-
   /* Classics loads */
   
   load_line_hierarchy(levels, caches[0], 163+2048); /* Miss L1_0, L2_0, L3_0 */

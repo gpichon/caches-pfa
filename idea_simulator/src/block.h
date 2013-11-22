@@ -11,21 +11,22 @@
   Gère lecture/écriture au sein du block.
 */
 
+/* A block contains nb_ways lines */
 struct block {
   int nb_ways;
   struct line **lines;
 };
 
 /* Data allocation */
-struct block **init_block(int, int);
+struct block **init_block(int nb_blocks, int nb_ways);
 
 /* Data removal */
-void delete_blocks(struct block **, int);
+void delete_blocks(struct block **blocks, int nb_ways);
 
 /* Returns the number line to replace in the set */
-int id_line_to_replace(struct block *);
+int id_line_to_replace(struct block *block);
 
-/* Returns 1 if write back, else 0 */
-int add_line_block(struct block *, struct line *);
+/* Returns 1 if write back (when deleting a modified line), else 0 */
+int add_line_block(struct block *block, struct line *line);
 
 #endif
