@@ -11,8 +11,7 @@
   Gère lecture/écriture de cette ligne dans l'ensemble des caches.
 */
 
-
 void load_line_hierarchy(struct list **, struct list *, int);
-void store_line_hierarchy(struct list **, int, struct list *, int);
+void store_line_hierarchy(struct list **, struct list *, int);
 
 #endif

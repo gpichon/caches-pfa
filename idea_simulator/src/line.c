@@ -36,11 +36,11 @@ void modify_line(struct line *line) {
 }
 
 void share_line(struct line *line) {
-  line->status = 2;
+  line->status = 1;
 }
 
 void exclusive_line(struct line *line) {
-  line->status = 1;
+  line->status = 2;
 }
 
 int is_valid(struct line *line) {
