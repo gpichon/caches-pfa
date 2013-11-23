@@ -4,8 +4,10 @@
 #include <libxml/tree.h>
 #include <string.h>
 
-#define GET_NUMBER(inte,name) 	sprintf(buf, "%s", xmlGetNoNsProp(n, (xmlChar *) name)); \
-                                inte = atoi(buf)
+#define GET_NUMBER(inte,name) 	a_value = xmlGetNoNsProp(n, (xmlChar *) name); \
+                                sprintf(buf, "%s", a_value);	\
+                                inte = atoi(buf); \
+				free(a_value)
 
 void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache ** cstack, int stack_head) {
   xmlNodePtr n = node;
@@ -16,6 +18,7 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
   int depth = 1;
   struct cache * c;
   int size, linesize, nb_ways, nb_blocks;
+  xmlChar * a_name, * a_value;
 
   while(n != NULL){
     //printf("%s | ", n->name);
@@ -23,16 +26,20 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
     while(attr != NULL){
       //printf(" (%s : %s)", attr->name, xmlGetNoNsProp(n, attr->name));
       //Some architecture information
+      a_name = xmlGetNoNsProp(n, attr->name);
       if(strcmp((char *) attr->name, "name") == 0){
-	if(strcmp((char *) xmlGetNoNsProp(n, attr->name), "Architecture") == 0){
-	  sprintf(archi->name, "%s", xmlGetNoNsProp(n, (xmlChar *) "value"));
+	a_value = xmlGetNoNsProp(n, (xmlChar *) "value");
+	if(strcmp((char *) a_name, "Architecture") == 0){
+	  sprintf(archi->name, "%s", a_value);
 	}
-	else if(strcmp((char *) xmlGetNoNsProp(n, attr->name), "CPUModel") == 0){
-	  sprintf(archi->CPU_name, "%s", xmlGetNoNsProp(n, (xmlChar *) "value"));
+	else if(strcmp((char *) a_name, "CPUModel") == 0){
+	  sprintf(archi->CPU_name, "%s", a_value);
 	}
+	if(a_value)
+	  xmlFree(a_value);
       }
       //Add a cache
-      else if(strcmp((char *) attr->name, "type") == 0 && strcmp((char *) xmlGetNoNsProp(n, attr->name), "Cache") == 0){
+      else if(strcmp((char *) attr->name, "type") == 0 && strcmp((char *) a_name, "Cache") == 0){
 	GET_NUMBER(depth,"depth");
 	GET_NUMBER(size, "cache_size");
 	GET_NUMBER(linesize, "cache_linesize");
@@ -63,6 +70,8 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
 	  archi->number_threads++;
 	}
       }
+      if(a_name)
+	xmlFree(a_name);
       attr = attr->next;
     }
     //printf("\n");
