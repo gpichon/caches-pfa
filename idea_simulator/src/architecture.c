@@ -15,6 +15,8 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
   char buf[30];
   int depth = 1;
   struct cache * c;
+  int size, linesize, nb_ways, nb_blocks;
+
   while(n != NULL){
     //printf("%s | ", n->name);
     attr = n->properties;
@@ -31,13 +33,12 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
       }
       //Add a cache
       else if(strcmp((char *) attr->name, "type") == 0 && strcmp((char *) xmlGetNoNsProp(n, attr->name), "Cache") == 0){
- 	c = malloc(sizeof(struct cache));
 	GET_NUMBER(depth,"depth");
-	c->depth = depth;
-	GET_NUMBER(c->size, "cache_size");
-	GET_NUMBER(c->linesize, "cache_linesize");
-	GET_NUMBER(c->nb_ways, "cache_associativity");
-	c->nb_blocks = c->linesize * c->nb_ways;
+	GET_NUMBER(size, "cache_size");
+	GET_NUMBER(linesize, "cache_linesize");
+	GET_NUMBER(nb_ways, "cache_associativity");
+	nb_blocks = size / (linesize * nb_ways);
+	c = init_cache(size, linesize, nb_ways, nb_blocks, depth);
 	//Add the cache to the levels table
 	if(archi->levels[depth-1] == NULL){
 	  archi->levels[depth-1] = init_list(c);
@@ -135,6 +136,21 @@ void print_archi(struct architecture * archi){
     printf("Pour level %d\n", i+1);
     while(l != NULL){
       printf("\tL%d (taille : %d, ligne : %d, associativité : %d, nb_blocks : %d)\n", l->cache->depth, l->cache->size, l->cache->linesize, l->cache->nb_ways,  l->cache->nb_blocks);
+      l = l->next;
+    }
+  }
+}
+
+
+void print_caches(struct architecture * archi){
+  int i;
+  struct list * l;
+  printf("Liste des caches\n");
+  for(i=0;i<archi->number_levels;i++){
+    l = archi->levels[i];
+    printf("Pour level %d\n", i+1);
+    while(l != NULL){
+      printf("\tL%d (taille : %d, ligne : %d, associativite %d, nb_blocks : %d, misses: %d, hits: %d, writes_back: %d)\n", l->cache->depth, l->cache->size, l->cache->linesize, l->cache->nb_ways,  l->cache->nb_blocks, l->cache->misses, l->cache->hits, l->cache->writes_back);
       l = l->next;
     }
   }

@@ -45,7 +45,7 @@ void load_line_hierarchy(struct list **levels, struct list *cache, int entry) {
   if (is_in_cache(cache->cache, entry)) {
     cache->cache->hits++;
   }
-  
+
   /* Miss:
      if data is not in any cache: Exclusive
      else Shared, as other values in caches

@@ -16,6 +16,7 @@ struct architecture {
 
 struct architecture parse_archi_file(const char * filename);
 void print_archi(struct architecture * archi);
+void print_caches(struct architecture *archi);
 
 #define ARCHI_H
 #endif

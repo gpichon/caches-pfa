@@ -2,7 +2,7 @@
 #include "block.h"
 
 /* Data allocations */
-struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks) {
+struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth) {
   struct cache *cache   = malloc(sizeof(struct cache));
   cache->size           = size;
   cache->linesize       = linesize;
@@ -13,6 +13,7 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks) {
   cache->misses         = 0;
   cache->hits           = 0;
   cache->writes_back    = 0;
+  cache->depth          = depth;
   return cache;
 }
 

@@ -25,6 +25,8 @@ int next_value(int nb_threads, int *fd, struct value *value) {
     int tmp = fd[nb_threads - 1];
     fd[nb_threads - 1] = fd[current_thread];
     fd[current_thread] = tmp;
+
+    printf("Change: %d %d\n", current_thread, nb_threads-1);
     next_value(nb_threads - 1, fd, value);
   }
 

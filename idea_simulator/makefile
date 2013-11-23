@@ -39,3 +39,6 @@ clean:
 # tests
 testarchi: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_architecture.c
 	$(CC) $(FLAGS) $^ -o $(DATA_DIR)/testarchi $(XMLFLAGS)
+
+testmesi: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_without_parser.c
+	$(CC) $(FLAGS) $^ -o $(DATA_DIR)/testmesi $(XMLFLAGS)
