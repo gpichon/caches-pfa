@@ -13,5 +13,6 @@ int main(int argc, char** argv){
 
   print_archi(&A);
 
+  delete_archi(&A);
   return EXIT_SUCCESS;
 }

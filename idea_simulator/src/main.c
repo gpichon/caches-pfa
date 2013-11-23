@@ -7,6 +7,8 @@
 #define FILENAME "tests/architest.xml"
 
 int main(int argc, char *argv[]) {
+  (void) argc;
+  (void) argv;
 
   struct architecture A = parse_archi_file(FILENAME);
   struct architecture *archi = &A;

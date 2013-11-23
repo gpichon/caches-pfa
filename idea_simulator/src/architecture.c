@@ -166,7 +166,6 @@ void print_caches(struct architecture * archi){
 
 void delete_archi(struct architecture * archi){
   int i;
-  struct list * l;
   for(i=0;i<archi->number_threads;i++){
     delete_list(archi->threads[i]);
   }
