@@ -67,8 +67,7 @@ int main(int argc, char *argv[]) {
   load_line_hierarchy(levels, caches[1], 163+2048); /* WB L1_0 Miss L1_1 Hit L2_0*/
 
   /* Invalidated caches */
-  load_line_hierarchy(levels, caches[2], 163+2048); /* Miss L1_2, L2_1 Hit L3_0 */
-
+  store_line_hierarchy(levels, caches[2], 163+2048); /* Miss L1_2, L2_1 WB L2_0 Hit L3_0 */
 
   /* Informations about caches */
   struct list *current;

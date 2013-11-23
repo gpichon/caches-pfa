@@ -63,12 +63,16 @@ void load_line_hierarchy(struct list **levels, struct list *cache, int entry) {
       res = add_line_cache(current_cache, entry, 0);
       
       v = share_level(current_level, current_cache, entry, 0);
-      line = line_in_cache(current_list->cache, entry);
-      if (v) {
-	share_line(line);
-      }
-      else {
-      	exclusive_line(line);
+
+      /* If line was previously in the cache, keep it as it was! */
+      if (res == 0) {
+	line = line_in_cache(current_list->cache, entry);
+	if (v) {
+	  share_line(line);
+	}
+	else {
+	  exclusive_line(line);
+	}
       }
             
       current_level = current_level->next;
@@ -95,6 +99,8 @@ void store_line_hierarchy(struct list **levels, struct list *cache, int entry) {
     while (current_list != NULL) {
       current_level = levels[i++];
       current_cache = current_list->cache;
+      line = line_in_cache(current_cache, entry);
+      modify_line(line);
       share_level(current_level, current_cache, entry, 1);
       current_list = current_list->next;
     }    
