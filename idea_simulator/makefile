@@ -2,8 +2,9 @@ include config.in
 
 CC=gcc 
 FLAGS=-g -W -Wall $(CONF)
+XMLFLAGS= `xml2-config --cflags` `xml2-config --libs`
 
-OBJS=cache block line list add_line_hierarchy
+OBJS=cache block line list add_line_hierarchy architecture
 
 BUILD_DIR=obj
 SRC_DIR=src
@@ -19,11 +20,11 @@ test2: $(BUILD_DIR) $(DATA_DIR)/$(TEST2)
 
 # executable files
 $(DATA_DIR)/$(EXE): $(SRC_DIR)/$(addsuffix .c,$(EXE)) $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(OBJS))) 
-	${CC} ${FLAGS} $^ -o $@ ${LIBS}
+	${CC} ${FLAGS} $^ -o $@ ${LIBS} $(XMLFLAGS)
 
 # objects
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	${CC} ${FLAGS} -c $< -o $@ 
+	${CC} ${FLAGS} -c $< -o $@ $(XMLFLAGS)
 
 
 # dirs
@@ -31,9 +32,10 @@ $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
 	mkdir $(DATA_DIR)
 
-
 # clean
 clean: 
 	rm -rf $(BUILD_DIR) $(DATA_DIR) *~ */*~ *.mod $(EXE) $(TESTS)
 
 # tests
+testarchi: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_architecture.c
+	$(CC) $(FLAGS) $^ -o $(DATA_DIR)/testarchi $(XMLFLAGS)
