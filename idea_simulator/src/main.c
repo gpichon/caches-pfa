@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
 
   /* Informations about caches */
   print_caches(archi);
+  delete_archi(archi);
 
   return EXIT_SUCCESS;
 }

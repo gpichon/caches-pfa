@@ -141,7 +141,6 @@ void print_archi(struct architecture * archi){
   }
 }
 
-
 void print_caches(struct architecture * archi){
   int i;
   struct list * l;
@@ -153,5 +152,16 @@ void print_caches(struct architecture * archi){
       printf("\tL%d (taille : %d, ligne : %d, associativite %d, nb_blocks : %d, misses: %d, hits: %d, writes_back: %d)\n", l->cache->depth, l->cache->size, l->cache->linesize, l->cache->nb_ways,  l->cache->nb_blocks, l->cache->misses, l->cache->hits, l->cache->writes_back);
       l = l->next;
     }
+  }
+}
+
+void delete_archi(struct architecture * archi){
+  int i;
+  struct list * l;
+  for(i=0;i<archi->number_threads;i++){
+    delete_list(archi->threads[i]);
+  }
+  for(i=0;i<archi->number_levels;i++){
+    delete_list_def(archi->levels[i]);
   }
 }
