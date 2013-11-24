@@ -155,10 +155,9 @@ void print_caches(struct architecture * archi){
   struct list * l;
   printf("Liste des caches\n");
   for(i=0;i<archi->number_levels;i++){
-    l = archi->levels[i];
-    printf("Pour level %d\n", i+1);
-    while(l != NULL){
-      printf("\tL%d (taille : %d, ligne : %d, associativite %d, nb_blocks : %d, misses: %d, hits: %d, writes_back: %d)\n", l->cache->depth, l->cache->size, l->cache->linesize, l->cache->nb_ways,  l->cache->nb_blocks, l->cache->misses, l->cache->hits, l->cache->writes_back);
+    l = archi->levels[archi->number_levels-i-1];
+    while(l != NULL){      
+      printf("\tL%d (misses: %d, hits: %d, writes_back: %d, broadcasts: %d)\n", l->cache->depth, l->cache->misses, l->cache->hits, l->cache->writes_back, l->cache->broadcasts);
       l = l->next;
     }
   }

@@ -29,6 +29,7 @@ struct cache {
   int misses;
   int hits;
   int writes_back;
+  int broadcasts;
 };
 
 /* Data allocations */
