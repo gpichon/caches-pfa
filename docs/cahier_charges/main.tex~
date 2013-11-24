@@ -1,0 +1,73 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+%% \usepackage[vlined, lined, linesnumbered, boxruled, french]{algorithm2e}
+%% \usepackage{xcolor,amsmath,amssymb}
+%% \usepackage[babel=true]{csquotes}
+%% \usepackage{graphicx}
+%% \usepackage{wrapfig}
+\usepackage{fancyhdr}
+%% \usepackage{tikz}
+%% \usepackage{enumerate}
+\pagestyle{fancy}
+
+\lhead{Cahier des charges}
+\rhead{Simulateur de caches multi-c\oe ur}
+\lfoot{ENSEIRB-MATMECA}
+\rfoot{PFA 2013-2014}
+
+\begin{document}
+
+\input{pageGarde.tex}
+
+\newpage
+\tableofcontents
+
+\newpage
+
+\section{Description générale du produit}
+
+\subsection{Environnement de fonctionnement}
+
+\subsection{Fonctionnalités nominales}
+
+\subsection{Fonctionnalités annexes}
+
+
+
+\section{Description technique du produit}
+
+\subsection{Architecture du code}
+
+\subsection{Paramètrisation de l'éxécution}
+
+\subsection{Résultat de l'éxécution}
+
+
+
+\section{Choix d'implémentation}
+
+\subsection{Métriques utilisées}
+
+\subsection{Rapidité de l'éxécution}
+
+\subsection{Paramétrisation de l'éxécution}
+
+\subsection{\'Evolutivité du code}
+
+
+
+\section{Détails des paramètres}
+
+\subsection{Politique de remplacement des lignes de cache}
+
+\subsection{Politique de gestion des threads}
+
+\subsection{Politique de cohérence}
+
+\subsection{Politique de recherche parmi les caches}
+
+\subsection{Fichier de configuration de l'architecture}
+
+\end{document}
