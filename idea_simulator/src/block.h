@@ -24,9 +24,11 @@ struct block **init_block(int nb_blocks, int nb_ways);
 void delete_blocks(struct block **blocks, int nb_ways);
 
 /* Returns the number line to replace in the set */
-int id_line_to_replace(struct block *block);
+int id_line_to_replace_LFU(struct block *block);
+int id_line_to_replace_FIFO(struct block *block);
+
 
 /* Returns 1 if write back (when deleting a modified line), else 0 */
-int add_line_block(struct block *block, struct line *line);
+int add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *));
 
 #endif

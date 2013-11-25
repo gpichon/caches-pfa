@@ -2,7 +2,7 @@
 #include "block.h"
 
 /* Data allocations */
-struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth) {
+struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, int (*replacement)(struct block *), void (*update_line)(struct line *, int)) {
   struct cache *cache   = malloc(sizeof(struct cache));
   cache->size           = size;
   cache->linesize       = linesize;
@@ -15,6 +15,8 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int
   cache->writes_back    = 0;
   cache->broadcasts     = 0;
   cache->depth          = depth;
+  cache->replacement    = replacement;
+  cache->update_line    = update_line;
   return cache;
 }
 
@@ -41,13 +43,8 @@ int is_in_cache(struct cache *cache, int entry) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-#ifndef LFU
-    update_line(line);
-#endif 
+    cache->update_line(line, entry);
     if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
-#ifdef LFU
-      update_line(line);
-#endif
       res = 1;
     }
   }    
@@ -85,7 +82,7 @@ int add_line_cache(struct cache *cache, int entry, int w) {
       exclusive_line(line);
     }
 
-    if (add_line_block(cache->blocks[id_block], line)) {
+    if (add_line_block(cache->blocks[id_block], line, cache->replacement)) {
       cache->writes_back++;
     }
     cache->misses++;
