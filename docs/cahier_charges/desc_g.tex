@@ -1,29 +1,32 @@
 \section{Description générale du produit}
 
 \paragraph{}
-Ce projet consiste en la création d'un simulateur de caches pour une architecture multi-c\oe ur (exclusivement \verb!x64!). La simulations des caches revient à parcourir des fichiers de traces d'exécutions d'un ou plusieurs programmes, afin de rejouer l'ensemble des accès et modifications de données effectuées par les processeurs et leurs caches associés lorsqu'ils ont réellement éxécuté ces programmes. Le résultat produit par le simulateur consiste en une analyse du jeu d'exécution, notamment par le nombre de \emph{cache-miss} pour chaque cache.
-
-\subsection{Environnement de fonctionnement}
-
-\subsubsection{Contraintes d'interfaçage}
-\paragraph{}
-Habituellement plusieurs outils sont utilisés pour l'étude d'une exécution parallèle, et les résultats de deux de ces outils (\texttt{MAQAO} et \texttt{HWLoc}) sont nécessaires au simulateur de caches. En effet \texttt{MAQAO} génère les traces d'exécutions à analyser, tandis que \texttt{HWLoc}
-génère les fichiers de configurtion de l'architecture des caches. Bien sûr il sera possible d'utiliser le simulateur en dehors de ces outils, mais la forme des fichiers devra respecter leurs normes. 
-
-\subsubsection{Système d'exploitation compatible}
-\paragraph{}
-Le simulateur sera uniquement développé pour les systèmes basés sur Linux. Bien qu'écrit en \texttt{C}, la lecture de l'emplacement des fichiers de configuration et l'installation ne gérera par Windows. Par ailleurs les traces portent obligatoirement sur des adresses codées sur 64 bits mais il sera possible d'exécuter le simulateur sur une architecture \verb!x86! (cela risque toutefois de nuire aux performances du simulateur).
-
-\subsubsection{Visualisation des résultats}
-\paragraph{}
-La visualisation des résultats (de même que le lancement du simulateur) se fera dans une console Linux. Aucune interface graphique n'est prévue, mais la génération d'un fichier en XML ou la réutilisation de l'interface de \texttt{HWLoc} est une option à long terme.
+Ce projet consiste en la création d'un simulateur de caches pour une architecture multi-c\oe ur (exclusivement \verb!x64!). La simulations des caches revient à parcourir des fichiers de traces d'exécutions d'un ou plusieurs programmes, afin de rejouer l'ensemble des accès et modifications de données effectuées par les processeurs et leurs caches associés lorsqu'ils ont réellement exécuté ces programmes. Le résultat produit par le simulateur consiste en une analyse du jeu d'exécution.
 
 \subsection{Fonctionnalités nominales}
 
 \paragraph{}
-Le simulateur sera capble de rejouer et analyser une trace par c\oe ur (du format \texttt{MAQAO}) sur une architecture décrite par un fichier XML enrichi initialement généré par \texttt{HWLoc}. Un certains nombres de configurations possibles ainsi que de métriques seront disponibles pour l'utilisateur. Aucune compilation supplémentaire des sources ne sera nécessaire après avoir modifié ces paramètres. Parmi les configurations possibles, nous retrouverons : la politique de cohérence (pour chaque niveau de cache), la politique de remplacement d'une ligne (pour chaque cache), l'inclusivité des caches les uns par rapport aux autres (pour chaque niveau de cache), et la gestion de l'ordre d'éxécution des traces\footnote{L'ensemble des configurations possibles est présenté dans la dernière section.}.
+Le simulateur sera capable de rejouer et analyser une trace ou plusieurs par c\oe ur (du format \texttt{MAQAO}) sur une architecture décrite par un fichier XML enrichi initialement généré par \texttt{HWLoc}. Un certains nombres de configurations possibles ainsi que de métriques seront disponibles pour l'utilisateur. Aucune compilation supplémentaire des sources ne sera nécessaire après avoir modifié ces paramètres. Parmi les configurations possibles, nous retrouverons : la politique de cohérence (pour chaque niveau de cache), la politique de remplacement d'une ligne (pour chaque cache), l'inclusivité des caches les uns par rapport aux autres (pour chaque niveau de cache), et la gestion de l'ordre d'éxécution des traces\footnote{L'ensemble des configurations possibles est présenté dans la dernière section.}.
+
+\subsubsection{Sortie produite}
+La sortie du simulateur permettra de faire des analyses sur ce qui s'est produit dans le cache durant l'exécution d'une ou plusieurs traces. Parmis les métriques envisagées, nous compterons le nombre de \texttt{cache-miss} et \texttt{cache-hit} (si l'on trouve ou non une donnée dans le cache). On pourra visualiser ces métriques par coeur ou par trace.
 
 \subsection{Fonctionnalités annexes}
 
 \paragraph{}
-Si les délais le permettent, plusieurs options seront rajoutées : nous pensons notamment à deux ajouts concernant les métriques et la lecture de la trace. Pour les métriques il s'agit de pouvoir suivre toutes les opérations effectuées sur une plage d'adresses donnée ; et pour la lecture de la trace il s'agit de l'optimisation du déroulement des boucles, afin de ne pas rejouer la boucle en entier.
+Si les délais le permettent, plusieurs options seront rajoutées : nous pensons notamment à deux ajouts concernant les métriques et la lecture de la trace. Pour les métriques, il s'agit de pouvoir suivre toutes les opérations effectuées sur une plage d'adresses donnée. Pour la lecture de la trace, il s'agit de l'optimisation du déroulement des boucles lors des demandes d'accès importantes à la mémoire, afin de ne pas parcourir la boucle en entier.
+
+\subsection{Environnement de fonctionnement et contraintes}
+
+\subsubsection{Contraintes d'interfaçage}
+\paragraph{}
+Habituellement plusieurs outils sont utilisés pour l'étude d'une exécution parallèle, et les résultats de deux de ces outils (\texttt{MAQAO} et \texttt{HWLoc}) sont nécessaires au simulateur de caches. En effet \texttt{MAQAO} génère les traces d'exécutions à analyser, tandis que \texttt{HWLoc}
+génère les fichiers de configurtion de l'architecture des caches. ((ça me parait bof -- Il sera possible d'utiliser le simulateur en dehors de ces outils, mais la forme des fichiers devra respecter leurs normes)). 
+
+\subsubsection{Systèmes d'exploitation compatibles}
+\paragraph{}
+Le simulateur sera uniquement développé pour les systèmes basés sur Linux. Bien qu'écrit en \texttt{C}, les outils utilisés ne fonctionnent que sur certaines architectures. Par ailleurs les traces portent obligatoirement sur des adresses codées sur 64 bits mais il sera possible d'exécuter le simulateur sur une architecture \verb!x86! (cela risque toutefois de nuire aux performances du simulateur).
+
+\subsubsection{Visualisation des résultats}
+\paragraph{}
+La visualisation des résultats (de même que le lancement du simulateur) se fera dans une console Linux. Aucune interface graphique n'est prévue, mais la génération d'un fichier en XML ou la réutilisation de l'interface de \texttt{HWLoc} est une option à long terme.
