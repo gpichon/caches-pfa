@@ -9,11 +9,11 @@ La configuration d'une exécution se fait par l'intermédiaire de deux fichiers.
 
 \subsubsection{Résultat de l'exécution}
 \paragraph{}
-Les options concernant l'affichage des métriques seront quant à elles fournies en paramètres du simulateur. Dans la version nominale, il sera possible de visualiser le nombre de \emph{cache-miss} à la fois par cache, mais aussi par trace, et enfin par trace au sein d'un cache. En plus des \emph{cache-miss}, le nombre d'invalidations de lignes réalisé par chaque cache sera aussi noté.
+Les options concernant l'affichage des métriques seront quant à elles fournies en paramètres au simulateur. Dans la version nominale, il sera possible de visualiser le nombre de \emph{cache-miss} à la fois par cache, mais aussi par trace, et enfin par trace au sein d'un cache. En plus des \emph{cache-miss}, le nombre d'invalidations de lignes réalisé par chaque cache sera aussi noté.
 
 \subsubsection{Séquence typique pour une ligne de trace}
 \paragraph{}
-Afin de simuler une instruction à partir de la trace, le programme fonctionne comme suit. La première étape est la récupération de l'instruction dans la trace voulue (déterminée par la politique de gestion des threads). Ensuite il est nécessaire de rechercher la valeur parmi les caches (et donc de compter le nombre de \emph{cache-miss/hit}. La troisième étape est l'appel de la politique de remplacement de ligne lors du rapatriement de la donnée dans les caches. En dernier, le protocole de cohérence est appelé en cas de modification de la donnée, et l'invalidation de la donnée est comptabilisée si elle a eu lieu.
+Afin de simuler une instruction à partir de la trace, le programme fonctionne comme suit. La première étape est la récupération de l'instruction dans la trace voulue (déterminée par la politique de gestion des threads). Ensuite il est nécessaire de rechercher la valeur parmi les caches (et donc de compter le nombre de \emph{cache-miss} et \emph{cache-hit}). La troisième étape est l'appel de la politique de remplacement de ligne lors du rapatriement de la donnée dans les caches. En dernier, le protocole de cohérence est appelé en cas de modification de la donnée, et l'invalidation de la donnée est comptabilisée si elle a eu lieu.
 
 \subsection{Sources et structures de données}
 
@@ -28,3 +28,4 @@ Pour représenter l'architecture, un grand nombre de structures sont initialisé
 \subsubsection{Evolutivité des sources}
 \paragraph{}
 Si l'utilisateur souhaite rajouter de nouvelles politiques \footnote{En dehors de celle de gestion de l'ordre de lecture des threads, qui est un fichier \texttt{lua}, et est donc lu avant chaque exécution.}, il devra les rajouter dans le fichier source correspondant, en \texttt{C}. Il pourra être aidé dans sa tâche par la documentation (fournie) de toutes les fonctions et structures utilisées.
+ Le simulateur étant voué à être repris, le code se doit d'être facile à comprendre.
