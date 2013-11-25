@@ -31,10 +31,13 @@ struct cache {
 
   int (*replacement)(struct block *);
   void (*update_line)(struct line *, int);
+
+  int (*flags)(struct line *, void(*)(struct line *));
+  void (*flags_new_line)(int, struct line *);
 };
 
 /* Data allocations */
-struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, int (*replacement)(struct block *), void (*update_line)(struct line *, int));
+struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replacement)(struct cache *), void (*coherence)(struct cache *));
 
 /* Data removal */
 void delete_cache(struct cache *cache);
@@ -54,5 +57,18 @@ void print_infos(struct cache *cache);
 
 /* Returns the line which contains the entry in the cache */
 struct line *line_in_cache(struct cache *cache, int line);
+
+
+void replacement_LFU(struct cache *cache);
+void replacement_FIFO(struct cache *cache);
+
+void coherence_MESI(struct cache *cache);
+void coherence_MSI(struct cache *cache);
+
+int flags_MESI(struct line *line, void (*action) (struct line*));
+void flags_new_line_MESI(int ret, struct line *line);
+
+int flags_MSI(struct line *line, void (*action) (struct line*));
+void flags_new_line_MSI(int ret, struct line *line);
 
 #endif
