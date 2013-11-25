@@ -4,7 +4,7 @@
 #include "add_line_hierarchy.h"
 #include "architecture.h"
 
-#define FILENAME "tests/architest.xml"
+#define FILENAME "data/architest.xml"
 
 int main(int argc, char *argv[]) {
   (void) argc;

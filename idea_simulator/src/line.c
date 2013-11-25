@@ -23,10 +23,6 @@ void delete_lines(struct line **lines, int nb_ways) {
   free(lines);
 }
 
-void update_line(struct line *line) {
-  line->use ++;
-}
-
 void invalid_line(struct line *line) {
   line->status = 0;
 }
@@ -59,3 +55,15 @@ int is_shared(struct line *line) {
   return (line->status == 1);
 }
 
+void update_FIFO(struct line *line, int entry) {
+  (void) entry;
+  if (is_valid(line)) {
+    line->use++;;
+  }
+}
+
+void update_LFU(struct line *line, int entry) {
+  if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
+    line->use++;
+  }
+}  

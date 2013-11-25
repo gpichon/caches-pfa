@@ -24,8 +24,7 @@ void delete_blocks(struct block **blocks, int nb_blocks) {
   free(blocks);
 }
 
-#ifdef LFU
-int id_line_to_replace(struct block *block) {
+int id_line_to_replace_LFU(struct block *block) {
   int nb_ways = block->nb_ways;
   int use = 1000;
   int id = 0;
@@ -39,8 +38,8 @@ int id_line_to_replace(struct block *block) {
   }
   return id;
 }
-#else
-int id_line_to_replace(struct block *block) {
+
+int id_line_to_replace_FIFO(struct block *block) {
   int nb_ways = block->nb_ways;
   int use = 0;
   int id = 0;
@@ -54,10 +53,9 @@ int id_line_to_replace(struct block *block) {
   }
   return id;
 }
-#endif
 
-int add_line_block(struct block *block, struct line *line) {
-  int id_line = id_line_to_replace(block);
+int add_line_block(struct block *block, struct line *line, int (*replacement)(struct block *)) {
+  int id_line = replacement(block);
   struct line *del_line = block->lines[id_line];
   block->lines[id_line] = line;
   if (is_modified(del_line)) {

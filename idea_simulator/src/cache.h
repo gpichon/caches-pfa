@@ -6,8 +6,6 @@
 #include <assert.h>
 #include "block.h"
 
-#define ARCH 64
-
 /*
   Module utilisé pour la gestion d'un cache.
   Gère lecture/écriture au sein du cache.
@@ -30,10 +28,13 @@ struct cache {
   int hits;
   int writes_back;
   int broadcasts;
+
+  int (*replacement)(struct block *);
+  void (*update_line)(struct line *, int);
 };
 
 /* Data allocations */
-struct cache *init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth);
+struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, int (*replacement)(struct block *), void (*update_line)(struct line *, int));
 
 /* Data removal */
 void delete_cache(struct cache *cache);

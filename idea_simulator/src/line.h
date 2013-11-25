@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#define ARCH 64
+
 /*
   Module utilisé pour la gestion d'une ligne.
   Gère lecture/écriture au sein d'une ligne.
@@ -24,8 +26,8 @@ struct line** init_line(int nb_ways);
 void delete_lines(struct line **lines, int nb_ways);
 
 /* Update replacement flag */
-void update_line(struct line *line);
-
+void update_FIFO(struct line *line, int entry);
+void update_LFU(struct line *line, int entry);
 
 /* Setters */
 void invalid_line(struct line *line);
