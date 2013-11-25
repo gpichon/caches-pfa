@@ -24,13 +24,12 @@ int share_level(struct list *level, struct cache *cache, int entry, int modify) 
 	  current->cache->writes_back++;
 	  return 1;
 	}
-#ifdef MESI
-	else if (is_exclusive(line)) {
-	  action(line);
+
+	if (current->cache->flags(line, action)) {
 	  return 1;
 	}
-#endif
-	else if (is_shared(line)) {
+
+	if (is_shared(line)) {
 	  action(line);
 	  res = 1;
 	}
@@ -70,16 +69,7 @@ void load_line_hierarchy(struct list **levels, struct list *cache, int entry) {
       /* If line was previously in the cache, keep it as it was! */
       if (res == 0) {
 	line = line_in_cache(current_list->cache, entry);
-	if (v) {
-	  share_line(line);
-	}
-	else {
-#ifdef MESI
-	  exclusive_line(line);
-#else
-	  share_line(line);
-#endif
-	}
+	current_list->cache->flags_new_line(v, line);
       }
             
       current_level = current_level->next;

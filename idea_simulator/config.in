@@ -1,3 +1,0 @@
-#Replacing lines
-CONF = -DLFU -DMESI
-#CONF = -DFIFO -DMSI

@@ -5,7 +5,7 @@
 #include <string.h>
 
 #define GET_NUMBER(inte,name) 	getAttribute(n, name, a_value);	\
-                                inte = atoi(a_value)
+  inte = atoi(a_value)
 
 //Get the value of the attribute "name" in node n
 void getAttribute(xmlNode * n, char * name, char * dest){
@@ -45,7 +45,6 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
       }
       //Add a cache
       else if(strcmp((char *) attr->name, "type") == 0 && strcmp((char *) a_name, "Cache") == 0){
-	
 	getAttribute(n, "cache_type", a_value);
 	if(a_value != NULL && atoi(a_value) <= 1){ //verify that the cache is not an L1i
 	  GET_NUMBER(depth,"depth");

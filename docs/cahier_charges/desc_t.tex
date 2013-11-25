@@ -24,3 +24,7 @@ Le code est divisé en de nombreux fichiers, afin d'être relativement modularis
 \subsubsection{Structure de données}
 \paragraph{}
 Pour représenter l'architecture, un grand nombre de structures sont initialisées (une par ligne dans chaque bloc, une par bloc dans chaque cache, une par cache), ainsi que deux listes chaînées pour les liens entre caches. Pour la simulation de très grandes architectures, une grande quantité de mémoire est donc utilisée et il est recommandé de ne pas simuler plus de mille caches sur un ordinateur avec 4 Go de mémoire vive.
+
+\subsubsection{Evolutivité des sources}
+\paragraph{}
+Si l'utilisateur souhaite rajouter de nouvelles politiques \footnote{En dehors de celle de gestion de l'ordre de lecture des threads, qui est un fichier \texttt{lua}, et est donc lu avant chaque exécution.}, il devra les rajouter dans le fichier source correspondant, en \texttt{C}. Il pourra être aidé dans sa tâche par la documentation (fournie) de toutes les fonctions et structures utilisées.

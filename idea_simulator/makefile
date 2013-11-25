@@ -1,5 +1,3 @@
-include config.in
-
 CC=gcc 
 FLAGS=-g -W -Wall $(CONF)
 XMLFLAGS= `xml2-config --cflags` `xml2-config --libs`
