@@ -5,34 +5,25 @@ Ce projet consiste en la création d'un simulateur de caches pour une architectu
 
 \subsection{Environnement de fonctionnement}
 
-\paragraph{Contraintes d'interfaçage}
+\subsubsection{Contraintes d'interfaçage}
+\paragraph{}
 Habituellement plusieurs outils sont utilisés pour l'étude d'une exécution parallèle, et les résultats de deux de ces outils (\texttt{MAQAO} et \texttt{HWLoc}) sont nécessaires au simulateur de caches. En effet \texttt{MAQAO} génère les traces d'exécutions à analyser, tandis que \texttt{HWLoc}
 génère les fichiers de configurtion de l'architecture des caches. Bien sûr il sera possible d'utiliser le simulateur en dehors de ces outils, mais la forme des fichiers devra respecter leurs normes. 
 
-\paragraph{Système d'exploitation compatible}
-Le simulateur sera uniquement développé pour les systèmes basés sur Linux. Bien qu'écrit en \texttt{C}, la lecture de l'emplacement des fichiers de configuration et l'installation automatique (par un Makefile) ne gérera par Windows. Par ailleurs bien que les traces portent obligatoirement sur des adresses codées sur 64 bits, il sera possible d'exécuter le simulateur sur une architecture \verb!x86! (mais cela risque de nuire aux performances du simulateur).
+\subsubsection{Système d'exploitation compatible}
+\paragraph{}
+Le simulateur sera uniquement développé pour les systèmes basés sur Linux. Bien qu'écrit en \texttt{C}, la lecture de l'emplacement des fichiers de configuration et l'installation ne gérera par Windows. Par ailleurs les traces portent obligatoirement sur des adresses codées sur 64 bits mais il sera possible d'exécuter le simulateur sur une architecture \verb!x86! (cela risque toutefois de nuire aux performances du simulateur).
 
-\paragraph{Visualisation des résultats}
-La visualisation des résultats (de même que le lancement du simulateur) se fera dans une console Linux. Aucune interface graphique n'est prévue.
+\subsubsection{Visualisation des résultats}
+\paragraph{}
+La visualisation des résultats (de même que le lancement du simulateur) se fera dans une console Linux. Aucune interface graphique n'est prévue, mais la génération d'un fichier en XML ou la réutilisation de l'interface de \texttt{HWLoc} est une option à long terme.
 
 \subsection{Fonctionnalités nominales}
-Nominalement le simulateur propose les fonctionnalités suivantes :
-\begin{itemize}
-\item{configuration de \emph{n} niveaux de caches, chaque niveau ayant un nombre de de caches donnés ainsi qu'une taille fixées par l'utilisateur, compatible avec \texttt{HWLoc},}
-\item{configuration de la politique de cohérence pour chaque niveau de cache,}
-\item{configuration de la politique de remplacement pour chaque (niveau de ?) cache,}
-\item{configuration de la politique de recherche parmi les niveaux de caches,}
-\item{configuration de la politique de gestion des threads,}
-\item{lecture et simulation d'une trace par c\oe ur au format compressé (générée par \texttt{MAQAO}),}
-\item{comptage du nombre de \emph{cache-miss} par cache et par thread.}
-\end{itemize}
 
+\paragraph{}
+Le simulateur sera capble de rejouer et analyser une trace par c\oe ur (du format \texttt{MAQAO}) sur une architecture décrite par un fichier XML enrichi initialement généré par \texttt{HWLoc}. Un certains nombres de configurations possibles ainsi que de métriques seront disponibles pour l'utilisateur. Aucune compilation supplémentaire des sources ne sera nécessaire après avoir modifié ces paramètres. Parmi les configurations possibles, nous retrouverons : la politique de cohérence (pour chaque niveau de cache), la politique de remplacement d'une ligne (pour chaque cache), l'inclusivité des caches les uns par rapport aux autres (pour chaque niveau de cache), et la gestion de l'ordre d'éxécution des traces\footnote{L'ensemble des configurations possibles est présenté dans la dernière section.}.
 
 \subsection{Fonctionnalités annexes}
-Si les délais le permettent, plusieurs options seront rajoutées :
-\begin{itemize}
-\item{optimisation des boucles d'instructions (ne rejoue que la partie non cyclique de la boucle),}
-\item{implémentation de métriques supplémentaires (nombre de \emph{cache-miss} par instruction, instruction concurrente responsable du \emph{cache-miss}, etc\ldots,}
-\item{(configuration de la politique de remplacement pour chaque cache,)}
-\item{gestion avancée des threads, sans l'obligation d'avoir une trace par c\oe ur.}
-\end{itemize}
+
+\paragraph{}
+Si les délais le permettent, plusieurs options seront rajoutées : nous pensons notamment à deux ajouts concernant les métriques et la lecture de la trace. Pour les métriques il s'agit de pouvoir suivre toutes les opérations effectuées sur une plage d'adresses donnée ; et pour la lecture de la trace il s'agit de l'optimisation du déroulement des boucles, afin de ne pas rejouer la boucle en entier.
