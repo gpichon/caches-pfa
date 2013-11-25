@@ -2,6 +2,43 @@
 
 \subsection{Architecture du code}
 
-\subsection{Paramètrisation de l'éxécution}
+\paragraph{}
+Le code est divisé en de nombreux fichiers, afin d'être relativement modularisable. Il y a deux modules principaux : le module de gestion de la configuration, et le module de la gestion des caches. Le premier contient tous les fichiers nécessaires pour interpréter les fichiers de configuration et initialiser correctement le programme. Le second contient toutes les fonctions utilisées pour le fonctionnement interne du cache ainsi que les protocoles de communication entre les caches (par exemple la politique de cohérence). Les deux modules sont appelés par un \verb!main.c! à la racine des sources.
 
-\subsection{Résultat de l'éxécution}
+\paragraph{Module de gestion des paramètres}
+\begin{itemize}
+\item{\verb!init_caches.c! qui lit le fichier de configuration de l'organisation et la taille des différents caches,}
+\item{\verb!init_replace.c! qui lit le fichier de configuration de la politique de remplacement pour chaque niveau de caches,}
+\item{\verb!init_coher.c! qui lit le fichier de configuration de la politique de cohérence à appliquer entre les caches\footnote{Nécessaire uniquement si certains caches d'une même ligne possèdent un cache supérieur commun.},}
+\item{\verb!init_search.c! qui lit le fichier de configuration de la politique de recherche entre les caches\footnote{En lua aussi ? Cela me semble mieux. AH},}
+\item{\verb!init.c! qui appelle les méthodes des fichiers précédents sur les bonnes structures,}
+\item{\verb!thread.lua! qui applique une politique par défaut pour la gestion des trheads si aucune n'est spécifiée.}
+\end{itemize}
+
+\paragraph{Module de gestion des caches}
+\begin{itemize}
+\item{\verb!read_inst.c! qui lit et applique l'exécution de la ligne courrante du thread courrant,}
+\item{\verb!cache.c! qui simule un cache,}
+\item{\verb!block.c! qui simule un bloc d'un cache,}
+\item{\verb!line.c! qui simule une ligne d'un bloc,}
+\item{\verb!coher.c! qui regroupe toutes les politiques de cohérences implémentées,}
+\item{\verb!replace.c! qui regroupe toutes les politiques de remplacement implémentées,}
+\end{itemize}
+
+\subsection{Paramètrisation de l'exécution}
+
+\paragraph{}
+Les formats des fichiers de configurations sont variés. En effet les politiques de gestion des threads et de recherche parmi les niveaux de caches sont écrites en \texttt{lua} afin de donner facilement plus de possibilités à l'utilisateur. En revanche la configuration des caches est écrite en \texttt{XML}, un des formats de sortie de \texttt{HWLoc}. Enfin la politique de remplacement pour chaque cache, peut constituer en un ajout de balises particulières dans le fichier-même de configuration des caches\footnote{Faisabilité à voir selon la sortie de HWLoc, mais cela éviterait 10000 fichiers de conf... AH}.
+
+
+\subsection{Résultat de l'exécution}
+
+\paragraph{}
+Les options concernant l'affichage des métriques seront quant à elles fournies en paramètres du simulateur. Dans la version nominale, il sera possible de visualiser le nombre de \emph{cache-miss} à la fois par cache, mais aussi par trace, et enfin par trace au sein d'un cache. Les \emph{cache-miss} seront séparés en deux catégories : ceux qui sont dus à une absence totale de la donnée, et ceux qui sont dus à l'invalidation de la donnée par le protocole de cohérence.
+
+\subsection{Séquence typique pour une ligne de trace}
+
+\paragraph{}
+Ici un schéma serait le bienvenu.
+
+
