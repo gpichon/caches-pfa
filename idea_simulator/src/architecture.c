@@ -57,8 +57,8 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
 	  GET_NUMBER(linesize, "cache_linesize");
 	  GET_NUMBER(nb_ways, "cache_associativity");
 	  nb_blocks = size / (linesize * nb_ways);
-	  /* Default policy: LFU */
-	  c = init_cache(size, linesize, nb_ways, nb_blocks, depth, &id_line_to_replace_LFU, update_LFU);
+	  /* Default policy: LFU and MESI*/
+	  c = init_cache(size, linesize, nb_ways, nb_blocks, depth, &replacement_LFU, &coherence_MESI);
 	  //Add the cache to the levels table
 	  if(archi->levels[depth-1] == NULL){
 	    archi->levels[depth-1] = init_list(c);
