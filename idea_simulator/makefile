@@ -21,7 +21,7 @@ $(DATA_DIR)/$(EXE): $(SRC_DIR)/$(addsuffix .c,$(EXE)) $(addprefix $(BUILD_DIR)/,
 	${CC} ${FLAGS} $^ -o $@ ${LIBS} $(XMLFLAGS)
 
 # objects
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c $(SRC_DIR)/%.h
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c $(addprefix $(SRC_DIR)/,$(addsuffix .h,$(OBJS)))
 	${CC} ${FLAGS} -c $< -o $@ $(XMLFLAGS)
 
 
