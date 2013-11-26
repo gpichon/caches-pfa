@@ -6,19 +6,18 @@ Ce projet consiste en la création d'un simulateur de caches pour une architectu
 \subsection{Fonctionnalités nominales}
 
 \paragraph{}
-Le simulateur sera capable de rejouer et analyser une trace ou plusieurs par c\oe ur (du format \texttt{MAQAO}) sur une architecture décrite par un fichier XML enrichi initialement généré par \texttt{HWLoc}. Un certains nombres de configurations possibles ainsi que de métriques seront disponibles pour l'utilisateur. Aucune compilation supplémentaire des sources ne sera nécessaire après avoir modifié ces paramètres. Parmi les configurations possibles, nous retrouverons : la politique de cohérence (pour chaque niveau de cache), la politique de remplacement d'une ligne (pour chaque cache), l'inclusivité des caches les uns par rapport aux autres (pour chaque niveau de cache), et la gestion de l'ordre d'éxécution des traces\footnote{L'ensemble des configurations possibles est présenté dans la dernière section.}.
+Le simulateur sera capable de rejouer et analyser une trace ou plusieurs par c\oe ur (du format \texttt{MAQAO}) sur une architecture décrite par un fichier XML enrichi initialement généré par \texttt{HWLoc}. Un certain nombres de configurations possibles ainsi que de métriques seront disponibles pour l'utilisateur. Aucune compilation supplémentaire des sources ne sera nécessaire après avoir modifié ces paramètres. 
 
-\subsubsection{Résultat de l'exécution}
+\paragraph{}
+Parmi les configurations possibles, nous retrouverons : la politique de cohérence (pour chaque niveau de cache), la politique de remplacement d'une ligne (pour chaque cache), l'inclusivité des caches les uns par rapport aux autres (pour chaque niveau de cache), et la gestion de l'ordre d'éxécution des traces\footnote{L'ensemble des configurations possibles est présenté dans la dernière section.}.
+
+\paragraph{}
 La sortie du simulateur permettra de faire des analyses sur ce qui s'est produit dans le cache durant l'exécution d'une ou plusieurs traces. Cette sortie pourra être utilisée afin d'améliorer les performances d'accès à la mémoire d'un programme.
 
 \subsection{Fonctionnalités annexes}
 
 \paragraph{}
 Si les délais le permettent, plusieurs options seront rajoutées : nous pensons notamment à deux ajouts concernant les métriques et la lecture de la trace. Pour les métriques, il s'agit de pouvoir suivre toutes les opérations effectuées sur une plage d'adresses donnée. Pour la lecture de la trace, il s'agit de l'optimisation du déroulement des boucles lors des demandes d'accès importantes à la mémoire, afin de ne pas parcourir la boucle en entier.
-
-\subsubsection{Evolutivité des sources}
-\paragraph{}
-Si l'utilisateur souhaite rajouter de nouvelles politiques \footnote{en dehors de celles pour gérer l'ordre de lecture des threads, qui est un fichier \texttt{lua}, et est donc lu avant chaque exécution.}, il devra les rajouter dans le fichier source correspondant, en \texttt{C}. Il pourra être aidé dans sa tâche par la documentation détaillée des fonctions et des structures.
 
 \subsection{Environnement de fonctionnement et contraintes}
 
