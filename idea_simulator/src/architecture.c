@@ -7,6 +7,8 @@
 #define GET_NUMBER(inte,name) 	getAttribute(n, name, a_value);	\
   inte = atoi(a_value)
 
+static struct cache ** save_cstack;
+
 //Get the value of the attribute "name" in node n
 void getAttribute(xmlNode * n, char * name, char * dest){
   xmlChar * a = xmlGetNoNsProp(n, (xmlChar *) name);
@@ -51,7 +53,8 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
 	  if(depth > archi->number_levels){
 	    archi->number_levels = depth;
 	    archi->levels = calloc(archi->number_levels, sizeof(struct list *));
-	    cstack = calloc(archi->number_levels, sizeof(struct cache *));
+	    cstack = realloc(cstack, archi->number_levels * sizeof(struct cache *));
+	    save_cstack = cstack;
 	  }
 	  GET_NUMBER(size, "cache_size");
 	  GET_NUMBER(linesize, "cache_linesize");
@@ -87,7 +90,6 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
       }
       attr = attr->next;
     }
-    //printf("\n");
     prefix_search(n->children, archi, cstack, stack_head);
     n=n->next;
   }
@@ -121,11 +123,11 @@ struct architecture parse_archi_file(const char * filename){
 
   prefix_search(root, &archi, cstack, stack_head);
 
+  cstack = save_cstack;
   xmlFreeDoc(xmlfile);
   xmlCleanupParser();
-  if(cstack != NULL){
-    free(cstack);
-  }
+
+  free(cstack);
 
   return archi;
 }

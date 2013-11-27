@@ -25,7 +25,7 @@
     <info name="HostName" value="gregoire-Latitude-E5530-non-vPro"/>
     <info name="Architecture" value="x86_64"/>
     <object type="Socket" os_index="0" cpuset="0x0000000f" complete_cpuset="0x0000000f" online_cpuset="0x0000000f" allowed_cpuset="0x0000000f">
-      <info name="CPUModel" value="Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz"/>
+      <info name="CPUModel" value="Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)"/>
       <object type="Cache" cpuset="0x0000000f" complete_cpuset="0x0000000f" online_cpuset="0x0000000f" allowed_cpuset="0x0000000f" cache_size="3145728" depth="3" cache_linesize="64" cache_associativity="12" cache_type="0">
         <object type="Cache" cpuset="0x00000005" complete_cpuset="0x00000005" online_cpuset="0x00000005" allowed_cpuset="0x00000005" cache_size="262144" depth="2" cache_linesize="64" cache_associativity="8" cache_type="0">
           <object type="Cache" cpuset="0x00000005" complete_cpuset="0x00000005" online_cpuset="0x00000005" allowed_cpuset="0x00000005" cache_size="32768" depth="1" cache_linesize="64" cache_associativity="8" cache_type="1">

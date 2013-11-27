@@ -17,11 +17,11 @@ test1: $(BUILD_DIR) $(DATA_DIR)/$(TEST1)
 test2: $(BUILD_DIR) $(DATA_DIR)/$(TEST2)
 
 # executable files
-$(DATA_DIR)/$(EXE): $(SRC_DIR)/$(addsuffix .c,$(EXE)) $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(OBJS))) 
+$(DATA_DIR)/$(EXE): $(SRC_DIR)/$(addsuffix .c,$(EXE)) $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(OBJS)))
 	${CC} ${FLAGS} $^ -o $@ ${LIBS} $(XMLFLAGS)
 
 # objects
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c $(addprefix $(SRC_DIR)/,$(addsuffix .h,$(OBJS)))
 	${CC} ${FLAGS} -c $< -o $@ $(XMLFLAGS)
 
 
