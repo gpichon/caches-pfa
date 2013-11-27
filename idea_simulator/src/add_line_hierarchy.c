@@ -2,29 +2,20 @@
 
 /* Return 1 if there is entry is somewhere else in level
    Used for a miss when load or a hit when store */
-int share_level(struct list *level, struct cache *cache, int entry, int modify) {
+int share_level(struct list *level, struct cache *cache, int entry, void (*action)(struct line *)) {
   struct list *current = level;
   struct line *line;
   int res = 0;
-  void (*action) (struct line*);
-  if (modify == 1) {
-    action = &invalid_line;
-  }
-  else {
-    action = &share_line;
-  }
-
   while (current != NULL){
     if (current->cache != cache){
       if (is_in_cache(current->cache, entry)) {
 	line = line_in_cache(current->cache, entry);
-
+	
 	if (is_modified(line)) {
 	  action(line);
 	  current->cache->writes_back++;
 	  return 1;
 	}
-
 	if (current->cache->flags(line, action)) {
 	  return 1;
 	}
@@ -63,7 +54,7 @@ void load_line_hierarchy(struct list **levels, struct list *cache, int entry) {
       current_cache = current_list->cache;
       res = add_line_cache(current_cache, entry, 0);
       
-      v = share_level(current_level, current_cache, entry, 0);
+      v = share_level(current_level, current_cache, entry, &share_line);
       current_cache->broadcasts++;
 
       /* If line was previously in the cache, keep it as it was! */
@@ -98,7 +89,7 @@ void store_line_hierarchy(struct list **levels, struct list *cache, int entry) {
       current_cache = current_list->cache;
       line = line_in_cache(current_cache, entry);
       modify_line(line);
-      share_level(current_level, current_cache, entry, 1);
+      share_level(current_level, current_cache, entry, &invalid_line);
       current_cache->broadcasts++;
       current_list = current_list->next;
     }    
@@ -118,7 +109,7 @@ void store_line_hierarchy(struct list **levels, struct list *cache, int entry) {
       current_cache = current_list->cache;
       res = add_line_cache(current_cache, entry, 1);
 
-      share_level(current_level, current_cache, entry, 1);
+      share_level(current_level, current_cache, entry, &invalid_line);
       current_cache->broadcasts++;
       line = line_in_cache(current_list->cache, entry);
       modify_line(line);
