@@ -19,7 +19,7 @@
 struct cache {
   int depth;
   int size;
-  int linesize; // linesize = ARCH ?
+  int linesize;
   int nb_ways;
   int nb_blocks;
   struct block **blocks;
@@ -29,11 +29,11 @@ struct cache {
   int writes_back;
   int broadcasts;
 
-  int (*replacement)(struct block *);
-  void (*update_line)(struct line *, int);
+  int (*replacement)(struct block *); /* Replace a line in the block */
+  void (*update_line)(struct line *, int); /* Updating lines in respect to replacement protocol */
 
-  int (*flags)(struct line *, void(*)(struct line *));
-  void (*flags_new_line)(int, struct line *);
+  int (*flags)(struct line *, void(*)(struct line *)); /* Special flags: E, O */
+  void (*flags_new_line)(int, struct line *);	       /* Create a new line: S or E with MESI */
 };
 
 /* Data allocations */
@@ -49,7 +49,8 @@ int block_id(struct cache *cache, int entry);
 int is_in_cache(struct cache *cache, int entry);
 
 /* Add a line in the cache
-   If w = 1, modified line */
+   If w = 1, modified line 
+   Call add_line_block */
 int add_line_cache(struct cache *cache, int entry, int w);
 
 /* Prints infos about a cache */
@@ -59,9 +60,11 @@ void print_infos(struct cache *cache);
 struct line *line_in_cache(struct cache *cache, int line);
 
 
+/* Replacement protocols */
 void replacement_LFU(struct cache *cache);
 void replacement_FIFO(struct cache *cache);
 
+/* Coherency protocols */
 void coherence_MESI(struct cache *cache);
 void coherence_MSI(struct cache *cache);
 
