@@ -67,6 +67,7 @@ void load_line_hierarchy(struct list **levels, struct list *cache, int entry) {
       current_list = current_list->next;
     }    
   }
+  update_lines(cache->cache, entry);
 }
 
 /* Warning: caches are supposed to be inclusive -> if store L1 then store L2, L3... */
@@ -117,4 +118,5 @@ void store_line_hierarchy(struct list **levels, struct list *cache, int entry) {
       current_list = current_list->next;
     }    
   }
+  update_lines(cache->cache, entry);
 }

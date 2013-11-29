@@ -43,7 +43,6 @@ int is_in_cache(struct cache *cache, int entry) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-    cache->update_line(line, entry);
     if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
       res = 1;
     }
@@ -51,30 +50,13 @@ int is_in_cache(struct cache *cache, int entry) {
   return res;
 }
 
-void write_in_cache(struct cache *cache, int entry) {
-  int id_block = block_id(cache, entry);
-  struct block *block = cache->blocks[id_block];
-  int nb_ways = cache->nb_ways;
-
-  struct line *line;
-  int i;
-  for (i=0; i<nb_ways; i++) {
-    line = block->lines[i];
-    if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
-      modify_line(line);
-      return;
-    }
-  }    
-}
-
 int add_line_cache(struct cache *cache, int entry, int w) {
   int id_block = block_id(cache, entry);
-  
+  struct line *line; 
   if (!is_in_cache(cache, entry)) {
-    struct line *line = malloc(sizeof(struct line));
+    line = malloc(sizeof(struct line));
     line->first_case = entry / ARCH * ARCH;
-    line->use = 1;
-
+    line->use = 0;
     if (w) {
       modify_line(line);
     }
@@ -90,7 +72,8 @@ int add_line_cache(struct cache *cache, int entry, int w) {
   }
   else {
     if (w) {
-      write_in_cache(cache, entry);
+      line = line_in_cache(cache, entry);
+      modify_line(line);
     }
     cache->hits++;
     return 1;
@@ -119,6 +102,13 @@ struct line *line_in_cache(struct cache *cache, int entry) {
   assert(0);
 }
 
+void update_lines(struct cache *cache, int entry) {
+  int id_block = block_id(cache, entry);
+  struct block *block = cache->blocks[id_block];
+  int nb_ways = cache->nb_ways;
+  cache->update_line(block, nb_ways, entry);
+}
+
 void replacement_LFU(struct cache *cache) {
   cache->replacement = id_line_to_replace_LFU;
   cache->update_line = update_LFU;
@@ -127,6 +117,11 @@ void replacement_LFU(struct cache *cache) {
 void replacement_FIFO(struct cache *cache) {
   cache->replacement = id_line_to_replace_FIFO;
   cache->update_line = update_FIFO;
+}
+
+void replacement_LRU(struct cache *cache) {
+  cache->replacement = id_line_to_replace_LRU;
+  cache->update_line = update_LRU;
 }
 
 void coherence_MESI(struct cache *cache) {

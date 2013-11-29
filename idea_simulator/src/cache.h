@@ -30,7 +30,7 @@ struct cache {
   int broadcasts;
 
   int (*replacement)(struct block *); /* Replace a line in the block */
-  void (*update_line)(struct line *, int); /* Updating lines in respect to replacement protocol */
+  void (*update_line)(struct block *, int, int); /* Updating lines in respect to replacement protocol */
 
   int (*flags)(struct line *, void(*)(struct line *)); /* Special flags: E, O */
   void (*flags_new_line)(int, struct line *);	       /* Create a new line: S or E with MESI */
@@ -58,11 +58,12 @@ void print_infos(struct cache *cache);
 
 /* Returns the line which contains the entry in the cache */
 struct line *line_in_cache(struct cache *cache, int line);
-
+void update_lines(struct cache *cache, int entry);
 
 /* Replacement protocols */
 void replacement_LFU(struct cache *cache);
 void replacement_FIFO(struct cache *cache);
+void replacement_LRU(struct cache *cache);
 
 /* Coherency protocols */
 void coherence_MESI(struct cache *cache);
