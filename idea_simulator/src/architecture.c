@@ -2,12 +2,11 @@
 #include "list.h"
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <libxml/xpath.h>
 #include <string.h>
 
 #define GET_NUMBER(inte,name) 	getAttribute(n, name, a_value);	\
   inte = atoi(a_value)
-
-static struct cache ** save_cstack;
 
 //Get the value of the attribute "name" in node n
 void getAttribute(xmlNode * n, char * name, char * dest){
@@ -22,7 +21,7 @@ void getAttribute(xmlNode * n, char * name, char * dest){
   }
 }
 
-void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache ** cstack, int stack_head) {
+void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache *** const cstackptr, int stack_head) {
   xmlNodePtr n = node;
   xmlAttr * attr;
   int i;
@@ -53,8 +52,7 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
 	  if(depth > archi->number_levels){
 	    archi->number_levels = depth;
 	    archi->levels = calloc(archi->number_levels, sizeof(struct list *));
-	    cstack = realloc(cstack, archi->number_levels * sizeof(struct cache *));
-	    save_cstack = cstack;
+	    *cstackptr = calloc(archi->number_levels, sizeof(struct cache *));
 	  }
 	  GET_NUMBER(size, "cache_size");
 	  GET_NUMBER(linesize, "cache_linesize");
@@ -63,7 +61,7 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
 	  /* Default policy: LFU and MESI*/
 	  c = init_cache(size, linesize, nb_ways, nb_blocks, depth, &replacement_LFU, &coherence_MESI);
 	  //Add the cache to the levels table
-	  if(archi->levels[depth-1] == NULL){
+	  if(archi->levels[depth-1] == 0){
 	    archi->levels[depth-1] = init_list(c);
 	  }
 	  else{
@@ -71,18 +69,18 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
 	  }
 	  //Add to the threads table
 	  //First pop levels below in the stack
-	  while(stack_head > 0 && cstack[stack_head]->depth <= depth){
+	  while(stack_head > 0 && (*cstackptr)[stack_head]->depth <= depth){
 	    stack_head--;
 	  }
 	  //Then we push
 	  stack_head++;
-	  cstack[stack_head] = c;
+	  (*cstackptr)[stack_head] = c;
 
 	  if(depth == 1){
 	    archi->threads = realloc(archi->threads, (archi->number_threads + 1) * sizeof(struct list *));
 	    archi->threads[archi->number_threads] = init_list(c);
 	    for(i = stack_head-1; i >= 0 ; i--){
-	      add_list(archi->threads[archi->number_threads], cstack[i]);
+	      add_list(archi->threads[archi->number_threads], (*cstackptr)[i]);
 	    }
 	    archi->number_threads++;
 	  }
@@ -90,7 +88,7 @@ void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache **
       }
       attr = attr->next;
     }
-    prefix_search(n->children, archi, cstack, stack_head);
+    prefix_search(n->children, archi, cstackptr, stack_head);
     n=n->next;
   }
 }
@@ -119,11 +117,12 @@ struct architecture parse_archi_file(const char * filename){
   }
 
   struct cache ** cstack = NULL;
+  struct cache *** cstackptr = &cstack;
   int stack_head = -1;
 
-  prefix_search(root, &archi, cstack, stack_head);
-
-  cstack = save_cstack;
+  prefix_search(root, &archi, &cstack, stack_head);
+  
+  cstack = *cstackptr;
   xmlFreeDoc(xmlfile);
   xmlCleanupParser();
 
@@ -155,6 +154,51 @@ void print_archi(struct architecture * archi){
       l = l->next;
     }
   }
+}
+
+int print_archi_xml(struct architecture * archi, char * file_in, char * file_out){
+  int i = 0;
+  FILE * out = fopen(file_out,"w");
+  if(out == NULL){
+    fprintf(stderr, "Cannot open %s\n", file_out);
+    return EXIT_FAILURE;
+  }
+
+  xmlXPathInit();
+  xmlNodePtr root;
+  xmlDocPtr doc = xmlParseFile(file_in);
+  xmlXPathContextPtr context = xmlXPathNewContext(doc);
+  if (context == NULL) {
+    fprintf(stderr, "Error XPath context\n");
+    return EXIT_FAILURE;
+  }
+  xmlXPathObjectPtr res = xmlXPathEvalExpression(BAD_CAST "/topology/object/object/object[@type=\"Cache\"]", context);
+  if (res == NULL) {
+    fprintf(stderr, "Error XPath request\n");
+    return EXIT_FAILURE;
+  }
+  if (res->type == XPATH_NODESET) {
+    root = res->nodesetval->nodeTab[0];
+  }
+
+  res  = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"PU\"]", context);
+  if (res == NULL) {
+    fprintf(stderr, "Error XPath request\n");
+    return EXIT_FAILURE;
+  }
+  for(i=0; i<res->nodesetval->nodeNr; i++){
+    xmlUnlinkNode(res->nodesetval->nodeTab[i]);
+    xmlFreeNode(res->nodesetval->nodeTab[i]);
+  }
+
+  xmlDocSetRootElement(doc, root);
+  xmlDocFormatDump(out, doc, 1);
+
+  xmlXPathFreeObject(res);
+  xmlXPathFreeContext(context);
+  xmlFreeDoc(doc);
+  fclose(out);
+  return EXIT_SUCCESS;
 }
 
 void print_caches(struct architecture * archi){

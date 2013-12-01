@@ -6,6 +6,7 @@
 #include <assert.h>
 
 #define FILENAME "data/architest.xml"
+#define OUTFILE "data/architest_parsed.xml"
 
 int main(int argc, char** argv){
   struct architecture A;
@@ -17,6 +18,7 @@ int main(int argc, char** argv){
   }
 
   print_archi(&A);
+  print_archi_xml(&A, FILENAME, OUTFILE);
 
   delete_archi(&A);
   return EXIT_SUCCESS;

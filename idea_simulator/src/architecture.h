@@ -13,6 +13,7 @@ struct architecture {
 
 struct architecture parse_archi_file(const char * filename);
 void print_archi(struct architecture * archi);
+int print_archi_xml(struct architecture * archi, char * file_in, char * file_out);
 void print_caches(struct architecture *archi);
 void delete_archi(struct architecture * archi);
 
