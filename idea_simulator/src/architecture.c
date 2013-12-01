@@ -8,6 +8,9 @@
 #define GET_NUMBER(inte,name) 	getAttribute(n, name, a_value);	\
   inte = atoi(a_value)
 
+#define CHECK_XPATH(result) do { if (result == NULL) { fprintf(stderr, "Error XPath request\n"); \
+				   return EXIT_FAILURE; } } while(0)
+
 //Get the value of the attribute "name" in node n
 void getAttribute(xmlNode * n, char * name, char * dest){
   xmlChar * a = xmlGetNoNsProp(n, (xmlChar *) name);
@@ -165,32 +168,55 @@ int print_archi_xml(struct architecture * archi, char * file_in, char * file_out
   }
 
   xmlXPathInit();
-  xmlNodePtr root;
+  xmlNodePtr root_cache;
+  xmlNodePtr cur;
   xmlDocPtr doc = xmlParseFile(file_in);
   xmlXPathContextPtr context = xmlXPathNewContext(doc);
   if (context == NULL) {
     fprintf(stderr, "Error XPath context\n");
     return EXIT_FAILURE;
   }
-  xmlXPathObjectPtr res = xmlXPathEvalExpression(BAD_CAST "/topology/object/object/object[@type=\"Cache\"]", context);
-  if (res == NULL) {
-    fprintf(stderr, "Error XPath request\n");
-    return EXIT_FAILURE;
-  }
+
+  xmlNodePtr root = xmlNewNode(NULL, BAD_CAST "Architecture");
+  xmlSetProp(root, BAD_CAST "name", BAD_CAST archi->name);
+  xmlSetProp(root, BAD_CAST "CPU_name", BAD_CAST archi->CPU_name);
+
+  xmlXPathObjectPtr res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"Cache\"]", context);
+  CHECK_XPATH(res);
   if (res->type == XPATH_NODESET) {
-    root = res->nodesetval->nodeTab[0];
+    for(i=0; i<res->nodesetval->nodeNr; i++){ //Modifiying names and attributes of the interesting nodes
+      cur = res->nodesetval->nodeTab[i];
+      //Remove useless attributes
+      xmlUnsetProp(cur, BAD_CAST "type");
+      xmlUnsetProp(cur, BAD_CAST "cpuset");
+      xmlUnsetProp(cur, BAD_CAST "complete_cpuset");
+      xmlUnsetProp(cur, BAD_CAST "online_cpuset");
+      xmlUnsetProp(cur, BAD_CAST "allowed_cpuset");
+      xmlUnsetProp(cur, BAD_CAST "cache_type");
+      //Changing node name
+      xmlNodeSetName(cur, BAD_CAST "Cache");
+      //Adding attributes
+      //TODO use real values^^
+      xmlSetProp(cur, BAD_CAST "replacement_protocol", BAD_CAST "MESI");
+      xmlSetProp(cur, BAD_CAST "coherence_protocol", BAD_CAST "LFU");
+    }
+    root_cache = res->nodesetval->nodeTab[0]; //Setting the right root
   }
 
-  res  = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"PU\"]", context);
-  if (res == NULL) {
-    fprintf(stderr, "Error XPath request\n");
-    return EXIT_FAILURE;
+  res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"PU\"]", context); //Removing useless nodes
+  CHECK_XPATH(res);
+  for(i=0; i<res->nodesetval->nodeNr; i++){
+    xmlUnlinkNode(res->nodesetval->nodeTab[i]);
+    xmlFreeNode(res->nodesetval->nodeTab[i]);
   }
+  res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"Core\"]", context);
+  CHECK_XPATH(res);
   for(i=0; i<res->nodesetval->nodeNr; i++){
     xmlUnlinkNode(res->nodesetval->nodeTab[i]);
     xmlFreeNode(res->nodesetval->nodeTab[i]);
   }
 
+  xmlAddChild(root, root_cache);
   xmlDocSetRootElement(doc, root);
   xmlDocFormatDump(out, doc, 1);
 
@@ -198,6 +224,9 @@ int print_archi_xml(struct architecture * archi, char * file_in, char * file_out
   xmlXPathFreeContext(context);
   xmlFreeDoc(doc);
   fclose(out);
+  
+  printf("Architecture xml written in file : %s\n", file_out);
+
   return EXIT_SUCCESS;
 }
 
