@@ -4,7 +4,7 @@ Le simulateur est à utiliser dans un cadre précis, il faut par exemple faire a
 
 \subsection{Exécution du produit}
 
-Le déroulement d'un exécution du produit suit le protocole suivant : il faut configurer une architecture de simulation (tailles des caches, inclusions, etc\ldots), puis sélectionner les traces à analyser et comment les entrelacer, et enfin choisir la métrique d'analyse adaptée aux problèmes que l'on souhaite déterminer.
+Le déroulement d'une exécution du produit suit le protocole suivant : il faut configurer une architecture de simulation (tailles des caches, inclusions, etc\ldots), puis sélectionner les traces à analyser et comment les entrelacer, et enfin choisir la métrique d'analyse adaptée aux problèmes que l'on souhaite déterminer.
 
 \subsubsection{Paramètrisation de l'exécution}
 
@@ -13,11 +13,11 @@ La configuration d'une exécution se fait par l'intermédiaire de deux fichiers.
 \subsubsection{Résultat de l'exécution}
 \label{métriques}
 
-Les options concernant l'affichage des métriques seront quant à elles fournies en paramètres au simulateur. Dans la version nominale, il sera possible de visualiser le nombre de \emph{cache-miss} à la fois par cache, mais aussi par trace, et enfin par trace au sein d'un cache. En plus des \emph{cache-miss}, le nombre d'invalidations de lignes réalisé par chaque cache sera aussi noté. Précisons ici qu'aucune métrique de temps n'est implémentée, et que rien n'est prévu pour faciliter leur intégration à long terme.
+Les options concernant l'affichage des métriques seront quant à elles fournies en paramètres au simulateur. Dans la version nominale, il sera possible de visualiser le nombre de \emph{cache-misses} à la fois par cache, mais aussi par trace, et enfin par trace au sein d'un cache. En plus des \emph{cache-misses}, le nombre de broadcasts (dont invalidations de ligne) réalisé par chaque cache sera aussi noté. Précisons ici qu'aucune métrique de temps n'est implémentée, et que rien n'est prévu pour faciliter leur intégration à long terme.
 
 \subsubsection{Séquence typique pour une ligne de trace}
 
-Afin de simuler une instruction à partir de la trace, le programme fonctionne comme suit. La première étape est la récupération de l'instruction dans la trace voulue (déterminée par la politique de gestion des threads), en faisant attention à gérer les boucles de factorisation générées par \texttt{MAQAO}. Ensuite il est nécessaire de rechercher la valeur parmi les caches (et donc de compter le nombre de \emph{cache-miss} et \emph{cache-hit}). La troisième étape est l'appel de la politique de remplacement de ligne lors du rapatriement de la donnée dans les caches. En dernier, le protocole de cohérence est appelé en cas de modification de la donnée, et l'invalidation de la donnée est comptabilisée si elle a eu lieu.
+Afin de simuler une instruction à partir de la trace, le programme fonctionne comme suit. La première étape est la récupération de l'instruction dans la trace voulue (déterminée par la politique de gestion des threads), en faisant attention à gérer les boucles de factorisation générées par \texttt{MAQAO}. Ensuite il est nécessaire de rechercher la valeur parmi les caches (et donc de compter le nombre de \emph{cache-misses} et \emph{cache-hits}). En même temps, le protocole de cohérence est appelé pour rapatrier la donnée la plus à jour si un autre cache la contient, et l'invalidation de la donnée est comptabilisée si elle a eu lieu. Enfin, dès qu'une donnée a été accédée ou ajoutée dans l'un des caches, la politique de remplcament du cache est appliquée.
 
 \subsection{Sources et structures de données}
 
@@ -29,7 +29,7 @@ Le code est divisé en de nombreux fichiers, afin d'être relativement modularis
 
 \subsubsection{Structure de données}
 
-Pour représenter l'architecture, un grand nombre de structures sont initialisées (une par ligne dans chaque bloc, une par bloc dans chaque cache, une par cache), ainsi que deux listes chaînées pour les liens entre caches. Pour la simulation de très grandes architectures, une grande quantité de mémoire est donc utilisée et il est recommandé de ne pas simuler plus de mille caches sur un ordinateur avec 4 Go de mémoire vive.
+Pour représenter l'architecture, un grand nombre de structures sont initialisées (une par ligne dans chaque bloc, une par bloc dans chaque cache, une par cache), ainsi que deux listes chaînées pour les liens entre caches. Pour la simulation de très grandes architectures, une grande quantité de mémoire est donc utilisée et il est recommandé de ne pas simuler a priori plus de mille caches sur un ordinateur avec 4 Go de mémoire vive\footnote{La quantité exacte de mémoire utilisée ne peut pas être évaluée pour le moment. \`A titre d'exemple, la simulation d'une architecture à quatre c\oe urs, quatre caches L1, deux L2 et un L3 occupe dans le prototype 1,5 Mo en mémoire RAM.}.
 
 \subsubsection{Evolutivité des sources}
 
