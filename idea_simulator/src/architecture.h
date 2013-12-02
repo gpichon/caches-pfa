@@ -11,9 +11,9 @@ struct architecture {
   struct list ** levels; //table of each list : L1(k) -> L1(k+1) -> ...
 };
 
-struct architecture parse_archi_file(const char * filename);
+struct architecture parse_archi_file(const char * filename, int is_file_hwloc);
 void print_archi(struct architecture * archi);
-int print_archi_xml(struct architecture * archi, char * file_in, char * file_out);
+int convert_archi_xml(const char * file_in, const char * file_out);
 void print_caches(struct architecture *archi);
 void delete_archi(struct architecture * archi);
 

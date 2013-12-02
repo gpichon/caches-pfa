@@ -5,11 +5,22 @@
 #include <libxml/xpath.h>
 #include <string.h>
 
-#define GET_NUMBER(inte,name) 	getAttribute(n, name, a_value);	\
-  inte = atoi(a_value)
-
 #define CHECK_XPATH(result) do { if (result == NULL) { fprintf(stderr, "Error XPath request\n"); \
-				   return EXIT_FAILURE; } } while(0)
+    } } while(0)
+
+#define DEFAULT_REPLACEMENT_FCT "LFU"
+#define DEFAULT_COHERENCE_FCT "MESI"
+
+#define GET_ATTRIBUT_TXT(name,node,target)   tmp = xmlGetProp(node, BAD_CAST name); \
+  sprintf(buf, "%s", tmp);						\
+  strcpy(target, buf);							\
+  xmlFree(tmp);								\
+  buf[0] = 0
+#define GET_ATTRIBUT_INT(name,node,target)   tmp = xmlGetProp(node, BAD_CAST name); \
+  sprintf(buf, "%s", tmp);						\
+  target = atoi(buf);							\
+  xmlFree(tmp);								\
+  buf[0] = 0
 /*
 TODO :
 options : 
@@ -18,94 +29,31 @@ options :
 - use archi file and execute
 */
 
-
-//Get the value of the attribute "name" in node n
-void getAttribute(xmlNode * n, char * name, char * dest){
-  xmlChar * a = xmlGetNoNsProp(n, (xmlChar *) name);
-  dest[0] = 0;
-  if(a == NULL){
-    dest = NULL;
-  }
-  else{
-    sprintf(dest, "%s", a);
-    xmlFree(a);
-  }
+void (*get_replacement_function(char * name)) (struct cache *){
+  if(strcmp(name, "LRU") == 0)
+    return replacement_LFU;
+  if(strcmp(name, "FIFO") == 0)
+    return replacement_FIFO;
+  return replacement_LFU;
 }
 
-void prefix_search(xmlNodePtr node, struct architecture * archi, struct cache *** const cstackptr, int stack_head) {
-  xmlNodePtr n = node;
-  xmlAttr * attr;
-  int i;
-  int depth = 1;
-  struct cache * c;
-  int size, linesize, nb_ways, nb_blocks;
-  static char a_name[50], a_value[50];
-
-  while(n != NULL){
-    attr = n->properties;
-    while(attr != NULL){
-      //Some architecture information
-      getAttribute(n, (char *) attr->name, a_name);
-      if(strcmp((char *) attr->name, "name") == 0){
-	getAttribute(n, "value", a_value);
-	if(strcmp(a_name, "Architecture") == 0){
-	  sprintf(archi->name, "%s", a_value);
-	}
-	else if(strcmp(a_name, "CPUModel") == 0){
-	  sprintf(archi->CPU_name, "%s", a_value);
-	}
-      }
-      //Add a cache
-      else if(strcmp((char *) attr->name, "type") == 0 && strcmp((char *) a_name, "Cache") == 0){
-	getAttribute(n, "cache_type", a_value);
-	if(a_value != NULL && atoi(a_value) <= 1){ //verify that the cache is not an L1i
-	  GET_NUMBER(depth,"depth");
-	  if(depth > archi->number_levels){
-	    archi->number_levels = depth;
-	    archi->levels = calloc(archi->number_levels, sizeof(struct list *));
-	    *cstackptr = calloc(archi->number_levels, sizeof(struct cache *));
-	  }
-	  GET_NUMBER(size, "cache_size");
-	  GET_NUMBER(linesize, "cache_linesize");
-	  GET_NUMBER(nb_ways, "cache_associativity");
-	  nb_blocks = size / (linesize * nb_ways);
-	  /* Default policy: LFU and MESI*/
-	  c = init_cache(size, linesize, nb_ways, nb_blocks, depth, &replacement_LFU, &coherence_MESI);
-	  //Add the cache to the levels table
-	  if(archi->levels[depth-1] == 0){
-	    archi->levels[depth-1] = init_list(c);
-	  }
-	  else{
-	    add_list(archi->levels[depth-1], c);
-	  }
-	  //Add to the threads table
-	  //First pop levels below in the stack
-	  while(stack_head > 0 && (*cstackptr)[stack_head]->depth <= depth){
-	    stack_head--;
-	  }
-	  //Then we push
-	  stack_head++;
-	  (*cstackptr)[stack_head] = c;
-
-	  if(depth == 1){
-	    archi->threads = realloc(archi->threads, (archi->number_threads + 1) * sizeof(struct list *));
-	    archi->threads[archi->number_threads] = init_list(c);
-	    for(i = stack_head-1; i >= 0 ; i--){
-	      add_list(archi->threads[archi->number_threads], (*cstackptr)[i]);
-	    }
-	    archi->number_threads++;
-	  }
-	}
-      }
-      attr = attr->next;
-    }
-    prefix_search(n->children, archi, cstackptr, stack_head);
-    n=n->next;
-  }
+void (*get_coherence_function(char * name)) (struct cache *){
+  if(strcmp(name, "MSI") == 0)
+    return coherence_MSI;
+  return coherence_MESI;
 }
 
-struct architecture parse_archi_file(const char * filename){
-  
+struct architecture parse_archi_file(const char * filename, int is_file_hwloc){
+  int i,j;
+  char file_in[50];
+  char buf[100];
+  buf[0] = 0;
+  strcpy(file_in, filename);
+
+  if(is_file_hwloc){
+    convert_archi_xml(filename, strcat(file_in, ".archi.xml"));
+  }
+
   struct architecture archi;
   //Default values
   archi.nb_bits = 64;
@@ -116,28 +64,79 @@ struct architecture parse_archi_file(const char * filename){
   archi.threads = NULL;
   archi.levels = NULL;
 
-  xmlKeepBlanksDefault(0);
-  xmlDocPtr xmlfile = xmlParseFile(filename);
-  if(xmlfile == NULL){
+  xmlDocPtr doc = xmlParseFile(file_in);
+  if(doc == NULL){
     fprintf(stderr, "Could not load %s\n", filename);
   }
 
-  xmlNode * root = xmlDocGetRootElement(xmlfile);
-  if (root == NULL) {
-    fprintf(stderr, "Empty XML file\n");
+  xmlXPathInit();
+  xmlXPathContextPtr context = xmlXPathNewContext(doc);
+  if (context == NULL) {
+    fprintf(stderr, "Error XPath context\n");
   }
 
-  struct cache ** cstack = NULL;
-  struct cache *** cstackptr = &cstack;
+  xmlXPathObjectPtr res;
+  xmlNodePtr cur;
+  xmlChar * tmp;
+  int depth, size, linesize, nb_ways, nb_blocks;
   int stack_head = -1;
+  char coherence_prot[10], replacement_prot[10];
+  struct cache * c;
+  struct cache ** cstack;
+  //Begin parsing
+  res = xmlXPathEvalExpression(BAD_CAST "/Architecture", context);
+  CHECK_XPATH(res);
+  GET_ATTRIBUT_TXT("name", res->nodesetval->nodeTab[0], archi.name);
+  GET_ATTRIBUT_TXT("CPU_name", res->nodesetval->nodeTab[0], archi.CPU_name);
+  xmlXPathFreeObject(res);
 
-  prefix_search(root, &archi, &cstack, stack_head);
-  
-  cstack = *cstackptr;
-  xmlFreeDoc(xmlfile);
-  xmlCleanupParser();
+  res = xmlXPathEvalExpression(BAD_CAST "//Cache", context);
+  CHECK_XPATH(res);
+  GET_ATTRIBUT_INT("depth", res->nodesetval->nodeTab[0], archi.number_levels);
+  archi.levels = calloc(archi.number_levels, sizeof(struct list*));
+  cstack = (struct cache **) malloc(archi.number_levels * sizeof(struct cache *));
+  for(i=0; i<res->nodesetval->nodeNr; i++){
+    cur = res->nodesetval->nodeTab[i];
+    GET_ATTRIBUT_INT("depth", cur, depth);
+    GET_ATTRIBUT_INT("cache_size", cur, size);
+    GET_ATTRIBUT_INT("cache_linesize", cur, linesize);
+    GET_ATTRIBUT_INT("cache_associativity", cur, nb_ways);
+    nb_blocks = size / (linesize * nb_ways);
+    GET_ATTRIBUT_TXT("replacement_protocol", cur, replacement_prot);
+    GET_ATTRIBUT_TXT("coherence_protocol", cur, coherence_prot);
+    c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), get_coherence_function(replacement_prot));
 
+    //Add the cache to the levels table
+    if(archi.levels[depth-1] == 0){
+      archi.levels[depth-1] = init_list(c);
+    }
+    else{
+      add_list(archi.levels[depth-1], c);
+    }
+    //Add to the threads table
+    //First pop levels below in the stack
+    while(stack_head > 0 && cstack[stack_head]->depth <= depth){
+      stack_head--;
+    }
+    //Then we push
+    stack_head++;
+    cstack[stack_head] = c;
+
+    if(depth == 1){
+      archi.threads = realloc(archi.threads, (archi.number_threads + 1) * sizeof(struct list *));
+      archi.threads[archi.number_threads] = init_list(c);
+      for(j = stack_head-1; j >= 0 ; j--){
+	add_list(archi.threads[archi.number_threads], cstack[j]);
+      }
+      archi.number_threads++;
+    }
+  }
+  xmlXPathFreeObject(res);
   free(cstack);
+
+  xmlXPathFreeContext(context);
+  xmlFreeDoc(doc);
+  xmlCleanupParser();
 
   return archi;
 }
@@ -167,7 +166,7 @@ void print_archi(struct architecture * archi){
   }
 }
 
-int print_archi_xml(struct architecture * archi, char * file_in, char * file_out){
+int convert_archi_xml(const char * file_in, const char * file_out){
   int i = 0;
   FILE * out = fopen(file_out,"w");
   if(out == NULL){
@@ -176,6 +175,7 @@ int print_archi_xml(struct architecture * archi, char * file_in, char * file_out
   }
 
   xmlXPathInit();
+  xmlChar * tmp;
   xmlNodePtr root_cache;
   xmlNodePtr cur;
   xmlDocPtr doc = xmlParseFile(file_in);
@@ -185,9 +185,6 @@ int print_archi_xml(struct architecture * archi, char * file_in, char * file_out
     fprintf(stderr, "Error XPath context\n");
     return EXIT_FAILURE;
   }
-  xmlNodePtr root = xmlNewNode(NULL, BAD_CAST "Architecture");
-  xmlSetProp(root, BAD_CAST "name", BAD_CAST archi->name);
-  xmlSetProp(root, BAD_CAST "CPU_name", BAD_CAST archi->CPU_name);
 
   xmlXPathObjectPtr res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"Cache\"]", context);
   CHECK_XPATH(res);
@@ -204,9 +201,8 @@ int print_archi_xml(struct architecture * archi, char * file_in, char * file_out
       //Changing node name
       xmlNodeSetName(cur, BAD_CAST "Cache");
       //Adding attributes
-      //TODO use real values^^
-      xmlSetProp(cur, BAD_CAST "replacement_protocol", BAD_CAST "MESI");
-      xmlSetProp(cur, BAD_CAST "coherence_protocol", BAD_CAST "LFU");
+      xmlSetProp(cur, BAD_CAST "replacement_protocol", BAD_CAST DEFAULT_REPLACEMENT_FCT);
+      xmlSetProp(cur, BAD_CAST "coherence_protocol", BAD_CAST DEFAULT_COHERENCE_FCT);
     }
     root_cache = res->nodesetval->nodeTab[0]; //Setting the right root
   }
@@ -229,6 +225,19 @@ int print_archi_xml(struct architecture * archi, char * file_in, char * file_out
   }
   xmlXPathFreeObject(res);
 
+  xmlNodePtr root = xmlNewNode(NULL, BAD_CAST "Architecture");
+  res = xmlXPathEvalExpression(BAD_CAST "//info[@name=\"Architecture\"]", context);
+  CHECK_XPATH(res);
+  tmp = xmlGetProp(res->nodesetval->nodeTab[0], BAD_CAST "value");
+  xmlSetProp(root, BAD_CAST "name", tmp);
+  free(tmp);
+  xmlXPathFreeObject(res);
+  res = xmlXPathEvalExpression(BAD_CAST "//info[@name=\"CPUModel\"]", context);
+  CHECK_XPATH(res);
+  tmp = xmlGetProp(res->nodesetval->nodeTab[0], BAD_CAST "value");
+  xmlSetProp(root, BAD_CAST "CPU_name", tmp);
+  free(tmp);
+  xmlXPathFreeObject(res); 
 
   //Change root
   xmlAddChild(root, xmlDocCopyNodeList(doc, root_cache));
@@ -248,7 +257,7 @@ int print_archi_xml(struct architecture * archi, char * file_in, char * file_out
 
 void print_caches(struct architecture * archi){
   int i;
-  struct list * l;
+ struct list * l;
   printf("Liste des caches\n");
   for(i=0;i<archi->number_levels;i++){
     l = archi->levels[archi->number_levels-i-1];

@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
   (void) argc;
   (void) argv;
 
-  struct architecture A = parse_archi_file(FILENAME);
+  struct architecture A = parse_archi_file(FILENAME, 1);
   struct architecture *archi = &A;
 
   /* Classics loads */

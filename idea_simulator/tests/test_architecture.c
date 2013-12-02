@@ -11,14 +11,13 @@
 int main(int argc, char** argv){
   struct architecture A;
   if(argc == 2){
-    A = parse_archi_file(argv[1]);
+    A = parse_archi_file(argv[1], 1);
   }
   else{
-    A = parse_archi_file(FILENAME);
+    A = parse_archi_file(FILENAME, 1);
   }
 
   print_archi(&A);
-  print_archi_xml(&A, FILENAME, OUTFILE);
 
   delete_archi(&A);
   return EXIT_SUCCESS;
