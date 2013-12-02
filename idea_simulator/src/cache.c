@@ -125,13 +125,13 @@ void replacement_LRU(struct cache *cache) {
 }
 
 void coherence_MESI(struct cache *cache) {
-  cache->flags = &flags_MESI;
-  cache->flags_new_line = &flags_new_line_MESI;
+  cache->treat_special_flags = &flags_MESI;
+  cache->set_flags_new_line = &flags_new_line_MESI;
 }
 
 void coherence_MSI(struct cache *cache) {
-  cache->flags = &flags_MSI;
-  cache->flags_new_line = &flags_new_line_MSI;
+  cache->treat_special_flags = &flags_MSI;
+  cache->set_flags_new_line = &flags_new_line_MSI;
 }
 
 int flags_MESI(struct line *line, void (*action) (struct line*)) {

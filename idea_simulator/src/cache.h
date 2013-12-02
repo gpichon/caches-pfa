@@ -16,6 +16,12 @@
 /* A cache of size size, with nb_blocks blocks.
    Each block contains nb_ways lines and a line size is linesize */
 
+
+#define UP_HITS(cache) cache->hits++
+#define UP_MISSES(cache) cache->misses++
+#define UP_WRITE_BACKS(cache) cache->writes_back++
+#define UP_BROADCASTS(cache) cache->broadcasts++
+
 struct cache {
   int depth;
   int size;
@@ -32,8 +38,8 @@ struct cache {
   int (*replacement)(struct block *); /* Replace a line in the block */
   void (*update_line)(struct block *, int, int); /* Updating lines in respect to replacement protocol */
 
-  int (*flags)(struct line *, void(*)(struct line *)); /* Special flags: E, O */
-  void (*flags_new_line)(int, struct line *);	       /* Create a new line: S or E with MESI */
+  int (*treat_special_flags)(struct line *, void(*)(struct line *)); /* Special flags: E, O */
+  void (*set_flags_new_line)(int, struct line *);	       /* Create a new line: S or E with MESI */
 };
 
 /* Data allocations */
