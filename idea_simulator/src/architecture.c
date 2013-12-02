@@ -10,6 +10,14 @@
 
 #define CHECK_XPATH(result) do { if (result == NULL) { fprintf(stderr, "Error XPath request\n"); \
 				   return EXIT_FAILURE; } } while(0)
+/*
+TODO :
+options : 
+- parse HWLOC -> archi file and execute
+- parse HWLOC -> archi file only
+- use archi file and execute
+*/
+
 
 //Get the value of the attribute "name" in node n
 void getAttribute(xmlNode * n, char * name, char * dest){
@@ -171,12 +179,12 @@ int print_archi_xml(struct architecture * archi, char * file_in, char * file_out
   xmlNodePtr root_cache;
   xmlNodePtr cur;
   xmlDocPtr doc = xmlParseFile(file_in);
+  xmlDocPtr fin_doc = xmlNewDoc(BAD_CAST "1.0");
   xmlXPathContextPtr context = xmlXPathNewContext(doc);
   if (context == NULL) {
     fprintf(stderr, "Error XPath context\n");
     return EXIT_FAILURE;
   }
-
   xmlNodePtr root = xmlNewNode(NULL, BAD_CAST "Architecture");
   xmlSetProp(root, BAD_CAST "name", BAD_CAST archi->name);
   xmlSetProp(root, BAD_CAST "CPU_name", BAD_CAST archi->CPU_name);
@@ -202,26 +210,34 @@ int print_archi_xml(struct architecture * archi, char * file_in, char * file_out
     }
     root_cache = res->nodesetval->nodeTab[0]; //Setting the right root
   }
+  xmlXPathFreeObject(res);
 
-  res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"PU\"]", context); //Removing useless nodes
+  res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"PU\"]", context); //Removing useless node
   CHECK_XPATH(res);
   for(i=0; i<res->nodesetval->nodeNr; i++){
-    xmlUnlinkNode(res->nodesetval->nodeTab[i]);
-    xmlFreeNode(res->nodesetval->nodeTab[i]);
+    cur = res->nodesetval->nodeTab[i];
+    xmlUnlinkNode(cur);
+    xmlFreeNode(cur);
   }
+  xmlXPathFreeObject(res);
   res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"Core\"]", context);
   CHECK_XPATH(res);
   for(i=0; i<res->nodesetval->nodeNr; i++){
-    xmlUnlinkNode(res->nodesetval->nodeTab[i]);
-    xmlFreeNode(res->nodesetval->nodeTab[i]);
+    cur = res->nodesetval->nodeTab[i];
+    xmlUnlinkNode(cur);
+    xmlFreeNode(cur);
   }
-
-  xmlAddChild(root, root_cache);
-  xmlDocSetRootElement(doc, root);
-  xmlDocFormatDump(out, doc, 1);
-
   xmlXPathFreeObject(res);
+
+
+  //Change root
+  xmlAddChild(root, xmlDocCopyNodeList(doc, root_cache));
+  xmlDocSetRootElement(fin_doc, root);
+  xmlDocFormatDump(out, fin_doc, 1);
+
+  xmlCleanupParser();
   xmlXPathFreeContext(context);
+  xmlFreeDoc(fin_doc);
   xmlFreeDoc(doc);
   fclose(out);
   
