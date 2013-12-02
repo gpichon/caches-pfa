@@ -1,31 +1,36 @@
 \section{Détails sur l'utilisation du produit}
 
+Le simulateur est à utiliser dans un cadre précis, il faut par exemple faire attention à la forme des fichiers de configurations. Mais il sera également possible de l'améliorer à l'issu du projet, en ayant connaissance de son fonctionnement nominal ainsi que de la structure générale de l'implémentation.
 
 \subsection{Exécution du produit}
 
+Le déroulement d'un exécution du produit suit le protocole suivant : il faut configurer une architecture de simulation (tailles des caches, inclusions, etc\ldots), puis sélectionner les traces à analyser et comment les entrelacer, et enfin choisir la métrique d'analyse adaptée aux problèmes que l'on souhaite déterminer.
+
 \subsubsection{Paramètrisation de l'exécution}
-\paragraph{}
-La configuration d'une exécution se fait par l'intermédiaire de deux fichiers. L'un comprend la politique de gestion des threads et est écrit en \texttt{lua} afin de donner facilement plus de possibilités à l'utilisateur. En revanche la configuration des caches ainsi que de leurs politiques (de remplacement, cohérence et d'inclusions) est écrite en \texttt{XML}, simplement enrichi de quelques balises par rapport à la sortie standard de \texttt{HWLoc}.
+
+La configuration d'une exécution se fait par l'intermédiaire de deux fichiers. L'un comprend la politique de gestion des threads et est écrit en \texttt{lua} afin de donner facilement plus de possibilités à l'utilisateur. En revanche la configuration des caches ainsi que de leurs politiques (de remplacement, cohérence et d'inclusions) est écrite en \texttt{XML} à la manière d'\texttt{HWLoc}, simplement enrichi de quelques balises par rapport à la sortie standard d'\texttt{HWLoc}.
 
 \subsubsection{Résultat de l'exécution}
-\paragraph{}
-Les options concernant l'affichage des métriques seront quant à elles fournies en paramètres au simulateur. Dans la version nominale, il sera possible de visualiser le nombre de \emph{cache-miss} à la fois par cache, mais aussi par trace, et enfin par trace au sein d'un cache. En plus des \emph{cache-miss}, le nombre d'invalidations de lignes réalisé par chaque cache sera aussi noté.
+\label{métriques}
+
+Les options concernant l'affichage des métriques seront quant à elles fournies en paramètres au simulateur. Dans la version nominale, il sera possible de visualiser le nombre de \emph{cache-miss} à la fois par cache, mais aussi par trace, et enfin par trace au sein d'un cache. En plus des \emph{cache-miss}, le nombre d'invalidations de lignes réalisé par chaque cache sera aussi noté. Précisons ici qu'aucune métrique de temps n'est implémentée, et que rien n'est prévu pour faciliter leur intégration à long terme.
 
 \subsubsection{Séquence typique pour une ligne de trace}
-\paragraph{}
-Afin de simuler une instruction à partir de la trace, le programme fonctionne comme suit. La première étape est la récupération de l'instruction dans la trace voulue (déterminée par la politique de gestion des threads). Ensuite il est nécessaire de rechercher la valeur parmi les caches (et donc de compter le nombre de \emph{cache-miss} et \emph{cache-hit}). La troisième étape est l'appel de la politique de remplacement de ligne lors du rapatriement de la donnée dans les caches. En dernier, le protocole de cohérence est appelé en cas de modification de la donnée, et l'invalidation de la donnée est comptabilisée si elle a eu lieu.
+
+Afin de simuler une instruction à partir de la trace, le programme fonctionne comme suit. La première étape est la récupération de l'instruction dans la trace voulue (déterminée par la politique de gestion des threads), en faisant attention à gérer les boucles de factorisation générées par \texttt{MAQAO}. Ensuite il est nécessaire de rechercher la valeur parmi les caches (et donc de compter le nombre de \emph{cache-miss} et \emph{cache-hit}). La troisième étape est l'appel de la politique de remplacement de ligne lors du rapatriement de la donnée dans les caches. En dernier, le protocole de cohérence est appelé en cas de modification de la donnée, et l'invalidation de la donnée est comptabilisée si elle a eu lieu.
 
 \subsection{Sources et structures de données}
 
+Le simulateur étant voué à être repris, le code est écrit pour faciliter l'implémentation de quelques nouvelles fonctionnalités. Il doit par ailleurs permettre à un utilisateur averti de vérifier le calcul de certaines actions s'il ne s'accorde pas avec les résultats obtenus.
+
 \subsubsection{Sources}
-\paragraph{}
+
 Le code est divisé en de nombreux fichiers, afin d'être relativement modularisable. Il y a deux modules principaux : le module de gestion de la configuration, et le module de la gestion des caches. Le premier contient tous les fichiers nécessaires pour interpréter les fichiers de configuration et initialiser correctement le programme. Le second contient toutes les fonctions utilisées pour le fonctionnement interne du cache ainsi que les protocoles de communication entre les caches (par exemple la politique de cohérence). Les deux modules sont appelés par un \verb!main.c! à la racine des sources. Un \verb!Makefile! est fourni pour l'installation.
 
 \subsubsection{Structure de données}
-\paragraph{}
+
 Pour représenter l'architecture, un grand nombre de structures sont initialisées (une par ligne dans chaque bloc, une par bloc dans chaque cache, une par cache), ainsi que deux listes chaînées pour les liens entre caches. Pour la simulation de très grandes architectures, une grande quantité de mémoire est donc utilisée et il est recommandé de ne pas simuler plus de mille caches sur un ordinateur avec 4 Go de mémoire vive.
 
 \subsubsection{Evolutivité des sources}
-\paragraph{}
-Si l'utilisateur souhaite rajouter de nouvelles politiques \footnote{En dehors de celle de gestion de l'ordre de lecture des threads, qui est un fichier \texttt{lua}, et est donc lu avant chaque exécution.}, il devra les rajouter dans le fichier source correspondant, en \texttt{C}. Il pourra être aidé dans sa tâche par la documentation (fournie) de toutes les fonctions et structures utilisées.
- Le simulateur étant voué à être repris, le code se doit d'être facile à comprendre.
+
+Si l'utilisateur souhaite rajouter de nouvelles politiques \footnote{En dehors de celle de gestion de l'ordre de lecture des threads, qui est un fichier \texttt{lua}, et est donc lu avant chaque exécution.}, il devra les rajouter dans le fichier source correspondant, en \texttt{C}. Il pourra être aidé dans sa tâche par la documentation (fournie) de toutes les fonctions et structures utilisées, en anglais.
