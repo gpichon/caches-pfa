@@ -1,16 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 #include "add_line_hierarchy.h"
 #include "architecture.h"
 
 #define FILENAME "data/architest.xml"
 
 int main(int argc, char *argv[]) {
-  (void) argc;
-  (void) argv;
+  char filename[50];
+  if(argc == 2){
+    strcpy(filename, argv[1]);
+  }
+  else {
+    strcpy(filename, FILENAME);
+  }
 
-  struct architecture A = parse_archi_file(FILENAME, 1);
+  struct architecture A;
+  parse_archi_file(filename, &A);
   struct architecture *archi = &A;
 
   /* Classics loads */

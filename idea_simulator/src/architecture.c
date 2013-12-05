@@ -6,6 +6,7 @@
 #include <string.h>
 
 #define CHECK_XPATH(result) do { if (result == NULL) { fprintf(stderr, "Error XPath request\n"); \
+      return EXIT_FAILURE;						\
     } } while(0)
 
 #define DEFAULT_REPLACEMENT_FCT "LFU"
@@ -24,9 +25,9 @@
 /*
 TODO :
 options : 
-- parse HWLOC -> archi file and execute
+- parse HWLOC -> archi file and execute DONE
 - parse HWLOC -> archi file only
-- use archi file and execute
+- use archi file and execute DONE
 */
 
 void (*get_replacement_function(char * name)) (struct cache *){
@@ -43,38 +44,52 @@ void (*get_coherence_function(char * name)) (struct cache *){
   return coherence_MESI;
 }
 
-struct architecture parse_archi_file(const char * filename, int is_file_hwloc){
+void change_filename(const char * name, char * out){
+  int l = strlen(name);
+  char extention[30];
+  strcpy(extention, &name[l-4]);
+  strcpy(out, name);
+  if(strcmp(extention, ".xml") == 0){
+    out[l-4] = 0;
+  }
+  strcat(out, "_archi.xml");
+}
+
+int parse_archi_file(const char * filename, struct architecture * archi){
   int i,j;
   char file_in[50];
   char buf[100];
   buf[0] = 0;
   strcpy(file_in, filename);
 
-  if(is_file_hwloc){
-    convert_archi_xml(filename, strcat(file_in, ".archi.xml"));
-  }
-
-  struct architecture archi;
-  //Default values
-  archi.nb_bits = 64;
-  strcpy(archi.name, "unknown");
-  strcpy(archi.CPU_name, "unknown");
-  archi.number_threads = 0;
-  archi.number_levels = 0;
-  archi.threads = NULL;
-  archi.levels = NULL;
-
   xmlDocPtr doc = xmlParseFile(file_in);
   if(doc == NULL){
     fprintf(stderr, "Could not load %s\n", filename);
   }
+
+  //Check if we need to create a _archi.xml
+  xmlNodePtr root_test = xmlDocGetRootElement(doc);
+  if(strcmp((char *) root_test->name, "Architecture") != 0){
+    change_filename(filename, file_in);
+    convert_archi_xml(filename, file_in);
+    xmlFreeDoc(doc);
+    doc = xmlParseFile(file_in);
+  }
+
+  //Default values
+  archi->nb_bits = 64;
+  strcpy(archi->name, "unknown");
+  strcpy(archi->CPU_name, "unknown");
+  archi->number_threads = 0;
+  archi->number_levels = 0;
+  archi->threads = NULL;
+  archi->levels = NULL;
 
   xmlXPathInit();
   xmlXPathContextPtr context = xmlXPathNewContext(doc);
   if (context == NULL) {
     fprintf(stderr, "Error XPath context\n");
   }
-
   xmlXPathObjectPtr res;
   xmlNodePtr cur;
   xmlChar * tmp;
@@ -86,15 +101,15 @@ struct architecture parse_archi_file(const char * filename, int is_file_hwloc){
   //Begin parsing
   res = xmlXPathEvalExpression(BAD_CAST "/Architecture", context);
   CHECK_XPATH(res);
-  GET_ATTRIBUT_TXT("name", res->nodesetval->nodeTab[0], archi.name);
-  GET_ATTRIBUT_TXT("CPU_name", res->nodesetval->nodeTab[0], archi.CPU_name);
+  GET_ATTRIBUT_TXT("name", res->nodesetval->nodeTab[0], archi->name);
+  GET_ATTRIBUT_TXT("CPU_name", res->nodesetval->nodeTab[0], archi->CPU_name);
   xmlXPathFreeObject(res);
 
   res = xmlXPathEvalExpression(BAD_CAST "//Cache", context);
   CHECK_XPATH(res);
-  GET_ATTRIBUT_INT("depth", res->nodesetval->nodeTab[0], archi.number_levels);
-  archi.levels = calloc(archi.number_levels, sizeof(struct list*));
-  cstack = (struct cache **) malloc(archi.number_levels * sizeof(struct cache *));
+  GET_ATTRIBUT_INT("depth", res->nodesetval->nodeTab[0], archi->number_levels);
+  archi->levels = calloc(archi->number_levels, sizeof(struct list*));
+  cstack = (struct cache **) malloc(archi->number_levels * sizeof(struct cache *));
   for(i=0; i<res->nodesetval->nodeNr; i++){
     cur = res->nodesetval->nodeTab[i];
     GET_ATTRIBUT_INT("depth", cur, depth);
@@ -107,11 +122,11 @@ struct architecture parse_archi_file(const char * filename, int is_file_hwloc){
     c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), get_coherence_function(replacement_prot));
 
     //Add the cache to the levels table
-    if(archi.levels[depth-1] == 0){
-      archi.levels[depth-1] = init_list(c);
+    if(archi->levels[depth-1] == 0){
+      archi->levels[depth-1] = init_list(c);
     }
     else{
-      add_list(archi.levels[depth-1], c);
+      add_list(archi->levels[depth-1], c);
     }
     //Add to the threads table
     //First pop levels below in the stack
@@ -123,12 +138,12 @@ struct architecture parse_archi_file(const char * filename, int is_file_hwloc){
     cstack[stack_head] = c;
 
     if(depth == 1){
-      archi.threads = realloc(archi.threads, (archi.number_threads + 1) * sizeof(struct list *));
-      archi.threads[archi.number_threads] = init_list(c);
+      archi->threads = realloc(archi->threads, (archi->number_threads + 1) * sizeof(struct list *));
+      archi->threads[archi->number_threads] = init_list(c);
       for(j = stack_head-1; j >= 0 ; j--){
-	add_list(archi.threads[archi.number_threads], cstack[j]);
+	add_list(archi->threads[archi->number_threads], cstack[j]);
       }
-      archi.number_threads++;
+      archi->number_threads++;
     }
   }
   xmlXPathFreeObject(res);
@@ -137,8 +152,8 @@ struct architecture parse_archi_file(const char * filename, int is_file_hwloc){
   xmlXPathFreeContext(context);
   xmlFreeDoc(doc);
   xmlCleanupParser();
-
-  return archi;
+  
+  return EXIT_SUCCESS;
 }
 
 void print_archi(struct architecture * archi){
