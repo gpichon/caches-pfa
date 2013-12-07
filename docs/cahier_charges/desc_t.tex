@@ -8,12 +8,12 @@ Le déroulement d'une exécution du produit suit le protocole suivant : il faut 
 
 \subsubsection{Paramètrisation de l'exécution}
 
-La configuration d'une exécution se fait par l'intermédiaire de deux fichiers. L'un comprend la politique de gestion des threads et est écrit en \texttt{lua} afin de donner facilement plus de possibilités à l'utilisateur. En revanche la configuration des caches ainsi que de leurs politiques (de remplacement, cohérence et d'inclusions) est écrite en \texttt{XML} à la manière d'\texttt{HWLoc}, simplement enrichi de quelques balises par rapport à la sortie standard d'\texttt{HWLoc}.
+La configuration d'une exécution se fait par l'intermédiaire de deux fichiers. L'un comprend la politique de gestion des threads et est écrit en \texttt{lua} afin de donner facilement plus de possibilités à l'utilisateur. En revanche la configuration des caches ainsi que de leurs politiques (de remplacement, cohérence et d'inclusions) est écrite en \texttt{XML} à la manière d'\texttt{HWLoc}, simplement enrichi de quelques balises par rapport à la sortie standard d'\texttt{HWLoc}. Le simulateur fournit la possibilité d'épurer un fichier \texttt{HWLoc}, afin que l'utilisateur puisse l'enrichir plus simplement avec les balises propres au simulateur.
 
 \subsubsection{Résultat de l'exécution}
 \label{métriques}
 
-Les options concernant l'affichage des métriques seront quant à elles fournies en paramètres au simulateur. Dans la version nominale, il sera possible de visualiser le nombre de \emph{cache-misses} à la fois par cache, mais aussi par trace, et enfin par trace au sein d'un cache. En plus des \emph{cache-misses}, le nombre de broadcasts (dont invalidations de ligne) réalisé par chaque cache sera aussi noté. Précisons ici qu'aucune métrique de temps n'est implémentée, et que rien n'est prévu pour faciliter leur intégration à long terme.
+Les options concernant l'affichage des métriques seront quant à elles fournies en paramètres au simulateur. Dans la version nominale, il sera possible de visualiser le nombre de \emph{cache-misses} à la fois par cache, mais aussi par trace, et enfin par trace au sein d'un cache. En plus des \emph{cache-misses}, le nombre de \emph{broadcasts}\footnote{Un \emph{broadcast} consiste à alerter tous les caches d'un changement d'état d'une ligne (partagée, invalide,\ldots), cette opération est donc coûteuse en temps.} (dont invalidations de ligne) réalisé par chaque cache sera aussi noté. Précisons ici qu'aucune métrique de temps n'est implémentée, et que rien n'est prévu pour faciliter leur intégration à long terme.
 
 \subsubsection{Séquence typique pour une ligne de trace}
 
@@ -33,4 +33,4 @@ Pour représenter l'architecture, un grand nombre de structures sont initialisé
 
 \subsubsection{Evolutivité des sources}
 
-Si l'utilisateur souhaite rajouter de nouvelles politiques \footnote{En dehors de celle de gestion de l'ordre de lecture des threads, qui est un fichier \texttt{lua}, et est donc lu avant chaque exécution.}, il devra les rajouter dans le fichier source correspondant, en \texttt{C}. Il pourra être aidé dans sa tâche par la documentation (fournie) de toutes les fonctions et structures utilisées, en anglais.
+Si l'utilisateur souhaite rajouter de nouvelles politiques \footnote{En dehors de celle de gestion de l'ordre de lecture des threads, qui est un fichier \texttt{lua}, et est donc lu avant chaque exécution.}, il devra les rajouter dans le fichier source correspondant, en \texttt{C}. Il pourra être aidé dans sa tâche par la documentation (fournie) de toutes les fonctions et structures utilisées, en anglais. Les politiques de cohérences, bien qu'implémentées en \texttt{C}, sont décrites à l'aide d'un langage de description des automates \footnote{Par exemple \texttt{Ragel}, mais ce choix n'est pas encore arrêté.} ; cela facilitera aussi le rajout de nouvelle politiques.

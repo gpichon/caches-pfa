@@ -1,13 +1,34 @@
 \section{Détails des différentes politiques}
 \label{politiques}
 
+Plusieurs aspects de l'architecture sont configurables. Selon l'option il s'agit de choisir la configuration parmi une liste prédéterminée, ou bien de la configurer soi-même. 
+
 \subsection{Politiques de remplacement des lignes de cache}
+
+Lorsqu'un cache est plein, s'il a besoin de stocker une nouvelle ligne, il va devoir un supprimer une autre. Trois façons de sélectionner la ligne à supprimer sont implémentées dans le simulateur. 
+
+\paragraph{FIFO}La première possibilité est de  supprimer la ligne la plus ancienne du cache ce qui correspond à la formule : ``First In, First Out''.
+
+\paragraph{LRU}Une meilleure approche consiste à supprimer la ligne qui n'a pas été utilisée depuis le plus longtemps : ``Least Recently Used''. Cette approche permet de garder à proximité du c\oe ur les lignes qu'ils utilisent le plus, et fait donc gagner en rapidité.
+
+\paragraph{LFU}La méthode ``Least Frequently Used'' se base quant à elle sur les fréquences d'utilisation de chaque ligne ; il est donc préférable de l'appliquer dans des caches où les lignes restent suffisamment longtemps pour différencier ces fréquences, pas dans des caches L1 par exemple. 
 
 \subsection{Politique de gestion des threads (par défaut)}
 
+Le simulateur s'utilise avec une trace par c\oe ur, l'utilisateur a la possibilité de gérer l'entrelacement de ces différentes traces. Il peut par exemple choisir le nombre d'instructions à exécuter dans chaque trace, avant de passer à la suivante.  
+Par défaut, si l'utilisateur ne configure pas ce fichier (écrit en \texttt{lua}), le simulateur choisit d'exécuter une instruction de chaque trace à la suite. Si l'une des traces est plus courte que les autres, le c\oe ur sur lequel elle était exécutée n'est plus utilisé. Et l'instruction suivante est celle de la trace immédiatement après celle qui est terminée.
+
 \subsection{Politiques de cohérence}
 
-\subsection{Politique d'inclusions des caches (par défaut)}
+Les données étant souvent partagées par plusieurs caches, si l'un des caches modifie une donnée partagée, il doit prévenir les autres pour qu'ils invalident leur version de la ligne contenant la donnée concernée. Une politique de cohérence est alors nécessaire dès  que certains cache est en \emph{write-back} ; c'est-à-dire qu'il n'écrit ses données modifiées dans la mémoire de niveau supérieur, que lorsque les lignes les contenant doivent être vidées. Le simulateur impose ici à l'utilisateur que tous les caches sont en \emph{write-back}.
+Plusieurs moyens d'effectuer la cohérence (i.e. de gérer le partage d'une donnée entre différents caches) sont implémentés dans le simulateur. Notons que ces différents moyens de cohérence n'ont pas d'influence sur le nombre de \emph{cache-misses/hits}, mais uniquement sur le nombre de \emph{broadcasts} que chaque c\oe ur sera obligé de faire, ce qui est aussi une source de ralentissement lors de l'exécution d'un programme. 
 
+\paragraph{MSI} Ce protocole définit trois états possibles pour chaque ligne du cache. Cest trois états sont \emph{Modified}, \emph{Shared} et \emph{Invalid}. ---> Schéma ? C'est assez obvious mais bon ...
 
+\paragraph{MESI} Le protocole \texttt{MESI} se base sur \texttt{MSI} en rajoutant l'état \emph{Exclusive}. Ce nouvel état permet de gagner du temps lorsque l'unique propriétaire de la ligne (par conséquent dans l'état \emph{Exclusive} souhaite la modifier : il n'a pas besoin d'effectuer de broadcast puisqu'il est le seul à la contenir.
 
+\paragraph{MOESI} L'état \emph{Owned} rajouté par le protocole \texttt{MOESI} au protocole \texttt{MESI} permet quant à lui un gain de temps moins significatif. En effet lorsqu'une ligne passe dans l'état \emph{Owned}, c'est parce qu'un autre cache a récupéré cette ligne. Par conséquent le cache possédant une ligne \emph{Owned} n'effectue pas de \emph{write-back}, c'est le cache qui a récupéré cette ligne qui le fera à sa place. Cela limite ainsi le nombre de \emph{write-back}.  ---> Est-ce que l'on compte le nombre de write-back ? Sinon ça sert à rien.
+
+\subsection{Politique d'inclusion des caches (par défaut)}
+
+Par défaut tous les caches sont considérés inclusifs. L'utilisateur peut cependant rendre certaines lignes de caches non-inclusives (en dehors de la ligne de plus haut-niveau) par le biais du fichier de configuration de l'architecture, en \texttt{XML}.
