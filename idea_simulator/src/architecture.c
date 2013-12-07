@@ -227,16 +227,16 @@ int convert_archi_xml(const char * file_in, const char * file_out){
   CHECK_XPATH(res);
   for(i=0; i<res->nodesetval->nodeNr; i++){
     cur = res->nodesetval->nodeTab[i];
-    xmlUnlinkNode(cur);
-    xmlFreeNode(cur);
+    //xmlUnlinkNode(cur);
+    //xmlFreeNode(cur);
   }
   xmlXPathFreeObject(res);
   res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"Core\"]", context);
   CHECK_XPATH(res);
   for(i=0; i<res->nodesetval->nodeNr; i++){
     cur = res->nodesetval->nodeTab[i];
-    xmlUnlinkNode(cur);
-    xmlFreeNode(cur);
+    //xmlUnlinkNode(cur);
+    //xmlFreeNode(cur);
   }
   xmlXPathFreeObject(res);
 
