@@ -5,3 +5,4 @@ Pour executer le code, faire ./bin/main
 Paquets pour le parseur xml : 
 libxml2
 libxml2-dev
+

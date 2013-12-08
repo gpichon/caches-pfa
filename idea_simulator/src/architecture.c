@@ -223,7 +223,11 @@ int convert_archi_xml(const char * file_in, const char * file_out){
   }
   xmlXPathFreeObject(res);
 
-  res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"PU\"]", context); //Removing useless node
+
+  //Removing useless node
+  /* this will be automatically deleted when their parents ("core") will be deleted */
+  /*
+  res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"PU\"]", context);
   CHECK_XPATH(res);
   for(i=0; i<res->nodesetval->nodeNr; i++){
     cur = res->nodesetval->nodeTab[i];
@@ -231,14 +235,24 @@ int convert_archi_xml(const char * file_in, const char * file_out){
     //xmlFreeNode(cur);
   }
   xmlXPathFreeObject(res);
+  */
+
+  //We have to put the nodes to delete, in another temp tabular, because of libxml operation
   res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"Core\"]", context);
   CHECK_XPATH(res);
+  int n = res->nodesetval->nodeNr;
+  void **tabTemp = malloc(sizeof(void *)*n);
   for(i=0; i<res->nodesetval->nodeNr; i++){
-    cur = res->nodesetval->nodeTab[i];
-    //xmlUnlinkNode(cur);
-    //xmlFreeNode(cur);
+    tabTemp[i] = (void *) res->nodesetval->nodeTab[i];
   }
   xmlXPathFreeObject(res);
+  //We delete the nodes, then the tabular
+  for(i=0; i<n; i++){
+    xmlUnlinkNode(tabTemp[i]);
+    xmlFreeNode(tabTemp[i]);
+  }
+  free(tabTemp);
+
 
   xmlNodePtr root = xmlNewNode(NULL, BAD_CAST "Architecture");
   res = xmlXPathEvalExpression(BAD_CAST "//info[@name=\"Architecture\"]", context);
