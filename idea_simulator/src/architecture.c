@@ -9,7 +9,7 @@
       return EXIT_FAILURE;						\
     } } while(0)
 
-#define DEFAULT_REPLACEMENT_FCT "LFU"
+#define DEFAULT_REPLACEMENT_FCT "FIFO"
 #define DEFAULT_COHERENCE_FCT "MESI"
 
 #define GET_ATTRIBUT_TXT(name,node,target)   tmp = xmlGetProp(node, BAD_CAST name); \
@@ -32,10 +32,10 @@ options :
 
 void (*get_replacement_function(char * name)) (struct cache *){
   if(strcmp(name, "LRU") == 0)
+    return replacement_LRU;
+  if(strcmp(name, "LFU") == 0)
     return replacement_LFU;
-  if(strcmp(name, "FIFO") == 0)
-    return replacement_FIFO;
-  return replacement_LFU;
+  return replacement_FIFO;
 }
 
 void (*get_coherence_function(char * name)) (struct cache *){

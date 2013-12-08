@@ -6,6 +6,7 @@
 #include "architecture.h"
 
 #define FILENAME "data/architest.xml"
+#define TEST "../gentraces/file.txt"
 
 int main(int argc, char *argv[]) {
   char filename[50];
@@ -20,20 +21,36 @@ int main(int argc, char *argv[]) {
   parse_archi_file(filename, &A);
   struct architecture *archi = &A;
 
-  /* Classics loads */
-  load_line_hierarchy(archi->levels, archi->threads[0], 163+2048); /* Miss L1_0, L2_0, L3_0 */
-  load_line_hierarchy(archi->levels, archi->threads[1], 163+2048); /* Miss L1_1 Hit L2_0 */
-  load_line_hierarchy(archi->levels, archi->threads[2], 163+2048); /* Miss L1_2, L2_1 Hit L3_0 */
+  int i = 0;
+  int count = 0;
 
-  /* Store value in cache -> Hit */
-  store_line_hierarchy(archi->levels, archi->threads[0], 163+2048);   /* Hit L1_0 */
+  int j, k;
+  for (j=0; j<1000; j++){
+    for (k=0; k<2048; k++){
+      i++;
+      i = i%4;
+      store_line_hierarchy(archi->levels, archi->threads[i], 6365296+1024*j+4*k);
+      count++;
+    }
+  }
+  for (j=0; j<1000; j++){
+    for (k=0; k<2048; k++){
+      i++;
+      i = i%4;
+      load_line_hierarchy(archi->levels, archi->threads[i], 636856+1024*j+4*k);
+      count++;
+    }
+  }
+  for (j=0; j<1000; j++){
+    for (k=0; k<2048; k++){
+      i++;
+      i = i%4;
+      store_line_hierarchy(archi->levels, archi->threads[i], 6296+1024*j+4*k);
+      count++;
+    }
+  }
 
-  /* Value in L1_1 was invalidated last store, but value is still in L2_0 */
-  load_line_hierarchy(archi->levels, archi->threads[1], 163+2048); /* WB L1_0 Miss L1_1 Hit L2_0*/
-
-  /* Invalidated archi->threads */
-  store_line_hierarchy(archi->levels, archi->threads[2], 163+2048); /* Miss L1_2, L2_1 WB L2_0 Hit L3_0 */
-
+  printf("Total values: %d\n", count);
 
   /* Informations about caches */
   print_caches(archi);

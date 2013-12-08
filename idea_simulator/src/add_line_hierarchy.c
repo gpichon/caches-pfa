@@ -124,6 +124,18 @@ void store_line_hierarchy(struct list **levels, struct list *cache, int entry) {
       current_list = current_list->next;
 
       update_lines(current_cache, entry);
-    }    
+    }
+
+    while (current_list != NULL) {
+      current_level = levels[i++];
+      current_cache = current_list->cache;
+
+      line = line_in_cache(current_cache, entry);
+      modify_line(line);
+      share_level(current_level, current_cache, entry, &invalid_line);
+
+      UP_BROADCASTS(current_cache);
+      current_list = current_list->next;
+    }
   }
 }
