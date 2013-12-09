@@ -22,13 +22,6 @@
   target = atoi(buf);							\
   xmlFree(tmp);								\
   buf[0] = 0
-/*
-TODO :
-options : 
-- parse HWLOC -> archi file and execute DONE
-- parse HWLOC -> archi file only
-- use archi file and execute DONE
-*/
 
 void (*get_replacement_function(char * name)) (struct cache *){
   if(strcmp(name, "FIFO") == 0)
@@ -223,36 +216,23 @@ int convert_archi_xml(const char * file_in, const char * file_out){
   }
   xmlXPathFreeObject(res);
 
-
   //Removing useless node
-  /* this will be automatically deleted when their parents ("core") will be deleted */
-  /*
-  res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"PU\"]", context);
-  CHECK_XPATH(res);
-  for(i=0; i<res->nodesetval->nodeNr; i++){
-    cur = res->nodesetval->nodeTab[i];
-    //xmlUnlinkNode(cur);
-    //xmlFreeNode(cur);
-  }
-  xmlXPathFreeObject(res);
-  */
-
+  //This will be automatically deleted when their parents ("core") will be deleted 
   //We have to put the nodes to delete, in another temp tabular, because of libxml operation
   res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"Core\"]", context);
   CHECK_XPATH(res);
   int n = res->nodesetval->nodeNr;
-  void **tabTemp = malloc(sizeof(void *)*n);
-  for(i=0; i<res->nodesetval->nodeNr; i++){
-    tabTemp[i] = (void *) res->nodesetval->nodeTab[i];
+  xmlNodePtr * garbage = malloc(sizeof(xmlNodePtr) * n);
+  for(i=0; i<n; i++){
+    garbage[i] = res->nodesetval->nodeTab[i];
   }
   xmlXPathFreeObject(res);
   //We delete the nodes, then the tabular
   for(i=0; i<n; i++){
-    xmlUnlinkNode(tabTemp[i]);
-    xmlFreeNode(tabTemp[i]);
+    xmlUnlinkNode(garbage[i]);
+    xmlFreeNode(garbage[i]);
   }
-  free(tabTemp);
-
+  free(garbage);
 
   xmlNodePtr root = xmlNewNode(NULL, BAD_CAST "Architecture");
   res = xmlXPathEvalExpression(BAD_CAST "//info[@name=\"Architecture\"]", context);
