@@ -13,6 +13,7 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int
   cache->hits           = 0;
   cache->writes_back    = 0;
   cache->broadcasts     = 0;
+  cache->invalid_back   = 0;
   cache->depth          = depth;
   replace(cache);
   coherence(cache);

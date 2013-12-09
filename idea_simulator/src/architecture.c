@@ -291,7 +291,7 @@ void print_caches(struct architecture * archi){
   for(i=0;i<archi->number_levels;i++){
     l = archi->levels[archi->number_levels-i-1];
     while(l != NULL){      
-      printf("\tL%d (misses: %d, hits: %d, writes_back: %d, broadcasts: %d)\n", l->cache->depth, l->cache->misses, l->cache->hits, l->cache->writes_back, l->cache->broadcasts);
+      printf("\tL%d (misses: %10d, hits: %10d, writes_back: %10d, broadcasts: %10d, invalid_back:%10d)\n", l->cache->depth, l->cache->misses, l->cache->hits, l->cache->writes_back, l->cache->broadcasts, l->cache->invalid_back);
       l = l->next;
     }
   }

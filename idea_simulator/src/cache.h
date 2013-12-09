@@ -35,6 +35,7 @@ struct cache {
   int hits;
   int writes_back;
   int broadcasts;
+  int invalid_back;
 
   int (*replacement)(struct block *); /* Replace a line in the block */
   void (*update_line)(struct block *, int, int); /* Updating lines in respect to replacement protocol */

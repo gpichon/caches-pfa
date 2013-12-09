@@ -50,14 +50,13 @@ void invalid_back(struct list **caches, struct cache *cache, int entry) {
   struct list *current;
   struct line *line;
   int i;
-  /* printf("Depth: %d\n", cache->depth); */
   for (i=0; i<4; i++){
     current = caches[i];
     while (current->next != NULL) {
       if (current->next->cache == cache && is_in_cache(current->cache, entry)) {
-	/* printf("Invalid: %d\n", current->cache->depth); */
-	  line = line_in_cache(current->cache, entry);
-	  invalid_line(line);
+	current->cache->invalid_back++;
+	line = line_in_cache(current->cache, entry);
+	invalid_line(line);
       }
     current = current->next;
     }
