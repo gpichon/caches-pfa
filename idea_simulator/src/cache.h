@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "block.h"
+#include "list.h"
 
 /*
   Module utilisé pour la gestion d'un cache.
@@ -54,10 +55,6 @@ int block_id(struct cache *cache, int entry);
 /* Return whether or not the cache contains the entry */
 int is_in_cache(struct cache *cache, int entry);
 
-/* Add a line in the cache
-   If w = 1, modified line 
-   Call add_line_block */
-int add_line_cache(struct cache *cache, int entry, int w);
 
 /* Prints infos about a cache */
 void print_infos(struct cache *cache);

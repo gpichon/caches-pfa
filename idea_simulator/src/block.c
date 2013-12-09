@@ -81,14 +81,14 @@ int id_line_to_replace_LRU(struct block *block) {
   return id;
 }
 
-int add_line_block(struct block *block, struct line *line, int (*replacement)(struct block *)) {
+struct line *add_line_block(struct block *block, struct line *line, int (*replacement)(struct block *)) {
   int id_line = replacement(block);
   struct line *del_line = block->lines[id_line];
   block->lines[id_line] = line;
 
-  int r = is_modified(del_line);
-  free(del_line);
-  return r;
+  if (del_line == NULL)
+    return NULL;
+  return del_line;
 }
 
 

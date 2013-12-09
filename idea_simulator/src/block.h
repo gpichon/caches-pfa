@@ -34,6 +34,6 @@ void update_LFU(struct block *block, int nb_ways, int entry);
 void update_LRU(struct block *block, int nb_ways, int entry);
 
 /* Returns 1 if write back (when deleting a modified line), else 0 */
-int add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *));
+struct line *add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *));
 
 #endif

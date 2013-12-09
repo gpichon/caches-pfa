@@ -25,27 +25,28 @@ int main(int argc, char *argv[]) {
   int count = 0;
 
   int j, k;
-  for (j=0; j<1000; j++){
+  int taille = 100;
+  for (j=0; j<taille; j++){
     for (k=0; k<2048; k++){
       i++;
       i = i%4;
-      store_line_hierarchy(archi->levels, archi->threads[i], 6365296+1024*j+4*k);
+      store_line_hierarchy(archi->threads, archi->levels, archi->threads[i], 6365296+1024*j+4*k);
       count++;
     }
   }
-  for (j=0; j<1000; j++){
+  for (j=0; j<taille; j++){
     for (k=0; k<2048; k++){
       i++;
       i = i%4;
-      load_line_hierarchy(archi->levels, archi->threads[i], 636856+1024*j+4*k);
+      load_line_hierarchy(archi->threads, archi->levels, archi->threads[i], 636856+1024*j+4*k);
       count++;
     }
   }
-  for (j=0; j<1000; j++){
+  for (j=0; j<taille; j++){
     for (k=0; k<2048; k++){
       i++;
       i = i%4;
-      store_line_hierarchy(archi->levels, archi->threads[i], 6296+1024*j+4*k);
+      store_line_hierarchy(archi->threads, archi->levels, archi->threads[i], 6296+1024*j+4*k);
       count++;
     }
   }

@@ -1,5 +1,4 @@
 #include "cache.h"
-#include "block.h"
 
 /* Data allocations */
 struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replace)(struct cache *), void (*coherence)(struct cache *)) {
@@ -48,36 +47,6 @@ int is_in_cache(struct cache *cache, int entry) {
     }
   }    
   return res;
-}
-
-int add_line_cache(struct cache *cache, int entry, int w) {
-  int id_block = block_id(cache, entry);
-  struct line *line; 
-  if (!is_in_cache(cache, entry)) {
-    line = malloc(sizeof(struct line));
-    line->first_case = entry / ARCH * ARCH;
-    line->use = 0;
-    if (w) {
-      modify_line(line);
-    }
-    else {
-      exclusive_line(line);
-    }
-
-    if (add_line_block(cache->blocks[id_block], line, cache->replacement)) {
-      cache->writes_back++;
-    }
-    cache->misses++;
-    return 0;
-  }
-  else {
-    if (w) {
-      line = line_in_cache(cache, entry);
-      modify_line(line);
-    }
-    cache->hits++;
-    return 1;
-  }
 }
 
 void print_infos(struct cache *cache) {
