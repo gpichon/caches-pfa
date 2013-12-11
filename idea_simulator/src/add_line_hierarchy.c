@@ -35,7 +35,11 @@ int share_level(struct list *level, struct cache *cache, int entry, void (*actio
   return res;
 }
 
-void load_line_hierarchy(struct list **caches, struct list **levels, struct list *cache, int entry) {
+void load_line_hierarchy(struct architecture *archi, struct list *cache, int entry) {
+  struct list **caches = archi->threads;
+  struct list **levels = archi->levels;
+  int nb_threads = archi->number_threads;
+
   struct list *current_list = cache;
   struct cache *current_cache;
   current_cache = current_list->cache;
@@ -60,7 +64,7 @@ void load_line_hierarchy(struct list **caches, struct list **levels, struct list
     while (res == 0 && current_list != NULL) {
       current_cache = current_list->cache;
 
-      res = add_line_cache(caches, current_cache, entry, 0);
+      res = add_line_cache(caches, nb_threads, current_cache, entry, 0);
       update_lines(current_cache, entry);
       
       v = share_level(current_level, current_cache, entry, &share_line);
@@ -79,7 +83,11 @@ void load_line_hierarchy(struct list **caches, struct list **levels, struct list
 }
 
 /* Warning: caches are supposed to be inclusive -> if store L1 then store L2, L3... */
-void store_line_hierarchy(struct list **caches, struct list **levels, struct list *cache, int entry) {
+void store_line_hierarchy(struct architecture *archi, struct list *cache, int entry) {
+  struct list **caches = archi->threads;
+  struct list **levels = archi->levels;
+  int nb_threads = archi->number_threads;
+
   struct line *line = NULL;
   struct list *current_list = cache;
   struct list *current_level;
@@ -115,7 +123,7 @@ void store_line_hierarchy(struct list **caches, struct list **levels, struct lis
     while (res == 0 && current_list != NULL) {
       current_level = levels[i++];
       current_cache = current_list->cache;
-      res = add_line_cache(caches, current_cache, entry, 1);
+      res = add_line_cache(caches, nb_threads, current_cache, entry, 1);
 
       share_level(current_level, current_cache, entry, &invalid_line);
       UP_BROADCASTS(current_cache);

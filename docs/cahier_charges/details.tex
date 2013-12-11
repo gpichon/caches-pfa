@@ -27,7 +27,7 @@ Plusieurs moyens d'effectuer la cohérence (i.e. de gérer le partage d'une donn
 
 \paragraph{MESI} Le protocole \texttt{MESI} se base sur \texttt{MSI} en rajoutant l'état \emph{Exclusive}. Ce nouvel état permet de gagner du temps lorsque l'unique propriétaire de la ligne (par conséquent dans l'état \emph{Exclusive} souhaite la modifier : il n'a pas besoin d'effectuer de broadcast puisqu'il est le seul à la contenir.
 
-\paragraph{MOESI} L'état \emph{Owned} rajouté par le protocole \texttt{MOESI} au protocole \texttt{MESI} permet quant à lui un gain de temps moins significatif. En effet lorsqu'une ligne passe dans l'état \emph{Owned}, c'est parce qu'un autre cache a récupéré cette ligne. Par conséquent le cache possédant une ligne \emph{Owned} n'effectue pas de \emph{write-back}, c'est le cache qui a récupéré cette ligne qui le fera à sa place. Cela limite ainsi le nombre de \emph{write-back}.  ---> Est-ce que l'on compte le nombre de write-back ? Sinon ça sert à rien.
+\paragraph{MOESI} L'état \emph{Owned} rajouté par le protocole \texttt{MOESI} au protocole \texttt{MESI} permet quant à lui un gain de temps moins significatif. En effet lorsqu'une ligne passe dans l'état \emph{Owned}, c'est parce qu'un autre cache a récupéré cette ligne. Par conséquent le cache possédant une ligne \emph{Owned} n'effectue pas de \emph{write-back}, c'est le cache qui a récupéré cette ligne qui le fera à sa place. Cela limite ainsi le nombre de \emph{write-back}.
 
 \subsection{Politique d'inclusion des caches (par défaut)}
 

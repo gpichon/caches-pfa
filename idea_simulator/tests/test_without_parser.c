@@ -54,11 +54,18 @@ int main(int argc, char *argv[]) {
   levels[2] = init_list(cache_L3);
 
 
+  /* Architecture */
+  struct architecture *archi;
+  archi = malloc(sizeof(struct architecture));
+  archi->threads = caches;
+  archi->levels = levels;
+  archi->number_threads = 4;
+
   /* Classics loads */
   
-  load_line_hierarchy(levels, caches[0], 163+2048); /* Miss L1_0, L2_0, L3_0 */
-  load_line_hierarchy(levels, caches[1], 163+2048); /* Miss L1_1 Hit L2_0 */
-  load_line_hierarchy(levels, caches[2], 163+2048); /* Miss L1_2, L2_1 Hit L3_0 */
+  load_line_hierarchy(archi, caches[0], 163+2048); /* Miss L1_0, L2_0, L3_0 */
+  load_line_hierarchy(archi, caches[1], 163+2048); /* Miss L1_1 Hit L2_0 */
+  load_line_hierarchy(archi, caches[2], 163+2048); /* Miss L1_2, L2_1 Hit L3_0 */
 
   assert(caches[0]->cache->misses = 1);
   assert(caches[1]->cache->misses = 1);
@@ -72,17 +79,17 @@ int main(int argc, char *argv[]) {
   assert(cache_L3->misses = 1);
 
   /* Store value in cache -> Hit */
-  store_line_hierarchy(levels, caches[0], 163+2048);   /* Hit L1_0 */
+  store_line_hierarchy(archi, caches[0], 163+2048);   /* Hit L1_0 */
   assert(caches[1]->cache->hits = 1);
 
   /* Value in L1_1 was invalidated last store, but value is still in L2_0 */
-  load_line_hierarchy(levels, caches[1], 163+2048); /* WB L1_0 Miss L1_1 Hit L2_0*/
+  load_line_hierarchy(archi, caches[1], 163+2048); /* WB L1_0 Miss L1_1 Hit L2_0*/
   assert(caches[0]->cache->writes_back = 1);
   assert(caches[1]->cache->misses      = 2);
   assert(cache_L2_0->hits              = 2);
 
   /* Invalidated caches */
-  store_line_hierarchy(levels, caches[2], 163+2048); /* Miss L1_2, L2_1 WB L2_0 Hit L3_0 */
+  store_line_hierarchy(archi, caches[2], 163+2048); /* Miss L1_2, L2_1 WB L2_0 Hit L3_0 */
   assert(caches[2]->cache->misses = 2);
   assert(cache_L2_0->misses       = 2);
   assert(cache_L2_0->writes_back  = 1);
@@ -100,5 +107,6 @@ int main(int argc, char *argv[]) {
 
   free(caches);
   free(levels);
+  free(archi);
   return EXIT_SUCCESS;
 }

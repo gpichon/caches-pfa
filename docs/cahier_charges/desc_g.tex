@@ -22,6 +22,8 @@ Parmi les configurations possibles de la simulation, nous retrouverons : la poli
 \paragraph{}
 La sortie du simulateur permettra de faire des analyses sur ce qui s'est produit dans le cache durant l'exécution d'une ou plusieurs traces. Cette sortie pourra être utilisée afin de détecter des problèmes d'accès aux données par un programme (si plusieurs de ces threads modifient une donnée en même temps), et il sera possible de choisir la métrique à utiliser pour l'analyse courante\footnote{L'ensemble des métriques disponibles est présenté dans la rubrique \ref{métriques}.}. 
 
+\newpage
+
 \subsection{Fonctionnalités annexes}
 
 Si les délais le permettent, plusieurs options seront rajoutées : nous pensons notamment à deux ajouts concernant les métriques et la lecture de la trace. Pour les métriques, il s'agit de pouvoir suivre toutes les opérations effectuées sur une plage d'adresses donnée. Pour la lecture de la trace, il s'agit de l'optimisation du déroulement des boucles lors des demandes d'accès importantes à la mémoire, afin de ne pas parcourir la boucle en entier.

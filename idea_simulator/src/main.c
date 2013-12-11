@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     for (k=0; k<2048; k++){
       i++;
       i = i%4;
-      store_line_hierarchy(archi->threads, archi->levels, archi->threads[i], 6365296+1024*j+4*k);
+      store_line_hierarchy(archi, archi->threads[i], 6365296+1024*j+4*k);
       count++;
     }
   }
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     for (k=0; k<2048; k++){
       i++;
       i = i%4;
-      load_line_hierarchy(archi->threads, archi->levels, archi->threads[i], 636856+1024*j+4*k);
+      load_line_hierarchy(archi, archi->threads[i], 636856+1024*j+4*k);
       count++;
     }
   }
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     for (k=0; k<2048; k++){
       i++;
       i = i%4;
-      store_line_hierarchy(archi->threads, archi->levels, archi->threads[i], 6296+1024*j+4*k);
+      store_line_hierarchy(archi, archi->threads[i], 6296+1024*j+4*k);
       count++;
     }
   }
