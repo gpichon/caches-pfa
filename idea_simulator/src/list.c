@@ -46,11 +46,11 @@ void add_list(struct list *list, struct cache *cache) {
   try->next = next;
 }
 
-void invalid_back(struct list **caches, struct cache *cache, int entry) {
+void invalid_back(struct list **caches, int nb_threads, struct cache *cache, int entry) {
   struct list *current;
   struct line *line;
   int i;
-  for (i=0; i<4; i++){
+  for (i=0; i<nb_threads; i++){
     current = caches[i];
     while (current->next != NULL) {
       if (current->next->cache == cache && is_in_cache(current->cache, entry)) {
@@ -63,7 +63,7 @@ void invalid_back(struct list **caches, struct cache *cache, int entry) {
   }
 }
 
-int add_line_cache(struct list **caches, struct cache *cache, int entry, int w) {
+int add_line_cache(struct list **caches, int nb_threads, struct cache *cache, int entry, int w) {
   int id_block = block_id(cache, entry);
   struct line *line;
   struct line *del_line;
@@ -81,7 +81,7 @@ int add_line_cache(struct list **caches, struct cache *cache, int entry, int w) 
 
     del_line = add_line_block(cache->blocks[id_block], line, cache->replacement);
     if (del_line != NULL) {
-      invalid_back(caches, cache, del_line->first_case);
+      invalid_back(caches, nb_threads, cache, del_line->first_case);
       if (is_modified(del_line)) {
 	cache->writes_back++;
       }
