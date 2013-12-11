@@ -88,7 +88,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   xmlChar * tmp;
   int depth, size, linesize, nb_ways, nb_blocks;
   int stack_head = -1;
-  char coherence_prot[10], replacement_prot[10];
+  char replacement_prot[10];
   struct cache * c;
   struct cache ** cstack;
   //Begin parsing
@@ -111,7 +111,6 @@ int parse_archi_file(const char * filename, struct architecture * archi){
     GET_ATTRIBUT_INT("cache_associativity", cur, nb_ways);
     nb_blocks = size / (linesize * nb_ways);
     GET_ATTRIBUT_TXT("replacement_protocol", cur, replacement_prot);
-    GET_ATTRIBUT_TXT("coherence_protocol", cur, coherence_prot);
     c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), get_coherence_function(replacement_prot));
 
     //Add the cache to the levels table
@@ -182,6 +181,7 @@ int convert_archi_xml(const char * file_in, const char * file_out){
     return EXIT_FAILURE;
   }
 
+  xmlKeepBlanksDefault(0);
   xmlXPathInit();
   xmlChar * tmp;
   xmlNodePtr root_cache;
@@ -189,6 +189,7 @@ int convert_archi_xml(const char * file_in, const char * file_out){
   xmlDocPtr doc = xmlParseFile(file_in);
   xmlDocPtr fin_doc = xmlNewDoc(BAD_CAST "1.0");
   xmlXPathContextPtr context = xmlXPathNewContext(doc);
+  xmlChar * nb_levels_xml;
   if (context == NULL) {
     fprintf(stderr, "Error XPath context\n");
     return EXIT_FAILURE;
@@ -210,20 +211,20 @@ int convert_archi_xml(const char * file_in, const char * file_out){
       xmlNodeSetName(cur, BAD_CAST "Cache");
       //Adding attributes
       xmlSetProp(cur, BAD_CAST "replacement_protocol", BAD_CAST DEFAULT_REPLACEMENT_FCT);
-      xmlSetProp(cur, BAD_CAST "coherence_protocol", BAD_CAST DEFAULT_COHERENCE_FCT);
+      //xmlSetProp(cur, BAD_CAST "coherence_protocol", BAD_CAST DEFAULT_COHERENCE_FCT);
     }
     root_cache = res->nodesetval->nodeTab[0]; //Setting the right root
+    nb_levels_xml = xmlGetProp(root_cache, BAD_CAST "depth");
   }
   xmlXPathFreeObject(res);
 
   //Removing useless node
-  //This will be automatically deleted when their parents ("core") will be deleted 
   //We have to put the nodes to delete, in another temp tabular, because of libxml operation
   res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"Core\"]", context);
   CHECK_XPATH(res);
   int n = res->nodesetval->nodeNr;
-  xmlNodePtr * garbage = malloc(sizeof(xmlNodePtr) * n);
-  for(i=0; i<n; i++){
+  xmlNodePtr *garbage = malloc(sizeof(xmlNodePtr)*n);
+  for(i=0; i<res->nodesetval->nodeNr; i++){
     garbage[i] = res->nodesetval->nodeTab[i];
   }
   xmlXPathFreeObject(res);
@@ -234,6 +235,7 @@ int convert_archi_xml(const char * file_in, const char * file_out){
   }
   free(garbage);
 
+  //Creating the root node Architecture
   xmlNodePtr root = xmlNewNode(NULL, BAD_CAST "Architecture");
   res = xmlXPathEvalExpression(BAD_CAST "//info[@name=\"Architecture\"]", context);
   CHECK_XPATH(res);
@@ -246,13 +248,33 @@ int convert_archi_xml(const char * file_in, const char * file_out){
   tmp = xmlGetProp(res->nodesetval->nodeTab[0], BAD_CAST "value");
   xmlSetProp(root, BAD_CAST "CPU_name", tmp);
   free(tmp);
-  xmlXPathFreeObject(res); 
+  xmlXPathFreeObject(res);
+  xmlSetProp(root, BAD_CAST "number_levels", nb_levels_xml);
+
+  int nb_levels = atoi((char *) nb_levels_xml);
+  char buf[8];
+  xmlNodePtr level;
+  for(i = nb_levels; i>0; i--){
+    level = xmlNewNode(NULL, BAD_CAST "Level");
+    sprintf(buf, "%d", i);
+    xmlSetProp(level, BAD_CAST "depth", BAD_CAST buf);
+    xmlSetProp(level, BAD_CAST "coherence_protocol", BAD_CAST DEFAULT_COHERENCE_FCT);
+    //Default : last level only is inclusive
+    if(i==nb_levels){
+      xmlSetProp(level, BAD_CAST "is_inclusive", BAD_CAST "true");
+    }
+    else if(i>1){
+      xmlSetProp(level, BAD_CAST "is_inclusive", BAD_CAST "false");
+    }
+    xmlAddChild(root, level);
+  }
 
   //Change root
   xmlAddChild(root, xmlDocCopyNodeList(doc, root_cache));
   xmlDocSetRootElement(fin_doc, root);
   xmlDocFormatDump(out, fin_doc, 1);
 
+  free(nb_levels_xml);
   xmlCleanupParser();
   xmlXPathFreeContext(context);
   xmlFreeDoc(fin_doc);
