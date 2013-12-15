@@ -1,7 +1,7 @@
 \section{Description générale du produit}
 
 \paragraph{}
-Ce projet consiste en la création d'un simulateur de caches pour une architecture multi-c\oe ur (exclusivement \verb!x64!) dans le cadre d'un Projet de Fin d'Année de l'\textsc{Enseirb-MATMECA}, et sur le sujet proposé par Denis BARTHOU. Ce projet a été proposé dans un cadre pédagogique mais aussi un but utilitaire puisqu'il existe actuellement peu de programmes du même type.
+Ce projet consiste en la création d'un simulateur de caches pour une architecture multi-c\oe ur (exclusivement \verb!x64!) dans le cadre d'un Projet de Fin d'Année de l'\textsc{Enseirb-Matmeca}, et sur le sujet proposé par Denis BARTHOU. Ce projet a été proposé dans un cadre pédagogique mais aussi un but utilitaire puisqu'il existe actuellement peu de programmes du même type.
 
 \subsection{Au sujet de la simulation de caches}
 
@@ -9,38 +9,43 @@ Ce projet consiste en la création d'un simulateur de caches pour une architectu
 La simulation des caches revient à parcourir des fichiers de traces d'exécutions d'un ou plusieurs programmes, afin de rejouer l'ensemble des accès et modifications de données effectués par les c\oe urs et leurs caches associés lors de l'exécution de ces programmes. Les données n'importent donc pas : seuls le type d'accès (lecture ou écriture) et l'adresse sont utiles. Cela est à différencier d'un compteur hardware qui détermine l'ensemble des accès pendant l'exécution-même du programme à analyser. Par conséquent le simulateur est totalement indépendant de la machine sur laquelle les programmes ont été exécutés (à condition d'avoir suffisamment de ressources pour simuler l'architecture).   
 
 \paragraph{}
-Le résultat produit par le simulateur consiste en une analyse du jeu d'exécution, par le biais de certaines métriques. Par exemple le nombre de données ayant été lues/modifiées en même temps par des c\oe urs différents, peuvent indiquer si le programme est lent à cause d'une mauvaise synchronisation des traces\footnote{La modification d'une donnée dans un cache provoque un changement d'état de chaque ligne contenant cette donnée dans les autres caches. La modification d'une donnée induit ainsi une certaine latence car il faut propager le fait qu'il y a eu modification dans tous les autres caches où la même ligne (et pas seulement la même donnée) était lue. Il convient donc de faire en sorte que les caches modifient le moins possible les données qu'ils sont plusieurs à contenir.}.
+Le résultat produit par le simulateur consiste en un ensemble de nombres évaluant des métriques configurées pour une simulation donnée. Par exemple le nombre de données ayant été lues/modifiées en même temps par des c\oe urs différents, peut indiquer si le programme est lent à cause d'une mauvaise synchronisation des traces\footnote{La modification d'une donnée dans un cache provoque un changement d'état de chaque ligne contenant cette donnée dans les autres caches. La modification d'une donnée induit ainsi une certaine latence car il faut propager le fait qu'il y a eu modification dans tous les autres caches où la même ligne (et pas seulement la même donnée) était lue. Il convient donc de faire en sorte que les caches modifient le moins possible les données qu'ils sont plusieurs à contenir.}.
 
 \subsection{Fonctionnalités nominales}
 
 \paragraph{}
-Le simulateur sera capable de rejouer et analyser une trace par c\oe ur (trace au format \texttt{MAQAO}) sur une architecture décrite par un fichier XML enrichi, initialement généré par \texttt{HWLoc}. Un certain nombre de configurations possibles ainsi que de métriques seront disponibles pour l'utilisateur. Aucune compilation supplémentaire des sources ne sera nécessaire après avoir choisi ces paramètres pour une exécution donnée puisqu'ils seront décrits dans des fichiers non-sources ou directement en argument du simulateur. 
+Le simulateur sera capable de rejouer et analyser une trace par c\oe ur (trace au format \textsc{MAQAO}) sur une architecture décrite par un fichier XML enrichi, initialement généré par \textsc{HWLoc}. Un certain nombre de configurations possibles ainsi que de métriques seront disponibles pour l'utilisateur. Aucune compilation supplémentaire des sources ne sera nécessaire après avoir choisi ces paramètres pour une exécution donnée puisqu'ils seront décrits dans des fichiers non-sources ou directement en argument du simulateur. 
 
 \paragraph{}
-Parmi les configurations possibles de la simulation, nous retrouverons : la politique de cohérence (pour chaque niveau de cache), la politique de remplacement d'une ligne (pour chaque niveau de cache), l'inclusivité des caches les uns par rapport aux autres (pour chaque niveau de cache), et la gestion de l'ordre d'exécution des traces\footnote{L'ensemble des configurations possibles est présenté dans la rubrique \ref{politiques}.}.
+Parmi les configurations possibles de la simulation, nous retrouverons : la politique de cohérence (pour chaque niveau de cache), la politique de remplacement d'une ligne (pour chaque cache), l'inclusivité des caches les uns par rapport aux autres (pour chaque niveau de cache), et la gestion de l'ordre d'exécution des traces. L'ensemble des configurations possibles est présenté dans la rubrique \ref{politiques}.
 
 \paragraph{}
-La sortie du simulateur permettra de faire des analyses sur ce qui s'est produit dans le cache durant l'exécution d'une ou plusieurs traces. Cette sortie pourra être utilisée afin de détecter des problèmes d'accès aux données par un programme (si plusieurs de ces threads modifient une donnée en même temps), et il sera possible de choisir la métrique à utiliser pour l'analyse courante\footnote{L'ensemble des métriques disponibles est présenté dans la rubrique \ref{métriques}.}. 
+La sortie du simulateur permettra de faire des analyses sur ce qui s'est produit dans le cache durant l'exécution d'une ou plusieurs traces. Cette sortie pourra être utilisée afin de détecter des problèmes d'accès aux données par un programme, et il sera possible de choisir la métrique à utiliser pour l'analyse courante. L'ensemble des métriques disponibles est présenté dans la rubrique \ref{métriques}. 
 
 \newpage
+
+\subsection{Environnement de fonctionnement et contraintes}
+
+Le simulateur ne sera pas utilisable pour toutes les configurations possibles, ni dans tous les environnemts existants. La contrainte principale, \textsc{MAQAO}\footnote{MAQAO n'est disponible que sous Unix, en version x64.}, nous a par exemple incité à se concentrer sur un déploiement sur des systèmes de type Unix uniquement. 
+
+\subsubsection{Contraintes d'interfaçage}
+
+Habituellement plusieurs outils sont utilisés pour l'étude d'une exécution parallèle, et les résultats de deux de ces outils (\textsc{MAQAO} et \textsc{HWLoc}) sont nécessaires au simulateur de caches. En effet \textsc{MAQAO} génère les traces d'exécutions à analyser, tandis que \textsc{HWLoc}
+génère les fichiers de configurtion de l'architecture des caches. Il sera possible d'utiliser le simulateur en dehors de ces outils, mais la forme du fichier de configuration de l'architecture devra respecter celle de \textsc{HWLoc}, tandis que la forme de la trace devra respecter celle de \textsc{MAQAO}.
+
+\subsubsection{Systèmes d'exploitation compatibles}
+
+Le simulateur sera uniquement développé pour les systèmes basés sur Unix. Bien qu'écrit en \textsc{C}, les outils utilisés ne fonctionnent que sur certaines architectures (notamment la lecture des fichiers). Par ailleurs les traces portent obligatoirement sur des adresses codées sur 64 bits mais il sera possible d'exécuter le simulateur sur une architecture \verb!x86!, cela risque toutefois de nuire aux performances du simulateur.
+
+\subsubsection{Visualisation des résultats}
+
+La visualisation des résultats (de même que le lancement du simulateur) se fera dans une console Linux, avec un format adapté à la métrique choisi. Aucune interface graphique n'est prévue, mais la génération d'un fichier en \textsc{XML} ou la réutilisation de l'interface de \textsc{HWLoc} est une option à long terme.
+
+\subsection{Paramétrisation}
+
+Le programme doit être adapté à la mise en place de nouvelles politiques, et à leur paramètrisation. Il doit aussi permettre sa maintenance et sa réutilisation. Les politiques de cohérence et de remplacement foncionnent toutefois ensembles grâce à une politique globale qui elle est unique dans le code fourni. Enfin la paramétrisation de l'architecture des caches ne prend pas en compte les caches d'instructions, mais seulement ceux de données, et ceux-ci sont tous considérés comme écrivant en \emph{write-back} (voir la rubrique \ref{coher} à ce sujet). De plus tous les caches sont considérés par défaut comme non-inclusifs sauf celui de plus haut niveau. L'utilisateur peut cependant rendre certaines lignes de caches inclusives ou non par le biais du fichier de configuration de l'architecture, en \texttt{XML}.
+
 
 \subsection{Fonctionnalités annexes}
 
 Si les délais le permettent, plusieurs options seront rajoutées : nous pensons notamment à deux ajouts concernant les métriques et la lecture de la trace. Pour les métriques, il s'agit de pouvoir suivre toutes les opérations effectuées sur une plage d'adresses donnée. Pour la lecture de la trace, il s'agit de l'optimisation du déroulement des boucles lors des demandes d'accès importantes à la mémoire, afin de ne pas parcourir la boucle en entier.
-
-\subsection{Environnement de fonctionnement et contraintes}
-
-Le simulateur ne sera pas utilisable pour toutes les configurations possibles, ni dans tous les environnemts existants. La contrainte principale, \texttt{MAQAO}\footnote{MAQAO n'est disponible que sous Unix, en version x64.}, nous a par exemple incité à se concentrer sur un déploiement sur des machines de type Linux uniquement. 
-
-\subsubsection{Contraintes d'interfaçage}
-
-Habituellement plusieurs outils sont utilisés pour l'étude d'une exécution parallèle, et les résultats de deux de ces outils (\texttt{MAQAO} et \texttt{HWLoc}) sont nécessaires au simulateur de caches. En effet \texttt{MAQAO} génère les traces d'exécutions à analyser, tandis qu'\texttt{HWLoc}
-génère les fichiers de configurtion de l'architecture des caches. Il sera possible d'utiliser le simulateur en dehors de ces outils, mais la forme du fichier de configuration de l'architecture devra respecter celle d'\texttt{HWLoc}, tandis que la forme de la trace devra respecter celle de \texttt{MAQAO}.
-
-\subsubsection{Systèmes d'exploitation compatibles}
-
-Le simulateur sera uniquement développé pour les systèmes basés sur Linux. Bien qu'écrit en \texttt{C}, les outils utilisés ne fonctionnent que sur certaines architectures (notamment la lecture des fichiers). Par ailleurs les traces portent obligatoirement sur des adresses codées sur 64 bits mais il sera possible d'exécuter le simulateur sur une architecture \verb!x86!, cela risque toutefois de nuire aux performances du simulateur.
-
-\subsubsection{Visualisation des résultats}
-
-La visualisation des résultats (de même que le lancement du simulateur) se fera dans une console Linux, avec un format adapté à la métrique choisi. Aucune interface graphique n'est prévue, mais la génération d'un fichier en XML ou la réutilisation de l'interface de \texttt{HWLoc} est une option à long terme.
