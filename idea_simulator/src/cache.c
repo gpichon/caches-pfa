@@ -1,5 +1,4 @@
 #include "cache.h"
-#include "block.h"
 
 /* Data allocations */
 struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replace)(struct cache *), void (*coherence)(struct cache *)) {
@@ -14,6 +13,7 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int
   cache->hits           = 0;
   cache->writes_back    = 0;
   cache->broadcasts     = 0;
+  cache->invalid_back   = 0;
   cache->depth          = depth;
   replace(cache);
   coherence(cache);
@@ -43,58 +43,11 @@ int is_in_cache(struct cache *cache, int entry) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-    cache->update_line(line, entry);
     if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
       res = 1;
     }
   }    
   return res;
-}
-
-void write_in_cache(struct cache *cache, int entry) {
-  int id_block = block_id(cache, entry);
-  struct block *block = cache->blocks[id_block];
-  int nb_ways = cache->nb_ways;
-
-  struct line *line;
-  int i;
-  for (i=0; i<nb_ways; i++) {
-    line = block->lines[i];
-    if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
-      modify_line(line);
-      return;
-    }
-  }    
-}
-
-int add_line_cache(struct cache *cache, int entry, int w) {
-  int id_block = block_id(cache, entry);
-  
-  if (!is_in_cache(cache, entry)) {
-    struct line *line = malloc(sizeof(struct line));
-    line->first_case = entry / ARCH * ARCH;
-    line->use = 1;
-
-    if (w) {
-      modify_line(line);
-    }
-    else {
-      exclusive_line(line);
-    }
-
-    if (add_line_block(cache->blocks[id_block], line, cache->replacement)) {
-      cache->writes_back++;
-    }
-    cache->misses++;
-    return 0;
-  }
-  else {
-    if (w) {
-      write_in_cache(cache, entry);
-    }
-    cache->hits++;
-    return 1;
-  }
 }
 
 void print_infos(struct cache *cache) {
@@ -119,6 +72,13 @@ struct line *line_in_cache(struct cache *cache, int entry) {
   assert(0);
 }
 
+void update_lines(struct cache *cache, int entry) {
+  int id_block = block_id(cache, entry);
+  struct block *block = cache->blocks[id_block];
+  int nb_ways = cache->nb_ways;
+  cache->update_line(block, nb_ways, entry);
+}
+
 void replacement_LFU(struct cache *cache) {
   cache->replacement = id_line_to_replace_LFU;
   cache->update_line = update_LFU;
@@ -129,14 +89,19 @@ void replacement_FIFO(struct cache *cache) {
   cache->update_line = update_FIFO;
 }
 
+void replacement_LRU(struct cache *cache) {
+  cache->replacement = id_line_to_replace_LRU;
+  cache->update_line = update_LRU;
+}
+
 void coherence_MESI(struct cache *cache) {
-  cache->flags = &flags_MESI;
-  cache->flags_new_line = &flags_new_line_MESI;
+  cache->treat_special_flags = &flags_MESI;
+  cache->set_flags_new_line = &flags_new_line_MESI;
 }
 
 void coherence_MSI(struct cache *cache) {
-  cache->flags = &flags_MSI;
-  cache->flags_new_line = &flags_new_line_MSI;
+  cache->treat_special_flags = &flags_MSI;
+  cache->set_flags_new_line = &flags_new_line_MSI;
 }
 
 int flags_MESI(struct line *line, void (*action) (struct line*)) {

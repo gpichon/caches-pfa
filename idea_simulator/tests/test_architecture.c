@@ -6,18 +6,18 @@
 #include <assert.h>
 
 #define FILENAME "data/architest.xml"
+#define OUTFILE "data/architest_parsed.xml"
 
 int main(int argc, char** argv){
   struct architecture A;
   if(argc == 2){
-    A = parse_archi_file(argv[1]);
+    parse_archi_file(argv[1], &A);
   }
   else{
-    A = parse_archi_file(FILENAME);
+    parse_archi_file(FILENAME, &A);
   }
 
   print_archi(&A);
-
   delete_archi(&A);
   return EXIT_SUCCESS;
 }

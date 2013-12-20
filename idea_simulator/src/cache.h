@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "block.h"
+#include "list.h"
 
 /*
   Module utilisé pour la gestion d'un cache.
@@ -16,10 +17,16 @@
 /* A cache of size size, with nb_blocks blocks.
    Each block contains nb_ways lines and a line size is linesize */
 
+
+#define UP_HITS(cache) cache->hits++
+#define UP_MISSES(cache) cache->misses++
+#define UP_WRITE_BACKS(cache) cache->writes_back++
+#define UP_BROADCASTS(cache) cache->broadcasts++
+
 struct cache {
   int depth;
   int size;
-  int linesize; // linesize = ARCH ?
+  int linesize;
   int nb_ways;
   int nb_blocks;
   struct block **blocks;
@@ -28,12 +35,13 @@ struct cache {
   int hits;
   int writes_back;
   int broadcasts;
+  int invalid_back;
 
-  int (*replacement)(struct block *);
-  void (*update_line)(struct line *, int);
+  int (*replacement)(struct block *); /* Replace a line in the block */
+  void (*update_line)(struct block *, int, int); /* Updating lines in respect to replacement protocol */
 
-  int (*flags)(struct line *, void(*)(struct line *));
-  void (*flags_new_line)(int, struct line *);
+  int (*treat_special_flags)(struct line *, void(*)(struct line *)); /* Special flags: E, O */
+  void (*set_flags_new_line)(int, struct line *);	       /* Create a new line: S or E with MESI */
 };
 
 /* Data allocations */
@@ -48,20 +56,20 @@ int block_id(struct cache *cache, int entry);
 /* Return whether or not the cache contains the entry */
 int is_in_cache(struct cache *cache, int entry);
 
-/* Add a line in the cache
-   If w = 1, modified line */
-int add_line_cache(struct cache *cache, int entry, int w);
 
 /* Prints infos about a cache */
 void print_infos(struct cache *cache);
 
 /* Returns the line which contains the entry in the cache */
 struct line *line_in_cache(struct cache *cache, int line);
+void update_lines(struct cache *cache, int entry);
 
-
+/* Replacement protocols */
 void replacement_LFU(struct cache *cache);
 void replacement_FIFO(struct cache *cache);
+void replacement_LRU(struct cache *cache);
 
+/* Coherency protocols */
 void coherence_MESI(struct cache *cache);
 void coherence_MSI(struct cache *cache);
 

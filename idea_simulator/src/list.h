@@ -28,4 +28,9 @@ void delete_list_def(struct list *list);
 /* Add a cache in the list */
 void add_list(struct list *list, struct cache *cache);
 
+/* Add a line in the cache
+   If w = 1, modified line 
+   Call add_line_block */
+int add_line_cache(struct list **caches, int nb_threads, struct cache *cache, int entry, int w);
+
 #endif

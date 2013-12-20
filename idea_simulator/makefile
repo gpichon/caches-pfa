@@ -1,5 +1,5 @@
 CC=gcc 
-FLAGS=-g -W -Wall $(CONF)
+FLAGS=-g -W -Wall
 XMLFLAGS= `xml2-config --cflags` `xml2-config --libs`
 
 OBJS=cache block line list add_line_hierarchy architecture
@@ -15,6 +15,7 @@ EXE=main
 all: $(BUILD_DIR) $(DATA_DIR)/$(EXE)
 test1: $(BUILD_DIR) $(DATA_DIR)/$(TEST1)
 test2: $(BUILD_DIR) $(DATA_DIR)/$(TEST2)
+test3: $(BUILD_DIR) $(DATA_DIR)/$(TEST3)
 
 # executable files
 $(DATA_DIR)/$(EXE): $(SRC_DIR)/$(addsuffix .c,$(EXE)) $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(OBJS)))
@@ -40,3 +41,6 @@ testarchi: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_ar
 
 testmesi: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_without_parser.c
 	$(CC) $(FLAGS) $^ -o $(DATA_DIR)/testmesi $(XMLFLAGS)
+
+testreplacement: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_replacement.c
+	$(CC) $(FLAGS) $^ -o $(DATA_DIR)/testreplacement $(XMLFLAGS)

@@ -25,10 +25,6 @@ struct line** init_line(int nb_ways);
 /* Data removal */
 void delete_lines(struct line **lines, int nb_ways);
 
-/* Update replacement flag */
-void update_FIFO(struct line *line, int entry);
-void update_LFU(struct line *line, int entry);
-
 /* Setters */
 void invalid_line(struct line *line);
 void modify_line(struct line *line);
