@@ -31,4 +31,4 @@ int id_line_to_replace_FIFO(struct block *block);
 /* Returns 1 if write back (when deleting a modified line), else 0 */
 int add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *));
 
-#endif
+#endif /* BLOCK_H */
