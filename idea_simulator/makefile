@@ -2,7 +2,7 @@ CC=gcc
 FLAGS=-g -W -Wall
 XMLFLAGS= `xml2-config --cflags` `xml2-config --libs`
 
-OBJS=cache block line list add_line_hierarchy architecture
+OBJS=cache block line list add_line_hierarchy architecture trace
 
 BUILD_DIR=obj
 SRC_DIR=src
