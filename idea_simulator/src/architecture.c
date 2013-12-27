@@ -3,6 +3,10 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
+#include <libxslt/xslt.h>
+#include <libxslt/xsltInternals.h>
+#include <libxslt/transform.h>
+#include <libxslt/xsltutils.h>
 #include <string.h>
 
 #define CHECK_XPATH(result) do { if (result == NULL) { fprintf(stderr, "Error XPath request\n"); \
@@ -11,6 +15,7 @@
 
 #define DEFAULT_REPLACEMENT_FCT "LRU"
 #define DEFAULT_COHERENCE_FCT "MESI"
+#define XSL_DOC "res/archi_maker.xsl"
 
 #define GET_ATTRIBUT_TXT(name,node,target)   tmp = xmlGetProp(node, BAD_CAST name); \
   sprintf(buf, "%s", tmp);						\
@@ -96,13 +101,13 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   CHECK_XPATH(res);
   GET_ATTRIBUT_TXT("name", res->nodesetval->nodeTab[0], archi->name);
   GET_ATTRIBUT_TXT("CPU_name", res->nodesetval->nodeTab[0], archi->CPU_name);
+  GET_ATTRIBUT_INT("number_levels", res->nodesetval->nodeTab[0], archi->number_levels);
+  archi->levels = calloc(archi->number_levels, sizeof(struct list*));
+  cstack = (struct cache **) malloc(archi->number_levels * sizeof(struct cache *));
   xmlXPathFreeObject(res);
 
   res = xmlXPathEvalExpression(BAD_CAST "//Cache", context);
   CHECK_XPATH(res);
-  GET_ATTRIBUT_INT("depth", res->nodesetval->nodeTab[0], archi->number_levels);
-  archi->levels = calloc(archi->number_levels, sizeof(struct list*));
-  cstack = (struct cache **) malloc(archi->number_levels * sizeof(struct cache *));
   for(i=0; i<res->nodesetval->nodeNr; i++){
     cur = res->nodesetval->nodeTab[i];
     GET_ATTRIBUT_INT("depth", cur, depth);
@@ -181,105 +186,24 @@ int convert_archi_xml(const char * file_in, const char * file_out){
     return EXIT_FAILURE;
   }
 
-  xmlKeepBlanksDefault(0);
-  xmlXPathInit();
-  xmlChar * tmp;
-  xmlNodePtr root_cache;
-  xmlNodePtr cur;
+  xmlSubstituteEntitiesDefault(1);
+  xmlLoadExtDtdDefaultValue = 1;
+
   xmlDocPtr doc = xmlParseFile(file_in);
-  xmlDocPtr fin_doc = xmlNewDoc(BAD_CAST "1.0");
-  xmlXPathContextPtr context = xmlXPathNewContext(doc);
-  xmlChar * nb_levels_xml;
-  if (context == NULL) {
-    fprintf(stderr, "Error XPath context\n");
-    return EXIT_FAILURE;
-  }
+  xsltStylesheetPtr xsl = xsltParseStylesheetFile(BAD_CAST XSL_DOC);
+  int nb_params = 0;
+  const char * params[nb_params + 1];
+  params[nb_params] = NULL;
+  xmlDocPtr fin_doc = xsltApplyStylesheet(xsl, doc, params);
+  xsltSaveResultToFile(out, fin_doc, xsl);
 
-  xmlXPathObjectPtr res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"Cache\"]", context);
-  CHECK_XPATH(res);
-  if (res->type == XPATH_NODESET) {
-    for(i=0; i<res->nodesetval->nodeNr; i++){ //Modifiying names and attributes of the interesting nodes
-      cur = res->nodesetval->nodeTab[i];
-      //Remove useless attributes
-      xmlUnsetProp(cur, BAD_CAST "type");
-      xmlUnsetProp(cur, BAD_CAST "cpuset");
-      xmlUnsetProp(cur, BAD_CAST "complete_cpuset");
-      xmlUnsetProp(cur, BAD_CAST "online_cpuset");
-      xmlUnsetProp(cur, BAD_CAST "allowed_cpuset");
-      xmlUnsetProp(cur, BAD_CAST "cache_type");
-      //Changing node name
-      xmlNodeSetName(cur, BAD_CAST "Cache");
-      //Adding attributes
-      xmlSetProp(cur, BAD_CAST "replacement_protocol", BAD_CAST DEFAULT_REPLACEMENT_FCT);
-      //xmlSetProp(cur, BAD_CAST "coherence_protocol", BAD_CAST DEFAULT_COHERENCE_FCT);
-    }
-    root_cache = res->nodesetval->nodeTab[0]; //Setting the right root
-    nb_levels_xml = xmlGetProp(root_cache, BAD_CAST "depth");
-  }
-  xmlXPathFreeObject(res);
-
-  //Removing useless node
-  //We have to put the nodes to delete, in another temp tabular, because of libxml operation
-  res = xmlXPathEvalExpression(BAD_CAST "//object[@type=\"Core\"]", context);
-  CHECK_XPATH(res);
-  int n = res->nodesetval->nodeNr;
-  xmlNodePtr *garbage = malloc(sizeof(xmlNodePtr)*n);
-  for(i=0; i<res->nodesetval->nodeNr; i++){
-    garbage[i] = res->nodesetval->nodeTab[i];
-  }
-  xmlXPathFreeObject(res);
-  //We delete the nodes, then the tabular
-  for(i=0; i<n; i++){
-    xmlUnlinkNode(garbage[i]);
-    xmlFreeNode(garbage[i]);
-  }
-  free(garbage);
-
-  //Creating the root node Architecture
-  xmlNodePtr root = xmlNewNode(NULL, BAD_CAST "Architecture");
-  res = xmlXPathEvalExpression(BAD_CAST "//info[@name=\"Architecture\"]", context);
-  CHECK_XPATH(res);
-  tmp = xmlGetProp(res->nodesetval->nodeTab[0], BAD_CAST "value");
-  xmlSetProp(root, BAD_CAST "name", tmp);
-  free(tmp);
-  xmlXPathFreeObject(res);
-  res = xmlXPathEvalExpression(BAD_CAST "//info[@name=\"CPUModel\"]", context);
-  CHECK_XPATH(res);
-  tmp = xmlGetProp(res->nodesetval->nodeTab[0], BAD_CAST "value");
-  xmlSetProp(root, BAD_CAST "CPU_name", tmp);
-  free(tmp);
-  xmlXPathFreeObject(res);
-  xmlSetProp(root, BAD_CAST "number_levels", nb_levels_xml);
-
-  int nb_levels = atoi((char *) nb_levels_xml);
-  char buf[8];
-  xmlNodePtr level;
-  for(i = nb_levels; i>0; i--){
-    level = xmlNewNode(NULL, BAD_CAST "Level");
-    sprintf(buf, "%d", i);
-    xmlSetProp(level, BAD_CAST "depth", BAD_CAST buf);
-    xmlSetProp(level, BAD_CAST "coherence_protocol", BAD_CAST DEFAULT_COHERENCE_FCT);
-    //Default : last level only is inclusive
-    if(i==nb_levels){
-      xmlSetProp(level, BAD_CAST "is_inclusive", BAD_CAST "true");
-    }
-    else if(i>1){
-      xmlSetProp(level, BAD_CAST "is_inclusive", BAD_CAST "false");
-    }
-    xmlAddChild(root, level);
-  }
-
-  //Change root
-  xmlAddChild(root, xmlDocCopyNodeList(doc, root_cache));
-  xmlDocSetRootElement(fin_doc, root);
-  xmlDocFormatDump(out, fin_doc, 1);
-
-  free(nb_levels_xml);
-  xmlCleanupParser();
-  xmlXPathFreeContext(context);
-  xmlFreeDoc(fin_doc);
+  xsltFreeStylesheet(xsl);
   xmlFreeDoc(doc);
+  xmlFreeDoc(fin_doc);
   fclose(out);
+
+  xsltCleanupGlobals();
+  xmlCleanupParser();
   
   printf("Architecture xml written in file : %s\n", file_out);
 

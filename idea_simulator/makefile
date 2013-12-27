@@ -1,6 +1,6 @@
 CC=gcc 
 FLAGS=-g -W -Wall
-XMLFLAGS= `xml2-config --cflags` `xml2-config --libs`
+XMLFLAGS= `xml2-config --cflags` `xml2-config --libs` `xslt-config --cflags` `xslt-config --libs`
 
 OBJS=cache block line list add_line_hierarchy architecture trace
 
