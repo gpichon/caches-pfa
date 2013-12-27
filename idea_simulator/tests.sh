@@ -7,5 +7,5 @@ make testarchi
 make testmesi
 
 valgrind ./bin/testreplacement
-valgrind ./bin/testarchi 1> /dev/null
+valgrind ./bin/testarchi
 valgrind ./bin/testmesi
