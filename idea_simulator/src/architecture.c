@@ -179,7 +179,6 @@ void print_archi(struct architecture * archi){
 }
 
 int convert_archi_xml(const char * file_in, const char * file_out){
-  int i = 0;
   FILE * out = fopen(file_out,"w");
   if(out == NULL){
     fprintf(stderr, "Cannot open %s\n", file_out);

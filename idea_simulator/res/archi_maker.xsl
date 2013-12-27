@@ -2,7 +2,7 @@
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="xml" indent="yes"/>
-  <!--<xsl:strip-space elements="*"/> -->
+  <xsl:strip-space elements="*"/>
 
   <!-- Recursive loop to diplay levels -->
   <xsl:template name="level-loop">
@@ -33,26 +33,34 @@
 	<xsl:with-param name="count" select="//object[@type='Cache'][1]/@depth"/>
       </xsl:call-template>
 
-      <xsl:apply-templates select="//object[@type='Cache']"/>
+      <xsl:apply-templates select="//object[@type='Cache'][1]"/>
 
     </xsl:element>
   </xsl:template>
 
-
   <!-- Recursive loop to display caches -->
-  <xsl:template match="//object[@type='Cache']">
-    <xsl:element name="Cache">
+  <xsl:template match="object[@type='Cache']">
+    <xsl:if test="not(@cache_type) or @cache_type &lt;= 1">
+      <xsl:element name="Cache">
+	<xsl:copy-of select="@depth" />
+	<xsl:copy-of select="@cache_size" />
+	<xsl:copy-of select="@cache_linesize" />
+	<xsl:copy-of select="@cache_associativity" />
+	<xsl:attribute name="replacement_protocol">LRU</xsl:attribute>
+	
+	<!-- if the cache is lower, we create a child -->
+	<xsl:if test="./object[@type='Cache'] and object/@depth &lt; ./@depth">
+	  <xsl:apply-templates/>
+	</xsl:if>
 
-      <xsl:if test="./Cache">
-	<xsl:apply-templates select="./Cache"/>
+      </xsl:element>
+      
+      <!-- if the cache is at the same level -->
+      <xsl:if test="./object[@type='Cache'] and object/@depth &gt;= ./@depth">
+	<xsl:apply-templates/>
       </xsl:if>
-
-      <xsl:attribute name="depth">  <xsl:value-of select="@depth"/> </xsl:attribute>
-      <xsl:attribute name="cache_size">  <xsl:value-of select="@cache_size"/> </xsl:attribute>
-      <xsl:attribute name="cache_linesize">  <xsl:value-of select="@cache_linesize"/> </xsl:attribute>
-      <xsl:attribute name="cache_associativity">  <xsl:value-of select="@cache_associativity"/> </xsl:attribute>
-      <xsl:attribute name="replacement_protocol">LRU</xsl:attribute>
-    </xsl:element>
+      
+    </xsl:if>
   </xsl:template>
 
 </xsl:stylesheet>
