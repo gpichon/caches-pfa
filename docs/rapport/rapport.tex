@@ -44,6 +44,8 @@
 \end{center}
 \end{figure}
 
+\indent De cette manière, quand le processeur utilise une donnée qui est dans le cache, il fait un Hit: il n'a pas besoin de la charger à partir de la mémoire principale. Lorsque la donnée dont il a besoin n'est pas présente dans le cache, il fait un Miss et le coût d'accès à la donnée est beaucoup plus important. \\
+
 \indent Le but de ce document est de résumer un certain nombre de techniques relatives à la bonne gestion de cette hiérarchie, en se focalisant sur les caches. Nous commencerons par expliciter le comportement d'un cache en général, avant d'étudier les moyens mis en {\oe}uvre afin d'assurer la cohérence de l'ensemble des caches. Nous finirons par proposer quelques algorithmes permettant de simuler de manière la plus générique possible le comportement des caches.
 
 \newpage
@@ -118,6 +120,25 @@
 \indent L'état M est utilisée lorsque la donnée a été modifiée par un c{\oe}ur. Il existe deux cas de propagation des modifications. Dans le choix de la politique Write-Through, la donnée est directement recopiée dans la mémoire principale pour éviter de futurs problèmes de cohérence. Dans le cas de la politique Write-Back, la donnée est modifiée uniquement dans le cache. Les autres caches et la mémoire principale peuvent savoir que la donnée a été modifiée, en revanche ils n'ont pas la dernière copie valide. Ils peuvent l'obtenir lors des Write-Backs: lorsque la donnée est evincée du cache ou lorsqu'elle est demandée à un plus haut niveau pour des soucis de cohérence.
 
 \newpage
+\indent Le protocole de cohérence le plus utilisé est MESI. Voici certaines caractéristiques de ce protocole: \\
+\begin{itemize}
+\item Lorsqu'un cache charge une donnée, il demande si un autre cache possède la donnée. Si un cache possède la donnée dans l'état M, alors ce cache fait un Write-Back et invalide sa donnée. Si un autre cache possède la donnée en état E, la donnée passe dans l'état S pour les deux caches. Si plusieurs (ou un seul) caches possèdent la donnée dans l'état S, la donnée est ajouté dans l'état S.
+\item Si un cache possède une donnée dans l'état M ou E et fait un nouveau store sur la ligne de cache, son état devient M et aucune information n'est transmise aux autres caches.
+\item Si un cache fait un store sur une donnée dans l'état S, la même donnée située dans les autres caches est invalidée. \\
+\end{itemize}
+
+\indent Voici l'automate du protocole: \\
+
+\begin{figure}[!h]
+\begin{center}
+   \includegraphics[scale=0.45]{mesi.png}
+   \caption{\label{mesi} Automate du protocole MESI}
+\end{center}
+\end{figure}
+
+\indent Pour l'état O, la différence est que les interactions avec la mémoire principale sont moins importantes. En effet, lorsqu'un cache qui n'a pas la donnée fait un load, le cache possédant la donnée dans l'état O peut lui donner sans faire de Write-Back. Cela permet de garder plus longtemps la donnée modifiée.
+
+\newpage
 \section{Fonctionnement global}
 
 \subsection{Caches inclusifs}
@@ -131,10 +152,20 @@
 \section{Comportements spéciaux}
 
 \subsection{Utilisation d'un victim cache}
+\indent Généralement, des caches à $k$ voies associatifs sont utilisés, car la fonction de recherche d'une donnée est peut coûteuse et plusieurs blocs mémoire correspondant à une même place peuvent être stocké dans un cache. Dans la plupart des cas, le nombre de voies varie entr e $2$ et $12$. \\
+
+\indent Dans certains cas, il est possible que le nombre de voies ne soit pas suffisant car un ensemble de blocs mémoire correspondant au même set est très utilisé. Cela est notamment vrai pour les L1 qui possèdent généralement peu de voies. Pour palier ce problème et limiter les échanges de données entre les L1 et les L2, il est possible d'utiliser un buffer pour stocker les victimes d'éviction. Ce buffer est de petite taille, par exemple $8$ fois la taille d'une ligne de cache. \\
+
+\indent De cette manière, lorsqu'un donnée est supprimée du L1, elle est placée dans le buffer correspondant. Lorsque le L1 fait un Miss, il commence par regarder dans le buffer (le coût est alors faible étant donné la taille du buffer) avant de regarder dans le L2. Cette idée permet donc de palier de façon peut coûteuse au problème d'un set qui n'aurait pas assez de voies.
 
 \subsection{Tracking}
-%L3 sait qui a les données
-%NUCA
+\subsubsection{Supprimer les données}
+\indent Lorsqu'un cache L1 utilise une donnée qu'il possède déjà dans son cache, les flags utilisés par les politiques de remplacement sont mis à jour afin de supprimer les bonnes données lorsqu'un set sera plein. Cependant, les caches de plus haut niveau (L2, L3) ne sont pas mis au courant que la donnée a été utilisée et ils ne changent donc pas les flags de remplacement. Ainsi, lorsque le L2 aura un set plein, il se peut qu'il supprime une donnée très utilisée dans un L1. \\
+
+\indent Dans le cas d'un cache inclusif, il faut donc, à la suppression d'une donnée, invalider la donnée dans les caches en dessous afin de conserver le caractère inclusif. Pour limiter ce problème, les L2 et les L3 peuvent suivre les données, c'est-à-dire posséder une table indiquant quels caches de niveau plus bas ont également la donnée. De cette manière, les politiques de remplacement peuvent être adaptées en définissant des priorités: par exemple, éviter de supprimer les données qui sont contenues dans beaucoup de caches.
+
+\subsubsection{Savoir qui a les données}
+\indent cf NUCA
 
 \newpage
 \section{Algorithmes de simulation}
