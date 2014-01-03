@@ -34,6 +34,7 @@ $(BUILD_DIR):
 # clean
 clean: 
 	rm -rf $(BUILD_DIR) $(DATA_DIR) *~ */*~ *.mod $(EXE) $(TESTS)
+	@make -s -C documentation clean
 
 # tests
 testarchi: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_architecture.c
@@ -44,3 +45,8 @@ testmesi: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_wit
 
 testreplacement: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_replacement.c
 	$(CC) $(FLAGS) $^ -o $(DATA_DIR)/testreplacement $(XMLFLAGS)
+
+# install documentation
+
+doc: 
+	@make -s -C documentation docu

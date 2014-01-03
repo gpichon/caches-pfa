@@ -1,3 +1,14 @@
+/**
+ * \file trace.c
+ * \brief I don't now know.
+ * \author ~ndubois
+ * \version 1.0
+ * \date 3rd january 2014
+ *
+ * 
+ *
+ */
+
 #include "trace.h"
 #include "add_line_hierarchy.h"
 

@@ -1,5 +1,14 @@
-#include "architecture.h"
-#include "list.h"
+/**
+ * \file architecture.c
+ * \brief Initiate the XML configuration's file.
+ * \author ~gmarait
+ * \version 1.0
+ * \date 3rd january 2014
+ * 
+ * 
+ *
+ */
+
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
@@ -8,26 +17,66 @@
 #include <libxslt/transform.h>
 #include <libxslt/xsltutils.h>
 #include <string.h>
+#include "architecture.h"
 
+/**
+ * \def CHECK_XPATH(result)
+ * \brief Secure XPath result.
+ */
 #define CHECK_XPATH(result) do { if (result == NULL) { fprintf(stderr, "Error XPath request\n"); \
       return EXIT_FAILURE;						\
     } } while(0)
 
+/**
+ * \def DEFAULT_REPLACEMENT_FCT 
+ * \param policy Name of the policy wanted to be used in default.
+ * \brief Define the string used in XML confifuration file, to describe the replacement policy.
+ * \note This policy is used by default.
+ * \warning Never used in code !
+ */
 #define DEFAULT_REPLACEMENT_FCT "LRU"
+
+/**
+ * \def DEFAULT_COHERENCE_FCT
+ * \param policy Name of the policy wanted to be used in default.
+ * \brief Define the string used in XML confifuration file, to describe the coherence policy.
+ * \note This policy is used by default.
+ * \warning Never used in code !
+ */
 #define DEFAULT_COHERENCE_FCT "MESI"
+
+/**
+ * \def XSL_DOC
+ * \param path 
+ * \brief Path (absolute or relative) to the xsl result.
+ * \todo Precise if the result is overwritten.
+ */
 #define XSL_DOC "res/archi_maker.xsl"
 
+/**
+ * \def GET_ATTRIBUT_TXT(name,node,target)
+ * \brief Copy the node's text (identified by node name) in the target.
+ */
 #define GET_ATTRIBUT_TXT(name,node,target)   tmp = xmlGetProp(node, BAD_CAST name); \
   sprintf(buf, "%s", tmp);						\
   strcpy(target, buf);							\
   xmlFree(tmp);								\
   buf[0] = 0
+
+/**
+ * \def GET_ATTRIBUT_INT(name,node,target)
+ * \brief Copy the node's number (identified by node name) in the target.
+ */
 #define GET_ATTRIBUT_INT(name,node,target)   tmp = xmlGetProp(node, BAD_CAST name); \
   sprintf(buf, "%s", tmp);						\
   target = atoi(buf);							\
   xmlFree(tmp);								\
   buf[0] = 0
 
+/**
+ * \brief Compare the replacement policy's name in order to choose the associated replacement function.
+ * \param name Name to compare with implemented policies.
+ */
 void (*get_replacement_function(char * name)) (struct cache *){
   if(strcmp(name, "FIFO") == 0)
     return replacement_FIFO;
@@ -36,12 +85,23 @@ void (*get_replacement_function(char * name)) (struct cache *){
   return replacement_LRU;
 }
 
+/**
+ * \brief Compare the coherence policy's name in order to choose the associated replacement function.
+ * \param name Name to compare with implemented policies.
+ * \bug This functions seems to be called with a replacement policy name instead of a coherence one.
+ */
 void (*get_coherence_function(char * name)) (struct cache *){
   if(strcmp(name, "MSI") == 0)
     return coherence_MSI;
   return coherence_MESI;
 }
 
+/**
+ * \brief Modify the name of the XML output file.
+ * \param name Previous name.
+ * \param out New name.
+ * \todo Precise the call context. Previous file is overwritten ?
+ */
 void change_filename(const char * name, char * out){
   int l = strlen(name);
   char extention[30];

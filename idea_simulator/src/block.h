@@ -1,3 +1,15 @@
+/**
+ * \file block.c
+ * \brief Manage a block : initialization, removal, replacement policy.
+ * \author ~gpichon
+ * \version 1.0
+ * \date 3rd january 2014
+ *
+ * 
+ *
+ */
+
+
 #ifndef BLOCK_H
 #define BLOCK_H
 
@@ -6,10 +18,6 @@
 #include <assert.h>
 #include "line.h"
 
-/*
-  Module utilisé pour la gestion d'un block.
-  Gère lecture/écriture au sein du block.
-*/
 
 /* A block contains nb_ways lines */
 struct block {

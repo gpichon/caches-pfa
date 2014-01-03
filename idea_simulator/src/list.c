@@ -1,3 +1,14 @@
+/**
+ * \file list.c
+ * \brief Abstract Data Type : cache linked list and associated initialization, removal, add.
+ * \author ~gpichon
+ * \version 1.0
+ * \date 3rd january 2014
+ *
+ * 
+ *
+ */
+
 #include "list.h"
 
 /* Data allocation */

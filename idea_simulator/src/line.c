@@ -1,3 +1,14 @@
+/**
+ * \file line.c
+ * \brief Manage line : initialization, removal, return informations.
+ * \author ~gpichon
+ * \version 1.0
+ * \date 3rd january 2014
+ *
+ * 
+ *
+ */
+
 #include "line.h"
 
 /* Data allocations */

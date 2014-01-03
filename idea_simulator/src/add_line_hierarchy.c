@@ -1,3 +1,15 @@
+/**
+ * \file add_line_hierarchy.c
+ * \brief Communication between caches' level.
+ * \author ~gpichon
+ * \version 1.0
+ * \date 3rd january 2014
+ * 
+ * 
+ *
+ */
+
+
 #include "add_line_hierarchy.h"
 
 /* Return 1 if there is entry is somewhere else in level

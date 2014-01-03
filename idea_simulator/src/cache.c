@@ -1,3 +1,14 @@
+/**
+ * \file cache.c
+ * \brief Manage a block : initiate, removal, print data, coherence and replacement policy.
+ * \author ~gpichon
+ * \version 1.0
+ * \date 3rd january 2014
+ *
+ * 
+ *
+ */
+
 #include "cache.h"
 
 /* Data allocations */

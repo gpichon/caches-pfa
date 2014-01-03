@@ -1,3 +1,15 @@
+/**
+ * \file line.c
+ * \brief Manage line : initialization, removal, return informations.
+ * \author ~gpichon
+ * \version 1.0
+ * \date 3rd january 2014
+ *
+ * 
+ *
+ */
+
+
 #ifndef LINE_H
 #define LINE_H
 
@@ -7,10 +19,6 @@
 
 #define ARCH 64
 
-/*
-  Module utilisé pour la gestion d'une ligne.
-  Gère lecture/écriture au sein d'une ligne.
-*/
 
 /* Status: 0 invalid, 1 shared, 2 exclusive, 3 modified */
 struct line {

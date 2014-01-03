@@ -1,3 +1,41 @@
+/**
+ * \file main.c
+ * \brief Run the simulator with the architecture and traces given.
+ * \author ~gpichon
+ * \version 1.0
+ * \date 3rd january 2014
+ *
+ * \note At the moment, architecture and traces cannot be given in command line. 
+ * \todo Allow to choose architecture and traces in command line. 
+ *       Manage options with -letter or --word.
+ *       Create an usage option.
+ *
+ * # How to use Markdown ?? #
+ * ## This is really simple. #
+ * + firstly, you use some special characters
+ *   - as #
+ *   - or -
+ *   - or +
+ *   - or :
+ * + secondly, RTFM
+ * 
+ *   [It's here](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html)
+ * 
+ * ## We can also make a tabular. #
+ * Emacs user | Not an emacs user
+ * -----------|------------------:
+ * We        | Not we
+ * This is a long text|And a right-justified text
+ *
+ * ## But what about code ? #
+ * ~~~~~~~~~~~~~{.c}
+ * #define CODE "my_code"
+ * int copyright(char * blop){
+ *   return strcmp(blop, my_code);
+ * }
+ * ~~~~~~~~~~~~~
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -6,7 +44,15 @@
 #include "architecture.h"
 #include "trace.h"
 
+/**
+ * \def FILENAME
+ * \brief Path to the automatically generated XML configuration file, if none specified.
+ */
 #define FILENAME "data/architest.xml"
+/**
+ * \def TEST
+ * \brief Path to the result file of tests.
+ */
 #define TEST "../gentraces/file.txt"
 
 int main(int argc, char *argv[]) {

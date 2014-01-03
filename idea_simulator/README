@@ -6,3 +6,7 @@ Paquets pour le parseur xml :
 libxml2
 libxml2-dev
 libxslt1-dev
+
+Paquets pour la documentation :
+doxygen
+graphviz

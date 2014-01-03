@@ -1,3 +1,14 @@
+/**
+ * \file block.c
+ * \brief Manage a block : initialization, removal, replacement policy.
+ * \author ~gpichon
+ * \version 1.0
+ * \date 3rd january 2014
+ *
+ * 
+ *
+ */
+
 #include "block.h"
 
 /* Data allocations */
