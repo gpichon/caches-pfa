@@ -57,7 +57,7 @@ struct cache {
   int depth; /**< Level of the cache. Range ?*/
   int size; /**< Size of the cache. Unity = byte ? */
   int linesize; /**< Size of the line. Unity = byte ?*/
-  int nb_ways; /**< Number of data in a line. */
+  int nb_ways; /**< Number of lines in a block. */
   int nb_blocks; /**< Number of blocks. Range ?*/
   struct block **blocks; /**< Tabular of blocks pointer.*/
 

@@ -1,6 +1,6 @@
 /**
- * \file block.c
- * \brief Manage a block : initialization, removal, replacement policy.
+ * \file block.h
+ * \brief Manage a block : initialization, removal, replacement policy -- Header
  * \author ~gpichon
  * \version 1.0
  * \date 3rd january 2014
@@ -19,29 +19,73 @@
 #include "line.h"
 
 
-/* A block contains nb_ways lines */
+/**
+ * \struct block
+ * \brief Abstract Data Type of a block.
+ */
 struct block {
-  int nb_ways;
-  struct line **lines;
+  int nb_ways; /**< Number of lines in the block. */
+  struct line **lines; /**< Tabular of line structure pointer. */
 };
 
-/* Data allocation */
+/**
+ * \brief Initialization of several block and associated lines.
+ * \return Return \a nb_blocks initialized blocks, 
+ *  each contains \a nb_ways initialized lines.
+ */
 struct block **init_block(int nb_blocks, int nb_ways);
 
-/* Data removal */
-void delete_blocks(struct block **blocks, int nb_ways);
+/**
+ * \brief Data removal. Contained lines are too free. 
+ */
+void delete_blocks(struct block **blocks, int nb_blocks);
 
-/* Returns the number line to replace in the set */
+/**
+ * \brief Returns the number line to replace in the set. 
+ * \note To be used when a block is full and uses LFU replacement policy.
+ */
 int id_line_to_replace_LFU(struct block *block);
+/**
+ * \brief Returns the number line to replace in the set. 
+ * \note To be used when a block is full and uses FIFO replacement policy.
+ */
 int id_line_to_replace_FIFO(struct block *block);
+/**
+ * \brief Returns the number line to replace in the set. 
+ * \note To be used when a block is full and uses LRU replacement policy.
+ */
 int id_line_to_replace_LRU(struct block *block);
 
-/* Update replacement flag */
+/**
+ * \brief Update replacement flag. 
+ * \note To be used after a hit, and uses FIFO replacement policy.
+ */
 void update_FIFO(struct block *block, int nb_ways, int entry);
+/**
+ * \brief Update replacement flag. 
+ * \note To be used after a hit, and uses LFU replacement policy.
+ */
 void update_LFU(struct block *block, int nb_ways, int entry);
+/**
+ * \brief Update replacement flag. 
+ * \note To be used after a hit, and uses LRU replacement policy.
+ * \bug Bad cast for :
+ * ~~~~~~{.c}
+ * (void) entry;
+ * ~~~~~~
+ */
 void update_LRU(struct block *block, int nb_ways, int entry);
 
-/* Returns 1 if write back (when deleting a modified line), else 0 */
+/**
+ * \brief Load a line in the block. All structures must be initialized.
+ * \note Pointer function in parameter returns 1 if write back (when deleting a modified line), else 0.
+ * \bug Useless if :
+ * ~~~~~~~{.c} 
+ * if (del_line == NULL)
+ *   return NULL;
+ * return del_line;
+ * ~~~~~~~
+*/
 struct line *add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *));
 
-#endif /* BLOCK_H */
+#endif

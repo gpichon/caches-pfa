@@ -17,20 +17,32 @@
 #include <stdlib.h>
 #include <assert.h>
 
+/**
+ * \def ARCH
+ * \brief Size of an address length (in bits).
+ */
 #define ARCH 64
 
 
-/* Status: 0 invalid, 1 shared, 2 exclusive, 3 modified */
+/**
+ * \struct line
+ * \brief Abstract Data Type for a line.
+ */ 
 struct line {
-  int first_case;
-  int use;
-  int status;
+  int first_case; /**< I don't know.*/
+  int use; /**< number of utilisation since the line is in the block */
+  int status; /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
 };
 
-/* Data allocation: nb_ways new lines */
+/**
+ * \brief Initialization of \a nb_ways new lines. 
+ * \return Return a tabular of \a nb_ways structure line pointers.
+ */
 struct line** init_line(int nb_ways);
 
-/* Data removal */
+/**
+ * \brief Data removal.
+ */
 void delete_lines(struct line **lines, int nb_ways);
 
 /* Setters */
