@@ -140,8 +140,12 @@
 
 \newpage
 \section{Fonctionnement global}
+\indent Cette partie entend préciser les différents fonctionnement des caches: inclusifs, exclusifs ou non inclusifs. Par ailleurs, les particularités du snooping, le fait de faire un broadcast sur un bus pour demander une donnée, seront explicitées. \\
+
+\indent Le cas inclusif est plutôt orienté \textsc{Intel} alors que le cas exclusif est plutôt mis en place par \textsc{AMD}. De son côté \textsc{ARM} oscille entre les deux solutions proposées.
 
 \subsection{Caches inclusifs}
+\indent Le fonctionnement d'un cache inclusif est relativement simple. En cas de Hit, la donnée est propagée au cache (ou au registre) qui a préalablement demandé la donnée. En cas de Miss, une demande de donnée est effectuée au niveau du dessus. La donnée est ensuite propagée à la mémoire d'en dessous. Dans le cas d'une hiérarchie avec uniquement des caches exclusifs, les messages utilisés pour demander/donner les données se font uniquement de façon verticale dans la hiérarchie. Il y a parallèlement, des messages destinés à garantir la consistance du système qui sont gérés différemment et qui influent sur la totalité de la hiérarchie. Voici un résumé des messages envoyés dans le cas d'une demande de donnée, en ne tenant pas compte de la gestion de la cohérence: \\
 
 \begin{figure}[!h]
 \begin{center}
@@ -150,30 +154,47 @@
 \end{center}
 \end{figure}
 
+\indent D'un point de vue de la simulation, il est utile de modéliser les messages partant du bas de la hiérarchie (les caches L1) et remontant jusqu'à la mémoire principale. Le caractère inclusif prend tout son intérêt: la recherche est simple et la gestion de la cohérence séparée des échanges bruts de données.
+
+\newpage
 \subsection{Caches exclusifs}
+\indent Cependant, le fait qu'un cache soit inclusif pose un problème: les données sont dupliquées dans la hiérarchie. De ce fait, la taille réelle de l'ensemble des caches est en fait inférieure à la taille théorique. Les caches exclusifs ont justement pour objectifs de limiter cette duplication des données. Par exemple, si un L2 est inclusif, les L1 en dessous ne pourront pas contenir une donnée déjà présente dans le L2, et inversement. Concrètement, il y a quatre cas de figure: \\
+
+%un joli schéma!
+\begin{itemize}
+\item Si un L1 fait un Hit, il transmet la donnée au c{\oe}ur associé
+\item Si un L2 fait un Hit, il donne la donnée au L1 qui l'a demandé puis la supprime.
+\item Si un L1 fait un Miss, il effectue une demande de donnée au L2 associé. Il gardera la donnée une fois qu'elle lui sera transmise.
+\item Si un L2 fait un Miss, il effectue une demande de donnée au L3 associé, ou directement à la mémoire principale si il n'y a pas de L3. Une fois que la donnée lui sera transmise, il la propagera au L1 et la supprimera. La donnée se sera concrètement jamais mise dans le cas (pas d'évincion d'autres données si le cache est plein). \\
+\end{itemize}
+
+\indent Il en va de même pour les intéractions entre les L2 et les L3, voir d'autres niveaux dans le cas d'une architecture plus grande. Par ailleurs, lorsque le dernier niveau fait un Miss, il faut parcourir l'ensemble de la hiérarchie avant de rechercher directement la donnée dans la mémoire principale. Ce phénomène explique à lui seul le fait que la gestion de la recherche et de la cohérence soit plus délicat que dans le cas d'une hiérachie avec le dernier niveau inclusif.
 
 \subsection{Caches non-inclusifs}
+\indent Il existe un autre cas de figure, qui peut être considéré comme une variante du cas exclusif. Lorsqu'un L1 demande une donnée et que le L2 ne l'a pas, il se contentera de propager la donnée sans la conserver en mémoire. Cependant, si il avait préalablement la donnée, il la propagera au L1 sans pour autant la supprimer. Ce cas de figure peut être utilisé pour un L2 avec un L3 inclusif. De cette manière, la hiérarchie permet en moyenne de stocker plus de blocs mémoires sans pour autant compliquer la gestion de la cohérence.
 
+\subsection{Ajout du snooping}
+\indent Par ailleurs, il est possible que les caches d'un même niveau soient reliés ensemble par un bus. La méthode de recherche sur ce bus est alors appelée snooping. Prenons l'exemple d'une hiérarchie à trois niveaux ou les L2 seraient reliés par un bus. Lorsqu'un L1 fait un Miss, il demande au L2 associé de lui fournir la donnée. En cas de nouveau Miss, la demande est envoyée en broadcast sur le bus afin de récupérer la donnée sans passer par le L3. Si aucun cache ne possède la donnée, la demande est alors transmise au L3.
 
 \newpage
 \section{Comportements spéciaux}
+\indent Les politques de remplacement, de cohérence et les différents types de caches posent un ensemble de modularités dans la gestion d'une hiérarchie de caches. Cependant, d'autres possibilités existent afin d'améliorer les performances de l'ensemble.
 
 \subsection{Utilisation d'un victim cache}
-\indent Généralement, des caches à $k$ voies associatifs sont utilisés, car la fonction de recherche d'une donnée est peut coûteuse et plusieurs blocs mémoire correspondant à une même place peuvent être stocké dans un cache. Dans la plupart des cas, le nombre de voies varie entr e $2$ et $12$. \\
+\indent Généralement, des caches à $k$ voies associatifs sont utilisés, car la fonction de recherche d'une donnée est peut coûteuse et plusieurs blocs mémoire correspondant à une même place peuvent être stocké dans un cache. Dans la plupart des cas, le nombre de voies varie entre $2$ et $12$. \\
 
-\indent Dans certains cas, il est possible que le nombre de voies ne soit pas suffisant car un ensemble de blocs mémoire correspondant au même set est très utilisé. Cela est notamment vrai pour les L1 qui possèdent généralement peu de voies. Pour palier ce problème et limiter les échanges de données entre les L1 et les L2, il est possible d'utiliser un buffer pour stocker les victimes d'éviction. Ce buffer est de petite taille, par exemple $8$ fois la taille d'une ligne de cache. \\
-
-\indent De cette manière, lorsqu'un donnée est supprimée du L1, elle est placée dans le buffer correspondant. Lorsque le L1 fait un Miss, il commence par regarder dans le buffer (le coût est alors faible étant donné la taille du buffer) avant de regarder dans le L2. Cette idée permet donc de palier de façon peut coûteuse au problème d'un set qui n'aurait pas assez de voies.
+\indent Dans certains cas, il est possible que le nombre de voies ne soit pas suffisant car un ensemble de blocs mémoire correspondant au même set est très utilisé. Cela est notamment vrai pour les L1 qui possèdent généralement peu de voies. Pour palier ce problème et limiter les échanges de données entre les L1 et les L2, il est possible d'utiliser un buffer pour stocker les victimes d'éviction. Ce buffer est de petite taille, par exemple $8$ fois la taille d'une ligne de cache. De cette manière, lorsqu'un donnée est supprimée du L1, elle est placée dans le buffer correspondant. Lorsque le L1 fait un Miss, il commence paar regarder dans le buffer (le coût est alors faible
 
 \subsection{Tracking}
+\indent Il existe différentes manières de localiser les données dans une hiérarchie mémoire. Deux cas fréquemment utilisés sont présentés dans la suite.
+
 \subsubsection{Supprimer les données}
 \indent Lorsqu'un cache L1 utilise une donnée qu'il possède déjà dans son cache, les flags utilisés par les politiques de remplacement sont mis à jour afin de supprimer les bonnes données lorsqu'un set sera plein. Cependant, les caches de plus haut niveau (L2, L3) ne sont pas mis au courant que la donnée a été utilisée et ils ne changent donc pas les flags de remplacement. Ainsi, lorsque le L2 aura un set plein, il se peut qu'il supprime une donnée très utilisée dans un L1. \\
 
 \indent Dans le cas d'un cache inclusif, il faut donc, à la suppression d'une donnée, invalider la donnée dans les caches en dessous afin de conserver le caractère inclusif. Pour limiter ce problème, les L2 et les L3 peuvent suivre les données, c'est-à-dire posséder une table indiquant quels caches de niveau plus bas ont également la donnée. De cette manière, les politiques de remplacement peuvent être adaptées en définissant des priorités: par exemple, éviter de supprimer les données qui sont contenues dans beaucoup de caches.
 
 \subsubsection{Savoir qui a les données}
-\indent cf NUCA
-
+\indent Dans le cas d'un cache de dernier niveau exclusif, on a vu qu'en cas de Miss, il fallait parcourir l'ensemble de la hiérarchie avant d'évenetuellement faire appel à la mémoire principale. Cela pose des problèmes, tant au niveau de la recherche des données que de la gestion de la consistance du système. Pour palier ce problème, le cache de dernier niveau peut être lié à un table d'étiquettes, permettant de savoir quelles sont les données contenues dans chaque cache. Cela évite d'avoir à parcourir l'ensemble de la hiérarchie mais il y a un coût en terme de mémoire. Cependant, ce coup est faible (les données ne sont pas stockées) et bien inférieur au coût mémoire de la duplication dans le cache d'un cache de dernier niveau inclusif.
 
 \newpage
 \section{Algorithmes de simulation}
