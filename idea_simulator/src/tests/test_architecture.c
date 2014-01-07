@@ -1,13 +1,15 @@
 #include <stdio.h>
-#include "../src/architecture.h"
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <assert.h>
 
-#define FILENAME "data/architest.xml"
+#include "architecture.h"
 
-int main(int argc, char** argv){
+#define FILENAME "../../data/architest.xml"
+
+int test_architecture(int argc, char** argv){
+
   struct architecture A;
   int i, k;
   struct list * l;

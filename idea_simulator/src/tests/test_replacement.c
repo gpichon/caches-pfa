@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "../src/add_line_hierarchy.h"
 
-int main(int argc, char *argv[]) {
-  (void) argc;
-  (void) argv;
+#include "add_line_hierarchy.h"
+
+int test_replacement(int argc, char** argv) {
 
   struct list **levels = malloc(1 * sizeof(struct list *));
   struct list **caches = malloc(1 * sizeof(struct list *));

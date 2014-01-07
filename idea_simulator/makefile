@@ -1,52 +1,37 @@
-CC=gcc 
-FLAGS=-g -W -Wall
-XMLFLAGS= `xml2-config --cflags` `xml2-config --libs` `xslt-config --cflags` `xslt-config --libs`
+TEXT := >>>>>Compilation terminée<<<<<
 
-OBJS=cache block line list add_line_hierarchy architecture trace
+DOC_DIR:=documentation
+OBJ_DIR:=obj
+SRC_DIR:=src
+BIN_DIR:=bin
 
-BUILD_DIR=obj
-SRC_DIR=src
-DATA_DIR=bin
-TESTS_DIR=tests
-
-EXE=main
 
 # main rules
-all: $(BUILD_DIR) $(DATA_DIR)/$(EXE)
-test1: $(BUILD_DIR) $(DATA_DIR)/$(TEST1)
-test2: $(BUILD_DIR) $(DATA_DIR)/$(TEST2)
-test3: $(BUILD_DIR) $(DATA_DIR)/$(TEST3)
+all: dir doc main
+	$(info =====>Compilation terminée)
 
-# executable files
-$(DATA_DIR)/$(EXE): $(SRC_DIR)/$(addsuffix .c,$(EXE)) $(addprefix $(BUILD_DIR)/,$(addsuffix .o,$(OBJS)))
-	${CC} ${FLAGS} $^ -o $@ ${LIBS} $(XMLFLAGS)
-
-# objects
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c $(addprefix $(SRC_DIR)/,$(addsuffix .h,$(OBJS)))
-	${CC} ${FLAGS} -c $< -o $@ $(XMLFLAGS)
+main:
+	@make -s -C $(SRC_DIR)
 
 
 # dirs
-$(BUILD_DIR):
-	mkdir $(BUILD_DIR)
-	mkdir $(DATA_DIR)
+dir:
+	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(BIN_DIR)
 
 # clean
-clean: 
-	rm -rf $(BUILD_DIR) $(DATA_DIR) *~ */*~ *.mod $(EXE) $(TESTS)
-	@make -s -C documentation clean
+clean:  
+	@make -s -C $(DOC_DIR) clean
+	@make -s -C $(SRC_DIR) clean
+	@rm -f $(OBJ_DIR)/* $(BIN_DIR)/*
 
 # tests
-testarchi: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_architecture.c
-	$(CC) $(FLAGS) $^ -o $(DATA_DIR)/testarchi $(XMLFLAGS)
+test: main_test
+	$(info =====>Compilation terminée)
 
-testmesi: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_without_parser.c
-	$(CC) $(FLAGS) $^ -o $(DATA_DIR)/testmesi $(XMLFLAGS)
-
-testreplacement: $(addprefix $(SRC_DIR)/,$(addsuffix .c,$(OBJS))) $(TESTS_DIR)/test_replacement.c
-	$(CC) $(FLAGS) $^ -o $(DATA_DIR)/testreplacement $(XMLFLAGS)
+main_test:
+	@make -s -C $(SRC_DIR) test
 
 # install documentation
-
 doc: 
-	@make -s -C documentation docu
+	@make -s -C $(DOC_DIR) docu
