@@ -48,7 +48,7 @@
  * \def FILENAME
  * \brief Path to the automatically generated XML configuration file, if none specified.
  */
-#define FILENAME "data/architest.xml"
+#define FILENAME "data/architest_archi.xml"
 /**
  * \def TEST
  * \brief Path to the result file of tests.
