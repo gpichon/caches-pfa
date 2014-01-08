@@ -1,0 +1,15 @@
+\section{Quelques idées pour l'optimisation des boucles}
+\indent \textsc{MAQAO} fournissant des traces compressées, il peut être intéressant d'étudier plus précisement le comportement général des accès réalisés par un c{\oe}ur afin de détecter des similitudes. Le simulateur s'executant après la création des traces par c{\oe}ur, plusieurs cas de tests peuvent être rejoués en évitant la coûteuse execution du programme à analyser. C'est d'ailleurs le principale avantage par rapport à des outils comme \textsc{cachegrind}, basés sur une executio on-line. \\
+
+\indent Le premier schéma que nous proposons d'améliorer est le suivant:\\
+\begin{lstlisting}
+for i0 = 0 to 31999
+  val 0x829c90 + 4*i0
+endfor
+\end{lstlisting}
+
+\indent On remarque que les interactions avec la mémoire (load/store) sont réalisés tous les $4$ octets pour un grand ensemble de valeurs. Par ailleurs, sur un architecture classique, de type \textit{Ivy Bridge} par exemple, la taille d'une ligne de cache est de $64$ octets. \\
+
+\indent Il est donc possible de prévoir à l'avance ce qu'il va se produire. Supposons qu'un thread réalise $16$ load sur un ensemble de blocs mémoires, distants de $4$ octets, et que le premier bloc mémoire considéré soit un multiple de $64$. Il serait possible de faire le premier load, afin de mettre à jour les données nécessaires. Par la suite les $15$ load restants feront des Hits. En réalisant, dans le simulateur, un nouveau load et en enregistrant l'ensemble des modifications, le résultat final consiste simplement à multiplier par $15$ ces modifications. \\
+
+\indent Cette optimisation présente certaines limites. Dans le cas d'un programme executé sur un architecture multi-c{\oe}urs, les opérations effectués par les différents c{\oe}urs affectent l'ensemble de la hiérarchie. Il faut donc effectuer en une seule fois les $16$ opérations, sans qu'aucune opération ne soit effectuée sur les autres c{\oe}urs.

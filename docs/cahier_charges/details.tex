@@ -28,3 +28,16 @@ Les données étant souvent partagées par plusieurs caches, si l'un des caches 
 
 \paragraph{MOESI.} L'état \emph{Owned} rajouté par le protocole \texttt{MOESI} au protocole \texttt{MESI} permet quant à lui un gain de temps moins significatif. En effet lorsqu'une ligne passe dans l'état \emph{Owned}, c'est parce qu'un autre cache a récupéré cette ligne. Par conséquent le cache possédant une ligne \emph{Owned} n'effectue pas de \emph{write-back}, c'est le cache qui a récupéré cette ligne qui le fera à sa place. Cela limite ainsi le nombre de \emph{write-back}.
 
+\subsection{Politiques plus globales}
+\label{global}
+
+\indent Il existe trois types de caches: \\
+\begin{itemize}
+\item Inclusif: contient les donn\'ees des caches en dessous dans la hi\'erarchie.
+\item Exclusif: ne contient pas les donn\'ees des caches en dessous dans la hi\'erarchie.
+\item Non Inclusif: peut contenir les donn\'ees des caches en dessous dans la hi\'erarchie. \\
+\end{itemize}
+
+\indent Le cache de dernier niveau -- LLC: Last Level Cache -- est fondamental dans la gestion hi\'erarchique de la coh\'erence. Avec un LLC inclusif, lorsqu'un L2 fait un Miss, il demande la donn\'ee au L3 qui fait un Hit ou un Miss. En cas de Miss, aucun autre cache de la hi\'erarchie ne peut poss\`eder la donn\'ee. A contrario, avec un LLC exclusif, l'ensemble de la hi\'erachie doit \^etre parcourue avant de demander la donn\'ee \'a la m\'emoire principale. \\
+
+\indent Concr\`etement, les solutions pour \'eviter ce parcours de la hi\'erarchie sont l'utilisation du snooping ou la pr\'esence d'un directory manager, comprenant l'ensemble des \'etiquettes pr\'esentes dans la hi\'erarchie. D'autres solutions sont envisageables, mais le design du fonctionnement de la hi\'erarchie est plus d\'elicat. Nous proposons donc de mettre en place ces trois cas de figure et d'exploiter d'autres solutions si le temps nous le permet. A noter que pour profiter pleinemement des avantages du snooping d'un point de vue coh\'erence, il doit \^etre possible pour tous les niveaux de la hi\'erarchie.
