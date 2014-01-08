@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#include <libxml/xpath.h>
-#include <assert.h>
-
-#include "architecture.h"
+#include "test_architecture.h"
 
 #define FILENAME "../../data/architest.xml"
 

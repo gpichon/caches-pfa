@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
-#include "add_line_hierarchy.h"
+#include "test_replacement.h"
 
 int test_replacement(int argc, char** argv) {
 

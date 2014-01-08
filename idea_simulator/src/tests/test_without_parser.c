@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
-#include "add_line_hierarchy.h"
+#include "test_without_parser.h"
 
 int test_without_parser(int argc, char** argv) {
 
