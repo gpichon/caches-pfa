@@ -43,9 +43,31 @@ La visualisation des résultats (de même que le lancement du simulateur) se fer
 
 \subsection{Paramétrisation}
 
-Le programme doit être adapté à la mise en place de nouvelles politiques, et à leur paramètrisation. Il doit aussi permettre sa maintenance et sa réutilisation. Les politiques de cohérence et de remplacement foncionnent toutefois ensembles grâce à une politique globale qui elle est unique dans le code fourni. Enfin la paramétrisation de l'architecture des caches ne prend pas en compte les caches d'instructions, mais seulement ceux de données, et ceux-ci sont tous considérés comme écrivant en \emph{write-back} (voir la rubrique \ref{coher} à ce sujet). De plus tous les caches sont considérés par défaut comme non-inclusifs sauf celui de plus haut niveau. L'utilisateur peut cependant rendre certaines lignes de caches inclusives ou non par le biais du fichier de configuration de l'architecture, en \texttt{XML}.
+Le programme doit être adapté à la mise en place de nouvelles politiques, et à leur paramètrisation. Il doit aussi permettre sa maintenance et sa réutilisation. Les politiques de cohérence et de remplacement foncionnent toutefois ensembles grâce à une politique globale qui elle est unique dans le code fourni. Enfin la paramétrisation de l'architecture des caches ne prend pas en compte les caches d'instructions, mais seulement ceux de données, et ceux-ci sont tous considérés comme écrivant en \emph{write-back} (voir la rubrique \ref{coher} à ce sujet). De plus tous les caches sont considérés par défaut comme non-inclusifs sauf celui de plus haut niveau, bien que nous laissons la possibilité à l'utilisateur de modifier cela par la suite.
 
+\paragraph{}
+Afin de pouvoir paramétrer le simulateur, le programme utilise un fichier de configuration \texttt{XML} qui décrit tous les paramètres utilisés par le simulateur et uniquement ceux-ci. Il est possible de générer ce fichier à partir d'un fichier \textsc{HWLoc} décrivant une architecture, auquel cas les champs manquants utilisés par le programme sont remplis avec des valeurs par défaut. D'autre part, il est possible de lancer le programme en utilisant directement ce fichier de configuration, que l'utilisateur a préalablement généré et / ou modifié à sa convenance. Il permet d'avoir une description de l'architecture beaucoup plus proche du simulateur, alors que le fichier \textsc{HWLoc} contient des informations inutilisées et ne permet pas de donner toutes les informations nécessaires au programme. Voici un exemple d'un tel fichier de configuration, utilisé actuellement dans notre prototype :
 
+\begin{lstlisting}
+<?xml version="1.0"?>
+<Architecture name="x86_64" CPU_name="Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)" number_levels="3">
+    <Level depth="3" coherence_protocol="MESI" is_inclusive="true"/>
+    <Level depth="2" coherence_protocol="MESI" is_inclusive="true"/>
+    <Level depth="1" coherence_protocol="MESI" is_inclusive="true"/>
+    <Cache depth="3" cache_size="3145728" cache_linesize="64" cache_associativity="12" replacement_protocol="LRU">
+        <Cache depth="2" cache_size="262144" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU">
+            <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+            <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+        </Cache>
+        <Cache depth="2" cache_size="262144" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU">
+            <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+            <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+        </Cache>
+    </Cache>
+</Architecture>
+\end{lstlisting}
+
+Notons que ce format est amené à changer durant de développement du programme, et qu'il faudra vérifier la cohérences des données en entrée. Certaines combinaisons n'ayant pas forcément de sens, il semble judicieux que l'utilisateur en soit informé.
 \subsection{Fonctionnalités annexes}
 
 Si les délais le permettent, plusieurs options seront rajoutées : nous pensons notamment à deux ajouts concernant les métriques et la lecture de la trace. Pour les métriques, il s'agit de pouvoir suivre toutes les opérations effectuées sur une plage d'adresses donnée. Pour la lecture de la trace, il s'agit de l'optimisation du déroulement des boucles lors des demandes d'accès importantes à la mémoire, afin de ne pas parcourir la boucle en entier.
