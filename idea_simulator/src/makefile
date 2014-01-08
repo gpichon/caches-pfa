@@ -69,7 +69,7 @@ endif
 
 clean: 
 	rm -f ../bin/simulator ../obj/$(OBJ) $(subst .c,.P,$(SRC))
-	rm -f ../bin/test
+	rm -f ../bin/test ../obj/$(OBJ_TEST) $(subst .c,.P,$(SRC_TEST))
 	@make -s -C core clean
 	@make -s -C others clean
 	@make -s -C tests clean
