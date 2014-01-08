@@ -22,9 +22,8 @@ exe:
 	@make -s -C core
 	@make -s -C others
 
-
 ../bin/simulator: ../obj/$(OBJ)
-	@$(CC) $(CFLAGS)  $(OBJS) -o $@ $(XMLFLAGS)
+	@$(CC) $(CFLAGS)  $(subst ../obj/$(OBJ_TEST),,$(OBJS)) -o $@ $(XMLFLAGS)
 ifeq ($(DEBUG),YES)
 	$(info !!Sources compilées pour débuggage!!)
 endif
@@ -48,8 +47,8 @@ test_exe:
 	@make -s -C others
 	@make -s -C tests
 
-../bin/test:  $(OBJ_TEST)
-	$(CC) $(CFLAGS) $(OBJS) -o $@ $(XMLFLAGS)
+../bin/test:  ../obj/$(OBJ_TEST)
+	$(CC) $(CFLAGS) $(subst ../obj/$(OBJ),,$(OBJS)) -o $@ $(XMLFLAGS)
 ifeq ($(DEBUG),YES)
 	$(info !!Sources compilées pour débuggage!!)
 endif
@@ -70,6 +69,7 @@ endif
 
 clean: 
 	rm -f ../bin/simulator ../obj/$(OBJ) $(subst .c,.P,$(SRC))
+	rm -f ../bin/test
 	@make -s -C core clean
 	@make -s -C others clean
 	@make -s -C tests clean
