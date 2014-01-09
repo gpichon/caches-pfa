@@ -118,11 +118,8 @@ int main(int argc, char *argv[]) {
   }
 
   
-  free_thread(t[current]);
   for (j=0; j<4; j++){
-    if (j!=current){
-      free(t[j]);
-    }
+    free_thread(t[j]);
   }
   free(t);
 

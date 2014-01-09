@@ -1,0 +1,135 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{graphicx}
+
+\usetheme{CambridgeUS}
+\title[Projet de programmation orientée objet]{Collecte de données}
+\author[Les Manchots]{Nicolas Belin, Loïc Dauphin, Yvon Garbage, \\ Pierre Lefebvre, Grégoire Pichon}
+\institute[ENSEIRB-MATMECA]{ENSEIRB-MATMECA}
+\date{\today}
+%\date{}
+
+\setbeamercolor{title}{bg=red!65!black,fg=white}
+
+\begin{document}
+
+\setlength{\unitlength}{1cm}
+
+\begin{frame}{Présentation}
+
+\titlepage
+
+\end{frame}
+
+%\AtBeginSection[]
+%{
+%\begin{frame}<beamer>
+%  \frametitle{Plan}
+%  \tableofcontents[currentsection]
+%\end{frame}
+%}
+
+\section*{Introduction}
+\begin{frame}
+\begin{block}{Sujet}
+~~Service de collecte de l'entrée et de la sortie des passagers\\
+\end{block}
+
+\begin{block}{Objectifs}
+\begin{center}
+\begin{itemize}
+  \item{indépendance du service de collecte,}
+  \item{utilisation de la collecte facultative pour le client,}
+  \item{indépendance des réalisations du service de collecte,}
+  \item{limitation de la duplication de code.}
+\end{itemize}
+\end{center}
+\end{block}
+\end{frame}
+
+\section{Implémentation}
+\subsection{Cadre général}
+\begin{frame}
+\begin{block}{Code}
+\begin{center}
+\begin{itemize}
+\item utilisation d'une LinkedList<int$\left[~\right]$>,
+\item à chaque nouvel arrêt, on enregistre les entrées et les sorties dans un nouvel élément de la liste,
+\item Collecte instanciée avec une chaîne de caractères,
+\item un fichier de log par collecte instanciée.
+\end{itemize}
+\end{center}
+\end{block}
+\end{frame}
+
+\subsection{Greffon est-un}
+\begin{frame}
+\begin{center}
+\begin{figure}
+\includegraphics[scale=0.35]{diagramme-classe-est-un.png}
+\end{figure}
+Diagramme est-un
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\begin{block}{Code est-un}
+\begin{itemize}
+\item \texttt{AutobusCollecte extends Autobus}
+\item instanciation de AutobusCollecte : \texttt{(int assis, int debout, Collecte)},
+\item code factorisé grâce à l'héritage des méthodes d'Autobus.
+\end{itemize}
+\end{block}
+\begin{figure}
+\includegraphics[scale=0.32]{diagramme-sequence-est-un.png}
+\end{figure}
+\end{center}
+\end{frame}
+
+\subsection{Greffon a-un}
+\begin{frame}
+\begin{center}
+\begin{figure}
+\includegraphics[scale=0.35]{diagramme-classe-a-un.png}
+\end{figure}
+Diagramme a-un
+\end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+\begin{block}{Code a-un}
+\begin{itemize}
+\item \texttt{AutobusCollecte extends Bus implements Transport}
+\item lien a-un : AutobusCollecte possède un attribut de type Transport,
+\item instanciation de AutobusCollecte: \texttt{(Transport, Collecte)},
+\item réutilisation possible avec une autre classe descendant de Transport et Bus, par exemple Tramway,
+\item définition des méthodes déclarées dans l'interface Transport et la classe abstraite Bus.
+\end{itemize}
+\end{block}
+\begin{figure}
+\includegraphics[scale=0.3]{diagramme-sequence-a-un.png}
+\end{figure}
+\end{center}
+\end{frame}
+
+\section*{Conclusion}
+\begin{frame}
+\begin{block}{Conclusion}
+\begin{center}
+\begin{itemize}
+\item améliorations possibles de la collecte : interface Collecte,
+\item fermeture des fichiers réalisée avec la méthode finalize().
+\end{itemize}
+\end{center}
+\end{block}
+\end{frame}
+
+\end{document}
