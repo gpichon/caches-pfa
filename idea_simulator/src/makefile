@@ -9,6 +9,7 @@ OBJ:=main.o
 SRC_TEST:=main_test.c
 OBJ_TEST:=main_test.o
 OBJS=$(wildcard ../obj/*.o)
+OBJS2=$(shell find ../obj -name '*.o')
 
 #règles générales
 
@@ -22,7 +23,7 @@ exe:
 	@make -s -C core
 	@make -s -C others
 
-../bin/simulator: ../obj/$(OBJ)
+../bin/simulator: ../obj/$(OBJ) $(subst ../obj/$(OBJ),,$(subst ../obj/$(OBJ_TEST),,$(OBJS2)))
 	@$(CC) $(CFLAGS)  $(subst ../obj/$(OBJ_TEST),,$(OBJS)) -o $@ $(XMLFLAGS)
 ifeq ($(DEBUG),YES)
 	$(info !!Sources compilées pour débuggage!!)
@@ -47,7 +48,7 @@ test_exe:
 	@make -s -C others
 	@make -s -C tests
 
-../bin/test:  ../obj/$(OBJ_TEST)
+../bin/test:  ../obj/$(OBJ_TEST) $(subst ../obj/$(OBJ),,$(subst ../obj/$(OBJ_TEST),,$(OBJS2)))
 	$(CC) $(CFLAGS) $(subst ../obj/$(OBJ),,$(OBJS)) -o $@ $(XMLFLAGS)
 ifeq ($(DEBUG),YES)
 	$(info !!Sources compilées pour débuggage!!)
