@@ -38,7 +38,6 @@ Il existe trois types de caches:
 \item Non Inclusif, peut contenir les données des caches en dessous dans la hiérarchie.\\
 \end{itemize}
 
-Le cache de dernier niveau -- LLC: Last Level Cache -- est fondamental dans la gestion hiérarchique de la cohérence. Avec un LLC inclusif, lorsqu'un L2 fait un Miss, il demande la donnée au L3 qui fait un Hit ou un Miss. En cas de Miss, aucun autre cache de la hiérarchie ne peut posséder la donnée. A contrario, avec un LLC exclusif, l'ensemble de la hiérachie doit être parcourue avant de demander la donnée à la mémoire principale.
-
+Le cache de dernier niveau -- LLC: Last Level Cache -- est fondamental dans la gestion hiérarchique de la cohérence. Avec un LLC inclusif, lorsqu'un L2 fait un Miss, il demande la donnée au L3 qui fait un Hit ou un Miss. En cas de Miss, aucun autre cache de la hiérarchie ne peut posséder la donnée. A contrario, avec un LLC exclusif, l'ensemble de la hiérachie doit être parcourue avant de demander la donnée à la mémoire principale. \\
 
 Concrètement, les solutions pour éviter ce parcours de la hiérarchie sont l'utilisation du \emph{snooping} ou la présence d'un \emph{directory manager}, comprenant l'ensemble des étiquettes présentes dans la hiérarchie. D'autres solutions sont envisageables, mais le design du fonctionnement de la hiérarchie est plus délicat. Nous proposons donc de mettre en place ces trois cas de figure et d'exploiter d'autres solutions si le temps nous le permet. \`A noter que pour profiter pleinemement des avantages du snooping d'un point de vue cohérence, il doit être possible pour tous les niveaux de la hiérarchie.

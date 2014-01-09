@@ -11,9 +11,9 @@ for i0 = 0 to 31999
 endfor
 \end{lstlisting}
 
-Les interactions avec la mémoire (\emph{load}/\emph{store}) sont ici réalisées tous les $4$ octets pour un grand ensemble de valeurs. Par ailleurs, sur un architecture classique, de type \textit{Ivy Bridge} par exemple, la taille d'une ligne de cache est de $64$ octets.
+Les interactions avec la mémoire (\emph{load}/\emph{store}) sont ici réalisées tous les $4$ octets pour un grand ensemble de valeurs. Par ailleurs, sur un architecture classique, de type \textit{Ivy Bridge} par exemple, la taille d'une ligne de cache est de $64$ octets. \\
 
-Supposons qu'un thread réalise $16$ \emph{load} sur un ensemble de blocs mémoires, distants de $4$ octets, et que le premier bloc mémoire considéré soit un multiple de $64$. Il serait possible de faire le premier \emph{load}, afin de mettre à jour les données nécessaires. Par la suite les $15$ load restants feront des \emph{hits}. En réalisant, dans le simulateur, un nouveau \emph{load} et en enregistrant l'ensemble des modifications, le résultat final consiste simplement à multiplier par $15$ ces modifications.
+Supposons qu'un thread réalise $16$ \emph{load} sur un ensemble de blocs mémoires, distants de $4$ octets, et que le premier bloc mémoire considéré soit un multiple de $64$. Il serait possible de faire le premier \emph{load}, afin de mettre à jour les données nécessaires. Par la suite les $15$ load restants feront des \emph{hits}. En réalisant, dans le simulateur, un nouveau \emph{load} et en enregistrant l'ensemble des modifications, le résultat final consiste simplement à multiplier par $15$ ces modifications. \\
 
 Cette optimisation présente une limite : il faut effectuer en une seule fois les $16$ opérations pour considérer le résultat exact (sinon une autre trace aurait pu modifier un des données entre-temps). Il convient à l'utilisateur de vérifier avant d'effectuer la simulation avec cette optimisation que si le gain de temps du au plus faible nombre de \emph{load} compense la perte de temps à déterminer les optimisations possibles.
 

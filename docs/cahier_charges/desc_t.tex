@@ -19,7 +19,7 @@ Les options concernant l'affichage des métriques seront quant à elles fournies
 
 Pour mieux comprendre les différentes relations entre les politiques, il est nécessaire de connaître la façon dont le programme va s'exécuter, et à quels moments ceux-ci seront appelées. Cela a permi de déterminer certains modules, et leurs relations entre eux. 
 
-\subsubsection{Prochaine instruction à exécutée}
+\subsubsection{Prochaine instruction à exécuter}
 
 La première étape est la récupération de l'instruction dans la trace voulue, déterminée par la politique de gestion des threads. Celle-ci connaît l'instruction courante simulée, et doit donc renvoyer au programme quelle ligne de quelle trace sera prochainement simulée. Il faut alors faire attention à gérer les boucles de factorisation générées par \textsc{MAQAO} : si la politique est configurée de sorte qu'une seule instruction est exécutée alternativement sur chaque trace, alors il une seule itération de boucle est simulée lors du passage sur cette trace. 
 

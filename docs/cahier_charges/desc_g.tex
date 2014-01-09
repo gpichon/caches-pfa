@@ -1,7 +1,7 @@
 \section{Description générale du produit}
 
 \paragraph{}
-Ce projet consiste en la création d'un simulateur de caches pour une architecture multi-c\oe ur (exclusivement \verb!x64!) dans le cadre d'un Projet de Fin d'Année de l'\textsc{Enseirb-Matmeca}, et sur le sujet proposé par Denis BARTHOU. Ce projet a été proposé dans un cadre pédagogique mais est destiné à une utilisation réelle puisqu'il existe actuellement peu de programmes du même type, qui ne disposent pas forcément des même sfonctionnalités.
+Ce projet consiste en la création d'un simulateur de caches pour une architecture multi-c\oe ur (exclusivement $64$ bits) dans le cadre d'un Projet de Fin d'Année de l'\textsc{Enseirb-Matmeca}, et sur le sujet proposé par Denis BARTHOU. Ce projet a été proposé dans un cadre pédagogique mais est destiné à une utilisation réelle puisqu'il existe actuellement peu de programmes du même type, qui ne disposent pas forcément des mêmes fonctionnalités.
 
 \subsection{Au sujet de la simulation de caches}
 
@@ -31,7 +31,7 @@ Le simulateur ne sera pas utilisable pour toutes les configurations possibles, n
 \subsubsection{Contraintes d'interfaçage}
 
 Plusieurs outils sont utilisés pour l'étude d'une exécution parallèle, et les résultats de deux de ces outils (\textsc{MAQAO} et \textsc{HWLoc}) sont nécessaires au simulateur de caches. En effet \textsc{MAQAO} génère les traces d'exécutions à analyser, tandis que \textsc{HWLoc}
-génère les fichiers de configurtion de l'architecture des caches. Il sera possible d'utiliser le simulateur en dehors de ces outils, mais la forme du fichier de configuration de l'architecture devra respecter celle présentée ci-dessous (adapté à partir de celle générée par \textsc{HWLoc}), tandis que la forme de la trace devra respecter celle de \textsc{MAQAO}.
+génère les fichiers de configuration de l'architecture des caches. Il sera possible d'utiliser le simulateur en dehors de ces outils, mais la forme du fichier de configuration de l'architecture devra respecter celle présentée ci-dessous (adapté à partir de celle générée par \textsc{HWLoc}), tandis que la forme de la trace devra respecter celle de \textsc{MAQAO}.
 
 \subsubsection{Systèmes d'exploitation compatibles}
 
@@ -71,7 +71,7 @@ Afin de pouvoir paramétrer le simulateur, le programme utilise un fichier de co
 </Architecture>
 \end{lstlisting}
 
-Notons que ce format est amené à changer durant de développement du programme, et qu'il faudra vérifier la cohérences des données en entrée. Certaines combinaisons n'ayant pas forcément de sens, il semble judicieux que l'utilisateur en soit informé. Par exemple la taille des caches inclusifs doit être supérieure ou égale à la somme des tailles des caches qu'ils incluent.
+Notons que ce format est amené à changer durant de développement du programme, et qu'il faudra vérifier la cohérences des données en entrée. Certaines combinaisons n'ayant pas forcément de sens, il semble judicieux que l'utilisateur en soit informé. Par exemple la taille d'un cache inclusif doit être supérieure ou égale à la somme des tailles des caches qu'ils incluent.
 
 \subsection{Fonctionnalités annexes}
 
