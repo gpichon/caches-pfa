@@ -94,13 +94,41 @@
 \begin{frame}
 \begin{block}{Paramètres}
 \begin{itemize}
-  \item{L'architecture simulée dans fichier XML}
+  \item{L'architecture simulée dans fichier XML, avec les paramètres disponibles}
   \item{L'entrelacement des threads dans un fichier LUA}
-  \item{Les potiliques utilisées en ligne de commande}
   \item{Les statistiques demandées}
 \end{itemize}
 \end{block}
 \end{frame}
+
+\begin{frame}
+\begin{block}{Politiques de remplacement simulées}
+\begin{itemize}
+  \item{LRU}
+  \item{LFU}
+  \item{FIFO}
+\end{itemize}
+\end{block}
+
+\begin{block}{Politiques de cohérence simulées}
+\begin{itemize}
+  \item{MSI}
+  \item{MESI}
+  \item{MOSI}
+  \item{MOESI}
+\end{itemize}
+\end{block}
+
+\begin{block}{Politiques globales simulées}
+\begin{itemize}
+  \item{LLC inclusif}
+  \item{Snooping à tous les niveaux}
+  \item{Utilisation d'un \emph{directory manager}}
+\end{itemize}
+\end{block}
+
+\end{frame}
+
 
 \begin{frame}[fragile]
 Exemple de fichier de configuration de l'architecture
@@ -127,38 +155,33 @@ Exemple de fichier de configuration de l'architecture
 \begin{frame}
 \begin{block}{Métriques}
 \begin{itemize}
-  \item{Cache hit}
-  \item{Cache miss}
+  \item{Cache hits}
+  \item{Cache misses}
   \item{Write-backs}
   \item{Broadcasts}
 \end{itemize}
 \end{block}
 \end{frame}
 
+\subsection{Sortie}
+\begin{frame}[fragile]
+\begin{verbatim}
+Liste des caches
+L3 (misses:  9, hits: 12, writes_back: 0, broadcasts: 36)
+L2 (misses: 11, hits:  9, writes_back: 8, broadcasts: 20)
+L2 (misses: 10, hits: 10, writes_back: 0, broadcasts: 20)
+L1 (misses: 10, hits:  3, writes_back: 7, broadcasts: 10)
+L1 (misses: 10, hits:  3, writes_back: 7, broadcasts: 10)
+L1 (misses: 10, hits:  3, writes_back: 7, broadcasts: 10)
+L1 (misses: 10, hits:  3, writes_back: 0, broadcasts: 10)
+\end{verbatim}
+\end{frame}
+
 \section*{Fin}
 \begin{frame}
-\begin{block}{}
-Nous vous proposons maintenant de passer à une étude plus poussée du cahier des charges.
-\end{block}
+\begin{center}
+Merci de votre attention.
+\end{center}
 \end{frame}
 
 \end{document}
-
-
-
-%\begin{frame}
-%\begin{center}
-%\begin{block}{Code a-un}
-%\begin{itemize}
-%\item \texttt{AutobusCollecte extends Bus implements Transport}
-%\item lien a-un : AutobusCollecte possède un attribut de type Transport,
-%\item instanciation de AutobusCollecte: \texttt{(Transport, Collecte)},
-%\item réutilisation possible avec une autre classe descendant de Transport et Bus, par exemple Tramway,
-%\item définition des méthodes déclarées dans l'interface Transport et la classe abstraite Bus.
-%\end{itemize}
-%\end{block}
-%\begin{figure}
-%\includegraphics[scale=0.3]{diagramme-sequence-a-un.png}
-%\end{figure}
-%\end{center}
-%\end{frame}
