@@ -1,6 +1,6 @@
 \section{Détails techniques du produit}
 
-Les contraintes exposées ci-dessus imposent une partie de l'implémentation du programme. Par exemple les contraintes d'interfaçage et de paramétrisation des politiques préfigurent l'ordre d'exécution. La nature des différentes politiques va aussi avoir une influence sur leur représentation.
+Les contraintes exposées ci-dessus imposent une partie de l'implémentation du programme. La nature des différentes politiques va aussi avoir une influence sur leur propre représentation ainsi que sur leur utilisation.
 
 \subsection{Exécution du produit}
 
@@ -8,12 +8,12 @@ Le déroulement d'une exécution du produit suit le protocole suivant : il faut 
 
 \subsubsection{Paramètrisation de l'exécution}
 
-La configuration d'une exécution se fait par l'intermédiaire de deux fichiers. L'un comprend la politique de gestion des threads et est écrit en \textsc{lua} afin de donner facilement plus de possibilités à l'utilisateur. En revanche la configuration (taille, inclusion, politiques associées) est écrite en \textsc{XML} à la manière de \textsc{HWLoc}, simplement enrichi de quelques balises par rapport à la sortie standard de \textsc{HWLoc}. Le simulateur fournit la possibilité d'épurer un fichier \textsc{HWLoc}, afin que l'utilisateur puisse l'enrichir plus simplement avec les balises propres au simulateur.
+La configuration d'une exécution se fait par l'intermédiaire de deux fichiers. L'un comprend la politique de gestion des threads et est écrit en \textsc{lua} afin de donner facilement plus de possibilités à l'utilisateur. En revanche la configuration (taille, inclusion, politiques associées) est écrite en \textsc{XML}, comme cela est décit en \ref{param}.
 
 \subsubsection{Résultat de l'exécution}
 \label{métriques}
 
-Les options concernant l'affichage des métriques seront quant à elles fournies en paramètres au simulateur. Dans la version nominale, il sera possible de visualiser le nombre de \emph{cache-misses} à la fois par cache, mais aussi par trace, et enfin par trace au sein d'un cache. En plus des \emph{cache-misses}, le nombre de \emph{broadcasts}\footnote{Un \emph{broadcast} consiste à alerter tous les caches d'un changement d'état d'une ligne (partagée, invalide, \ldots), cette opération est donc coûteuse en temps.} (dont invalidations de ligne) réalisé par chaque cache sera aussi noté. Précisons ici qu'aucune métrique de temps n'est implémentée, et que rien n'est prévu pour faciliter leur intégration à long terme.
+Les options concernant l'affichage des métriques seront quant à elles fournies en paramètres au simulateur. Dans la version nominale, il sera possible de visualiser le nombre de \emph{cache-misses} à la fois par cache, mais aussi par trace. En plus des \emph{cache-misses}, le nombre de \emph{broadcasts}\footnote{Un \emph{broadcast} consiste à alerter tous les caches d'un changement d'état d'une ligne (partagée, invalide, \ldots), cette opération est donc coûteuse en temps.} (dont invalidations de ligne) réalisé par chaque cache sera aussi noté. Précisons ici qu'aucune métrique de temps n'est implémentée, et que rien n'est prévu pour faciliter leur intégration à long terme.
 
 \subsection{Séquence typique pour une ligne de trace}
 
@@ -29,17 +29,15 @@ Ensuite il est nécessaire de rechercher la valeur parmi les caches (et donc de 
 
 \subsubsection{Application de la cohérence et du remplacement}
 
- Lorsque la donnée a été localisée, la politique globale est appelée pour rapatrier la donnée la plus à jour. C'est elle qui va se charger de d'appeler aux bons moments les politiques de cohérence, de remplacement, et les métriques associées. \\
-===> Schéma ou alors plus d'explications
-
+ Lorsque la donnée a été localisée, la politique globale est appelée pour rapatrier la donnée la plus à jour. C'est elle qui va se charger de d'appeler aux bons moments les politiques de cohérence, de remplacement, et les métriques associées. Pour plus de détails sur les politiques, voir le paragraphe \ref{politiques}.
 
 \subsection{Sources et structures de données}
 
-Le simulateur étant voué à être repris, le code est écrit pour faciliter l'implémentation de quelques nouvelles fonctionnalités. Il doit par ailleurs permettre à un utilisateur averti de vérifier le calcul de certaines actions s'il ne s'accorde pas avec les résultats obtenus.
+Le simulateur étant voué à être repris, le code est écrit pour faciliter l'implémentation de quelques nouvelles fonctionnalités. Il doit par ailleurs permettre à un utilisateur averti de vérifier le calcul de certaines actions s'il n'est pas en accord avec les résultats obtenus.
 
 \subsubsection{Sources}
 
-Le code est divisé en de nombreux fichiers, afin d'être relativement modularisable. Il y a deux modules principaux : le module de gestion de la configuration, et le module de la gestion des caches. Le premier contient tous les fichiers nécessaires pour interpréter les fichiers de configuration et initialiser correctement le programme. Le second contient toutes les fonctions utilisées pour le fonctionnement interne du cache ainsi que les protocoles de communication entre les caches (par exemple la politique de cohérence). Les deux modules sont appelés par un \verb!main.c! à la racine des sources. Un \verb!Makefile! est fourni pour l'installation.
+Le code est divisé en de nombreux fichiers, afin d'être relativement modulaire. Il y a deux modules principaux : le module de gestion de la configuration, et le module de la gestion des caches. Le premier contient tous les fichiers nécessaires pour interpréter les fichiers de configuration et initialiser correctement le programme. Le second contient toutes les fonctions utilisées pour le fonctionnement interne du cache ainsi que les protocoles de communication entre les caches (par exemple la politique de cohérence). Les deux modules sont appelés par un \verb!main.c! à la racine des sources. Un \verb!Makefile! est fourni pour l'installation.
 
 \subsubsection{Structure de données}
 
@@ -47,4 +45,4 @@ Pour représenter l'architecture, un grand nombre de structures sont initialisé
 
 \subsubsection{Evolutivité des sources}
 
-La gestion de l'ordre de lecture des threads, qui est un fichier \textsc{lua}, est donc lu avant chaque exécution et l'utilisateur peut ainsi la modifier avant chaque exécution du programme. En revanche, si l'utilisateur souhaite implémenter une nouvelle politique autre que celle de cohérence, il devra les rajouter dans le fichier source correspondant et recompiler par la suite. Il pourra être aidé dans sa tâche par la documentation (fournie) de toutes les fonctions et structures utilisées, en anglais. De plus la politique de cohérence, bien qu'implémentées en \textsc{C}, sera décrite à l'aide d'un langage spécifique de description des automates, ce qui en facilitera toute modification.
+La gestion de l'ordre de lecture des threads, qui est un fichier \textsc{lua}, est donc lu avant chaque exécution et l'utilisateur peut ainsi la modifier avant chaque exécution du programme. En revanche, si l'utilisateur souhaite implémenter une nouvelle politique autre que celle de cohérence, il devra les rajouter dans le fichier source correspondant et recompiler par la suite. Il pourra être aidé dans sa tâche par la documentation (fournie) de toutes les fonctions et structures utilisées, en anglais. De plus les politiques de cohérence, bien qu'implémentées en \textsc{C}, seront sûrement décrites à l'aide d'un langage spécifique de description des automates, ce qui en facilitera toute modification.
