@@ -18,7 +18,7 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int
   cache->linesize       = linesize;
   cache->nb_ways        = nb_ways;
   cache->nb_blocks      = nb_blocks;
-  struct block **blocks = init_block(nb_blocks, nb_ways);
+  struct block **blocks = init_block(nb_blocks, nb_ways, linesize);
   cache->blocks         = blocks;
   cache->misses         = 0;
   cache->hits           = 0;
@@ -38,7 +38,7 @@ void delete_cache(struct cache *cache) {
 }
 
 int block_id(struct cache *cache, int entry) {
-  entry = entry / ARCH; //Line in principal memory
+  entry = entry / cache->linesize; //Line in principal memory
 
   int id_block = entry % cache->nb_blocks;
   return id_block;
@@ -54,7 +54,7 @@ int is_in_cache(struct cache *cache, int entry) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-    if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
+    if (is_valid(line) && (line->first_case == entry / cache->linesize * cache->linesize)) {
       res = 1;
     }
   }    
@@ -76,7 +76,7 @@ struct line *line_in_cache(struct cache *cache, int entry) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-    if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
+    if (is_valid(line) && (line->first_case == entry / cache->linesize * cache->linesize)) {
       return line;
     }
   }    

@@ -12,14 +12,15 @@
 #include "block.h"
 
 /* Data allocations */
-struct block **init_block(int nb_blocks, int nb_ways) {
+struct block **init_block(int nb_blocks, int nb_ways, int linesize) {
   struct block **blocks = malloc(nb_blocks * sizeof(struct block *));
   int i;
   for (i=0; i<nb_blocks; i++) {
     struct block *block = malloc(sizeof(struct block));
     block->nb_ways = nb_ways;
     struct line ** lines = init_line(nb_ways);
-    block->lines = lines;  
+    block->lines = lines;
+    block->linesize = linesize;
     blocks[i] = block;
   }
   return blocks;
@@ -120,7 +121,7 @@ void update_LFU(struct block *block, int nb_ways, int entry) {
   struct line *line;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-    if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
+    if (is_valid(line) && (line->first_case == entry / block->linesize * block->linesize)) {
       line->use++;
     }
   }
@@ -141,7 +142,7 @@ void update_LRU(struct block *block, int nb_ways, int entry) {
   }
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-    if (is_valid(line) && (line->first_case == entry / ARCH * ARCH)) {
+    if (is_valid(line) && (line->first_case == entry / block->linesize * block->linesize)) {
       line->use++;
     }
   } 
