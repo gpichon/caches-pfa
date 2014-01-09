@@ -25,6 +25,7 @@
  */
 struct block {
   int nb_ways; /**< Number of lines in the block. */
+  int linesize; /**< Line size. */
   struct line **lines; /**< Tabular of line structure pointer. */
 };
 
@@ -33,7 +34,7 @@ struct block {
  * \return Return \a nb_blocks initialized blocks, 
  *  each contains \a nb_ways initialized lines.
  */
-struct block **init_block(int nb_blocks, int nb_ways);
+struct block **init_block(int nb_blocks, int nb_ways, int linesize);
 
 /**
  * \brief Data removal. Contained lines are too free. 

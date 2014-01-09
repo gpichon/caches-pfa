@@ -18,13 +18,6 @@
 #include <assert.h>
 
 /**
- * \def ARCH
- * \brief Size of an address length (in bits).
- */
-#define ARCH 64
-
-
-/**
  * \struct line
  * \brief Abstract Data Type for a line.
  */ 

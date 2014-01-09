@@ -81,7 +81,7 @@ int add_line_cache(struct list **caches, int nb_threads, struct cache *cache, in
 
   if (!is_in_cache(cache, entry)) {
     line = malloc(sizeof(struct line));
-    line->first_case = entry / ARCH * ARCH;
+    line->first_case = entry / cache->linesize * cache->linesize;
     line->use = 0;
     if (w) {
       modify_line(line);
