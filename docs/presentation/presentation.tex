@@ -8,9 +8,38 @@
 \usepackage{color}
 \usepackage{graphicx}
 
+\usepackage{listings}
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\tiny,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{green},      % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,                    % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=xml,                    % the language of the code
+  morekeywords={Level,Cache,Architecture,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{blue},  % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{red},         % string literal style
+  tabsize=2,                       % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
 \usetheme{CambridgeUS}
-\title[Projet de programmation orientée objet]{Collecte de données}
-\author[Les Manchots]{Nicolas Belin, Loïc Dauphin, Yvon Garbage, \\ Pierre Lefebvre, Grégoire Pichon}
+\title[PFA - Simulateur de caches multi-c\oe ur]{PFA - Simulateur de caches multi-c\oe ur}
+\author[]{Nicolas Dubois, Pierre Goudet, Nicolas Heng,\\Alexandre Honorat, Gilles Marait, Grégoire Pichon}
 \institute[ENSEIRB-MATMECA]{ENSEIRB-MATMECA}
 \date{\today}
 %\date{}
@@ -35,101 +64,101 @@
 %\end{frame}
 %}
 
-\section*{Introduction}
+\section*{Fonctionnalités}
 \begin{frame}
-\begin{block}{Sujet}
-~~Service de collecte de l'entrée et de la sortie des passagers\\
-\end{block}
-
-\begin{block}{Objectifs}
-\begin{center}
+\begin{block}{Fonctionnalités demandées}
 \begin{itemize}
-  \item{indépendance du service de collecte,}
-  \item{utilisation de la collecte facultative pour le client,}
-  \item{indépendance des réalisations du service de collecte,}
-  \item{limitation de la duplication de code.}
-\end{itemize}
-\end{center}
-\end{block}
-\end{frame}
-
-\section{Implémentation}
-\subsection{Cadre général}
-\begin{frame}
-\begin{block}{Code}
-\begin{center}
-\begin{itemize}
-\item utilisation d'une LinkedList<int$\left[~\right]$>,
-\item à chaque nouvel arrêt, on enregistre les entrées et les sorties dans un nouvel élément de la liste,
-\item Collecte instanciée avec une chaîne de caractères,
-\item un fichier de log par collecte instanciée.
-\end{itemize}
-\end{center}
-\end{block}
-\end{frame}
-
-\subsection{Greffon est-un}
-\begin{frame}
-\begin{center}
-\begin{figure}
-\includegraphics[scale=0.35]{diagramme-classe-est-un.png}
-\end{figure}
-Diagramme est-un
-\end{center}
-\end{frame}
-
-\begin{frame}
-\begin{center}
-\begin{block}{Code est-un}
-\begin{itemize}
-\item \texttt{AutobusCollecte extends Autobus}
-\item instanciation de AutobusCollecte : \texttt{(int assis, int debout, Collecte)},
-\item code factorisé grâce à l'héritage des méthodes d'Autobus.
+  \item{Rejouer et analyser une trace de MAQAO}
+  \item{Pouvoir paramétrer l'architecture simulée (HWLoc)}
+  \item{Choisir les politiques de gestion des caches à utiliser}
+  \item{Gérer les l'entrelacement des threads}
+  \item{Générer des données (statistiques) sur l'exécution de la trace}
+  \item{UNIX compatible uniquement (MAQAO)}
 \end{itemize}
 \end{block}
-\begin{figure}
-\includegraphics[scale=0.32]{diagramme-sequence-est-un.png}
-\end{figure}
-\end{center}
-\end{frame}
-
-\subsection{Greffon a-un}
-\begin{frame}
-\begin{center}
-\begin{figure}
-\includegraphics[scale=0.35]{diagramme-classe-a-un.png}
-\end{figure}
-Diagramme a-un
-\end{center}
 \end{frame}
 
 \begin{frame}
-\begin{center}
-\begin{block}{Code a-un}
+\begin{block}{Fonctionnalités optionnelles}
 \begin{itemize}
-\item \texttt{AutobusCollecte extends Bus implements Transport}
-\item lien a-un : AutobusCollecte possède un attribut de type Transport,
-\item instanciation de AutobusCollecte: \texttt{(Transport, Collecte)},
-\item réutilisation possible avec une autre classe descendant de Transport et Bus, par exemple Tramway,
-\item définition des méthodes déclarées dans l'interface Transport et la classe abstraite Bus.
+  \item{Ajouter d'autres métriques (suivre des plages d'adresses)}
+  \item{Optimiser le simulateur (boucles)}
+  \item{Utiliser des graphes dans le code}
+  \item{Ajouter des politiques globales}
+  \item{Fournir plusieurs types de sorties pour les statistiques}
 \end{itemize}
 \end{block}
-\begin{figure}
-\includegraphics[scale=0.3]{diagramme-sequence-a-un.png}
-\end{figure}
-\end{center}
 \end{frame}
 
-\section*{Conclusion}
+\section{Détails techniques}
 \begin{frame}
-\begin{block}{Conclusion}
-\begin{center}
+\begin{block}{Paramètres}
 \begin{itemize}
-\item améliorations possibles de la collecte : interface Collecte,
-\item fermeture des fichiers réalisée avec la méthode finalize().
+  \item{L'architecture simulée dans fichier XML}
+  \item{L'entrelacement des threads dans un fichier LUA}
+  \item{Les potiliques utilisées en ligne de commande}
+  \item{Les statistiques demandées}
 \end{itemize}
-\end{center}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+Exemple de fichier de configuration de l'architecture
+\begin{lstlisting}
+<?xml version="1.0"?>
+<Architecture name="x86_64" CPU_name="Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)" number_levels="3">
+    <Level depth="3" coherence_protocol="MESI" is_inclusive="true"/>
+    <Level depth="2" coherence_protocol="MESI" is_inclusive="true"/>
+    <Level depth="1" coherence_protocol="MESI" is_inclusive="true"/>
+    <Cache depth="3" cache_size="3145728" cache_linesize="64" cache_associativity="12" replacement_protocol="LRU">
+        <Cache depth="2" cache_size="262144" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU">
+            <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+            <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+        </Cache>
+        <Cache depth="2" cache_size="262144" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU">
+            <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+            <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+        </Cache>
+    </Cache>
+</Architecture>
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}
+\begin{block}{Métriques}
+\begin{itemize}
+  \item{Cache hit}
+  \item{Cache miss}
+  \item{Write-backs}
+  \item{Broadcasts}
+\end{itemize}
+\end{block}
+\end{frame}
+
+\section*{Fin}
+\begin{frame}
+\begin{block}{}
+Nous vous proposons maintenant de passer à une étude plus poussée du cahier des charges.
 \end{block}
 \end{frame}
 
 \end{document}
+
+
+
+%\begin{frame}
+%\begin{center}
+%\begin{block}{Code a-un}
+%\begin{itemize}
+%\item \texttt{AutobusCollecte extends Bus implements Transport}
+%\item lien a-un : AutobusCollecte possède un attribut de type Transport,
+%\item instanciation de AutobusCollecte: \texttt{(Transport, Collecte)},
+%\item réutilisation possible avec une autre classe descendant de Transport et Bus, par exemple Tramway,
+%\item définition des méthodes déclarées dans l'interface Transport et la classe abstraite Bus.
+%\end{itemize}
+%\end{block}
+%\begin{figure}
+%\includegraphics[scale=0.3]{diagramme-sequence-a-un.png}
+%\end{figure}
+%\end{center}
+%\end{frame}
