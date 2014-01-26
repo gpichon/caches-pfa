@@ -3,6 +3,17 @@
 #include <papi.h>
 #define NUM_EVENTS 4
 
+int nb_instructions=0;
+void s1113(double *A, double *B, int size1, int size2){
+  int nl, i;
+  for(nl = 0; nl < size1; nl++){
+    for(i = 0; i < size2; i++){
+      A[i] = A[size2/2] + B[i];
+      nb_instructions++;
+    }
+  }
+}
+
 void matmul(const double *A, const double *B,
 	    double *C, int m, int n, int p)
 {
@@ -18,12 +29,15 @@ void matmul(const double *A, const double *B,
 
 int main(int argc, char **argv)
 {
-  const int size = 300;
-  double a[size][size];
-  double b[size][size];
-  double c[size][size];
+  const int size = 512000;
+  //double a[size][size];
+  //double b[size][size];
+  //double c[size][size];
+  double *A, *B;
+  A = malloc(size*sizeof(double));
+  B = malloc(size*sizeof(double));
 
-  int event[NUM_EVENTS] = {PAPI_TOT_INS, PAPI_TOT_CYC, PAPI_BR_MSP, PAPI_L1_DCM };
+  int event[NUM_EVENTS] = {PAPI_TOT_INS, PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};
   long long values[NUM_EVENTS];
 
   /* Start counting events */
@@ -32,7 +46,8 @@ int main(int argc, char **argv)
     exit(1);
   }
 
-  matmul((double *)a, (double *)b, (double *)c, size, size, size);
+  //  matmul((double *)a, (double *)b, (double *)c, size, size, size);
+  s1113(A, B, 2, size);
 
   /* Read the counters */
   if (PAPI_read_counters(values, NUM_EVENTS) != PAPI_OK) {
@@ -40,11 +55,10 @@ int main(int argc, char **argv)
     exit(1);
   }
 
-  printf("Total instructions: %lld\n", values[0]);
-  printf("Total cycles: %lld\n", values[1]);
-  printf("Instr per cycle: %2.3f\n", (double)values[0] / (double) values[1]);
-  printf("Branches mispredicted: %lld\n", values[2]);
-  printf("L1 Cache misses: %lld\n", values[3]);
+  printf("Total instructions: %lld\n", nb_instructions);
+  printf("L1 Cache misses: %lld\n", values[1]);
+  printf("L2 Cache misses: %lld\n", values[2]);
+  printf("L3 Cache misses: %lld\n", values[3]);
 
   /* Stop counting events */
   if (PAPI_stop_counters(values, NUM_EVENTS) != PAPI_OK) {
