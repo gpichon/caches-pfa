@@ -1,0 +1,8 @@
+Pour utiliser papi:
+
+L'installer: dans l'archive il y a un fichier INSTALL.txt qui explique tout.
+
+Ajouter dans le .bashrc:
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+Afin de pouvoir utiliser la librarie dynamique libpapi.so
