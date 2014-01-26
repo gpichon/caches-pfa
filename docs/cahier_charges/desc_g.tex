@@ -1,15 +1,21 @@
 \section{Description générale du produit}
 
 \paragraph{}
-Ce projet consiste en la création d'un simulateur de caches pour une architecture multi-c\oe ur (exclusivement $64$ bits) dans le cadre d'un Projet de Fin d'Année de l'\textsc{Enseirb-Matmeca}, et sur le sujet proposé par Denis BARTHOU. Ce projet a été proposé dans un cadre pédagogique mais est destiné à une utilisation réelle puisqu'il existe actuellement peu de programmes du même type, qui ne disposent pas forcément des mêmes fonctionnalités.
+Ce projet consiste en la création d'un simulateur de caches pour une architecture multi-c\oe ur (exclusivement $64$ bits) dans le cadre d'un Projet au Fil de l'Année de l'\textsc{Enseirb-Matmeca}. Ce projet a été proposé dans un cadre pédagogique mais est destiné à une utilisation réelle puisqu'il existe actuellement pas de programmes du même type, qui ne disposent pas forcément des mêmes fonctionnalités.
 
 \subsection{Au sujet de la simulation de caches}
 
 \paragraph{}
-La simulation des caches revient à parcourir des fichiers de traces d'exécutions préalablement générés, afin de rejouer l'ensemble des accès et modifications de données effectués par les c\oe urs et leurs caches associés lors de la création de ces traces. Les données n'importent donc pas : seuls le type d'accès (lecture ou écriture) et l'adresse sont utiles. Cela est à différencier d'un compteur hardware qui détermine l'ensemble des accès pendant l'exécution-même du programme à analyser. Par conséquent le simulateur est totalement indépendant de la machine sur laquelle les programmes ont été exécutés (à condition d'avoir suffisamment de ressources pour simuler l'architecture).   
+Dans un processeur, la vitesse d'accès aux données est un paramètre important et couteux. Ainsi il n'est pas envisageable d'accéder à la mémoire RAM, beaucoup trop lente par rapport à la vitesse d'un processeur. Pour pallier ce problème, une mémoire intermédiaire est insérée au processeur, il s'agit des caches : plus rapides que la RAM, mais avec moins d'expace disponible. Ces caches sont généralement répartis en trois niveaux, de plus en plus rapides et de moins en moins volumineux, au fur et à mesure que l'on s'approche du ou des c\oe urs du processeur.
 
 \paragraph{}
-Le résultat produit par le simulateur consiste en un ensemble de nombres évaluant des métriques configurées pour une simulation donnée. Par exemple le nombre de données ayant été lues/modifiées en même temps par des c\oe urs différents, peut indiquer si le programme est lent à cause d'une mauvaise synchronisation des traces\footnote{La modification d'une donnée dans un cache provoque un changement d'état de chaque ligne contenant cette donnée dans les autres caches. La modification d'une donnée induit ainsi une certaine latence car il faut propager le fait qu'il y a eu modification dans tous les autres caches où la même ligne (et pas seulement la même donnée) était lue. Il convient donc de faire en sorte que les caches modifient le moins possible les données qu'ils sont plusieurs à contenir.}.
+La simulation des caches revient à parcourir des fichiers de traces d'exécutions préalablement générés, afin de rejouer l'ensemble des accès et modifications de données effectués par les c\oe urs et leurs caches associés lors de la création de ces traces. Une trace correspond à l'ensemble des accès mémoires qui se sont produits lors de l'exécution d'une partie de code sur un processeur. 
+
+\paragraph{}
+Les données n'importent donc pas : seuls le type d'accès (lecture ou écriture) et l'adresse sont utiles. Cela est à différencier d'un compteur hardware qui détermine l'ensemble des accès pendant l'exécution-même du programme à analyser. Par conséquent le simulateur est totalement indépendant de la machine sur laquelle les programmes ont été exécutés (à condition d'avoir suffisamment de ressources pour simuler l'architecture).   
+
+\paragraph{}
+Le résultat produit par le simulateur consiste en un ensemble de métriques configurées pour une simulation donnée. Par exemple le nombre de données ayant été lues/modifiées en même temps par des c\oe urs différents, peut indiquer si le programme est lent à cause d'une mauvaise synchronisation des traces\footnote{La modification d'une donnée dans un cache provoque un changement d'état de chaque ligne contenant cette donnée dans les autres caches. La modification d'une donnée induit ainsi une certaine latence car il faut propager le fait qu'il y a eu modification dans tous les autres caches où la même ligne (et pas seulement la même donnée) était lue. Il convient donc de faire en sorte que les caches modifient le moins possible les données qu'ils sont plusieurs à contenir.}.
 
 \subsection{Fonctionnalités nominales}
 
@@ -22,11 +28,9 @@ Parmi les configurations possibles de la simulation, nous retrouverons : la poli
 \paragraph{}
 La sortie du simulateur permettra de faire des analyses sur ce qui s'est produit dans le cache durant l'exécution d'une ou plusieurs traces. L'utilisateur pourra en effet choisir la métrique à utiliser pour l'analyse courante. L'ensemble des métriques disponibles est présenté dans la rubrique \ref{métriques}. 
 
-\newpage
-
 \subsection{Environnement de fonctionnement et contraintes}
 
-Le simulateur ne sera pas utilisable pour toutes les configurations possibles, ni dans tous les environnements existants. La contrainte principale, \textsc{MAQAO}\footnote{MAQAO n'est disponible que sous Unix, en version x64.}, nous a par exemple incité à se concentrer sur un déploiement sur des systèmes de type Unix uniquement. 
+Le simulateur ne sera pas utilisable pour toutes les configurations possibles, ni dans tous les environnements existants. La contrainte principale, \textsc{MAQAO} qui n'est disponible que sous Unix, en version x64, nous a par exemple incité à se concentrer sur un déploiement sur des systèmes de type Unix uniquement. 
 
 \subsubsection{Contraintes d'interfaçage}
 
@@ -35,7 +39,7 @@ génère les fichiers de configuration de l'architecture des caches. Il sera pos
 
 \subsubsection{Systèmes d'exploitation compatibles}
 
-Le simulateur sera uniquement développé pour les systèmes basés sur Unix. Bien qu'écrit en \textsc{C}, les outils utilisés ne fonctionnent que sur certaines architectures (notamment la lecture des fichiers). Par ailleurs les traces portent obligatoirement sur des adresses codées sur $64$ bits mais il sera possible d'exécuter le simulateur sur une architecture $32$ bits, cela risque toutefois de nuire aux performances du simulateur.
+Le simulateur sera uniquement développé pour les systèmes basés sur Unix. Bien qu'écrit en \textsc{C}, il n'est pas prévu de tester sa compatibilité avec d'autres systèmes. Par ailleurs les traces portent obligatoirement sur des adresses codées sur $64$ bits mais il sera possible d'exécuter le simulateur sur une architecture $32$ bits.
 
 \subsubsection{Visualisation des résultats}
 
@@ -48,9 +52,7 @@ La visualisation des résultats (de même que le lancement du simulateur) se fer
 Le programme doit être adapté à la mise en place de nouvelles politiques, et à leur paramètrisation. Il doit aussi permettre sa maintenance et sa réutilisation. Les politiques de cohérence et de remplacement foncionnent toutefois ensembles grâce à une politique globale. Enfin la paramétrisation de l'architecture des caches ne prend pas en compte les caches d'instructions, mais seulement ceux de données, et ceux-ci sont tous considérés comme écrivant en \emph{write-back} (voir la rubrique \ref{coher} à ce sujet). De plus tous les caches sont considérés par défaut comme non-inclusifs sauf celui de plus haut niveau, bien que nous laissons la possibilité à l'utilisateur de modifier cela par la suite.
 
 \paragraph{}
-Afin de pouvoir paramétrer le simulateur, le programme utilise un fichier de configuration \texttt{XML} qui décrit tous les paramètres utilisés par le simulateur et uniquement ceux-ci. Il est possible de générer ce fichier à partir d'un fichier \textsc{HWLoc} décrivant une architecture, auquel cas les champs manquants utilisés par le programme sont remplis avec des valeurs par défaut. D'autre part, il est possible de lancer le programme en utilisant directement ce fichier de configuration, que l'utilisateur a préalablement généré et / ou modifié à sa convenance. Il permet d'avoir une description de l'architecture beaucoup plus proche du simulateur, alors que le fichier \textsc{HWLoc} contient des informations inutilisées et ne permet pas de donner toutes les informations nécessaires au programme. Voici un exemple d'un tel fichier de configuration, utilisé actuellement dans notre prototype :
-
-\newpage
+Afin de pouvoir paramétrer le simulateur, le programme utilise un fichier de configuration \texttt{XML} qui décrit tous les paramètres utilisés par le simulateur et uniquement ceux-ci. Il est possible de générer ce fichier à partir d'un fichier \textsc{HWLoc} décrivant une architecture, auquel cas les champs manquants utilisés par le programme sont remplis avec des valeurs par défaut. D'autre part, il est possible de lancer le programme en utilisant directement ce fichier de configuration, que l'utilisateur a préalablement généré et / ou modifié à sa convenance. Il permet d'avoir une description de l'architecture beaucoup plus proche du simulateur, alors que le fichier \textsc{HWLoc} contient des informations inutilisées et ne permet pas de donner toutes les informations nécessaires au programme. Voici un exemple d'un tel fichier de configuration :
 
 \begin{lstlisting}
 <?xml version="1.0"?>
