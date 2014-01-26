@@ -6,3 +6,10 @@ Ajouter dans le .bashrc:
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 Afin de pouvoir utiliser la librarie dynamique libpapi.so
+
+
+Pour avoir l'ensemble des métriques disponibles: 
+papi_avail
+
+Pour tester si des métriques sont compatibles: 
+papi_event_chooser métrique1 métrique2 ...
