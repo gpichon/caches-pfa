@@ -231,29 +231,21 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   return EXIT_SUCCESS;
 }
 
+void print_archi_rec(struct node * n){
+  unsigned int i;
+  printf("\tL%d (taille : %d, ligne : %d, associativité : %d, nb_blocks : %d)\n", n->data->depth, n->data->size, n->data->linesize, n->data->nb_ways,  n->data->nb_blocks);
+  printf("\tInfo du noeud : id %d, nombre de fils %d\n\n", n->id, n->nb_children);
+  for(i=0;i<n->nb_children;i++){
+    print_archi_rec(get_child(n,i));
+  }
+}
+
 void print_archi(struct architecture * archi){
-  /*  unsigned int i;
-  struct list * l;
   printf("Architecture %d bits : %s\n", archi->nb_bits, archi->name);
   printf("CPU model : %s\n", archi->CPU_name);
-  printf("Liste des threads : \n");
-  for(i=0;i<archi->number_threads;i++){
-    l = archi->threads[i];
-    printf("Pour thread %d\n", i+1);
-    while(l != NULL){
-      printf("\tL%d (taille : %d, ligne : %d, associativité : %d, nb_blocks : %d)\n", l->cache->depth, l->cache->size, l->cache->linesize, l->cache->nb_ways,  l->cache->nb_blocks);
-      l = l->next;
-    }
-  }
-  printf("\n\nListe des niveaux\n");
-  for(i=0;i<archi->number_levels;i++){
-    l = archi->levels[i];
-    printf("Pour niveau %d\n", i+1);
-    while(l != NULL){
-      printf("\tL%d (taille : %d, ligne : %d, associativité : %d, nb_blocks : %d)\n", l->cache->depth, l->cache->size, l->cache->linesize, l->cache->nb_ways,  l->cache->nb_blocks);
-      l = l->next;
-    }
-    }*/
+  printf("Arbre des caches : \n");
+  struct node * root = get_root(archi->threads[0]);
+  print_archi_rec(root);
 }
 
 int convert_archi_xml(const char * file_in, const char * file_out){
