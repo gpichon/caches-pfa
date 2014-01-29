@@ -102,11 +102,11 @@ int main(int argc, char *argv[]) {
       if (i.type != INSTRUCTION_END_OF_THREAD) {
 	i = next_instruction(t[current]);
 	if (i.type == INSTRUCTION_LOAD) {
-	  load_line_hierarchy(archi, archi->threads[current], i.addr);
+	  load_line_hierarchy(archi->nodes[current], i.addr);
 	  count++;
 	}
 	else if (i.type == INSTRUCTION_STORE) {
-	  store_line_hierarchy(archi, archi->threads[current], i.addr);
+	  store_line_hierarchy(archi->nodes[current], i.addr);
 	  count++;
 	}
       }

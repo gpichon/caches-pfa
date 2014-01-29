@@ -23,8 +23,8 @@
  */ 
 struct line {
   int first_case; /**< I don't know.*/
-  int use; /**< number of utilisation since the line is in the block */
-  int status; /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
+  int use;        /**< number of utilisation since the line is in the block */
+  int status;     /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
 };
 
 /**

@@ -15,7 +15,7 @@ void s1113(double *A, double *B, int size1, int size2){
 }
 
 int main(int argc, char **argv){
-  int size = 32000;
+  int size = 50*32000;
   double *A, *B;
   A = malloc(size*sizeof(double));
   B = malloc(size*sizeof(double));

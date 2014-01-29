@@ -80,13 +80,7 @@ void update_LRU(struct block *block, int nb_ways, int entry);
 /**
  * \brief Load a line in the block. All structures must be initialized.
  * \note Pointer function in parameter returns 1 if write back (when deleting a modified line), else 0.
- * \bug Useless if :
- * ~~~~~~~{.c} 
- * if (del_line == NULL)
- *   return NULL;
- * return del_line;
- * ~~~~~~~
-*/
+ */
 struct line *add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *));
 
 #endif

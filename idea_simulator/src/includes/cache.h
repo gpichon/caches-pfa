@@ -17,7 +17,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "block.h"
-#include "list.h"
 
 
 /* A cache of size size, with nb_blocks blocks.

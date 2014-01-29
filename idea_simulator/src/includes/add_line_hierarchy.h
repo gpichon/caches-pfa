@@ -16,24 +16,36 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "cache.h"
-#include "architecture.h"
+#include "node.h"
 
 
 /**
  * \brief Used for a miss when load or a hit when store.    
- * \param cache Is the cache which launched a share level procedure on parameter level.
+ * \param cache Is the cache which launched a share level procedure on its level.
  * \return Return 1 if there is entry is somewhere else in level.  
  */
-int share_level(struct list *level, struct cache *cache, int entry, void (*action)(struct line *));
+int share_level(struct node *current, int entry, void (*action)(struct line *));
 
 /**
  * \brief Loads the entry in the cache and applies coherence protocol. 
  */
-void load_line_hierarchy(struct architecture *archi, struct list *cache, int entry);
+void load_line_hierarchy(struct node *cache, int entry);
 
 /**
  * \brief Stores the entry in the cache and applies coherence protocol.
  */
-void store_line_hierarchy(struct architecture *archi, struct list *cache, int entry);
+void store_line_hierarchy(struct node *cache, int entry);
+
+/**
+ * \brief Invalid all line in the caches below, which contain the entry, for inclusive strategy.
+ */
+void invalid_back(struct node *cache, int entry);
+
+/**
+ * \brief Add a line in the cache.
+ * \param w If w = 1, modified line. 
+ * \note Call add_line_block.
+ */
+int add_line_cache(struct node *cache, int entry, int w);
 
 #endif

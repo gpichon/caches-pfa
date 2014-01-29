@@ -98,8 +98,6 @@ struct line *add_line_block(struct block *block, struct line *line, int (*replac
   struct line *del_line = block->lines[id_line];
   block->lines[id_line] = line;
 
-  if (del_line == NULL)
-    return NULL;
   return del_line;
 }
 
