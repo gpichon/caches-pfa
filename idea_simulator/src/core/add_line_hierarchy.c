@@ -143,7 +143,6 @@ void invalid_back(struct node *node, int entry) {
   struct cache *current_cache;
   struct line *line;
   unsigned int i;
-  int nb=0;
   for (i=0; i<node->nb_children; i++){
     current_node = get_child(node, i);
     current_cache = get_cache(current_node);

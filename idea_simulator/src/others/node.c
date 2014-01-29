@@ -27,6 +27,7 @@ struct node * init_node(){
   n->nb_children = 0;
   n->id = current_id++;
   n->data = NULL;
+  return n;
 }
 
 struct node * get_parent(struct node * n){

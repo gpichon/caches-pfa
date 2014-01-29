@@ -5,8 +5,6 @@
 int test_architecture(int argc, char** argv){
 
   struct architecture A;
-  int i, k;
-  struct list * l;
   if(argc == 2){
     parse_archi_file(argv[1], &A);
     print_archi(&A);
