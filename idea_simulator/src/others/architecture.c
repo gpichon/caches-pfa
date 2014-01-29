@@ -204,8 +204,10 @@ int parse_archi_file(const char * filename, struct architecture * archi){
       CHECK_ALLOC(archi->threads);
       archi->threads[archi->number_threads] = n;
       for(j = stack_head-1; j >= 0 ; j--){
-	add_child(cstack[j], cstack[j+1]);
-	cstack[j+1]->parent = cstack[j];
+	if(!cstack[j+1]->parent){
+	  cstack[j+1]->parent = cstack[j];
+	  add_child(cstack[j], cstack[j+1]);
+	}
       }
       archi->number_threads++;
     }
@@ -281,29 +283,35 @@ int convert_archi_xml(const char * file_in, const char * file_out){
 
 void print_caches(struct architecture * archi){
   struct node * n = get_root(archi->threads[0]);
+  int cond = 1;
   unsigned int id_beg;
   printf("Liste des caches\n");
-  while(n->nb_children > 0){
+  while(cond){
     id_beg = n->id;
     do{
       printf("\tL%d (misses: %10d, hits: %10d, writes_back: %10d, broadcasts: %10d)\n", n->data->depth, n->data->misses, n->data->hits, n->data->writes_back, n->data->broadcasts);
       n=get_sibling(n);
     } while(n->id != id_beg);
-    n=get_child(n,0);
+    if(n->data->depth == 1)
+      cond = 0;
+    else
+      n=get_child(n,0);
   }
 }
 
 void delete_archi_rec(struct node * n){
   unsigned int i;
   for(i = 0; i<n->nb_children; i++){
-    delete_archi_rec(get_child(n, i));
-    free_node(n);
+    if(get_child(n,i)){
+      delete_archi_rec(get_child(n, i));
+    }
   }
+  delete_cache(n->data);
+  free_node(n);
 }
 
 void delete_archi(struct architecture * archi){
   struct node * root = get_root(archi->threads[0]);
   delete_archi_rec(root);
   free(archi->threads);
-  free(archi);
 }

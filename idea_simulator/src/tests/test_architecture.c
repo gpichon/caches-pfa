@@ -17,37 +17,8 @@ int test_architecture(int argc, char** argv){
     assert(A.number_threads == 4);
     assert(A.number_levels == 3);
     print_archi(&A);
-    /*    for(i=0;i<A.number_levels;i++){ //Checks the levels table
-      l = A.levels[i];
-      k = 0;
-      while(l != NULL){ //Checks each cache has the good depth
-	assert(l->cache->depth == i+1);
-	l = l->next;
-	k++;
-      }
-      switch(i){ //Checks the number of cache
-      case 0:
-	assert(k == 4);
-	break;
-      case 1:
-	assert(k == 2);
-	break;
-      case 2:
-	assert(k == 1);
-	break;
-      }
-    }
-    
-    for(i=0;i<A.number_threads; i++){ //Checks the threads table
-      l = A.threads[i];
-      k = 0;
-      while(l != NULL){ //Checks each cache has the good depth
-	k++;
-	assert(l->cache->depth == k);
-	l = l->next;
-      }
-      assert(k == 3);
-      }*/
+    /* TODO
+       Tests */
     
     printf("Tests architecture OK\n");
   }
