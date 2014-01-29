@@ -20,13 +20,12 @@
  * \brief Abstract Data Type of the global architecture.
  */
 struct architecture {
-  int nb_bits; /**< architecture 32 or 64 bits */
+  unsigned int nb_bits; /**< architecture 32 or 64 bits */
   char name[30]; /**< for example "x86_64" */
   char CPU_name[100]; /**< for example "Intel(R) Core(TM) i3-3120M CPU @ 2.50GHz" */
-  int number_threads; /**< Range ? */
-  int number_levels; /**< Range ? */
-  struct list ** threads; /**< Caches linked by level for each thread.*/
-  struct list ** levels; /**< Caches linked by thread for each level.*/
+  unsigned int number_threads; /**< Range */
+  unsigned int number_levels; /**< Range */
+  struct node ** threads; /**< Leaves of the cache hierarchy tree (corresponding to L1 cache)*/
 };
 
 /**

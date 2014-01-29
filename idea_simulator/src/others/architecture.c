@@ -18,6 +18,7 @@
 #include <libxslt/xsltutils.h>
 #include <string.h>
 #include "architecture.h"
+#include "node.h"
 
 /**
  * \def CHECK_XPATH(result)
@@ -26,6 +27,12 @@
 #define CHECK_XPATH(result) do { if (result == NULL) { fprintf(stderr, "Error XPath request\n"); \
       return EXIT_FAILURE;						\
     } } while(0)
+
+/**
+ * \def CHECK_ALLOC(ptr)
+ * \brief Check if the allocation on ptr worked.
+ */
+#define CHECK_ALLOC(ptr) do { if(ptr == NULL) { fprintf(stderr, "Allocation error\n"); _exit(1); } } while(0)
 
 /**
  * \def DEFAULT_REPLACEMENT_FCT 
@@ -141,7 +148,6 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   archi->number_threads = 0;
   archi->number_levels = 0;
   archi->threads = NULL;
-  archi->levels = NULL;
 
   xmlXPathInit();
   xmlXPathContextPtr context = xmlXPathNewContext(doc);
@@ -155,16 +161,19 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   int stack_head = -1;
   char replacement_prot[10];
   struct cache * c;
-  struct cache ** cstack;
+  struct node * n;
+  struct node ** cstack;
   //Begin parsing
   res = xmlXPathEvalExpression(BAD_CAST "/Architecture", context);
   CHECK_XPATH(res);
   GET_ATTRIBUT_TXT("name", res->nodesetval->nodeTab[0], archi->name);
   GET_ATTRIBUT_TXT("CPU_name", res->nodesetval->nodeTab[0], archi->CPU_name);
   GET_ATTRIBUT_INT("number_levels", res->nodesetval->nodeTab[0], archi->number_levels);
-  archi->levels = calloc(archi->number_levels, sizeof(struct list*));
-  cstack = (struct cache **) malloc(archi->number_levels * sizeof(struct cache *));
+  cstack = (struct node **) malloc(archi->number_levels * sizeof(struct node *));
   xmlXPathFreeObject(res);
+
+  struct node ** first_sibling = (struct node *) calloc(archi->number_levels, sizeof(struct node *));
+  struct node ** last_sibling = (struct node *) calloc(archi->number_levels, sizeof(struct node *));
 
   res = xmlXPathEvalExpression(BAD_CAST "//Cache", context);
   CHECK_XPATH(res);
@@ -177,34 +186,42 @@ int parse_archi_file(const char * filename, struct architecture * archi){
     nb_blocks = size / (linesize * nb_ways);
     GET_ATTRIBUT_TXT("replacement_protocol", cur, replacement_prot);
     c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), get_coherence_function(replacement_prot));
+    n = init_node();
+    n->data = c;
 
-    //Add the cache to the levels table
-    if(archi->levels[depth-1] == 0){
-      archi->levels[depth-1] = init_list(c);
-    }
-    else{
-      add_list(archi->levels[depth-1], c);
-    }
     //Add to the threads table
     //First pop levels below in the stack
-    while(stack_head > 0 && cstack[stack_head]->depth <= depth){
+    while(stack_head > 0 && cstack[stack_head]->data->depth <= depth){
       stack_head--;
     }
     //Then we push
     stack_head++;
-    cstack[stack_head] = c;
+    cstack[stack_head] = n;
 
     if(depth == 1){
-      archi->threads = realloc(archi->threads, (archi->number_threads + 1) * sizeof(struct list *));
-      archi->threads[archi->number_threads] = init_list(c);
+      archi->threads = realloc(archi->threads, (archi->number_threads + 1) * sizeof(struct node *));
+      CHECK_ALLOC(archi->threads);
+      archi->threads[archi->number_threads] = n;
       for(j = stack_head-1; j >= 0 ; j--){
-	add_list(archi->threads[archi->number_threads], cstack[j]);
+	add_child(cstack[j], cstack[j+1]);
+	cstack[j+1]->parent = cstack[j];
       }
       archi->number_threads++;
     }
+    
+    //Add the siblings
+    if(first_sibling[depth-1] == 0){
+      first_sibling[depth-1] = n;
+      last_sibling[depth-1] = n;
+    }
+    last_sibling[depth-1]->next_sibling = n;
+    n->next_sibling = first_sibling[depth-1]; //Link last to the first
+    last_sibling[depth-1] = n;
   }
   xmlXPathFreeObject(res);
   free(cstack);
+  free(first_sibling);
+  free(last_sibling);
 
   xmlXPathFreeContext(context);
   xmlFreeDoc(doc);
@@ -271,25 +288,30 @@ int convert_archi_xml(const char * file_in, const char * file_out){
 
 void print_caches(struct architecture * archi){
   int i;
- struct list * l;
+  struct node * n = get_root(archi->threads[0]);
+  int id_beg;
   printf("Liste des caches\n");
-  for(i=0;i<archi->number_levels;i++){
-    l = archi->levels[archi->number_levels-i-1];
-    while(l != NULL){      
-      printf("\tL%d (misses: %10d, hits: %10d, writes_back: %10d, broadcasts: %10d)\n", l->cache->depth, l->cache->misses, l->cache->hits, l->cache->writes_back, l->cache->broadcasts);
-      l = l->next;
-    }
+  while(n->nb_children > 0){
+    id_beg = n->id;
+    do{
+      printf("\tL%d (misses: %10d, hits: %10d, writes_back: %10d, broadcasts: %10d)\n", n->data->depth, n->data->misses, n->data->hits, n->data->writes_back, n->data->broadcasts);
+      n=get_sibling(n);
+    } while(n->id != id_beg);
+    n=get_child(n,0);
+  }
+}
+
+void delete_archi_rec(struct node * n){
+  int i;
+  for(i = 0; i<n->nb_children; i++){
+    delete_archi_rec(get_child(n, i));
+    free_node(n);
   }
 }
 
 void delete_archi(struct architecture * archi){
-  int i;
-  for(i=0;i<archi->number_threads;i++){
-    delete_list(archi->threads[i]);
-  }
-  for(i=0;i<archi->number_levels;i++){
-    delete_list_def(archi->levels[i]);
-  }
+  struct node * root = get_root(archi->threads[0]);
+  delete_archi_rec(root);
   free(archi->threads);
-  free(archi->levels);
+  free(archi);
 }
