@@ -1,5 +1,5 @@
 all: 
-	gcc -lpapi example.c -o example
+	gcc example.c -o example -g -O0 -lpapi
 
 clean:
 	rm *~ example

@@ -15,12 +15,12 @@ void s1113(double *A, double *B, int size1, int size2){
 }
 
 int main(int argc, char **argv){
-  int size = 512000;
+  int size = 32000;
   double *A, *B;
   A = malloc(size*sizeof(double));
   B = malloc(size*sizeof(double));
 
-  int event[NUM_EVENTS] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};
+  int event[NUM_EVENTS] = {PAPI_L1_DCM, PAPI_L2_DCM, PAPI_L3_TCM};
   long long values[NUM_EVENTS];
 
   /* Start counting events */

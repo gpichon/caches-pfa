@@ -1,7 +1,9 @@
-for i0 = 0 to 2048000
-  load 0x6cf070 + 4*i0
+for i0 = 0 to 1
   load 0x839690
-  store 0x829c90 + 4*i0
+  for i1 = 0 to 20000
+    load 0x6cf070 + 4*i1 + 2
+    store 0x829c90 + 4*i1
+  endfor
 endfor
 Info: ################################################################################
 Info: ## Volume for tid = 0 loopid = 26 iid = 0
