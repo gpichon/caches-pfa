@@ -16,7 +16,7 @@
    the parameter cache is the cache which launched a share level procedure on its level */
 int share_level(struct node *node, int entry, void (*action)(struct line *)) {
   struct node *current_node = get_sibling(node);
-  struct cache *current_cache = get_cache(current_node);
+  struct cache *current_cache;
   struct line *line;
 
   int res = 0;
@@ -79,7 +79,7 @@ void load_line_hierarchy(struct node *node, int entry) {
 	current_cache->set_flags_new_line(v, line);
       }
             
-      current_node = get_parent(node);
+      current_node = get_parent(current_node);
     }    
   }
 }
@@ -142,17 +142,17 @@ void invalid_back(struct node *node, int entry) {
   struct node *current_node;
   struct cache *current_cache;
   struct line *line;
-  int i;
+  unsigned int i;
+  int nb=0;
   for (i=0; i<node->nb_children; i++){
     current_node = get_child(node, i);
     current_cache = get_cache(current_node);
-    
     if (is_in_cache(current_cache, entry)){
       current_cache->invalid_back++;
       line = line_in_cache(current_cache, entry);
       invalid_line(line);
+      invalid_back(current_node, entry);
     }
-    invalid_back(current_node, entry);
   }
 }
 
