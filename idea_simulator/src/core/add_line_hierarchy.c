@@ -22,6 +22,7 @@ int share_level(struct node *node, int entry, void (*action)(struct line *)) {
   int res = 0;
   /* Get next cache in level */
   while (current_node != node){
+    current_cache = get_cache(current_node);
     if (is_in_cache(current_cache, entry)) {
       line = line_in_cache(current_cache, entry);
 	
@@ -40,7 +41,6 @@ int share_level(struct node *node, int entry, void (*action)(struct line *)) {
       }
     }
     current_node = get_sibling(current_node);
-    current_cache = get_cache(current_node);
   }
   return res;
 }
@@ -66,6 +66,7 @@ void load_line_hierarchy(struct node *node, int entry) {
     
     /* While entry not found and hierarchy not ended */
     while (res == 0 && current_node != NULL) {
+      current_cache = get_cache(current_node);
       res = add_line_cache(current_node, entry, 0);
       update_lines(current_cache, entry);
       
@@ -79,7 +80,6 @@ void load_line_hierarchy(struct node *node, int entry) {
       }
             
       current_node = get_parent(node);
-      current_cache = get_cache(current_node);
     }    
   }
 }
@@ -98,13 +98,13 @@ void store_line_hierarchy(struct node *node, int entry) {
     update_lines(current_cache, entry);
     
     while (current_node != NULL) {
+      current_cache = get_cache(current_node);
       line = line_in_cache(current_cache, entry);
       modify_line(line);
       share_level(current_node, entry, &invalid_line);
 
       UP_BROADCASTS(current_cache);
       current_node = get_parent(current_node);
-      current_cache = get_cache(current_node);
     }    
   }
   
@@ -115,6 +115,7 @@ void store_line_hierarchy(struct node *node, int entry) {
   else {
     int res = 0;
     while (res == 0 && current_node != NULL) {
+      current_cache = get_cache(current_node);
       res = add_line_cache(current_node, entry, 1);
 
       share_level(current_node, entry, &invalid_line);
@@ -123,17 +124,16 @@ void store_line_hierarchy(struct node *node, int entry) {
       modify_line(line);
       update_lines(current_cache, entry);
       current_node = get_parent(current_node);
-      current_cache = get_cache(current_node);
     }
 
     while (current_node != NULL) {
+      current_cache = get_cache(current_node);
       line = line_in_cache(current_cache, entry);
       modify_line(line);
       share_level(current_node, entry, &invalid_line);
 
       UP_BROADCASTS(current_cache);
       current_node = get_parent(current_node);
-      current_cache = get_cache(current_node);
     }
   }
 }

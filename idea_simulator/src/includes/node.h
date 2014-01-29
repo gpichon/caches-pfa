@@ -78,6 +78,6 @@ int add_child(struct node * parent, struct node * child);
  * \brief Free the node
  * \param n The node to free
  */
-void free_node(struct node * n){
+void free_node(struct node * n);
 
 #endif

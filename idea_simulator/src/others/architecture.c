@@ -17,6 +17,7 @@
 #include <libxslt/transform.h>
 #include <libxslt/xsltutils.h>
 #include <string.h>
+#include <unistd.h>
 #include "architecture.h"
 #include "node.h"
 
@@ -172,8 +173,8 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   cstack = (struct node **) malloc(archi->number_levels * sizeof(struct node *));
   xmlXPathFreeObject(res);
 
-  struct node ** first_sibling = (struct node *) calloc(archi->number_levels, sizeof(struct node *));
-  struct node ** last_sibling = (struct node *) calloc(archi->number_levels, sizeof(struct node *));
+  struct node ** first_sibling = (struct node **) calloc(archi->number_levels, sizeof(struct node *));
+  struct node ** last_sibling = (struct node **) calloc(archi->number_levels, sizeof(struct node *));
 
   res = xmlXPathEvalExpression(BAD_CAST "//Cache", context);
   CHECK_XPATH(res);
@@ -231,7 +232,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
 }
 
 void print_archi(struct architecture * archi){
-  int i;
+  /*  unsigned int i;
   struct list * l;
   printf("Architecture %d bits : %s\n", archi->nb_bits, archi->name);
   printf("CPU model : %s\n", archi->CPU_name);
@@ -252,7 +253,7 @@ void print_archi(struct architecture * archi){
       printf("\tL%d (taille : %d, ligne : %d, associativité : %d, nb_blocks : %d)\n", l->cache->depth, l->cache->size, l->cache->linesize, l->cache->nb_ways,  l->cache->nb_blocks);
       l = l->next;
     }
-  }
+    }*/
 }
 
 int convert_archi_xml(const char * file_in, const char * file_out){
@@ -287,9 +288,8 @@ int convert_archi_xml(const char * file_in, const char * file_out){
 }
 
 void print_caches(struct architecture * archi){
-  int i;
   struct node * n = get_root(archi->threads[0]);
-  int id_beg;
+  unsigned int id_beg;
   printf("Liste des caches\n");
   while(n->nb_children > 0){
     id_beg = n->id;
@@ -302,7 +302,7 @@ void print_caches(struct architecture * archi){
 }
 
 void delete_archi_rec(struct node * n){
-  int i;
+  unsigned int i;
   for(i = 0; i<n->nb_children; i++){
     delete_archi_rec(get_child(n, i));
     free_node(n);

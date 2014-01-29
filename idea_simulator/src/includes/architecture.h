@@ -13,7 +13,7 @@
 #ifndef ARCHI_H
 #define ARCHI_H
 
-#include "list.h"
+#include "node.h"
 
 /**
  * \struct architecture 

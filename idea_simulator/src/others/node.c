@@ -10,12 +10,13 @@
  */
 
 #include <string.h>
+#include <unistd.h>
 #include "node.h"
 
 static unsigned int current_id = 1;
 
 struct node * init_node(){
-  struct node * n = malloc(sizeof(struct node *));
+  struct node * n = malloc(sizeof(struct node));
   if(n == NULL){
     fprintf(stderr, "Node allocation error\n");
     _exit(1);
@@ -55,12 +56,12 @@ struct node * get_root(struct node * n){
 }
 
 int add_child(struct node * parent, struct node * child){
-  parent->child = realloc(parent->child, (nb_children + 1) * sizeof(struct node *));
-  if(n == NULL){
+  parent->child = realloc(parent->child, (parent->nb_children + 1) * sizeof(struct node *));
+  if(parent->child == NULL){
     fprintf(stderr, "Allocation error\n");
     _exit(1);
   }
-  parent->child[nb_children++] = child;
+  parent->child[parent->nb_children++] = child;
   return 1;
 }
 
