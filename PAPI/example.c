@@ -15,7 +15,7 @@ void s1113(double *A, double *B, int size1, int size2){
 }
 
 int main(int argc, char **argv){
-  int size = 50*32000;
+  int size = 32000;
   double *A, *B;
   A = malloc(size*sizeof(double));
   B = malloc(size*sizeof(double));
@@ -49,36 +49,3 @@ int main(int argc, char **argv){
 
   return 0;
 }
-
-/*
-PAPI_L1_DCM    Yes   Level 1 data cache misses
-PAPI_L1_ICM    Yes   Level 1 instruction cache misses
-PAPI_L2_DCM    Yes   Level 2 data cache misses
-PAPI_L2_ICM    Yes   Level 2 instruction cache misses
-PAPI_L1_TCM    Yes   Level 1 cache misses
-PAPI_L2_TCM    Yes   Level 2 cache misses
-PAPI_L3_TCM    Yes   Level 3 cache misses
-PAPI_L1_LDM    Yes   Level 1 load misses
-PAPI_L1_STM    Yes   Level 1 store misses
-PAPI_L2_STM    Yes   Level 2 store misses
-PAPI_LD_INS    Yes   Load instructions
-PAPI_SR_INS    Yes   Store instructions
-PAPI_L2_DCH    Yes   Level 2 data cache hits
-PAPI_L2_DCA    Yes   Level 2 data cache accesses
-PAPI_L3_DCA    Yes   Level 3 data cache accesses
-PAPI_L2_DCR    Yes   Level 2 data cache reads
-PAPI_L3_DCR    Yes   Level 3 data cache reads
-PAPI_L2_DCW    Yes   Level 2 data cache writes
-PAPI_L3_DCW    Yes   Level 3 data cache writes
-PAPI_L2_ICH    Yes   Level 2 instruction cache hits
-PAPI_L2_ICA    Yes   Level 2 instruction cache accesses
-PAPI_L3_ICA    Yes   Level 3 instruction cache accesses
-PAPI_L2_ICR    Yes   Level 2 instruction cache reads
-PAPI_L3_ICR    Yes   Level 3 instruction cache reads
-PAPI_L2_TCA    Yes   Level 2 total cache accesses
-PAPI_L3_TCA    Yes   Level 3 total cache accesses
-PAPI_L2_TCR    Yes   Level 2 total cache reads
-PAPI_L3_TCR    Yes   Level 3 total cache reads
-PAPI_L2_TCW    Yes   Level 2 total cache writes
-PAPI_L3_TCW    Yes   Level 3 total cache writes
-*/
