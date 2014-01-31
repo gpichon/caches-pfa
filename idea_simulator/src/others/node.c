@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include "node.h"
 
+#define CHECK_NULL(n) do { if(n == NULL) { fprintf(stderr, "Error : node given in %s is NULL\n", __func__); _exit(1);} } while(0)
+
 static unsigned int current_id = 1;
 
 struct node * init_node(){
@@ -31,24 +33,29 @@ struct node * init_node(){
 }
 
 struct node * get_parent(struct node * n){
+  CHECK_NULL(n);
   return n->parent;
 }
 
 struct node * get_sibling(struct node * n){
+  CHECK_NULL(n);
   return n->next_sibling;
 }
 
 struct node * get_child(struct node * n, unsigned int i){
+  CHECK_NULL(n);
   if(n->child == NULL || i >= n->nb_children)
     return NULL;
   return n->child[i];
 }
 
 struct cache * get_cache(struct node * n){
+  CHECK_NULL(n);
   return n->data;
 }
 
 struct node * get_root(struct node * n){
+  CHECK_NULL(n);
   struct node * root = n;
   while(get_parent(root)){
     root = get_parent(root);
@@ -57,6 +64,7 @@ struct node * get_root(struct node * n){
 }
 
 int add_child(struct node * parent, struct node * child){
+  CHECK_NULL(parent);
   parent->child = realloc(parent->child, (parent->nb_children + 1) * sizeof(struct node *));
   if(parent->child == NULL){
     fprintf(stderr, "Allocation error\n");
@@ -67,6 +75,7 @@ int add_child(struct node * parent, struct node * child){
 }
 
 void free_node(struct node * n){
+  CHECK_NULL(n);
   free(n->child);
   free(n);
 }
