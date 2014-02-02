@@ -70,10 +70,6 @@ void update_LFU(struct block *block, int nb_ways, long entry);
 /**
  * \brief Update replacement flag. 
  * \note To be used after a hit, and uses LRU replacement policy.
- * \bug Bad cast for :
- * ~~~~~~{.c}
- * (void) entry;
- * ~~~~~~
  */
 void update_LRU(struct block *block, int nb_ways, long entry);
 

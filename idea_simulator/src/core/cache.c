@@ -50,23 +50,16 @@ int is_in_cache(struct cache *cache, long entry) {
   int id_block = block_id(cache, entry);
   struct block *block = cache->blocks[id_block];
   int nb_ways = cache->nb_ways;
-  int res=0;
 
   struct line *line;
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
     if (is_valid(line) && (line->first_case == entry / cache->linesize * cache->linesize)) {
-      res = 1;
+      return 1;
     }
   }    
-  return res;
-}
-
-void print_infos(struct cache *cache) {
-  printf("misses:%d\n", cache->misses);
-  printf("hits:%d\n", cache->hits);
-  printf("writes back:%d\n\n", cache->writes_back);
+  return 0;
 }
 
 struct line *line_in_cache(struct cache *cache, long entry) {

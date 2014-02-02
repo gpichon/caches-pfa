@@ -108,7 +108,6 @@ int block_id(struct cache *cache, long entry);
 /**
  * \brief Return whether or not the cache contains the entry. 
  * \return It is 1 when true and 0 otherwise.
- * \bug This function check all the ways, it should return true immediatly when the entry is found.
  */
 int is_in_cache(struct cache *cache, long entry);
 
