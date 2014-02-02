@@ -13,7 +13,7 @@
 
 /* Return 1 if there is entry is somewhere else in level
    Used for a miss when load or a hit when store 
-   the parameter cache is the cache which launched a share level procedure on its level */
+   the parameter node is the cache which launched a share level procedure on its level */
 int share_level(struct node *node, int entry, void (*action)(struct line *)) {
   struct node *current_node = get_sibling(node);
   struct cache *current_cache;
@@ -64,7 +64,7 @@ void load_line_hierarchy(struct node *node, int entry) {
     int v;
     struct line *line = NULL;
     
-    /* While entry not found and hierarchy not ended */
+    /* While entry is not found and hierarchy not ended */
     while (res == 0 && current_node != NULL) {
       current_cache = get_cache(current_node);
       res = add_line_cache(current_node, entry, 0);
@@ -78,6 +78,18 @@ void load_line_hierarchy(struct node *node, int entry) {
 	line = line_in_cache(current_cache, entry);
 	current_cache->set_flags_new_line(v, line);
       }
+
+      /* /\* Exclusive case: invalid line. Impossible for L1, which is always inclusive *\/ */
+      /* else{ */
+      /* 	if (is_exclusive(current_cache)){ */
+      /* 	  line = line_in_cache(current_cache, entry); */
+      /* 	  invalid_line(line); */
+      /* 	} */
+      /* /\* Snooping case: get the data from a level cache if possible *\/ */
+      /* 	if (is_snooping(current_cache) && v){ */
+      /* 	  res = 1; */
+      /* 	} */
+      /* } */      
             
       current_node = get_parent(current_node);
     }    
@@ -114,16 +126,30 @@ void store_line_hierarchy(struct node *node, int entry) {
   */
   else {
     int res = 0;
+    int v;
     while (res == 0 && current_node != NULL) {
       current_cache = get_cache(current_node);
       res = add_line_cache(current_node, entry, 1);
 
-      share_level(current_node, entry, &invalid_line);
+      v = share_level(current_node, entry, &invalid_line);
       UP_BROADCASTS(current_cache);
       line = line_in_cache(current_cache, entry);
       modify_line(line);
       update_lines(current_cache, entry);
       current_node = get_parent(current_node);
+
+      /* /\* Exclusive case: invalid line. Impossible for L1, which is always inclusive *\/ */
+      /* else{ */
+      /* 	if (is_exclusive(current_cache)){ */
+      /* 	  line = line_in_cache(current_cache, entry); */
+      /* 	  invalid_line(line); */
+      /* 	} */
+      /* /\* Snooping case: get the data from a level cache if possible *\/ */
+      /* 	if (is_snooping(current_cache) && v){ */
+      /* 	  res = 1; */
+      /* 	} */
+      /* } */
+
     }
 
     while (current_node != NULL) {
@@ -174,6 +200,17 @@ int add_line_cache(struct node *node, int entry, int w) {
 
     del_line = add_line_block(cache->blocks[id_block], line, cache->replacement);
     if (del_line != NULL) {
+
+      /* Exclusive case: add in higher level */
+      /* struct node *parent = get_parent(node); */
+      /* struct cache *parent_cache = get_cache(parent); */
+      /* if (is_exclusive(parent_cache)){ */
+      /* 	add_line_cache(parent, entry, w); */
+      /* 	invalid_back(parent, del_line->first_case); */
+      /* } */
+
+      /* Inclusive case: invalid in lower levels */
+      /* if (is_inclusive(cache)) */
       invalid_back(node, del_line->first_case);
       if (is_modified(del_line)) {
 	cache->writes_back++;
