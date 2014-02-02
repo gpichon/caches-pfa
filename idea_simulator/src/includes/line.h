@@ -15,16 +15,28 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <assert.h>
+
+/**
+ * \enum status
+ * \brief Status for coherency protocols.
+ */ 
+enum status{
+  I = 0, /**< Invalid */
+  S = 1, /**< Shared */
+  E = 2, /**< Exclusive */
+  M = 3, /**< Modified */
+};
 
 /**
  * \struct line
  * \brief Abstract Data Type for a line.
  */ 
 struct line {
-  int first_case; /**< I don't know.*/
-  int use;        /**< number of utilisation since the line is in the block */
-  int status;     /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
+  int first_case; /**< First element of the cache line.*/
+  int use;        /**< number of utilizations since the line is in the block */
+  enum status status;     /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
 };
 
 /**
@@ -45,9 +57,9 @@ void share_line(struct line *line);
 void exclusive_line(struct line *line);
 
 /* Getters */
-int is_valid(struct line *line);
-int is_exclusive(struct line *line);
-int is_modified(struct line *line);
-int is_shared(struct line *line);
+bool is_valid(struct line *line);
+bool is_exclusive(struct line *line);
+bool is_modified(struct line *line);
+bool is_shared(struct line *line);
 
 #endif

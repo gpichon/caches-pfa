@@ -35,33 +35,33 @@ void delete_lines(struct line **lines, int nb_ways) {
 }
 
 void invalid_line(struct line *line) {
-  line->status = 0;
+  line->status = I;
 }
 
 void modify_line(struct line *line) {
-  line->status = 3;
+  line->status = M;
 }
 
 void share_line(struct line *line) {
-  line->status = 1;
+  line->status = S;
 }
 
 void exclusive_line(struct line *line) {
-  line->status = 2;
+  line->status = E;
 }
 
-int is_valid(struct line *line) {
+bool is_valid(struct line *line) {
   return (line->status > 0);
 }
 
-int is_exclusive(struct line *line) {
-  return (line->status == 2);
+bool is_exclusive(struct line *line) {
+  return (line->status == E);
 }
 
-int is_modified(struct line *line) {
-  return (line->status == 3);
+bool is_modified(struct line *line) {
+  return (line->status == M);
 }
 
-int is_shared(struct line *line) {
-  return (line->status == 1);
+bool is_shared(struct line *line) {
+  return (line->status == S);
 }

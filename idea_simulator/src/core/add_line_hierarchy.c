@@ -14,7 +14,7 @@
 /* Return 1 if there is entry is somewhere else in level
    Used for a miss when load or a hit when store 
    the parameter node is the cache which launched a share level procedure on its level */
-int share_level(struct node *node, int entry, void (*action)(struct line *)) {
+int share_level(struct node *node, long entry, void (*action)(struct line *)) {
   struct node *current_node = get_sibling(node);
   struct cache *current_cache;
   struct line *line;
@@ -45,7 +45,7 @@ int share_level(struct node *node, int entry, void (*action)(struct line *)) {
   return res;
 }
 
-void load_line_hierarchy(struct node *node, int entry) {
+void load_line_hierarchy(struct node *node, long entry) {
   struct node *current_node = node;
   struct cache *current_cache = get_cache(node);
 
@@ -97,7 +97,7 @@ void load_line_hierarchy(struct node *node, int entry) {
 }
 
 /* Warning: caches are supposed to be inclusive -> if store L1 then store L2, L3... */
-void store_line_hierarchy(struct node *node, int entry) {
+void store_line_hierarchy(struct node *node, long entry) {
   struct node *current_node = node;
   struct cache *current_cache = get_cache(node); 
   struct line *line = NULL;
@@ -162,7 +162,7 @@ void store_line_hierarchy(struct node *node, int entry) {
   }
 }
 
-void invalid_back(struct node *node, int entry) {
+void invalid_back(struct node *node, long entry) {
   struct node *current_node;
   struct cache *current_cache;
   struct line *line;
@@ -179,7 +179,7 @@ void invalid_back(struct node *node, int entry) {
   }
 }
 
-int add_line_cache(struct node *node, int entry, int w) {
+int add_line_cache(struct node *node, long entry, int w) {
   struct cache *cache = get_cache(node);
   int id_block = block_id(cache, entry);
   struct line *line;

@@ -12,7 +12,7 @@
 #include "cache.h"
 
 /* Data allocations */
-struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replace)(struct cache *), void (*coherence)(struct cache *)) {
+struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replace)(struct cache *), void (*coherence)(struct cache *), int type, bool snooping) {
   struct cache *cache   = malloc(sizeof(struct cache));
   cache->size           = size;
   cache->linesize       = linesize;
@@ -26,6 +26,8 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int
   cache->broadcasts     = 0;
   cache->invalid_back   = 0;
   cache->depth          = depth;
+  cache->type           = type;
+  cache->snooping       = snooping;
   replace(cache);
   coherence(cache);
   return cache;
@@ -37,14 +39,14 @@ void delete_cache(struct cache *cache) {
   free(cache);
 }
 
-int block_id(struct cache *cache, int entry) {
+int block_id(struct cache *cache, long entry) {
   entry = entry / cache->linesize; //Line in principal memory
 
   int id_block = entry % cache->nb_blocks;
   return id_block;
 }
 
-int is_in_cache(struct cache *cache, int entry) {
+int is_in_cache(struct cache *cache, long entry) {
   int id_block = block_id(cache, entry);
   struct block *block = cache->blocks[id_block];
   int nb_ways = cache->nb_ways;
@@ -67,7 +69,7 @@ void print_infos(struct cache *cache) {
   printf("writes back:%d\n\n", cache->writes_back);
 }
 
-struct line *line_in_cache(struct cache *cache, int entry) {
+struct line *line_in_cache(struct cache *cache, long entry) {
   int id_block = block_id(cache, entry);
   struct block *block = cache->blocks[id_block];
   int nb_ways = cache->nb_ways;
@@ -83,7 +85,7 @@ struct line *line_in_cache(struct cache *cache, int entry) {
   assert(0);
 }
 
-void update_lines(struct cache *cache, int entry) {
+void update_lines(struct cache *cache, long entry) {
   int id_block = block_id(cache, entry);
   struct block *block = cache->blocks[id_block];
   int nb_ways = cache->nb_ways;
@@ -144,24 +146,18 @@ void flags_new_line_MSI(int ret, struct line *line) {
 }
 
 
-
-/* !!! Those functions are to be changed depending on architecture */
-int is_cache_inclusive(struct cache *cache){
-  (void)cache;
-  return 1;
+bool is_cache_inclusive(struct cache *cache){
+  return (cache->type == Inclusive);
 }
 
-int is_cache_exclusive(struct cache *cache){
-  (void)cache;
-  return 0;
+bool is_cache_exclusive(struct cache *cache){
+  return (cache->type == Exclusive);
 }
 
-int is_inclusive_like(struct cache *cache){
-  (void)cache;
-  return 1;
+bool is_inclusive_like(struct cache *cache){
+  return (cache->type == Inclusive || cache->type == NIOI);
 }
 
-int is_snooping(struct cache *cache){
-  (void)cache;
-  return 0;
+bool is_snooping(struct cache *cache){
+  return (cache->snooping);
 }

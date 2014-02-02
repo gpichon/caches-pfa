@@ -186,7 +186,9 @@ int parse_archi_file(const char * filename, struct architecture * archi){
     GET_ATTRIBUT_INT("cache_associativity", cur, nb_ways);
     nb_blocks = size / (linesize * nb_ways);
     GET_ATTRIBUT_TXT("replacement_protocol", cur, replacement_prot);
-    c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), get_coherence_function(replacement_prot));
+    /* Inclusive, Exclusive, NIOI or NIOE */
+    /* True: with snooping, False: without snooping */
+    c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), get_coherence_function(replacement_prot), Inclusive, false);
     n = init_node();
     n->data = c;
 

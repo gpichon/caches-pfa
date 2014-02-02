@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stdbool.h>
 #include "block.h"
 
 
@@ -48,6 +49,18 @@
 #define UP_BROADCASTS(cache) cache->broadcasts++
 
 
+
+/**
+ * \enum cache_type
+ * \brief Cache type: inclusive, exclusive, non inclusive like inclusive, non inclusive like exclusive.
+ */
+enum cache_type{
+ Inclusive = 0,
+ Exclusive = 1,
+ NIOI = 2,
+ NIOE = 3
+};
+
 /**
  * \struct cache
  * \brief Abstract Data Type for a cache.
@@ -66,11 +79,11 @@ struct cache {
   int broadcasts;   /**< Count of broadcasts for this cache. */
   int invalid_back; /**< Count of invalid back for this cache. */
 
-  int type;      /**< Type of cache: inclusive, exclusif, NIOI, NIOE */
-  int snooping;  /**< Can this cache use snooping to find data? */
+  enum cache_type type;       /**< Type of cache: inclusive, exclusive, NIOI, NIOE */
+  bool snooping;              /**< Can this cache use snooping to find data? */
 
   int (*replacement)(struct block *); /**< Function pointer to replace a line in a block. */
-  void (*update_line)(struct block *, int, int); /**< Function pointer to update line stat in a block.  */
+  void (*update_line)(struct block *, int, long); /**< Function pointer to update line stat in a block.  */
 
   int (*treat_special_flags)(struct line *, void(*)(struct line *)); /**< Function pointer to manage special flags: E, O. */
   void (*set_flags_new_line)(int, struct line *); /**< Function pointer to create a new line with right flag : S or E with MESI. */
@@ -79,7 +92,7 @@ struct cache {
 /**
  * \brief Cache initialization. 
  */
-struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replacement)(struct cache *), void (*coherence)(struct cache *));
+struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replacement)(struct cache *), void (*coherence)(struct cache *), int type, bool snooping);
 
 /**
  * \brief Cache removal.
@@ -90,14 +103,14 @@ void delete_cache(struct cache *cache);
  * \brief Return in which block the entry has to be store.
  * \param entry Range ? 
 */
-int block_id(struct cache *cache, int entry);
+int block_id(struct cache *cache, long entry);
 
 /**
  * \brief Return whether or not the cache contains the entry. 
  * \return It is 1 when true and 0 otherwise.
  * \bug This function check all the ways, it should return true immediatly when the entry is found.
  */
-int is_in_cache(struct cache *cache, int entry);
+int is_in_cache(struct cache *cache, long entry);
 
 
 /**
@@ -108,12 +121,12 @@ void print_infos(struct cache *cache);
 /**
  * \brief  Returns a pointer to the line which contains the entry in the cache. 
  */
-struct line *line_in_cache(struct cache *cache, int line);
+struct line *line_in_cache(struct cache *cache, long entry);
 
 /**
  * \brief Call the update_line function on the right line determined with the entry.
  */
-void update_lines(struct cache *cache, int entry);
+void update_lines(struct cache *cache, long entry);
 
 /* Replacement protocols */
 /**
@@ -164,21 +177,21 @@ void flags_new_line_MSI(int ret, struct line *line);
 /**
  * \brief Return whether or not a cache is inclusive.
  */
-int is_cache_inclusive(struct cache *cache);
+bool is_cache_inclusive(struct cache *cache);
 
 /**
  * \brief Return whether or not a cache is exclusive.
  */
-int is_cache_exclusive(struct cache *cache);
+bool is_cache_exclusive(struct cache *cache);
 
 /**
  * \brief Return whether or not a cache add the data
  */
-int is_inclusive_like(struct cache *cache);
+bool is_inclusive_like(struct cache *cache);
 
 /**
  * \brief Return whether or not there is snooping on the cache's level.
  */
-int is_snooping(struct cache *cache);
+bool is_snooping(struct cache *cache);
 
 #endif
