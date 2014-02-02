@@ -142,3 +142,26 @@ void flags_new_line_MSI(int ret, struct line *line) {
   (void) ret;
   share_line(line);
 }
+
+
+
+/* !!! Those functions are to be changed depending on architecture */
+int is_cache_inclusive(struct cache *cache){
+  (void)cache;
+  return 1;
+}
+
+int is_cache_exclusive(struct cache *cache){
+  (void)cache;
+  return 0;
+}
+
+int is_inclusive_like(struct cache *cache){
+  (void)cache;
+  return 1;
+}
+
+int is_snooping(struct cache *cache){
+  (void)cache;
+  return 0;
+}

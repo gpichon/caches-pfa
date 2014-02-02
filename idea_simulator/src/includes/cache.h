@@ -53,18 +53,21 @@
  * \brief Abstract Data Type for a cache.
  */
 struct cache {
-  int depth; /**< Level of the cache. Range ?*/
-  int size; /**< Size of the cache. Unity = byte ? */
-  int linesize; /**< Size of the line. Unity = byte ?*/
-  int nb_ways; /**< Number of lines in a block. */
-  int nb_blocks; /**< Number of blocks. Range ?*/
+  int depth;             /**< Level of the cache. Range ?*/
+  int size;              /**< Size of the cache. Unity = byte ? */
+  int linesize;          /**< Size of the line. Unity = byte ?*/
+  int nb_ways;           /**< Number of lines in a block. */
+  int nb_blocks;         /**< Number of blocks. Range ?*/
   struct block **blocks; /**< Tabular of blocks pointer.*/
 
-  int misses; /**< Count of misses for this cache. */
-  int hits; /**< Count of hits for this cache. */
-  int writes_back; /**< Count of write backs for this cache. */
-  int broadcasts; /**< Count of broadcasts for this cache. */
+  int misses;       /**< Count of misses for this cache. */
+  int hits;         /**< Count of hits for this cache. */
+  int writes_back;  /**< Count of write backs for this cache. */
+  int broadcasts;   /**< Count of broadcasts for this cache. */
   int invalid_back; /**< Count of invalid back for this cache. */
+
+  int type;      /**< Type of cache: inclusive, exclusif, NIOI, NIOE */
+  int snooping;  /**< Can this cache use snooping to find data? */
 
   int (*replacement)(struct block *); /**< Function pointer to replace a line in a block. */
   void (*update_line)(struct block *, int, int); /**< Function pointer to update line stat in a block.  */
@@ -143,7 +146,7 @@ void coherence_MSI(struct cache *cache);
 int flags_MESI(struct line *line, void (*action) (struct line*));
 /**
  * \brief Initiate the right flag for the given line. 
- * \param ret What is this ?
+ * \param ret: 1 if a cache in level have the data, 0 otherwise. 
  */
 void flags_new_line_MESI(int ret, struct line *line);
 
@@ -154,8 +157,28 @@ void flags_new_line_MESI(int ret, struct line *line);
 int flags_MSI(struct line *line, void (*action) (struct line*));
 /**
  * \brief Initiate the right flag for the given line. 
- * \param ret What is this ?
+ * \param ret: 1 if a cache in level have the data, 0 otherwise.
  */
 void flags_new_line_MSI(int ret, struct line *line);
+
+/**
+ * \brief Return whether or not a cache is inclusive.
+ */
+int is_cache_inclusive(struct cache *cache);
+
+/**
+ * \brief Return whether or not a cache is exclusive.
+ */
+int is_cache_exclusive(struct cache *cache);
+
+/**
+ * \brief Return whether or not a cache add the data
+ */
+int is_inclusive_like(struct cache *cache);
+
+/**
+ * \brief Return whether or not there is snooping on the cache's level.
+ */
+int is_snooping(struct cache *cache);
 
 #endif
