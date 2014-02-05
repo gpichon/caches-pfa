@@ -75,7 +75,7 @@ int id_line_to_replace_FIFO(struct block *block) {
 
 int id_line_to_replace_LRU(struct block *block) {
   int nb_ways = block->nb_ways;
-  int use = 1000;
+  int use = 100000;
   int id = 0;
   int line_use;
 
@@ -97,7 +97,6 @@ struct line *add_line_block(struct block *block, struct line *line, int (*replac
   int id_line = replacement(block);
   struct line *del_line = block->lines[id_line];
   block->lines[id_line] = line;
-
   return del_line;
 }
 

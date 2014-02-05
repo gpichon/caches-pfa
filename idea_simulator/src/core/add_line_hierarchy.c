@@ -210,19 +210,20 @@ void add_line_cache(struct node *node, long entry, int w) {
   else {
     exclusive_line(line);
   }
-  
+
   del_line = add_line_block(cache->blocks[id_block], line, cache->replacement);
+
   if (del_line != NULL) {
     
     /* Exclusive case: add in higher level */
-    struct node *parent = get_parent(node);
-    if (parent != NULL){
-      struct cache *parent_cache = get_cache(parent);
-      if (is_cache_exclusive(parent_cache)){
-	add_line_cache(parent, entry, w);
-	invalid_back(parent, del_line->first_case);
-      }
-    }
+    /* struct node *parent = get_parent(node); */
+    /* if (parent != NULL){ */
+    /*   struct cache *parent_cache = get_cache(parent); */
+    /*   if (is_cache_exclusive(parent_cache)){ */
+    /* 	add_line_cache(parent, entry, w); */
+    /* 	invalid_back(parent, del_line->first_case); */
+    /*   } */
+    /* } */
     
     /* Inclusive case: invalid in lower levels */
     if (is_cache_inclusive(cache))
