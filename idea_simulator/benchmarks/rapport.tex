@@ -13,10 +13,10 @@
 
 \begin{document}
 \part*{Benchmarks de CASSIS selon les différentes politiques}
-\indent Ce document compare les résultats de la simulation de problèmes classiques avec différentes politiques de caches. On travaillera sur une architecture avec 1 L3, 2 L2 et 4 L1. Par ailleurs, chaque coeur effectuera 10 instructions avec que l'on passe au coeur suivant. Pour finir, on utilisera une politique de remplacement LRU et une politique de cohérence MESI, le but étant de comparer les types de cache et l'utilisation du snooping.
+\indent Ce document compare les résultats de la simulation de problèmes classiques avec différentes politiques de caches. On travaillera sur une architecture avec 1 L3, 2 L2 et 4 L1. Par ailleurs, chaque c{\oe}ur effectuera 10 instructions avec que l'on passe au c{\oe=ur suivant. Pour finir, on utilisera une politique de remplacement LRU et une politique de cohérence MESI, le but étant de comparer les types de cache et l'utilisation ou non du snooping.
 
 \section{a[i] = a[N/2] + b[i]}
-\indent Chaque coeur effectue la meme opération:
+\indent Chaque c{\oe}ur effectue la même opération:
 \begin{verbatim}
 for i0 = 0 to 1
   load 0x839690

@@ -46,6 +46,6 @@ void invalid_back(struct node *cache, long entry);
  * \param w If w = 1, modified line. 
  * \note Call add_line_block.
  */
-int add_line_cache(struct node *cache, long entry, int w);
+void add_line_cache(struct node *cache, long entry, int w);
 
 #endif
