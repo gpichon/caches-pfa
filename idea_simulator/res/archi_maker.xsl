@@ -12,7 +12,9 @@
       <xsl:element name="Level">
 	<xsl:attribute name="depth"> <xsl:value-of select="$count"/> </xsl:attribute>
 	<xsl:attribute name="coherence_protocol">MESI</xsl:attribute>
-	<xsl:attribute name="is_inclusive">true</xsl:attribute>
+	<xsl:attribute name="type">inclusive</xsl:attribute>
+	<xsl:attribute name="snooping">false</xsl:attribute>
+	<xsl:attribute name="directory_manager">false</xsl:attribute>
       </xsl:element>
 
       <xsl:call-template name="level-loop">

@@ -149,7 +149,7 @@ bool is_cache_exclusive(struct cache *cache){
 }
 
 bool is_inclusive_like(struct cache *cache){
-  return (cache->type == Inclusive || cache->type == NIOI);
+  return (cache->type == Inclusive || cache->type == NIIO);
 }
 
 bool is_snooping(struct cache *cache){

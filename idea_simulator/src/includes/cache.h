@@ -57,8 +57,8 @@
 enum cache_type{
  Inclusive = 0,
  Exclusive = 1,
- NIOI = 2,
- NIOE = 3
+ NIIO = 2,
+ NIEO = 3
 };
 
 /**
@@ -79,7 +79,7 @@ struct cache {
   int broadcasts;   /**< Count of broadcasts for this cache. */
   int invalid_back; /**< Count of invalid back for this cache. */
 
-  enum cache_type type;       /**< Type of cache: inclusive, exclusive, NIOI, NIOE */
+  enum cache_type type;       /**< Type of cache: inclusive, exclusive, NIIO, NIEO */
   bool snooping;              /**< Can this cache use snooping to find data? */
   bool directory;             /**< Can this cache use a directory manager to trace its sons data? */
 

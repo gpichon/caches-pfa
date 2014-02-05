@@ -4,9 +4,6 @@
  * \author ~gmarait
  * \version 1.0
  * \date 3rd january 2014
- * 
- * 
- *
  */
 
 #include <libxml/parser.h>
@@ -36,24 +33,6 @@
 #define CHECK_ALLOC(ptr) do { if(ptr == NULL) { fprintf(stderr, "Allocation error\n"); _exit(1); } } while(0)
 
 /**
- * \def DEFAULT_REPLACEMENT_FCT 
- * \param policy Name of the policy wanted to be used in default.
- * \brief Define the string used in XML confifuration file, to describe the replacement policy.
- * \note This policy is used by default.
- * \warning Never used in code !
- */
-#define DEFAULT_REPLACEMENT_FCT "LRU"
-
-/**
- * \def DEFAULT_COHERENCE_FCT
- * \param policy Name of the policy wanted to be used in default.
- * \brief Define the string used in XML confifuration file, to describe the coherence policy.
- * \note This policy is used by default.
- * \warning Never used in code !
- */
-#define DEFAULT_COHERENCE_FCT "MESI"
-
-/**
  * \def XSL_DOC
  * \param path 
  * \brief Path (absolute or relative) to the xsl result.
@@ -81,6 +60,13 @@
   xmlFree(tmp);								\
   buf[0] = 0
 
+struct level{
+  int type;
+  void (*coherence_protocol) (struct cache *);
+  bool snooping;
+  bool directory_manager;
+};
+
 /**
  * \brief Compare the replacement policy's name in order to choose the associated replacement function.
  * \param name Name to compare with implemented policies.
@@ -96,12 +82,37 @@ void (*get_replacement_function(char * name)) (struct cache *){
 /**
  * \brief Compare the coherence policy's name in order to choose the associated replacement function.
  * \param name Name to compare with implemented policies.
- * \bug This functions seems to be called with a replacement policy name instead of a coherence one.
  */
 void (*get_coherence_function(char * name)) (struct cache *){
   if(strcmp(name, "MSI") == 0)
     return coherence_MSI;
   return coherence_MESI;
+}
+
+/**
+ * \brief Gives the value of the cache corresponding to the xml text
+ * \param txt The xml text in the attribute type
+ * \return The corresponding number
+ */
+int get_cache_type(char * txt){
+  if(strcmp(txt, "exclusive") == 0)
+    return Exclusive;
+  if(strcmp(txt, "niio") == 0)
+    return NIIO;
+  if(strcmp(txt, "nieo") == 0)
+    return NIEO;
+  return Inclusive;
+}
+
+/**
+ * \brief Turn the text of a boolean (true/false) into a boolean
+ * \param txt The text
+ * \return The corresponding bool
+ */
+bool get_bool(char * txt){
+  if(strcmp(txt, "true") == 0)
+    return true;
+  return false;
 }
 
 /**
@@ -118,13 +129,14 @@ void change_filename(const char * name, char * out){
   if(strcmp(extention, ".xml") == 0){
     out[l-4] = 0;
   }
-  strcat(out, "_archi.xml");
+  strcat(out, ".cassis.xml");
 }
 
 int parse_archi_file(const char * filename, struct architecture * archi){
   int i,j;
   char file_in[50];
   char buf[100];
+  char buf2[100];
   buf[0] = 0;
   strcpy(file_in, filename);
 
@@ -173,6 +185,29 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   cstack = (struct node **) malloc(archi->number_levels * sizeof(struct node *));
   xmlXPathFreeObject(res);
 
+  struct level * L = (struct level *) malloc(archi->number_levels * sizeof(struct level));
+  //Level parsing
+  res = xmlXPathEvalExpression(BAD_CAST "//Level", context);
+  CHECK_XPATH(res);
+  if(archi->number_levels != res->nodesetval->nodeNr){
+    fprintf(stderr, "Parsing error : wrong number of \"Level\"");
+    _exit(1);
+  }
+  for(i=0; i<res->nodesetval->nodeNr; i++){
+    cur = res->nodesetval->nodeTab[i];
+    GET_ATTRIBUT_TXT("type", cur, buf2);
+    L[i].type = get_cache_type(buf2);
+    buf2[0] = 0;
+    GET_ATTRIBUT_TXT("coherence_protocol", cur, buf2);
+    L[i].coherence_protocol = get_coherence_function(buf2);
+    buf2[0] = 0;
+    GET_ATTRIBUT_TXT("snooping", cur, buf2);
+    L[i].snooping = get_bool(buf2);
+    GET_ATTRIBUT_TXT("directory_manager", cur, buf2);
+    L[i].directory_manager = get_bool(buf2);
+  }
+  xmlXPathFreeObject(res);
+
   struct node ** first_sibling = (struct node **) calloc(archi->number_levels, sizeof(struct node *));
   struct node ** last_sibling = (struct node **) calloc(archi->number_levels, sizeof(struct node *));
 
@@ -186,10 +221,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
     GET_ATTRIBUT_INT("cache_associativity", cur, nb_ways);
     nb_blocks = size / (linesize * nb_ways);
     GET_ATTRIBUT_TXT("replacement_protocol", cur, replacement_prot);
-    /* Inclusive, Exclusive, NIOI or NIOE */
-    /* True: with snooping, False: without snooping */
-    /* True: with directory manager, False: without directory manager */
-    c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), get_coherence_function(replacement_prot), Inclusive, false, false);
+    c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), L[depth-1].coherence_protocol, L[depth-1].type, L[depth-1].snooping, L[depth-1].directory_manager);
     n = init_node();
     n->data = c;
 
@@ -225,6 +257,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
     last_sibling[depth-1] = n;
   }
   xmlXPathFreeObject(res);
+  free(L);
   free(cstack);
   free(first_sibling);
   free(last_sibling);
