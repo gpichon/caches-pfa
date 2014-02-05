@@ -12,8 +12,17 @@
       <xsl:element name="Level">
 	<xsl:attribute name="depth"> <xsl:value-of select="$count"/> </xsl:attribute>
 	<xsl:attribute name="coherence_protocol">MESI</xsl:attribute>
-	<xsl:attribute name="type">inclusive</xsl:attribute>
-	<xsl:attribute name="snooping">false</xsl:attribute>
+	
+	<xsl:choose>
+	  <xsl:when test="$count=3 or $count=1">
+	    <xsl:attribute name="type">inclusive</xsl:attribute>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:attribute name="type">nieo</xsl:attribute>
+	  </xsl:otherwise>
+	</xsl:choose>
+
+	<xsl:attribute name="snooping">true</xsl:attribute>
 	<xsl:attribute name="directory_manager">false</xsl:attribute>
       </xsl:element>
 

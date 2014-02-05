@@ -138,6 +138,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   char buf[100];
   char buf2[100];
   buf[0] = 0;
+  buf2[0] = 0;
   strcpy(file_in, filename);
 
   xmlDocPtr doc = xmlParseFile(file_in);
@@ -195,16 +196,18 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   }
   for(i=0; i<res->nodesetval->nodeNr; i++){
     cur = res->nodesetval->nodeTab[i];
+    j = archi->number_levels - i - 1;
     GET_ATTRIBUT_TXT("type", cur, buf2);
-    L[i].type = get_cache_type(buf2);
+    L[j].type = get_cache_type(buf2);
     buf2[0] = 0;
     GET_ATTRIBUT_TXT("coherence_protocol", cur, buf2);
-    L[i].coherence_protocol = get_coherence_function(buf2);
+    L[j].coherence_protocol = get_coherence_function(buf2);
     buf2[0] = 0;
     GET_ATTRIBUT_TXT("snooping", cur, buf2);
-    L[i].snooping = get_bool(buf2);
+    L[j].snooping = get_bool(buf2);
+    buf[0] = 0;
     GET_ATTRIBUT_TXT("directory_manager", cur, buf2);
-    L[i].directory_manager = get_bool(buf2);
+    L[j].directory_manager = get_bool(buf2);
   }
   xmlXPathFreeObject(res);
 
@@ -272,6 +275,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
 void print_archi_rec(struct node * n){
   unsigned int i;
   printf("\tL%d (taille : %d, ligne : %d, associativité : %d, nb_blocks : %d)\n", n->data->depth, n->data->size, n->data->linesize, n->data->nb_ways,  n->data->nb_blocks);
+  printf("\tSnooping : %d, directory_manager %d\n", n->data->snooping, n->data->directory);
   printf("\tInfo du noeud : id %d, nombre de fils %d\n\n", n->id, n->nb_children);
   for(i=0;i<n->nb_children;i++){
     print_archi_rec(get_child(n,i));
