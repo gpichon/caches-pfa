@@ -177,7 +177,9 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   struct cache * c;
   struct node * n;
   struct node ** cstack;
+
   //Begin parsing
+  //Global values
   res = xmlXPathEvalExpression(BAD_CAST "/Architecture", context);
   CHECK_XPATH(res);
   GET_ATTRIBUT_TXT("name", res->nodesetval->nodeTab[0], archi->name);
@@ -186,8 +188,9 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   cstack = (struct node **) malloc(archi->number_levels * sizeof(struct node *));
   xmlXPathFreeObject(res);
 
-  struct level * L = (struct level *) malloc(archi->number_levels * sizeof(struct level));
   //Level parsing
+  struct level * L = (struct level *) malloc(archi->number_levels * sizeof(struct level));
+  CHECK_ALLOC(L);
   res = xmlXPathEvalExpression(BAD_CAST "//Level", context);
   CHECK_XPATH(res);
   if(archi->number_levels != res->nodesetval->nodeNr){
@@ -199,21 +202,18 @@ int parse_archi_file(const char * filename, struct architecture * archi){
     j = archi->number_levels - i - 1;
     GET_ATTRIBUT_TXT("type", cur, buf2);
     L[j].type = get_cache_type(buf2);
-    buf2[0] = 0;
     GET_ATTRIBUT_TXT("coherence_protocol", cur, buf2);
     L[j].coherence_protocol = get_coherence_function(buf2);
-    buf2[0] = 0;
     GET_ATTRIBUT_TXT("snooping", cur, buf2);
     L[j].snooping = get_bool(buf2);
-    buf[0] = 0;
     GET_ATTRIBUT_TXT("directory_manager", cur, buf2);
     L[j].directory_manager = get_bool(buf2);
   }
   xmlXPathFreeObject(res);
 
+  //Cache parsing
   struct node ** first_sibling = (struct node **) calloc(archi->number_levels, sizeof(struct node *));
   struct node ** last_sibling = (struct node **) calloc(archi->number_levels, sizeof(struct node *));
-
   res = xmlXPathEvalExpression(BAD_CAST "//Cache", context);
   CHECK_XPATH(res);
   for(i=0; i<res->nodesetval->nodeNr; i++){
@@ -226,7 +226,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
     GET_ATTRIBUT_TXT("replacement_protocol", cur, replacement_prot);
     c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), L[depth-1].coherence_protocol, L[depth-1].type, L[depth-1].snooping, L[depth-1].directory_manager);
     n = init_node();
-    n->data = c;
+    set_data(n, c);
 
     //Add to the threads table
     //First pop levels below in the stack
@@ -242,8 +242,8 @@ int parse_archi_file(const char * filename, struct architecture * archi){
       CHECK_ALLOC(archi->threads);
       archi->threads[archi->number_threads] = n;
       for(j = stack_head-1; j >= 0 ; j--){
-	if(!cstack[j+1]->parent){
-	  cstack[j+1]->parent = cstack[j];
+	if(!get_parent(cstack[j+1])){
+	  set_parent(cstack[j+1], cstack[j]);
 	  add_child(cstack[j], cstack[j+1]);
 	}
       }
@@ -255,8 +255,8 @@ int parse_archi_file(const char * filename, struct architecture * archi){
       first_sibling[depth-1] = n;
       last_sibling[depth-1] = n;
     }
-    last_sibling[depth-1]->next_sibling = n;
-    n->next_sibling = first_sibling[depth-1]; //Link last to the first
+    set_next_sibling(last_sibling[depth-1], n);
+    set_next_sibling(n, first_sibling[depth-1]); //Link last to the first
     last_sibling[depth-1] = n;
   }
   xmlXPathFreeObject(res);

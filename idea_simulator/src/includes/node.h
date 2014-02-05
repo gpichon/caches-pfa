@@ -67,12 +67,36 @@ struct cache * get_cache(struct node * n);
 struct node * get_root(struct node * n);
 
 /**
+ * \brief Set the parent node
+ * \param child The current node
+ * \param parent The parent node
+ * \return The parent node
+ */
+struct node * set_parent(struct node * child, struct node * parent);
+
+/**
+ * \brief Set the next sibling
+ * \param n The current node
+ * \param sibling The next sibling
+ * \return The next sibling
+ */
+struct node * set_next_sibling(struct node * n, struct node * sibling);
+
+/**
  * \brief Add a child to a node
  * \param parent The parent node
  * \param child The child node to add
  * \return 0 in case of error
  */
 int add_child(struct node * parent, struct node * child);
+
+/**
+ * \brief Set the cache data to the node
+ * \param n The current node
+ * \param c The cache to set
+ * \return The cache structure
+ */
+struct cache * set_data(struct node * n, struct cache * c);
 
 /**
  * \brief Free the node

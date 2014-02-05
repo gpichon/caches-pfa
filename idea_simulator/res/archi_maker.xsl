@@ -14,7 +14,7 @@
 	<xsl:attribute name="coherence_protocol">MESI</xsl:attribute>
 	
 	<xsl:choose>
-	  <xsl:when test="$count=3 or $count=1">
+	  <xsl:when test="$count &gt;= 3 or $count=1">
 	    <xsl:attribute name="type">inclusive</xsl:attribute>
 	  </xsl:when>
 	  <xsl:otherwise>
