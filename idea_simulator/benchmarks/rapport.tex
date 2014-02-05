@@ -18,9 +18,9 @@
 \section{a[i] = a[N/2] + b[i]}
 \indent Chaque c{\oe}ur effectue la même opération:
 \begin{verbatim}
-for i0 = 0 to 1
+for i0 = 0 to 2
   load 0x839690
-  for i1 = 0 to 20000
+  for i1 = 0 to 200000
     load 0x6cf070 + 4*i1
     store 0x829c90 + 4*i1
   endfor
@@ -28,23 +28,115 @@ endfor
 \end{verbatim}
 
 \subsection*{Sans snooping, tous les caches inclusifs}
+\begin{verbatim}
+L3 (misses:      25002, hits:     350014, writes_back:          0, broadcasts:    2412502)
+L2 (misses:     187508, hits:     287468, writes_back:     150003, broadcasts:    1237506)
+L2 (misses:     187508, hits:     287469, writes_back:     149826, broadcasts:    1237505)
+L1 (misses:     287467, hits:     912539, writes_back:     142671, broadcasts:     637506)
+L1 (misses:     187509, hits:    1012497, writes_back:     150003, broadcasts:     637506)
+L1 (misses:     287468, hits:     912538, writes_back:     142671, broadcasts:     637506)
+L1 (misses:     187509, hits:    1012497, writes_back:     149954, broadcasts:     637506)
+\end{verbatim}
 
 \subsection*{Sans snooping, avec un L2 exclusif}
+\begin{verbatim}
+L3 (misses:      25002, hits:     721450, writes_back:          0, broadcasts:    2412502)
+L2 (misses:     373226, hits:          0, writes_back:          0, broadcasts:    1200000)
+L2 (misses:     373226, hits:          0, writes_back:          0, broadcasts:    1200000)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     149954, broadcasts:     636610)
+\end{verbatim}
 
+\newpage
 \subsection*{Sans snooping, avec un L2 non inclusif}
+\begin{verbatim}
+L3 (misses:      25002, hits:     347475, writes_back:          0, broadcasts:    2412502)
+L2 (misses:     186238, hits:     186988, writes_back:     150003, broadcasts:    1236236)
+L2 (misses:     186239, hits:     186987, writes_back:     149826, broadcasts:    1236236)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     149954, broadcasts:     636610)
+\end{verbatim}
 
 \subsection*{Sans snooping, avec un L3 exclusif}
+\begin{verbatim}
+L3 (misses:     375016, hits:          0, writes_back:          0, broadcasts:    2400000)
+L2 (misses:     187508, hits:     287468, writes_back:     150003, broadcasts:    1237506)
+L2 (misses:     187508, hits:     287469, writes_back:     149826, broadcasts:    1237505)
+L1 (misses:     287467, hits:     912539, writes_back:     142671, broadcasts:     637506)
+L1 (misses:     187509, hits:    1012497, writes_back:     150003, broadcasts:     637506)
+L1 (misses:     287468, hits:     912538, writes_back:     142671, broadcasts:     637506)
+L1 (misses:     187509, hits:    1012497, writes_back:     149954, broadcasts:     637506)
+\end{verbatim}
 
 \subsection*{Sans snooping, avec un L3 non inclusif}
+\begin{verbatim}
+L3 (misses:      25002, hits:     350014, writes_back:          0, broadcasts:    2412502)
+L2 (misses:     187508, hits:     287468, writes_back:     150003, broadcasts:    1237506)
+L2 (misses:     187508, hits:     287469, writes_back:     149826, broadcasts:    1237505)
+L1 (misses:     287467, hits:     912539, writes_back:     142671, broadcasts:     637506)
+L1 (misses:     187509, hits:    1012497, writes_back:     150003, broadcasts:     637506)
+L1 (misses:     287468, hits:     912538, writes_back:     142671, broadcasts:     637506)
+L1 (misses:     187509, hits:    1012497, writes_back:     149954, broadcasts:     637506)
+\end{verbatim}
 
 \subsection*{Avec snooping niveau L1, niveau L2 non inclusif}
+\begin{verbatim}
+L3 (misses:      25002, hits:      46018, writes_back:          0, broadcasts:    2412502)
+L2 (misses:      71020, hits:       3093, writes_back:      37503, broadcasts:    1233518)
+L2 (misses:          0, hits:          0, writes_back:          0, broadcasts:    1200000)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     149954, broadcasts:     636610)
+\end{verbatim}
 
+\newpage
 \subsection*{Avec snooping niveau L2, niveau L2 non inclusif}
+\begin{verbatim}
+L3 (misses:      25002, hits:      48223, writes_back:          0, broadcasts:    2412502)
+L2 (misses:     186238, hits:     186988, writes_back:     150003, broadcasts:    1236236)
+L2 (misses:     186239, hits:     186987, writes_back:     149826, broadcasts:    1236236)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     149954, broadcasts:     636610)
+\end{verbatim}
 
 \subsection*{Avec snooping tous les niveaux, niveaux L2 non inclusif}
+\begin{verbatim}
+L3 (misses:      25002, hits:      46018, writes_back:          0, broadcasts:    2412502)
+L2 (misses:      71020, hits:       3093, writes_back:      37503, broadcasts:    1233518)
+L2 (misses:          0, hits:          0, writes_back:          0, broadcasts:    1200000)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     149954, broadcasts:     636610)
+\end{verbatim}
 
 \subsection*{Avec snooping tous les niveaux et L2 exclusif}
+\begin{verbatim}
+L3 (misses:      25002, hits:      49111, writes_back:          0, broadcasts:    2412502)
+L2 (misses:      74113, hits:          0, writes_back:          0, broadcasts:    1200000)
+L2 (misses:          0, hits:          0, writes_back:          0, broadcasts:    1200000)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     149954, broadcasts:     636610)
+\end{verbatim}
 
 \subsection*{Avec snooping tous les niveaux et L2 orienté exclusif}
+\begin{verbatim}
+L3 (misses:      25002, hits:      49111, writes_back:          0, broadcasts:    2412502)
+L2 (misses:      74113, hits:          0, writes_back:          0, broadcasts:    1200000)
+L2 (misses:          0, hits:          0, writes_back:          0, broadcasts:    1200000)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     150003, broadcasts:     636610)
+L1 (misses:     186613, hits:    1013393, writes_back:     149954, broadcasts:     636610)
+\end{verbatim}
 
 \end{document}
