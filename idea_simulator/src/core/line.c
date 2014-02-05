@@ -20,6 +20,7 @@ struct line** init_line(int nb_ways) {
     line->first_case = 0;
     line->use = 0;
     line->status = 0;
+    line->priority = 0;
     lines[i] = line;
   }
   return lines;
