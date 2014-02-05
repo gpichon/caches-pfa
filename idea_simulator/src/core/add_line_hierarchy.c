@@ -48,11 +48,18 @@ int share_level(struct node *node, long entry, void (*action)(struct line *)) {
 void load_line_hierarchy(struct node *node, long entry) {
   struct node *current_node = node;
   struct cache *current_cache = get_cache(node);
+  struct line *line = NULL;
 
   /* Hit: Ok! */
   if (is_in_cache(current_cache, entry)) {
     update_lines(current_cache, entry);
     UP_HITS(current_cache);
+
+    /* Invalid if exclusive cache */
+    if (is_cache_exclusive(current_cache)){
+      line = line_in_cache(current_cache, entry);
+      invalid_line(line);
+    }
   }
 
   /* Miss:
@@ -62,20 +69,21 @@ void load_line_hierarchy(struct node *node, long entry) {
   else {
     int res = 0;
     int v;
-    struct line *line = NULL;
     
     /* While entry is not found and hierarchy not ended */
-
     while (res == 0 && current_node != NULL) {
       current_cache = get_cache(current_node);
-      res = add_line_cache(current_node, entry, 0);
-      update_lines(current_cache, entry);
-      
+
+      if (is_inclusive_like(current_cache)){
+	res = add_line_cache(current_node, entry, 0);
+      }
+
+      update_lines(current_cache, entry);      
       v = share_level(current_node, entry, &share_line);
       UP_BROADCASTS(current_cache);
 
       /* If line was previously in the cache, keep it as it was! */
-      if (res == 0) {
+      if (res == 0 && is_in_cache(current_cache, entry)) {
 	line = line_in_cache(current_cache, entry);
 	current_cache->set_flags_new_line(v, line);
 
@@ -86,12 +94,10 @@ void load_line_hierarchy(struct node *node, long entry) {
       }
 
       /* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
-      else{
-      	if (is_cache_exclusive(current_cache)){
-      	  line = line_in_cache(current_cache, entry);
-      	  invalid_line(line);
-      	}
-      }      
+      else if (!is_inclusive_like(current_cache) && is_in_cache(current_cache, entry)){
+	line = line_in_cache(current_cache, entry);
+	invalid_line(line);
+      }
             
       current_node = get_parent(current_node);
     }    
@@ -132,17 +138,22 @@ void store_line_hierarchy(struct node *node, long entry) {
     int v;
     while (res == 0 && current_node != NULL) {
       current_cache = get_cache(current_node);
-      res = add_line_cache(current_node, entry, 1);
 
-      v = share_level(current_node, entry, &invalid_line);
-      UP_BROADCASTS(current_cache);
-      line = line_in_cache(current_cache, entry);
-      modify_line(line);
-      update_lines(current_cache, entry);
+      if (is_inclusive_like(current_cache) && is_in_cache(current_cache, entry)){
+	res = add_line_cache(current_node, entry, 1);	
+	v = share_level(current_node, entry, &invalid_line);
+	UP_BROADCASTS(current_cache);
+	line = line_in_cache(current_cache, entry);
+	modify_line(line);
+	update_lines(current_cache, entry);
+      }
+      else
+	v = share_level(current_node, entry, &invalid_line);
+
       current_node = get_parent(current_node);
 
       /* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
-      if (is_cache_exclusive(current_cache)){
+      if (!is_inclusive_like(current_cache) && is_in_cache(current_cache, entry)){
 	line = line_in_cache(current_cache, entry);
 	invalid_line(line);
       }
