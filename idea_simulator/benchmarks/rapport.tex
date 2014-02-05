@@ -1,0 +1,44 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+\usepackage{float}
+
+%%%%%%%%%%%%%%%% Lengths %%%%%%%%%%%%%%%%
+\setlength{\textwidth}{15.5cm}
+\setlength{\evensidemargin}{0.5cm}
+\setlength{\oddsidemargin}{0.5cm}
+
+\begin{document}
+\part*{Benchmarks de CASSIS selon les différentes politiques}
+\indent Ce document compare les résultats de la simulation de problèmes classiques avec différentes politiques de caches. On travaillera sur une architecture avec 1 L3, 2 L2 et 4 L1. Par ailleurs, chaque coeur effectuera 10 instructions avec que l'on passe au coeur suivant. Pour finir, on utilisera une politique de remplacement LRU et une politique de cohérence MESI, le but étant de comparer les types de cache et l'utilisation du snooping.
+
+\section{a[i] = a[N/2] + b[i]}
+\indent Chaque coeur effectue la meme opération:
+\begin{verbatim}
+for i0 = 0 to 1
+  load 0x839690
+  for i1 = 0 to 20000
+    load 0x6cf070 + 4*i1
+    store 0x829c90 + 4*i1
+  endfor
+endfor
+\end{verbatim}
+
+\subsection*{Sans snooping, tous les caches inclusifs}
+
+\subsection*{Sans snooping, avec un L2 exclusif}
+
+\subsection*{Sans snooping, avec un L2 non inclusif}
+
+\subsection*{Avec snooping niveau L1, tous les caches inclusifs}
+
+\subsection*{Avec snooping niveau L2, tous les caches inclusifs}
+
+\subsection*{Avec snooping tous les niveaux}
+
+\subsection*{Avec snooping tous les niveaux et L2 exclusif}
+
+\end{document}
