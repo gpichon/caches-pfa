@@ -12,7 +12,7 @@
 #include "cache.h"
 
 /* Data allocations */
-struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replace)(struct cache *), void (*coherence)(struct cache *), int type, bool snooping) {
+struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replace)(struct cache *), void (*coherence)(struct cache *), int type, bool snooping, bool directory) {
   struct cache *cache   = malloc(sizeof(struct cache));
   cache->size           = size;
   cache->linesize       = linesize;
@@ -28,6 +28,7 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int
   cache->depth          = depth;
   cache->type           = type;
   cache->snooping       = snooping;
+  cache->directory      = directory;
   replace(cache);
   coherence(cache);
   return cache;

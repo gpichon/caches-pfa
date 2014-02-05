@@ -81,6 +81,7 @@ struct cache {
 
   enum cache_type type;       /**< Type of cache: inclusive, exclusive, NIOI, NIOE */
   bool snooping;              /**< Can this cache use snooping to find data? */
+  bool directory;             /**< Can this cache use a directory manager to trace its sons data? */
 
   int (*replacement)(struct block *); /**< Function pointer to replace a line in a block. */
   void (*update_line)(struct block *, int, long); /**< Function pointer to update line stat in a block.  */
@@ -92,7 +93,7 @@ struct cache {
 /**
  * \brief Cache initialization. 
  */
-struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replacement)(struct cache *), void (*coherence)(struct cache *), int type, bool snooping);
+struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replacement)(struct cache *), void (*coherence)(struct cache *), int type, bool snooping, bool manager);
 
 /**
  * \brief Cache removal.

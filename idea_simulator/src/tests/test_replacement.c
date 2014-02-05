@@ -11,7 +11,7 @@ int test_replacement(int argc, char** argv) {
   int i;
 
   /* Test of Least Frequently Used replacement */
-  L1 = init_cache(8192, 64, 4, 32, 0, &replacement_LFU, &coherence_MESI, Inclusive, false);
+  L1 = init_cache(8192, 64, 4, 32, 0, &replacement_LFU, &coherence_MESI, Inclusive, false, false);
   node->data = L1;
 
   /* There are four ways in each block. As adress 163 is more used, it is not deleted from the cache */
@@ -33,7 +33,7 @@ int test_replacement(int argc, char** argv) {
   printf("Tests LFU OK\n");
 
   /* Test of First In First Out replacement */
-  L1 = init_cache(8192, 64, 4, 32, 0, &replacement_FIFO, &coherence_MESI, Inclusive, false);
+  L1 = init_cache(8192, 64, 4, 32, 0, &replacement_FIFO, &coherence_MESI, Inclusive, false, false);
   node->data = L1;
 
   /* There are four ways in each block. The deleted value in the first one in the cache, whatever how many times it was used */
@@ -57,7 +57,7 @@ int test_replacement(int argc, char** argv) {
 
 
   /* Test of Last Recently Used replacement */
-  L1 = init_cache(8192, 64, 4, 32, 0, &replacement_LRU, &coherence_MESI, Inclusive, false);
+  L1 = init_cache(8192, 64, 4, 32, 0, &replacement_LRU, &coherence_MESI, Inclusive, false, false);
   node->data = L1;
 
   for (i=1; i<3; i++) {

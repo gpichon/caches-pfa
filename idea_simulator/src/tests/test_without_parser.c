@@ -18,16 +18,16 @@ int test_without_parser(int argc, char** argv) {
   for (i=0; i<4; i++) {
     struct node *node = init_node();
     struct cache *cache;
-    cache = init_cache(8192, 64, 4, 32, 1, &replacement_LFU, &coherence_MESI, Inclusive, false);
+    cache = init_cache(8192, 64, 4, 32, 1, &replacement_LFU, &coherence_MESI, Inclusive, false, false);
     node->data = cache;
     threads[i] = node;
   }
 
   struct node *node_2_0, *node_2_1, *node_3;
   struct cache *cache_L2_0, *cache_L2_1, *cache_L3;
-  cache_L2_0 = init_cache(32768, 64, 8, 64 , 2, &replacement_LFU, &coherence_MESI, Inclusive, false);
-  cache_L2_1 = init_cache(32768, 64, 8, 64 , 2, &replacement_LFU, &coherence_MESI, Inclusive, false);
-  cache_L3 = init_cache(130172, 64, 16, 128, 3, &replacement_LFU, &coherence_MESI, Inclusive, false);
+  cache_L2_0 = init_cache(32768, 64, 8, 64 , 2, &replacement_LFU, &coherence_MESI, Inclusive, false, false);
+  cache_L2_1 = init_cache(32768, 64, 8, 64 , 2, &replacement_LFU, &coherence_MESI, Inclusive, false, false);
+  cache_L3 = init_cache(130172, 64, 16, 128, 3, &replacement_LFU, &coherence_MESI, Inclusive, false, false);
   node_2_0 = init_node(); node_2_0->data = cache_L2_0;
   node_2_1 = init_node(); node_2_1->data = cache_L2_1;
   node_3   = init_node(); node_3->data   = cache_L3;
