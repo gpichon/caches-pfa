@@ -33,12 +33,10 @@ struct node * init_node(){
 }
 
 struct node * get_parent(struct node * n){
-  CHECK_NULL(n);
   return n->parent;
 }
 
 struct node * get_sibling(struct node * n){
-  CHECK_NULL(n);
   return n->next_sibling;
 }
 
@@ -50,7 +48,6 @@ struct node * get_child(struct node * n, unsigned int i){
 }
 
 struct cache * get_cache(struct node * n){
-  CHECK_NULL(n);
   return n->data;
 }
 
@@ -63,6 +60,19 @@ struct node * get_root(struct node * n){
   return root;
 }
 
+
+struct node * set_parent(struct node * child, struct node * parent){
+  child->parent = parent;
+  return child->parent;
+}
+
+struct node * set_next_sibling(struct node * n, struct node * sibling){
+  n->next_sibling=n;
+  if(sibling != NULL)
+    n->next_sibling=sibling;
+  return n->next_sibling;
+}
+
 int add_child(struct node * parent, struct node * child){
   CHECK_NULL(parent);
   parent->child = realloc(parent->child, (parent->nb_children + 1) * sizeof(struct node *));
@@ -72,6 +82,11 @@ int add_child(struct node * parent, struct node * child){
   }
   parent->child[parent->nb_children++] = child;
   return 1;
+}
+
+struct cache * set_data(struct node * n, struct cache * c){
+  n->data = c;
+  return n->data;
 }
 
 void free_node(struct node * n){
