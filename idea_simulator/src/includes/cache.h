@@ -19,7 +19,6 @@
 #include <stdbool.h>
 #include "block.h"
 
-
 /* A cache of size size, with nb_blocks blocks.
    Each block contains nb_ways lines and a line size is linesize */
 
@@ -82,8 +81,9 @@ struct cache {
   enum cache_type type;       /**< Type of cache: inclusive, exclusive, NIIO, NIEO */
   bool snooping;              /**< Can this cache use snooping to find data? */
   bool directory;             /**< Can this cache use a directory manager to trace its sons data? */
+  struct directory *dir;      /**< The directory*/
 
-  int (*replacement)(struct block *); /**< Function pointer to replace a line in a block. */
+  int (*replacement)(struct block *, int); /**< Function pointer to replace a line for a special priority in a block. */
   void (*update_line)(struct block *, int, long); /**< Function pointer to update line stat in a block.  */
 
   int (*treat_special_flags)(struct line *, void(*)(struct line *)); /**< Function pointer to manage special flags: E, O. */

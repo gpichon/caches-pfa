@@ -15,7 +15,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "cache.h"
 #include "node.h"
 
 /**
@@ -24,8 +23,8 @@
  */
 
 struct directory {
-int nb_sons; 			/**< Number of sons in the hierarchy */
-struct cache **sons_caches;	/**< References to the caches sons */
+  int nb_sons; 			/**< Number of sons in the hierarchy */
+  struct cache **sons_caches;	/**< References to the caches sons */
 };
 
 /**
@@ -42,8 +41,9 @@ void delete_directory(struct directory *dir);
 /**
  * \brief Gives priorities to delete data in the parameter block.
  * \param The directory and the block to delete from.
+ * \return The minimal priority in the parameter block.
  */
-void delete_from_directory(struct directory *dir, struct block *block);
+int delete_from_directory(struct directory *dir, struct block *block);
 
 /**
  * \brief Search a data in hierarchy thanks to the directory.

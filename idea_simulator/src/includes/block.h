@@ -42,20 +42,23 @@ struct block **init_block(int nb_blocks, int nb_ways, int linesize);
 void delete_blocks(struct block **blocks, int nb_blocks);
 
 /**
- * \brief Returns the number line to replace in the set. 
+ * \brief Returns the number line to replace in the set.
+ * \param The line to eject' priority.
  * \note To be used when a block is full and uses LFU replacement policy.
  */
-int id_line_to_replace_LFU(struct block *block);
+int id_line_to_replace_LFU(struct block *block, int priority);
 /**
  * \brief Returns the number line to replace in the set. 
+ * \param The line to eject' priority.
  * \note To be used when a block is full and uses FIFO replacement policy.
  */
-int id_line_to_replace_FIFO(struct block *block);
+int id_line_to_replace_FIFO(struct block *block, int priority);
 /**
  * \brief Returns the number line to replace in the set. 
+ * \param The line to eject' priority.
  * \note To be used when a block is full and uses LRU replacement policy.
  */
-int id_line_to_replace_LRU(struct block *block);
+int id_line_to_replace_LRU(struct block *block, int priority);
 
 /**
  * \brief Update replacement flag. 
@@ -77,6 +80,6 @@ void update_LRU(struct block *block, int nb_ways, long entry);
  * \brief Load a line in the block. All structures must be initialized.
  * \note Pointer function in parameter returns 1 if write back (when deleting a modified line), else 0.
  */
-struct line *add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *));
+struct line *add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *, int));
 
 #endif

@@ -36,7 +36,7 @@ void delete_blocks(struct block **blocks, int nb_blocks) {
   free(blocks);
 }
 
-int id_line_to_replace_LFU(struct block *block) {
+int id_line_to_replace_LFU(struct block *block, int priority) {
   int nb_ways = block->nb_ways;
   int use = 1000;
   int id = 0;
@@ -45,7 +45,7 @@ int id_line_to_replace_LFU(struct block *block) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line_use = block->lines[i]->use;
-    if (line_use < use) {
+    if (line_use < use && block->lines[i]->priority==priority) {
       use = line_use;
       id = i;
     }
@@ -53,7 +53,7 @@ int id_line_to_replace_LFU(struct block *block) {
   return id;
 }
 
-int id_line_to_replace_FIFO(struct block *block) {
+int id_line_to_replace_FIFO(struct block *block, int priority) {
   int nb_ways = block->nb_ways;
   int use = 0;
   int id = 0;
@@ -62,7 +62,7 @@ int id_line_to_replace_FIFO(struct block *block) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line_use = block->lines[i]->use;
-    if (line_use > use) {
+    if (line_use > use && block->lines[i]->priority==priority) {
       use = line_use;
       id = i;
     }
@@ -73,7 +73,7 @@ int id_line_to_replace_FIFO(struct block *block) {
   return id;
 }
 
-int id_line_to_replace_LRU(struct block *block) {
+int id_line_to_replace_LRU(struct block *block, int priority) {
   int nb_ways = block->nb_ways;
   int use = 100000;
   int id = 0;
@@ -82,7 +82,7 @@ int id_line_to_replace_LRU(struct block *block) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line_use = block->lines[i]->use;
-    if (line_use < use) {
+    if (line_use < use && block->lines[i]->priority==priority) {
       use = line_use;
       id = i;
     }
@@ -93,8 +93,8 @@ int id_line_to_replace_LRU(struct block *block) {
   return id;
 }
 
-struct line *add_line_block(struct block *block, struct line *line, int (*replacement)(struct block *)) {
-  int id_line = replacement(block);
+struct line *add_line_block(struct block *block, struct line *line, int (*replacement)(struct block *, int)) {
+  int id_line = replacement(block, 0);
   struct line *del_line = block->lines[id_line];
   block->lines[id_line] = line;
   return del_line;
