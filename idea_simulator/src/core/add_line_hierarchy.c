@@ -10,6 +10,7 @@
  */
 
 #include "add_line_hierarchy.h"
+#include "directory_manager.h"
 
 /* Return 1 if there is entry is somewhere else in level
    Used for a miss when load or a hit when store 
@@ -204,6 +205,7 @@ void add_line_cache(struct node *node, long entry, int w) {
   line = malloc(sizeof(struct line));
   line->first_case = entry / cache->linesize * cache->linesize;
   line->use = 0;
+  line->priority = 0;
   if (w) {
     modify_line(line);
   }
@@ -211,7 +213,12 @@ void add_line_cache(struct node *node, long entry, int w) {
     exclusive_line(line);
   }
 
-  del_line = add_line_block(cache->blocks[id_block], line, cache->replacement);
+  int priority = 0;
+
+  if (cache->directory){
+    priority = delete_from_directory(cache->dir, cache->blocks[id_block]);
+  }
+  del_line = add_line_block(cache->blocks[id_block], line, cache->replacement, priority);
 
   if (del_line != NULL) {
     

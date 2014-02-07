@@ -259,6 +259,11 @@ int parse_archi_file(const char * filename, struct architecture * archi){
     set_next_sibling(n, first_sibling[depth-1]); //Link last to the first
     last_sibling[depth-1] = n;
   }
+
+  /* Set directory managers */
+  n = get_root(n);
+  init_directories(n);
+
   xmlXPathFreeObject(res);
   free(L);
   free(cstack);
@@ -345,6 +350,9 @@ void delete_archi_rec(struct node * n){
     if(get_child(n,i)){
       delete_archi_rec(get_child(n, i));
     }
+  }
+  if(n->data->directory){
+    delete_directory(n->data->dir);
   }
   delete_cache(n->data);
   free_node(n);

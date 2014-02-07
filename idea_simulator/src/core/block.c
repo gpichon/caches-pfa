@@ -38,7 +38,7 @@ void delete_blocks(struct block **blocks, int nb_blocks) {
 
 int id_line_to_replace_LFU(struct block *block, int priority) {
   int nb_ways = block->nb_ways;
-  int use = 1000;
+  int use = INT_MAX;
   int id = 0;
   int line_use;
 
@@ -75,7 +75,7 @@ int id_line_to_replace_FIFO(struct block *block, int priority) {
 
 int id_line_to_replace_LRU(struct block *block, int priority) {
   int nb_ways = block->nb_ways;
-  int use = 100000;
+  int use = INT_MAX;
   int id = 0;
   int line_use;
 
@@ -93,8 +93,8 @@ int id_line_to_replace_LRU(struct block *block, int priority) {
   return id;
 }
 
-struct line *add_line_block(struct block *block, struct line *line, int (*replacement)(struct block *, int)) {
-  int id_line = replacement(block, 0);
+struct line *add_line_block(struct block *block, struct line *line, int (*replacement)(struct block *, int), int priority) {
+  int id_line = replacement(block, priority);
   struct line *del_line = block->lines[id_line];
   block->lines[id_line] = line;
   return del_line;

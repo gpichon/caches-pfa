@@ -16,7 +16,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <limits.h>
 #include "line.h"
+
 
 
 /**
@@ -78,8 +80,9 @@ void update_LRU(struct block *block, int nb_ways, long entry);
 
 /**
  * \brief Load a line in the block. All structures must be initialized.
+ * \param priority Priority of the data to be deleted.
  * \note Pointer function in parameter returns 1 if write back (when deleting a modified line), else 0.
  */
-struct line *add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *, int));
+struct line *add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *, int), int priority);
 
 #endif

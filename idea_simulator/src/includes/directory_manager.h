@@ -28,6 +28,12 @@ struct directory {
 };
 
 /**
+ * \brief Used to create all directory managers.
+ * \param The root of the hierarchy.
+ */
+void init_directories(struct node *root);
+
+/**
  * \brief Used to create a directory manager.
  * \param The node in the hierarchy.
  */

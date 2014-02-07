@@ -155,3 +155,4 @@ bool is_inclusive_like(struct cache *cache){
 bool is_snooping(struct cache *cache){
   return (cache->snooping);
 }
+

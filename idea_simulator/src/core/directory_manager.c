@@ -16,6 +16,7 @@ int get_nb_sons(struct node *node){
   unsigned int i;
   int res = 0;
   for (i=0; i<node->nb_children; i++){
+    res = node->nb_children;
     res += get_nb_sons(get_child(node, i));
   }
   return res;
@@ -25,10 +26,20 @@ int get_nb_sons(struct node *node){
 void assign_sons(struct directory *dir, struct node *node, struct cache **caches, int *index){
   unsigned int i;
   for (i=0; i<node->nb_children; i++){
-    caches[*index++] = get_cache(get_child(node, i));
+    caches[(*index)++] = get_cache(get_child(node, i));
   }
   for (i=0; i<node->nb_children; i++){
     assign_sons(dir, get_child(node, i), caches, index);
+  }
+}
+
+void init_directories(struct node *root){
+  unsigned int i;
+  struct cache *cache = get_cache(root);
+  cache->dir = init_directory(root);
+  for (i=0; i<root->nb_children; i++){
+    cache = get_cache(get_child(root, i));
+    cache->dir = init_directory(get_child(root, i));
   }
 }
 
@@ -40,13 +51,13 @@ struct directory *init_directory(struct node *node){
     return dir;
   }
 
-  dir = malloc(sizeof(struct directory *));
+  dir = malloc(sizeof(struct directory));
   dir->nb_sons = get_nb_sons(node);
   struct cache **caches = malloc(dir->nb_sons * sizeof(struct cache *));
-  dir->sons_caches = caches;
 
   int current = 0;
   assign_sons(dir, node, caches, &current);
+  dir->sons_caches = caches;
   return dir;
 }
 
@@ -56,12 +67,8 @@ void delete_directory(struct directory *dir){
 }
 
 int delete_from_directory(struct directory *dir, struct block *block){
-  /* Case with no directory */
-  if (dir == NULL)
-    return 0;
-  
   int nb_ways = block->nb_ways;
-  int min_priority = 0;
+  int min_priority = INT_MAX;
   int i, j;
   /* At the beginning, all priorities are at 0 */
   for (j=0; j<nb_ways; j++){

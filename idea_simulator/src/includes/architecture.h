@@ -14,6 +14,7 @@
 #define ARCHI_H
 
 #include "node.h"
+#include "directory_manager.h"
 
 /**
  * \struct architecture 
