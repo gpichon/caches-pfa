@@ -215,6 +215,7 @@ void add_line_cache(struct node *node, long entry, int w) {
 
   int priority = 0;
 
+  /* A voir quand il faut le faire! */
   if (cache->directory){
     priority = delete_from_directory(cache->dir, cache->blocks[id_block]);
   }

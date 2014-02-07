@@ -15,8 +15,8 @@
 int get_nb_sons(struct node *node){
   unsigned int i;
   int res = 0;
+  res = node->nb_children;
   for (i=0; i<node->nb_children; i++){
-    res = node->nb_children;
     res += get_nb_sons(get_child(node, i));
   }
   return res;
@@ -26,7 +26,8 @@ int get_nb_sons(struct node *node){
 void assign_sons(struct directory *dir, struct node *node, struct cache **caches, int *index){
   unsigned int i;
   for (i=0; i<node->nb_children; i++){
-    caches[(*index)++] = get_cache(get_child(node, i));
+    caches[*index] = get_cache(get_child(node, i));
+    (*index)++;
   }
   for (i=0; i<node->nb_children; i++){
     assign_sons(dir, get_child(node, i), caches, index);
@@ -38,8 +39,17 @@ void init_directories(struct node *root){
   struct cache *cache = get_cache(root);
   cache->dir = init_directory(root);
   for (i=0; i<root->nb_children; i++){
-    cache = get_cache(get_child(root, i));
-    cache->dir = init_directory(get_child(root, i));
+    init_directories(get_child(root, i));
+  }
+}
+
+void delete_directories(struct node *root){
+  unsigned int i;
+  if (get_cache(root)->directory){
+    delete_directory(get_cache(root)->dir);
+  }
+  for (i=0; i<root->nb_children; i++){
+    delete_directories(get_child(root, i));
   }
 }
 

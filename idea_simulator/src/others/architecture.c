@@ -351,15 +351,13 @@ void delete_archi_rec(struct node * n){
       delete_archi_rec(get_child(n, i));
     }
   }
-  if(n->data->directory){
-    delete_directory(n->data->dir);
-  }
   delete_cache(n->data);
   free_node(n);
 }
 
 void delete_archi(struct architecture * archi){
   struct node * root = get_root(archi->threads[0]);
+  delete_directories(root);
   delete_archi_rec(root);
   free(archi->threads);
 }
