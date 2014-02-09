@@ -15,10 +15,15 @@ void s1113(double *A, double *B, int size1, int size2){
 }
 
 static int EventSet = PAPI_NULL;
-static char *p3_native_name[] = {"PAPI_TOT_INS", "OFFCORE_RESPONSE_1:WB", NULL};
+static char *p3_native_name[] = {"PAPI_TOT_INS", "OFFCORE_RESPONSE_1:PF_LLC_DATA_RD", NULL};
 static char **native_name = p3_native_name;
 
 int main(int argc, char **argv){
+  int size = 32000;
+  double *A, *B;
+  A = malloc(size*sizeof(double));
+  B = malloc(size*sizeof(double));
+
   int i, retval, native;
   const PAPI_hw_info_t *hwinfo;
   long long values[8];
@@ -46,14 +51,15 @@ int main(int argc, char **argv){
   if ((retval = PAPI_start(EventSet)) != PAPI_OK)
     printf("Erreur: PAPI_start\n");
 
-  /* do_both(1000); */
+
+  s1113(A, B, 2, size);
 
   if ((retval = PAPI_stop(EventSet, values)) != PAPI_OK)
     printf("Erreur: PAPI_stop\n");
 
   for (i=0; native_name[i] != NULL; i++) {
     fprintf(stderr, "%-40s: ", native_name[i]);
-    fprintf(stderr, "values\n", values[i]);
+    fprintf(stderr, "values %ld\n", values[i]);
   }
 
   retval = PAPI_cleanup_eventset(EventSet);
