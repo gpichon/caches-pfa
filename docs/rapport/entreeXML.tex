@@ -1,0 +1,55 @@
+\section{Paramétrisation de l'architecture}
+
+L'architecture à simuler peut être générée à partir de l'architecture réelle de l'utilisateur au moyen d'un fichier XML créé par le logiciel \emph{HWLOC}. Cependant l'utilisateur peut utiliser un fichier de paramétrisation spécifique à notre simulateur qui lui permet d'accéder à l'intégralité des paramètres d'architecture pris en compte.
+
+\subsection{Entrée XML HWLOC}
+
+\emph{HWLOC} est un logiciel libre sous liscence BSD-2. Il permet de générer un fichier XML qui décrit l'architecture de la machine utilisée (commande \verb?lstopo --of xml?). Il décrit notamment la structure arborescente des caches, et donne des informations essentielles pour chaque cache, comme sa taille, la taille de ses lignes et son associativité. 
+
+\paragraph{}
+Si l'utilisateur choisit un tel fichier en entrée comme décrivant son architecture, ce dernier sera parsé en un fichier de configuration de l'architecture personnalisé, comme décrit dans la section \ref{config}. Les paramètres non fournis par le fichier généré par \emph{HWLOC} prendront des valeurs par défaut, proches de celles des architectures \emph{intel} moderne. Notons que notre simulateur ne prend pas en compte les caches de niveau 1 dédiés aux instructions (L1i), qui sont décrits par \emph{HWLOC} mais ne seront pas présent dans le fichier personnalié.
+
+\subsection{Fichier de configuration personnalisé}
+\label{config}
+Le fichier de configuration de l'architecture dédié à notre simulateur comprend tous les paramètres d'achitecture utilisables. Une fois généré à partir d'un fichier \emph{HWLOC}, il est possible de l'utiliser directement en entée du simulateur, après avoir été modifié à la convenance de l'utilisateur.
+
+\paragraph{}
+Il s'agit d'un fichier XML qui contient 3 balises :
+\begin{itemize}
+  \item \textbf{Architecture} : donne le nom de l'architecture et du modèle de microprocesseur utilisé, ainsi que le nombre de niveau de cache.
+  \item \textbf{Level} : décrit un niveau de cache. Pour chaque profondeur, le protocole de cohérence, le type d'inclusivité, la présence ou non de \textit{snooping} et d'un \textit{directory manager}.
+  \item \textbf{Cache} : décrit l'arborescence des caches. Pour chaque cache, sa profondeur, sa taille, la taille de ses lignes, son associtivité et son protocole de remplacement.
+\end{itemize}
+
+\subsubsection{Paramètres de la balise Architecture}
+
+\begin{itemize}
+  \item \textbf{name} : nom de l'architecture (ex : \textit{x86\_64})
+  \item \textbf{CPU\_name} : modèle du mircoprocesseur
+  \item \textbf{number\_levels} : nombre de niveaux de caches
+\end{itemize}
+
+\subsubsection{Paramètres de la balise Level}
+
+\begin{itemize}
+  \item \textbf{depth} : la profondeur du niveau. La valeur doit être cohérente avec le nombre de niveaux de l'architecture.
+  \item \textbf{coherence\_protocol} : \verb?MESI? ou \verb?MSI?
+  \item \textbf{type} : \verb?inclusive?, \verb?exclusive?, \verb?niio? (Non Inclusive, Inclusive Oriented) ou \verb?nieo? (Non Inclusive, Exclusive Oriented)
+  \item \textbf{snooping} : \verb?true? ou \verb?false?
+  \item \textbf{directory\_manager} : \verb?true? ou \verb?false?
+\end{itemize}
+
+\subsubsection{Paramètres de la balise Cache}
+Ces balises doivent former l'arborescence des caches.
+
+\begin{itemize}
+  \item \textbf{depth} : la profondeur du cache.
+  \item \textbf{cache\_size} : taille du cache (en octets)
+  \item \textbf{cache\_linesize} : taille d'une ligne de cache (en octets)
+  \item \textbf{cache\_associativity} : associativité du cache
+  \item \textbf{remplacement\_protocol} : \verb?LRU? ou \verb?LFU?
+\end{itemize}
+
+\subsubsection{Exemple de fichier}
+
+%TODO : mettre un exemple de fichier à jour
