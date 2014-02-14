@@ -40,15 +40,15 @@
 \end{center}
 \end{figure}
 
-\indent De cette manière, quand le processeur utilise une donnée qui est dans le cache, il fait un Hit: il n'a pas besoin de la charger à partir de la mémoire principale. Lorsque la donnée dont il a besoin n'est pas présente dans le cache, il fait un Miss et le coût d'accès à la donnée est beaucoup plus important. \\
+\indent De cette manière, quand le processeur utilise une donnée qui est dans le cache, il fait un Hit: il n'a pas besoin de la charger à partir de la mémoire principale. Lorsque la donnée dont il a besoin n'est pas présente dans le cache, il fait un \textit{miss} et le coût d'accès à la donnée est beaucoup plus important. \\
 
 \indent Le but de ce document est de résumer un certain nombre de techniques relatives à la bonne gestion de cette hiérarchie, en se focalisant sur les caches. Nous commencerons par expliciter le comportement d'un cache en général, avant d'étudier les moyens mis en {\oe}uvre afin d'assurer la cohérence de l'ensemble des caches. \\
 
-\indent Nous finirons par étudier les problèmes posés par la simulation des caches d'une architecture multi-c{\oe}eurs, notamment le prefetching, puis par proposer quelques algorithmes permettant de simuler de manière la plus générique possible le comportement des caches. \\
+\indent Nous finirons par étudier les problèmes posés par la simulation des caches d'une architecture multi-c{\oe}urs, notamment le prefetching, puis par proposer quelques algorithmes permettant de simuler de manière la plus générique possible le comportement des caches. \\
 
 
 %A METTRE A UN AUTRE ENDROIT ?
-\indent Les données mémoire vont être accédées via des load ou des store. Lorsqu'une donnée est modifiée, il est nécessaire de propager les modifications jusqu'à la mémoire principale, afin de garantir la cohérence du système. Une politique basique, le Write-Through, serait de réécrire directement en mémoire après toute modification. Dans la suite de ce document, nous considérerons uniquement la politique Write-Back, qui permet de retarder la réecriture tant que la donnée n'est pas lue pas une autre entité que celle qui l'a modifiée.
+\indent Les données mémoire vont être accédées via des \textit{load} ou des \textit{store}. Lorsqu'une donnée est modifiée, il est nécessaire de propager les modifications jusqu'à la mémoire principale, afin de garantir la cohérence du système. Une politique basique, le \textit{write-through}, serait de réécrire directement en mémoire après toute modification. Dans la suite de ce document, nous considérerons uniquement la politique \textit{write-back}, qui permet de retarder la réecriture tant que la donnée n'est pas lue pas une autre entité que celle qui l'a modifiée.
 
 \newpage
 \section{Fonctionnement d'un cache}
@@ -107,28 +107,28 @@
 \indent Dans les systèmes actuels, un processeur n'est plus composé d'un unique c{\oe}ur, mais de plusieurs. Chaque c{\oe}ur possède généralement deux caches aussi proches du processeur: le L1i pour stocker les instructions et le L1d pour stocker les données. Si les interactions entre ces deux caches sont minimes, il est difficile de mélanger instructions et données, la cohérence entre les différents c{\oe}urs est un problème de taille.
 
 \subsection{Présentation du problème}
-\indent Les caches sont utilisés à chaque load/store. Si il est possible que plusieurs caches possèdent la même donnée et la lisent en même temps, il est primordial qu'une donnée ne puisse pas être modifiée simultanément dans deux caches. Pour cela, des techniques hardwares sont mises en place afin de définir qui a la priorité si deux c{\oe}urs veulent modifier une même donnée. \\
+\indent Les caches sont utilisés à chaque \textit{load}/\textit{store}. Si il est possible que plusieurs caches possèdent la même donnée et la lisent en même temps, il est primordial qu'une donnée ne puisse pas être modifiée simultanément dans deux caches. Pour cela, des techniques hardwares sont mises en place afin de définir qui a la priorité si deux c{\oe}urs veulent modifier une même donnée. \\
 
-\indent Par ailleurs, un protocole de cohérence est mis en {\oe}uvre à chaque load/store afin que les différents caches soit informés des modifications les concernant et que la consistance du système soit assurée. Ce protocole est propre à un niveau de cache. Dans un cas classique, il y aura un protocole de cohérence entre les L1 et entre les L2.
+\indent Par ailleurs, un protocole de cohérence est mis en {\oe}uvre à chaque \textit{load}/\textit{store} afin que les différents caches soit informés des modifications les concernant et que la consistance du système soit assurée. Ce protocole est propre à un niveau de cache. Dans un cas classique, il y aura un protocole de cohérence entre les L1 et entre les L2.
 
 \subsection{Protocoles de cohérence}
 \indent Nous étudierons uniquement le protocole de type MSI et ses dérivés: MESI, MOSI et MOESI. Chaque ligne de cache possède un état qui permet de gérer la cohérence. Les différents états sont: \\
 \begin{itemize}
 \item M: Une ligne est dans l'état modifié si c'est la seule copie valide dans l'ensemble des caches du niveau. Dans ce cas, si la ligne est evincée du cache, elle doit être recopiée en mémoire, via un write back. \\
-\item S: Une ligne est dans l'état shared si elle est valide et qu'elle n'a pas été modifiée. Dans ce cas, plusieurs caches peuvent possèder la ligne. \\
+\item S: Une ligne est dans l'état partagé (\textit{shared}) si elle est valide et qu'elle n'a pas été modifiée. Dans ce cas, plusieurs caches peuvent possèder la ligne. \\
 \item I: L'état invalide est utilisé pour une ligne qui n'est pas valide. Le contenu de la ligne n'étant pas viable, il ne faut pas l'utiliser. \\
 \item E: Une ligne est dite exclusive si c'est, dans le niveau, la seule copie valide. Une ligne dans cet état n'a pas été modifiée et les données de la ligne sont identiques à celles de la mémoire principale. \\
-\item O: L'état owned est utilisé pour un cache qui possède une donnée invalide dans la mémoire principale. Plusieurs caches peuvent possèder la même donnée, ils seront alors dans l'état S. \\
+\item O: L'état \textit{owned} est utilisé pour un cache qui possède une donnée invalide dans la mémoire principale. Plusieurs caches peuvent possèder la même donnée, ils seront alors dans l'état S. \\
 \end{itemize}
 
-\indent L'état M est utilisé lorsque la donnée a été modifiée par un c{\oe}ur. Il existe deux cas de propagation des modifications. Dans le choix de la politique Write-Through, la donnée est directement recopiée dans la mémoire principale pour éviter de futurs problèmes de cohérence. Dans le cas de la politique Write-Back, la donnée est modifiée uniquement dans le cache. Les autres caches et la mémoire principale peuvent savoir que la donnée a été modifiée, en revanche ils n'ont pas la dernière copie valide. Ils peuvent l'obtenir lors des Write-Backs: lorsque la donnée est evincée du cache ou lorsqu'elle est demandée à un plus haut niveau pour des soucis de cohérence.
+\indent L'état M est utilisé lorsque la donnée a été modifiée par un c{\oe}ur. Il existe deux cas de propagation des modifications. Dans le choix de la politique \textit{write-through}, la donnée est directement recopiée dans la mémoire principale pour éviter de futurs problèmes de cohérence. Dans le cas de la politique \textit{write-back}, la donnée est modifiée uniquement dans le cache. Les autres caches et la mémoire principale peuvent savoir que la donnée a été modifiée, en revanche ils n'ont pas la dernière copie valide. Ils peuvent l'obtenir lors des \textit{Write-Back}: lorsque la donnée est evincée du cache ou lorsqu'elle est demandée à un plus haut niveau pour des soucis de cohérence.
 
 \newpage
 \indent Le protocole de cohérence le plus utilisé est MESI. Voici certaines caractéristiques de ce protocole: \\
 \begin{itemize}
 \item Lorsqu'un cache charge une donnée, il demande si un autre cache possède la donnée. Si un cache possède la donnée dans l'état M, alors ce cache fait un Write-Back et invalide sa donnée. Si un autre cache possède la donnée en état E, la donnée passe dans l'état S pour les deux caches. Si plusieurs (ou un seul) caches possèdent la donnée dans l'état S, la donnée est ajoutée dans l'état S.
-\item Si un cache possède une donnée dans l'état M ou E et fait un nouveau store sur la ligne de cache, son état devient M et aucune information n'est transmise aux autres caches.
-\item Si un cache fait un store sur une donnée qui est dans l'état S, la même donnée est invalidée dans les autres caches du même niveau. \\
+\item Si un cache possède une donnée dans l'état M ou E et fait un nouveau \textit{store} sur la ligne de cache, son état devient M et aucune information n'est transmise aux autres caches.
+\item Si un cache fait un \textit{store} sur une donnée qui est dans l'état S, la même donnée est invalidée dans les autres caches du même niveau. \\
 \end{itemize}
 
 \indent Voici l'automate du protocole: \\
@@ -140,7 +140,7 @@
 \end{center}
 \end{figure}
 
-\indent Pour l'état O, la différence est que les interactions avec la mémoire principale sont moins importantes. En effet, lorsqu'un cache qui n'a pas la donnée fait un load, le cache possédant la donnée dans l'état O peut lui donner sans faire de Write-Back. Cela permet de garder plus longtemps la donnée modifiée.
+\indent Pour l'état O, la différence est que les interactions avec la mémoire principale sont moins importantes. En effet, lorsqu'un cache qui n'a pas la donnée fait un \textit{load}, le cache possédant la donnée dans l'état O peut lui donner sans faire de \textit{write-Back}. Cela permet de garder plus longtemps la donnée modifiée.
 
 \newpage
 \section{Fonctionnement global}
@@ -149,7 +149,7 @@
 \indent Le cas inclusif est plutôt orienté \textsc{Intel} alors que le cas exclusif est plutôt mis en place par \textsc{AMD}. De son côté \textsc{ARM} oscille entre les deux solutions proposées.
 
 \subsection{Caches inclusifs}
-\indent Le fonctionnement d'un cache inclusif est relativement simple. En cas de Hit, la donnée est propagée au cache (ou au processeur) qui a préalablement demandé la donnée. En cas de Miss, une demande de donnée est effectuée au niveau du dessus. La donnée est ensuite propagée à la mémoire d'en dessous. Dans le cas d'une hiérarchie avec uniquement des caches inclusifs, les messages utilisés pour demander/donner les données se font uniquement de façon verticale dans la hiérarchie. Il y a parallèlement, des messages destinés à garantir la consistance du système qui sont gérés différemment et qui influent sur la totalité de la hiérarchie. Voici un résumé des messages envoyés dans le cas d'une demande de donnée, en ne tenant pas compte de la gestion de la cohérence: \\
+\indent Le fonctionnement d'un cache inclusif est relativement simple. En cas de \textit{hit}, la donnée est propagée au cache (ou au processeur) qui a préalablement demandé la donnée. En cas de \textit{miss}, une demande de donnée est effectuée au niveau du dessus. La donnée est ensuite propagée à la mémoire d'en dessous. Dans le cas d'une hiérarchie avec uniquement des caches inclusifs, les messages utilisés pour demander/donner les données se font uniquement de façon verticale dans la hiérarchie. Il y a parallèlement, des messages destinés à garantir la consistance du système qui sont gérés différemment et qui influent sur la totalité de la hiérarchie. Voici un résumé des messages envoyés dans le cas d'une demande de donnée, en ne tenant pas compte de la gestion de la cohérence: \\
 
 \begin{figure}[!h]
 \begin{center}
@@ -166,13 +166,13 @@
 
 %un joli schéma!
 \begin{itemize}
-\item Si un L1 fait un Hit, il transmet la donnée au c{\oe}ur associé
-\item Si un L2 fait un Hit, il donne la donnée au L1 qui l'a demandé puis la supprime.
-\item Si un L1 fait un Miss, il effectue une demande de donnée au L2 associé. Il gardera la donnée une fois qu'elle lui sera transmise.
-\item Si un L2 fait un Miss, il effectue une demande de donnée au L3 associé, ou directement à la mémoire principale si il n'y a pas de L3. Une fois que la donnée lui sera transmise, il la propagera au L1 sans la conserver. \\
+\item Si un L1 fait un \textit{hit}, il transmet la donnée au c{\oe}ur associé
+\item Si un L2 fait un \textit{hit}, il donne la donnée au L1 qui l'a demandé puis la supprime.
+\item Si un L1 fait un \textit{miss}, il effectue une demande de donnée au L2 associé. Il gardera la donnée une fois qu'elle lui sera transmise.
+\item Si un L2 fait un \textit{miss}, il effectue une demande de donnée au L3 associé, ou directement à la mémoire principale si il n'y a pas de L3. Une fois que la donnée lui sera transmise, il la propagera au L1 sans la conserver. \\
 \end{itemize}
 
-\indent Il en va de même pour les intéractions entre les L2 et les L3, voir d'autres niveaux dans le cas d'une architecture plus grande. Par ailleurs, lorsque le dernier niveau fait un Miss, il faut parcourir l'ensemble de la hiérarchie avant de rechercher directement la donnée dans la mémoire principale. Ce phénomène explique à lui seul le fait que la gestion de la recherche et de la cohérence soit plus délicat que dans le cas d'une hiérachie avec le dernier niveau inclusif.
+\indent Il en va de même pour les intéractions entre les L2 et les L3, voir d'autres niveaux dans le cas d'une architecture plus grande. Par ailleurs, lorsque le dernier niveau fait un \textit{miss}, il faut parcourir l'ensemble de la hiérarchie avant de rechercher directement la donnée dans la mémoire principale. Ce phénomène explique à lui seul le fait que la gestion de la recherche et de la cohérence soit plus délicat que dans le cas d'une hiérachie avec le dernier niveau inclusif.
 
 \subsection{Caches non-inclusifs}
 \indent Il existe un autre cas de figure, qui peut être considéré comme une variante du cas exclusif. Lorsqu'un L1 demande une donnée et que le L2 ne l'a pas, il se contentera de propager la donnée sans la conserver en mémoire. Cependant, si il avait préalablement la donnée, il la propagera au L1 sans pour autant la supprimer. Ce cas de figure peut être utilisé pour un L2 avec un L3 inclusif. De cette manière, la hiérarchie permet en moyenne de stocker plus de blocs mémoires sans pour autant compliquer la gestion de la cohérence. \\
@@ -180,7 +180,7 @@
 \indent Un autre cas de figure est un cache non-inclusif qui fonctionne avec plus de souplesse qu'un cache inclusif. Les données sont toujours laissées au passage, par contre l'inclusivité n'est pas formelle: il peut perdurer dans un L1 une donnée qui a été ejectée d'un L2 par exemple.
 
 \subsection{Ajout du snooping}
-\indent Par ailleurs, il est possible que les caches d'un même niveau soient reliés ensemble par un bus. La méthode de recherche sur ce bus est alors appelée snooping. Prenons l'exemple d'une hiérarchie à trois niveaux ou les L2 seraient reliés par un bus. Lorsqu'un L1 fait un Miss, il demande au L2 associé de lui fournir la donnée. En cas de nouveau Miss, la demande est envoyée en broadcast sur le bus afin de récupérer la donnée sans passer par le L3. Si aucun cache ne possède la donnée, la demande est alors transmise au L3.
+\indent Par ailleurs, il est possible que les caches d'un même niveau soient reliés ensemble par un bus. La méthode de recherche sur ce bus est alors appelée snooping. Prenons l'exemple d'une hiérarchie à trois niveaux ou les L2 seraient reliés par un bus. Lorsqu'un L1 fait un \textit{miss}, il demande au L2 associé de lui fournir la donnée. En cas de nouveau \textit{miss}, la demande est envoyée en broadcast sur le bus afin de récupérer la donnée sans passer par le L3. Si aucun cache ne possède la donnée, la demande est alors transmise au L3.
 
 \newpage
 \section{Comportements spéciaux}
@@ -189,7 +189,7 @@
 \subsection{Utilisation d'un victim cache}
 \indent Généralement, des caches à $k$ voies associatifs sont utilisés, car la fonction de recherche d'une donnée est peu coûteuse et plusieurs blocs mémoire correspondant à un même set peuvent être stocké dans un cache. Dans la plupart des cas, le nombre de voies varie entre $2$ et $12$. \\
 
-\indent Dans certains cas, il est possible que le nombre de voies ne soit pas suffisant car un ensemble de blocs mémoire correspondant au même set est très utilisé. Cela est notamment vrai pour les L1 qui possèdent généralement peu de voies. Pour palier ce problème et limiter les échanges de données entre les L1 et les L2, il est possible d'utiliser un buffer pour stocker les victimes d'éviction. Ce buffer est de petite taille, par exemple $8$ fois la taille d'une ligne de cache. De cette manière, lorsqu'un donnée est supprimée du L1, elle est placée dans le buffer correspondant. Lorsque le L1 fait un Miss, il commence par regarder dans le buffer (le coût est alors faible). Les données arrivant dans le L2 sont alors celles evincées du buffer.
+\indent Dans certains cas, il est possible que le nombre de voies ne soit pas suffisant car un ensemble de blocs mémoire correspondant au même set est très utilisé. Cela est notamment vrai pour les L1 qui possèdent généralement peu de voies. Pour palier ce problème et limiter les échanges de données entre les L1 et les L2, il est possible d'utiliser un buffer pour stocker les victimes d'éviction. Ce buffer est de petite taille, par exemple $8$ fois la taille d'une ligne de cache. De cette manière, lorsqu'un donnée est supprimée du L1, elle est placée dans le buffer correspondant. Lorsque le L1 fait un \textit{miss}, il commence par regarder dans le buffer (le coût est alors faible). Les données arrivant dans le L2 sont alors celles evincées du buffer.
 
 \subsection{Tracking}
 \indent Il existe différentes manières de localiser les données dans une hiérarchie mémoire. Deux cas fréquemment utilisés sont présentés dans la suite.
@@ -200,18 +200,18 @@
 \indent Dans le cas d'un cache inclusif, il faut donc, à la suppression d'une donnée, invalider la donnée dans les caches en dessous afin de conserver le caractère inclusif. Pour limiter ce problème, les L2 et les L3 peuvent suivre les données, c'est-à-dire posséder une table indiquant quels caches de niveau plus bas ont également la donnée. De cette manière, les politiques de remplacement peuvent être adaptées en définissant des priorités: par exemple, éviter de supprimer les données qui sont contenues dans beaucoup de caches.
 
 \subsubsection{Savoir qui a les données}
-\indent Dans le cas d'un cache de dernier niveau exclusif, on a vu qu'en cas de Miss, il fallait parcourir l'ensemble de la hiérarchie avant d'évenetuellement faire appel à la mémoire principale. Cela pose des problèmes, tant au niveau de la recherche des données que de la gestion de la consistance du système. Pour palier ce problème, le cache de dernier niveau peut être lié à un table d'étiquettes, permettant de savoir quelles sont les données contenues dans chaque cache. Cela évite d'avoir à parcourir l'ensemble de la hiérarchie mais il y a un coût en terme de mémoire. Cependant, ce coup est faible (les données ne sont pas stockées) et bien inférieur au coût mémoire de la duplication dans le cache d'un cache de dernier niveau inclusif.
+\indent Dans le cas d'un cache de dernier niveau exclusif, on a vu qu'en cas de \textit{miss}, il fallait parcourir l'ensemble de la hiérarchie avant d'évenetuellement faire appel à la mémoire principale. Cela pose des problèmes, tant au niveau de la recherche des données que de la gestion de la consistance du système. Pour palier ce problème, le cache de dernier niveau peut être lié à un table d'étiquettes, permettant de savoir quelles sont les données contenues dans chaque cache. Cela évite d'avoir à parcourir l'ensemble de la hiérarchie mais il y a un coût en terme de mémoire. Cependant, ce coup est faible (les données ne sont pas stockées) et bien inférieur au coût mémoire de la duplication dans le cache d'un cache de dernier niveau inclusif.
 
 \newpage
 \section{Algorithmes de simulation}
-\indent Cette section entend présenter différents algorithmes utilisés par notre simulateur. Le but du simulateur est de produire des statistiques à partir d'une trace des blocs mémoires utilisés (load/store). Les données utilisées ne sont pas simulées. Le comportement du simulateur peut donc varier de la réalité, pourvu que le résultat final soit identique.
+\indent Cette section entend présenter différents algorithmes utilisés par notre simulateur. Le but du simulateur est de produire des statistiques à partir d'une trace des blocs mémoires utilisés (\textit{load}/\textit{store}). Les données utilisées ne sont pas simulées. Le comportement du simulateur peut donc varier de la réalité, pourvu que le résultat final soit identique.
 
 \subsection{Gestion de la cohérence}
-\indent La cohérence étant propre à un niveau de cache, elle peut être mise en place directement en considérant l'ensemble des caches de ce niveau. En réalité, les L1 ou les L2 n'intéreagissent pas toujours directement: s'ils ne sont pas reliés par un bus (cas du snooping), il faut passer par les niveaux haut dessus pour envoyer les messages. Cependant, la quantité de messages envoyés par cache pouvant être retrouvée à partir du nombre de misses et de hits, il n'est pas nécessaire de la calculer. \\
+\indent La cohérence étant propre à un niveau de cache, elle peut être mise en place directement en considérant l'ensemble des caches de ce niveau. En réalité, les L1 ou les L2 n'intéreagissent pas toujours directement: s'ils ne sont pas reliés par un bus (cas du snooping), il faut passer par les niveaux haut dessus pour envoyer les messages. Cependant, la quantité de messages envoyés par cache pouvant être retrouvée à partir du nombre de \textit{misses} et de \textit{hits}, il n'est pas nécessaire de la calculer. \\
 
 \indent L'algorithme de cohérence (MSI, MESI, MOSI ou MOESI) est donc relativement facile à implémenter. Dans le cas du protocole MESI, il y a deux cas majeurs à gérer: \\
 \begin{itemize}
-\item Lorsqu'un cache fait un Miss, il parcours l'ensemble des autres caches pour savoir s'il doit mettre la donnée dans l'état E ou S. Dans le cas S, il modifie les données des autres caches pour quelles soient dans l'état S.
+\item Lorsqu'un cache fait un \textit{miss}, il parcours l'ensemble des autres caches pour savoir s'il doit mettre la donnée dans l'état E ou S. Dans le cas S, il modifie les données des autres caches pour quelles soient dans l'état S.
 \item Quand un cache modifie une donnée qu'il avait dans l'état S, il invalide la donnée dans les autres caches.
 \end{itemize}
 

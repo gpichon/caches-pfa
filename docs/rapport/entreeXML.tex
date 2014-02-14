@@ -11,12 +11,12 @@ Si l'utilisateur choisit un tel fichier en entrée comme décrivant son architec
 
 \subsection{Fichier de configuration personnalisé}
 \label{config}
-Le fichier de configuration de l'architecture dédié à notre simulateur comprend tous les paramètres d'achitecture utilisables. Une fois généré à partir d'un fichier \emph{HWLOC}, il est possible de l'utiliser directement en entée du simulateur, après avoir été modifié à la convenance de l'utilisateur.
+Le fichier de configuration de l'architecture dédié à notre simulateur comprend tous les paramètres d'achitecture utilisables. Une fois généré à partir d'un fichier \emph{HWLOC}, il est possible de l'utiliser directement en entrée du simulateur, après avoir été modifié à la convenance de l'utilisateur.
 
 \paragraph{}
 Il s'agit d'un fichier XML qui contient 3 balises :
 \begin{itemize}
-  \item \textbf{Architecture} : donne le nom de l'architecture et du modèle de microprocesseur utilisé, ainsi que le nombre de niveau de cache.
+  \item \textbf{Architecture} : donne le nom de l'architecture et du modèle de microprocesseur utilisé, ainsi que le nombre de niveaux de cache.
   \item \textbf{Level} : décrit un niveau de cache. Pour chaque profondeur, le protocole de cohérence, le type d'inclusivité, la présence ou non de \textit{snooping} et d'un \textit{directory manager}.
   \item \textbf{Cache} : décrit l'arborescence des caches. Pour chaque cache, sa profondeur, sa taille, la taille de ses lignes, son associtivité et son protocole de remplacement.
 \end{itemize}
@@ -25,8 +25,8 @@ Il s'agit d'un fichier XML qui contient 3 balises :
 
 \begin{itemize}
   \item \textbf{name} : nom de l'architecture (ex : \textit{x86\_64})
-  \item \textbf{CPU\_name} : modèle du mircoprocesseur
-  \item \textbf{number\_levels} : nombre de niveaux de caches
+  \item \textbf{CPU\_name} : modèle du microprocesseur
+  \item \textbf{number\_levels} : nombre de niveaux de cache
 \end{itemize}
 
 \subsubsection{Paramètres de la balise Level}
@@ -47,7 +47,7 @@ Ces balises doivent former l'arborescence des caches.
   \item \textbf{cache\_size} : taille du cache (en octets)
   \item \textbf{cache\_linesize} : taille d'une ligne de cache (en octets)
   \item \textbf{cache\_associativity} : associativité du cache
-  \item \textbf{remplacement\_protocol} : \verb?LRU? ou \verb?LFU?
+  \item \textbf{remplacement\_protocol} : \verb?FIFO?, \verb?LRU? ou \verb?LFU?
 \end{itemize}
 
 \subsubsection{Exemple de fichier}
