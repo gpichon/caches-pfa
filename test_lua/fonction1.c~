@@ -1,0 +1,3 @@
+#include"fonction1.c"
+#include <stdio.h>
+#include <stdlib.h>
