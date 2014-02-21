@@ -12,7 +12,7 @@
 #include "line.h"
 
 /* Data allocations */
-struct line** init_line(int nb_ways) {
+struct line** init_lines(int nb_ways) {
   struct line **lines = malloc(nb_ways * sizeof(struct line *));
   int i;
   for (i=0; i<nb_ways; i++) {

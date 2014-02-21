@@ -42,7 +42,6 @@ void delete_cache(struct cache *cache) {
 
 int block_id(struct cache *cache, long entry) {
   entry = entry / cache->linesize; //Line in principal memory
-
   int id_block = entry % cache->nb_blocks;
   return id_block;
 }
@@ -75,8 +74,9 @@ struct line *line_in_cache(struct cache *cache, long entry) {
     if (is_valid(line) && (line->first_case == entry / cache->linesize * cache->linesize)) {
       return line;
     }
-  }    
-  assert(0);
+  }
+  printf("Erreur, ligne non presente avec cache inclusif\n");
+  exit(1);
 }
 
 void update_lines(struct cache *cache, long entry) {

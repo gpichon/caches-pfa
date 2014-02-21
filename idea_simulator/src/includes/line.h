@@ -44,7 +44,7 @@ struct line {
  * \brief Initialization of \a nb_ways new lines. 
  * \return Return a tabular of \a nb_ways structure line pointers.
  */
-struct line** init_line(int nb_ways);
+struct line** init_lines(int nb_ways);
 
 /**
  * \brief Data removal.

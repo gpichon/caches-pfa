@@ -18,7 +18,7 @@ struct block **init_block(int nb_blocks, int nb_ways, int linesize) {
   for (i=0; i<nb_blocks; i++) {
     struct block *block = malloc(sizeof(struct block));
     block->nb_ways = nb_ways;
-    struct line ** lines = init_line(nb_ways);
+    struct line ** lines = init_lines(nb_ways);
     block->lines = lines;
     block->linesize = linesize;
     blocks[i] = block;

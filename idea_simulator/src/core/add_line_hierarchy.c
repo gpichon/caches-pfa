@@ -31,10 +31,10 @@ int share_level(struct node *node, long entry, void (*action)(struct line *)) {
 	action(line);
 	/* Write through to main memory? */
 	UP_WRITE_BACKS(current_cache);
-	return 1;
+	res = 1;
       }
       if (current_cache->treat_special_flags(line, action)) {
-	return 1;
+	res = 1;
       }
       
       if (is_shared(line)) {
@@ -100,6 +100,7 @@ void store_line_hierarchy(struct node *node, long entry) {
 
   /* Hit: Ok! */
   if (is_in_cache(current_cache, entry)) {
+    /* 2 lignes useless? */
     line = line_in_cache(current_cache, entry);
     modify_line(line);
     UP_HITS(current_cache);
@@ -108,6 +109,7 @@ void store_line_hierarchy(struct node *node, long entry) {
     while (current_node != NULL) {
       current_cache = get_cache(current_node);
       if (is_in_cache(current_cache, entry)){
+	/* Verifier WB WT */
 	line = line_in_cache(current_cache, entry);
 	modify_line(line);
       }
@@ -169,8 +171,10 @@ void store_line_hierarchy(struct node *node, long entry) {
 	modify_line(line);
       }
       /* Debug, should be threated by architecture */
-      else if (is_cache_inclusive(current_cache))
+      else if (is_cache_inclusive(current_cache)){
 	printf("Erreur de logique, snooping en dessous niveau inclusif...\n");
+	exit(1);
+      }
 
       share_level(current_node, entry, &invalid_line);
       UP_BROADCASTS(current_cache);
