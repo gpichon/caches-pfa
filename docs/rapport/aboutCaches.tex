@@ -5,7 +5,7 @@ Le but de cette partie est de résumer un certain nombre de techniques relatives
 \section{Principes généraux d'un cache}
 Cette section entend préciser le fonctionnement général d'un cache : comment il est possible d'y ajouter une donnée, quelle est la correspondance entre les blocs de la mémoire principale et les lignes de cache ou encore comment une donnée peut être evincée d'un cache. \\
 
-Un cache possède un ensemble de sets contenant chacun un ensemble de lignes. Le nombre de lignes par set est appelé l'associativité du cache. Au chargement d'une donnée, elle est insérée dans une ligne vide du set correspondant à sa plage d'adresse. Les données qui suivent (dans la mémoire supérieure) la donnée voulue sont aussi recopiées afin de remplir totalement la ligne -- généralement de $32$ ou $64$ octets -- et exploiter le principe de localité spatiale.
+Un cache possède un ensemble de sets contenant chacun un ensemble de lignes. Le nombre de lignes par set est appelé l'associativité du cache. Au chargement d'une donnée, elle est insérée dans une ligne vide du set correspondant à sa plage d'adresse. Les données qui suivent (dans la mémoire supérieure) la donnée voulue sont aussi recopiées afin de remplir totalement la ligne -- généralement de $32$ ou $64$ octets -- et exploiter le principe de localité spatiale (footnote ?).
 
 \subsection{\'Etiquettes}
 Pour pouvoir retrouver une donnée dans le cache, une table d'étiquettes est tenue à jour. Concrètement, une adresse mémoire est séparée en trois champs comme sur la figure suivante : \\
@@ -49,7 +49,7 @@ Les deux cas présentés précedemment présentent des inconvénients. Général
 ==> Préciser source de l'image\\
 
 \subsection{Politiques de remplacement}
- Lorsque l'on souhaite ajouter une ligne dans un set plein, il faut au préalable evincer une ligne de ce set. Pour cela, il existe différentes méthodes :
+ Lorsque l'on souhaite ajouter une ligne dans un set plein, il faut au préalable évincer une ligne de ce set. Pour cela, il existe différentes méthodes :
 
 \paragraph{FIFO.} La première solution consiste à supprimer la ligne la plus ancienne du cache. Cela correspond à la formule: ``First In, First Out''.
 
@@ -62,7 +62,7 @@ Les deux cas présentés précedemment présentent des inconvénients. Général
 Dans les systèmes actuels, un processeur n'est plus composé d'un unique c{\oe}ur, mais de plusieurs. Chaque c{\oe}ur possède généralement deux caches qui lui sont propres : le L1i pour stocker les instructions et le L1d pour stocker les données. Les caches de niveau supérieur sont quant  eux partagés par un nombre variable d'autres caches (et c{\oe}urs). Alors que les interactions entre ces deux premiers caches sont minimes -- il est difficile de mélanger instructions et données --, la cohérence entre les autres est en revanche un problème de taille.
 
 \subsection{Présentation du problème}
-Les caches sont utilisés à chaque \textit{load}/\textit{store}. Si il est possible que plusieurs caches possèdent la même donnée et la lisent en même temps, il est primordial qu'une donnée ne puisse pas être modifiée simultanément dans deux caches. Pour cela, des techniques hardwares sont mises en place afin de définir qui a la priorité si plusieurs c{\oe}urs veulent modifier une même donnée. \\
+Les caches sont utilisés à chaque \textit{load}/\textit{store}. S'il est possible que plusieurs caches possèdent la même donnée et la lisent en même temps, il est primordial qu'une donnée ne puisse pas être modifiée simultanément dans deux caches. Pour cela, des techniques hardware(mettre du français ?) sont mises en place afin de définir qui a la priorité si plusieurs c{\oe}urs veulent modifier une même donnée. \\
 
 Par ailleurs, un protocole de cohérence est mis en {\oe}uvre à chaque \textit{load}/\textit{store} afin que les différents caches soient informés des modifications les concernant et que la consistance du système soit assurée. Ce protocole est propre à un niveau de cache. Dans un cas classique, il y aura un protocole de cohérence entre les L1 et entre les L2.
 
@@ -72,7 +72,7 @@ Par ailleurs, un protocole de cohérence est mis en {\oe}uvre à chaque \textit{
 \item M: Une ligne est dans l'état modifié si c'est la seule copie valide dans l'ensemble des caches du niveau. Dans ce cas, si la ligne est evincée du cache, elle doit être recopiée en mémoire, via un write back. \\
 \item S: Une ligne est dans l'état partagé (\textit{shared}) si elle est valide et qu'elle n'a pas été modifiée. Dans ce cas, plusieurs caches peuvent possèder la ligne. \\
 \item I: L'état invalide est utilisé pour une ligne qui n'est pas valide. Le contenu de la ligne n'étant pas viable, il ne faut pas l'utiliser. \\
-\item E: Une ligne est dite exclusive si c'est, dans le niveau, la seule copie valide. Une ligne dans cet état n'a pas été modifiée et les données de la ligne sont identiques à celles de la mémoire principale. \\
+\item E: Une ligne est dite exclusive si elle est, dans le niveau, la seule copie valide. Une ligne dans cet état n'a pas été modifiée et les données de la ligne sont identiques à celles de la mémoire principale. \\
 \item O: L'état \textit{owned} est utilisé pour un cache qui possède une donnée invalide dans la mémoire principale. Plusieurs caches peuvent possèder la même donnée, ils seront alors dans l'état S. \\
 \end{itemize}
 
@@ -118,10 +118,10 @@ Le fonctionnement d'un cache inclusif est relativement simple. En cas de \textit
 
 D'un point de vue de la simulation, il est utile de modéliser les messages partant du bas de la hiérarchie (les caches L1) et remontant jusqu'à la mémoire principale. Le caractère inclusif prend tout son intérêt : la recherche est simple et la gestion de la cohérence séparée des échanges bruts de données, qui demandent plus de bande passante.\\
 
-==> Pas clair
+==> Pas clair (On parle ici de généralité sur les caches, il ne faudrait pas garder ça pour "notre" partie ?)
 
 \subsection{Caches exclusifs}
-Cependant, le fait qu'un cache soit inclusif pose un problème: les données sont dupliquées dans la hiérarchie. De ce fait, la taille réellement utilisable de l'ensemble des caches est en fait inférieure à la taille théorique. Les caches exclusifs ont justement pour principal objectif de limiter cette duplication des données. Par exemple, si un L2 est exclusif, les L1 en dessous ne pourront pas contenir une donnée déjà présente dans le L2, et inversement. Concrètement, il y a quatre cas de figure : \\
+Cependant, le fait qu'un cache soit inclusif pose un problème : les données sont dupliquées dans la hiérarchie. De ce fait, la taille réellement utilisable de l'ensemble des caches est en fait inférieure à la taille théorique. Les caches exclusifs ont justement pour principal objectif de limiter cette duplication des données. Par exemple, si un L2 est exclusif, les L1 en dessous ne pourront pas contenir une donnée déjà présente dans le L2, et inversement. Concrètement, il y a quatre cas de figure : \\
 
 ==>un joli schéma\\
 \begin{itemize}
@@ -139,7 +139,7 @@ Il existe un autre cas de figure, qui peut être considéré comme une variante 
 Un autre cas de figure est un cache non-inclusif qui fonctionne avec plus de souplesse qu'un cache inclusif. Les données sont toujours laissées au passage, par contre l'inclusivité n'est pas formelle: il peut perdurer dans un L1 une donnée qui a été ejectée d'un L2 par exemple.
 
 \subsection{Ajout du snooping}
- Par ailleurs, il est possible que les caches d'un même niveau soient reliés ensemble par un bus. La méthode de recherche sur ce bus est alors appelée snooping. Prenons l'exemple d'une hiérarchie à trois niveaux ou les L2 seraient reliés par un bus. Lorsqu'un L1 fait un \textit{miss}, il demande au L2 associé de lui fournir la donnée. En cas de nouveau \textit{miss}, la demande est envoyée en broadcast sur le bus afin de récupérer la donnée sans passer par le L3. Si aucun cache ne possède la donnée, la demande est alors transmise au L3.
+ Il est possible que les caches d'un même niveau soient reliés ensemble par un bus. La méthode de recherche sur ce bus est alors appelée snooping. Prenons l'exemple d'une hiérarchie à trois niveaux où les L2 seraient reliés par un bus. Lorsqu'un L1 fait un \textit{miss}, il demande au L2 associé de lui fournir la donnée. En cas de nouveau \textit{miss}, la demande est envoyée en broadcast sur le bus afin de récupérer la donnée sans passer par le L3. Si aucun cache ne possède la donnée, la demande est alors transmise au L3.
 
 \newpage
 \section{Comportements spéciaux}
