@@ -55,10 +55,18 @@
  */
 #define TEST "../gentraces/file.txt"
 
+#include "option.h"
+
 int main(int argc, char *argv[]) {
-  char filename[50];
-  if(argc == 2){
-    strcpy(filename, argv[1]);
+  
+  get_options(argc, argv);
+  
+  if (help) printf("I HELP YOU\n");
+  else printf("NO HELP FOR YOU\n");
+  
+  char filename[256];
+  if(trace_file){
+    strcpy(filename, trace_file);
   }
   else {
     strcpy(filename, FILENAME); /* Trouver un nom plus générique */
