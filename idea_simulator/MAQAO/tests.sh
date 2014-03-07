@@ -16,7 +16,7 @@ echo $2
 echo "Nombre de threads"
 echo $3
 
-gcc -o test $1 -DKERNEL=par -fopenmp -g
+gcc -o test $1 -DKERNEL=$2 -fopenmp -g
 ./maqao instrumentation.lua test "$2.*" > /dev/null
 ./test_i_mtl 2> out
 
