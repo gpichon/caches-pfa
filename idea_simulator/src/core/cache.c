@@ -75,7 +75,7 @@ struct line *line_in_cache(struct cache *cache, long entry) {
       return line;
     }
   }
-  printf("Erreur, ligne non presente avec cache inclusif\n");
+  fprintf(stderr, "Erreur, ligne non presente avec cache inclusif\n");
   exit(1);
 }
 

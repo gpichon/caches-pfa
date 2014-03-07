@@ -63,6 +63,7 @@ void load_line_hierarchy(struct node *node, long entry) {
       /* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
       if (!is_inclusive_like(current_cache)){
 	line = line_in_cache(current_cache, entry);
+	/* ATTENTION: exclusif: invalider correctement!!! */
 	invalid_line(line);
       }
       res = 1;
@@ -172,7 +173,7 @@ void store_line_hierarchy(struct node *node, long entry) {
       }
       /* Debug, should be threated by architecture */
       else if (is_cache_inclusive(current_cache)){
-	printf("Erreur de logique, snooping en dessous niveau inclusif...\n");
+	fprintf(stderr, "Erreur de logique, snooping en dessous niveau inclusif...\n");
 	exit(1);
       }
 
@@ -228,6 +229,7 @@ void add_line_cache(struct node *node, long entry, int w) {
   if (del_line != NULL) {
     
     /* Exclusive case: add in higher level */
+    /* ATTENTION: exclusif: invalider correctement autres L1 par ex!!! */
     /* struct node *parent = get_parent(node); */
     /* if (parent != NULL){ */
     /*   struct cache *parent_cache = get_cache(parent); */
