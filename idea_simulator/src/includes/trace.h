@@ -45,9 +45,19 @@ int fd;
 };
 
 
+/**
+ * \brief Initialization of \a nb_threads threads whit fd linked to trace_files. 
+ */
 void create_threads(struct thread **threads, char **trace_files, int nb_threads);
+
+/**
+ * \brief Destruction of \a nb_threads.
+ */
 void destroy_threads(struct thread **threads, int nb_threads);
 
+/**
+ * \brief Get the next instruction for a thread.
+ */
 void next_instruction(struct instruction *ins, struct thread **threads, int id_thread);
 
 #endif 

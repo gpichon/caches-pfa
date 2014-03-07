@@ -63,6 +63,6 @@ int delete_from_directory(struct directory *dir, struct block *block);
  * \param The data to search.
  * \return A cache where the entry can be found.
  */
-struct cache *search_from_directory(struct directory *dir, long entry);
+struct cache *search_from_directory(struct directory *dir, unsigned long entry);
 
 #endif

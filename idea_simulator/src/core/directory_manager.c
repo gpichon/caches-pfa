@@ -100,7 +100,7 @@ int delete_from_directory(struct directory *dir, struct block *block){
   return min_priority;
 }
 
-struct cache *search_from_directory(struct directory *dir, long entry){
+struct cache *search_from_directory(struct directory *dir, unsigned long entry){
   int nb_sons = dir->nb_sons;
   int i = 0;
 

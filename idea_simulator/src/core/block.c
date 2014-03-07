@@ -101,7 +101,7 @@ struct line *add_line_block(struct block *block, struct line *line, int (*replac
 }
 
 
-void update_FIFO(struct block *block, int nb_ways, long entry) {
+void update_FIFO(struct block *block, int nb_ways, unsigned long entry) {
   (void) entry;
   int i;
   struct line *line;
@@ -113,7 +113,7 @@ void update_FIFO(struct block *block, int nb_ways, long entry) {
   }
 }
 
-void update_LFU(struct block *block, int nb_ways, long entry) {
+void update_LFU(struct block *block, int nb_ways, unsigned long entry) {
   int i;
   struct line *line;
   for (i=0; i<nb_ways; i++) {
@@ -124,7 +124,7 @@ void update_LFU(struct block *block, int nb_ways, long entry) {
   }
 }  
 
-void update_LRU(struct block *block, int nb_ways, long entry) {
+void update_LRU(struct block *block, int nb_ways, unsigned long entry) {
   (void) entry;
   int i;
   int max = 0;

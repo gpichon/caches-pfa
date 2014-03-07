@@ -24,28 +24,28 @@
  * \param cache Is the cache which launched a share level procedure on its level.
  * \return Return 1 if there is entry is somewhere else in level.  
  */
-int share_level(struct node *current, long entry, void (*action)(struct line *));
+int share_level(struct node *current, unsigned long entry, void (*action)(struct line *));
 
 /**
  * \brief Loads the entry in the cache and applies coherence protocol. 
  */
-void load_line_hierarchy(struct node *cache, long entry);
+void load_line_hierarchy(struct node *cache, unsigned long entry);
 
 /**
  * \brief Stores the entry in the cache and applies coherence protocol.
  */
-void store_line_hierarchy(struct node *cache, long entry);
+void store_line_hierarchy(struct node *cache, unsigned long entry);
 
 /**
  * \brief Invalid all line in the caches below, which contain the entry, for inclusive strategy.
  */
-void invalid_back(struct node *cache, long entry);
+void invalid_back(struct node *cache, unsigned long entry);
 
 /**
  * \brief Add a line in the cache.
  * \param w If w = 1, modified line. 
  * \note Call add_line_block.
  */
-void add_line_cache(struct node *cache, long entry, int w);
+void add_line_cache(struct node *cache, unsigned long entry, int w);
 
 #endif
