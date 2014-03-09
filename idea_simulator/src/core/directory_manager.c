@@ -100,13 +100,14 @@ int delete_from_directory(struct directory *dir, struct block *block){
   return min_priority;
 }
 
-struct cache *search_from_directory(struct directory *dir, unsigned long entry){
+int search_from_directory(struct directory *dir, unsigned long entry, struct cache *cache){
   int nb_sons = dir->nb_sons;
   int i = 0;
 
-  while(!is_in_cache(dir->sons_caches[i], entry) && (i++<nb_sons));
-  if (i == nb_sons)
-    return NULL;
-  else 
-    return dir->sons_caches[i];
+  while(i<nb_sons){
+    if (is_in_cache(dir->sons_caches[i], entry) && (dir->sons_caches[i] != cache))
+      return 1;
+    i++;
+  }
+  return 0;
 }
