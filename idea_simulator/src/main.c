@@ -16,10 +16,10 @@
 #include "trace.h"
 
 /**
- * \def FILENAME
+ * \def DEFAULT_ARCHITECTURE
  * \brief Path to the automatically generated XML configuration file, if none specified.
  */
-#define FILENAME "data/architest_archi.xml"
+#define DEFAULT_ARCHITECTURE "data/architest_archi.xml"
 
 #include "option.h"
 
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     strcpy(filename, trace_file);
   }
   else {
-    strcpy(filename, FILENAME); /* Trouver un nom plus générique */
+    strcpy(filename, DEFAULT_ARCHITECTURE);
   }
 
   struct architecture A;

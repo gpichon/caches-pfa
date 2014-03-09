@@ -30,7 +30,7 @@ int share_level(struct node *node, unsigned long entry, void (*action)(struct li
       if (is_modified(line)) {
 	action(line);
 	/* STATS: if action=invalid_line -> evincted_coherence++ */
-	UP_WRITE_BACKS(current_cache);
+	up_stat(current_cache, entry, WRITE_BACK);
 	res = 1;
       }
 
@@ -62,7 +62,7 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
     current_cache = get_cache(current_node);
     
     if (is_in_cache(current_cache, entry)){
-      UP_HITS(current_cache);
+      up_stat(current_cache, entry, HIT);
       /* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
       if (is_cache_exclusive(current_cache)){
 	line = line_in_cache(current_cache, entry);
@@ -73,12 +73,12 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
     }
     
     else {
-      UP_MISSES(current_cache);
+      up_stat(current_cache, entry, MISS);
       v = share_level(current_node, entry, &share_line);
 
       if (is_inclusive_like(current_cache)){
 	add_line_cache(current_node, entry, 0);
-	UP_BROADCASTS(current_cache);
+	up_stat(current_cache, entry, BROADCAST);
 	/* STATS: broadcast_coherence++ */
 	line = line_in_cache(current_cache, entry);
 	current_cache->set_flags_new_line(v, line);
@@ -120,7 +120,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
     current_cache = get_cache(current_node);
 
     if (is_in_cache(current_cache, entry)){
-      UP_HITS(current_cache);
+      up_stat(current_cache, entry, HIT);
       res = 1;
 
       line = line_in_cache(current_cache, entry);
@@ -138,7 +138,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
     }
     
     else{
-      UP_MISSES(current_cache);
+      up_stat(current_cache, entry, MISS);
       if (is_inclusive_like(current_cache)){	
 	add_line_cache(current_node, entry, 1);
 	v = share_level(current_node, entry, &invalid_line);
@@ -164,7 +164,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 
     }
     
-    UP_BROADCASTS(current_cache);
+    up_stat(current_cache, entry, BROADCAST);
     current_son = current_cache;
     current_node = get_parent(current_node);
   }
@@ -183,7 +183,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
     }
     
     share_level(current_node, entry, &invalid_line);
-    UP_BROADCASTS(current_cache);
+    up_stat(current_cache, entry, BROADCAST);
     /* STATS: broadcast_coherence++ */
     current_node = get_parent(current_node);
     update_lines(current_cache, entry);
@@ -199,7 +199,7 @@ void invalid_back(struct node *node, unsigned long entry) {
     current_node = get_child(node, i);
     current_cache = get_cache(current_node);
     if (is_in_cache(current_cache, entry)){
-      current_cache->invalid_back++;
+      //current_cache->invalid_back++;
       line = line_in_cache(current_cache, entry);
       invalid_line(line);
       /* STATS: evincted_cache_type++ */
@@ -246,7 +246,7 @@ void add_line_cache(struct node *node, unsigned long entry, int w) {
       if (is_in_cache(parent, del_data)){
     	line = line_in_cache(parent, del_data);
     	if (is_modified(del_line)) {
-    	  cache->writes_back++;
+    	  up_stat(cache, entry, WRITE_BACK);
     	  modify_line(line);
 	  share_level(get_parent(node), del_data, &invalid_line);
     	  /* STATS: broadcast_coherence++ */

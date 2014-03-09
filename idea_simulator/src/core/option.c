@@ -15,9 +15,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+int tracking_count = 1;
 int tracking_type = TRACKING_DISABLED;
-int tracking_lower_bound;
-int tracking_upper_bound;
+unsigned long tracking_lower_bound[2] = {0, 0};
+unsigned long tracking_upper_bound[2] = {0xFFFFFFFFFFFFFFFF, 0};
 int help = 0;
 char *trace_file = NULL;
 
@@ -38,9 +39,10 @@ void get_options(int argc, char *argv[]) {
 					fprintf(stderr, "Bad parameter form");
 					break;
 				}
-				tracking_lower_bound = strtol(optarg, &s, 16);
-				tracking_upper_bound = strtol(s+1, NULL, 16);
+				tracking_lower_bound[1] = strtol(optarg, &s, 16);
+				tracking_upper_bound[1] = strtol(s+1, NULL, 16);
 				tracking_type = TRACKING_LIGHT;
+				tracking_count = 0;
 				break;
 			case 'h':	/* -h */
 				help = 1;
