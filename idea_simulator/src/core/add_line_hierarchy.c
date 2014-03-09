@@ -82,7 +82,6 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
 	/* STATS: broadcast_coherence++ */
 	line = line_in_cache(current_cache, entry);
 	current_cache->set_flags_new_line(v, line);
-	res = 0;
       }
 	
       /* Snooping case: get the data from a level cache if possible */
@@ -109,95 +108,85 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
   }    
 }
 
-/* Warning: caches are supposed to be inclusive -> if store L1 then store L2, L3... */
 void store_line_hierarchy(struct node *node, unsigned long entry) {
   struct node *current_node = node;
   struct cache *current_cache = get_cache(node); 
+  struct cache *current_son = get_cache(node); 
   struct line *line = NULL;
 
-  /* Hit: Ok! */
-  if (is_in_cache(current_cache, entry)) {
-    /* 2 lignes useless? */
-    line = line_in_cache(current_cache, entry);
-    modify_line(line);
-    UP_HITS(current_cache);
-    update_lines(current_cache, entry);
-    
-    while (current_node != NULL) {
-      current_cache = get_cache(current_node);
-      if (is_in_cache(current_cache, entry)){
-	/* Verifier WB WT */
-	line = line_in_cache(current_cache, entry);
-	modify_line(line);
-      }
-      share_level(current_node, entry, &invalid_line);
-      UP_BROADCASTS(current_cache);
-      current_node = get_parent(current_node);
-    }    
-  }
-  
-  /* Miss:
-     if data is not in any cache: Exclusive
-     else Shared, as other values in caches
-  */
-  else {
-    int res = 0;
-    int v;
-    while (res == 0 && current_node != NULL) {
-      current_cache = get_cache(current_node);
+  int res = 0;
+  int v;
+  while (res == 0 && current_node != NULL) {
+    current_cache = get_cache(current_node);
 
-      if (is_in_cache(current_cache, entry)){
-	UP_HITS(current_cache);
-	res = 1;
+    if (is_in_cache(current_cache, entry)){
+      UP_HITS(current_cache);
+      res = 1;
+
+      line = line_in_cache(current_cache, entry);
+      
+      /* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
+      if(is_cache_exclusive(current_cache)){
+	invalid_line(line);
+	/* STATS: evincted_cache_type++ */
+      }
+      else{
 	v = share_level(current_node, entry, &invalid_line);
+	modify_line(line);
+	/* STATS: broadcast_coherence++ */
+      }
+    }
+    
+    else{
+      UP_MISSES(current_cache);
+      if (is_inclusive_like(current_cache)){	
+	add_line_cache(current_node, entry, 1);
+	v = share_level(current_node, entry, &invalid_line);
+	/* STATS: broadcast_coherence++ */
 	line = line_in_cache(current_cache, entry);
 	modify_line(line);
 	update_lines(current_cache, entry);
-
-	/* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
-	if(!is_inclusive_like(current_cache)){
-	  line = line_in_cache(current_cache, entry);
-	  invalid_line(line);
-	}
+      }
+      /* Snooping case: get the data from a level cache if possible */
+      if (is_snooping(current_cache) && v){
+	res = 1;
+	/* STATS: broadcast_snooping++ */
+	/* STATS: misses_snooping++ */
+      }
+      else if (current_cache->directory && search_from_directory(current_cache->dir, entry, current_son)){
+	res = 1;
+	/* STATS: misses_below++ */
       }
 
-      else{
-	UP_MISSES(current_cache);
-	res = 0;
-	if (is_inclusive_like(current_cache)){	
-	  add_line_cache(current_node, entry, 1);
-	  v = share_level(current_node, entry, &invalid_line);
-	  line = line_in_cache(current_cache, entry);
-	  modify_line(line);
-	  update_lines(current_cache, entry);
-	}
-	/* Snooping case: get the data from a level cache if possible */
-	if (is_snooping(current_cache) && v){
-	  res = 1;
-	}
-      }
+      /* else{ */
+      /* STATS: misses_above++ */
+      /* } */
 
-      UP_BROADCASTS(current_cache);
-      current_node = get_parent(current_node);
     }
-
-    while (current_node != NULL) {
-      current_cache = get_cache(current_node);
-      if (is_in_cache(current_cache, entry)){
-	line = line_in_cache(current_cache, entry);
-	modify_line(line);
-      }
-
-      /* Debug, should be threated by architecture */
-      else if (is_cache_inclusive(current_cache)){
-	fprintf(stderr, "Erreur de logique, snooping en dessous niveau inclusif...\n");
-	exit(1);
-      }
-
-      share_level(current_node, entry, &invalid_line);
-      UP_BROADCASTS(current_cache);
-      current_node = get_parent(current_node);
+    
+    UP_BROADCASTS(current_cache);
+    current_son = current_cache;
+    current_node = get_parent(current_node);
+  }
+  
+  while (current_node != NULL) {
+    current_cache = get_cache(current_node);
+    if (is_in_cache(current_cache, entry)){
+      line = line_in_cache(current_cache, entry);
+      modify_line(line);
     }
+    
+    /* Debug, should be threated by architecture */
+    else if (is_cache_inclusive(current_cache)){
+      fprintf(stderr, "Erreur de logique, snooping en dessous niveau inclusif...\n");
+      exit(1);
+    }
+    
+    share_level(current_node, entry, &invalid_line);
+    UP_BROADCASTS(current_cache);
+    /* STATS: broadcast_coherence++ */
+    current_node = get_parent(current_node);
+    update_lines(current_cache, entry);
   }
 }
 
