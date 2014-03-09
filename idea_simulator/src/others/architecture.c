@@ -35,8 +35,7 @@
 /**
  * \def XSL_DOC
  * \param path 
- * \brief Path (absolute or relative) to the xsl result.
- * \todo Precise if the result is overwritten.
+ * \brief Relative path of the xsl sheet describing the transfomation hwloc -> cassis
  */
 #define XSL_DOC "res/archi_maker.xsl"
 
@@ -45,8 +44,9 @@
  * \brief Copy the node's text (identified by node name) in the target.
  */
 #define GET_ATTRIBUT_TXT(name,node,target)   tmp = xmlGetProp(node, BAD_CAST name); \
-  sprintf(buf, "%s", tmp);						\
-  strcpy(target, buf);							\
+  if(tmp != NULL){							\
+    sprintf(buf, "%s", tmp);						\
+    strcpy(target, buf); }						\
   xmlFree(tmp);								\
   buf[0] = 0
 
@@ -59,6 +59,8 @@
   target = atoi(buf);							\
   xmlFree(tmp);								\
   buf[0] = 0
+
+#define WARNING_MESSAGE   fprintf(stderr, "WARNING: architecture not valid\n")
 
 struct level{
   int type;
@@ -116,10 +118,9 @@ bool get_bool(char * txt){
 }
 
 /**
- * \brief Modify the name of the XML output file.
+ * \brief Generates the name of the XML output file from the previous xml file
  * \param name Previous name.
  * \param out New name.
- * \todo Precise the call context. Previous file is overwritten ?
  */
 void change_filename(const char * name, char * out){
   int l = strlen(name);
@@ -146,7 +147,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
     fprintf(stderr, "Could not load %s\n", filename);
   }
 
-  //Check if we need to create a _archi.xml
+  //Check if we need to create a .cassis.xml file
   xmlNodePtr root_test = xmlDocGetRootElement(doc);
   if(strcmp((char *) root_test->name, "Architecture") != 0){
     change_filename(filename, file_in);
@@ -193,7 +194,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   CHECK_ALLOC(L);
   res = xmlXPathEvalExpression(BAD_CAST "//Level", context);
   CHECK_XPATH(res);
-  if(archi->number_levels != res->nodesetval->nodeNr){
+  if(archi->number_levels != (unsigned int) res->nodesetval->nodeNr){
     fprintf(stderr, "Parsing error : wrong number of \"Level\"");
     _exit(1);
   }
@@ -263,6 +264,8 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   /* Set directory managers */
   n = get_root(n);
   init_directories(n);
+
+  check_archi(archi);
 
   xmlXPathFreeObject(res);
   free(L);
@@ -342,6 +345,80 @@ void print_caches(struct architecture * archi){
     else
       n=get_child(n,0);
   }
+}
+
+int get_size_below_rec(struct node * n){
+  int sum = n->data->size;
+  unsigned int i;
+  for(i=0;i<n->nb_children;i++){
+    sum += get_size_below_rec(get_child(n, i));
+  }
+  return sum;
+}
+
+/**
+ * \brief Get the sum of the sizes of the caches below a cache
+ * \param n The cache to check
+ */
+int get_size_below(struct node * n){
+  unsigned int i;
+  int sum = 0;
+  for(i=0;i<n->nb_children;i++){
+    sum += get_size_below_rec(get_child(n, i));
+  }
+  return sum;
+}
+
+/**
+ * \brief Checks the architecture coherence cache by cache
+ * \param n The node to check (call with the root for all caches)
+ */
+bool check_cache_rec(struct node * n){
+  unsigned int i;
+  for(i=0;i<n->nb_children;i++){
+    check_cache_rec(get_child(n, i));
+  }
+  
+  //Check size for inclusive cache
+  if(n->data->type == Inclusive){
+    if(get_size_below(n) > n->data->size){
+      WARNING_MESSAGE;
+      fprintf(stderr, "Size error: an inclusive cache (L%d) is too small for the lower levels\n", n->data->depth);
+    }
+  }
+
+  //Check for a cache with snooping if the cache above is not inclusive (except last level)
+  if(n->data->snooping == true){
+    if(get_parent(n)->data->type == Inclusive && get_parent(n)->id != get_root(n)->id){
+      WARNING_MESSAGE;
+      fprintf(stderr, "Cache with snooping (L%d) below an inclusive cache\n", n->data->depth);
+    }
+  }
+  return true;
+}
+
+void check_archi(struct architecture * archi){
+  struct node * root = get_root(archi->threads[0]);
+  struct node * n = archi->threads[0];
+  //If last level is not inclusive and has no directory manager
+  if(root->data->type != Inclusive){
+    //Is there a directory manager
+    if(root->data->directory == false){
+      //Is there snooping in all the levels below
+      bool all_snooping = true;
+      while(n != root){
+	if(n->data->snooping != true)
+	  all_snooping = false;
+	n = get_parent(n);
+      }
+      if(all_snooping == false){
+	WARNING_MESSAGE;
+	fprintf(stderr, "Last level (L%d) is not inclusive and has no directory manager nor snooping in all levels below\n", archi->number_levels);
+      }
+    }
+  }
+
+  check_cache_rec(root);
 }
 
 void delete_archi_rec(struct node * n){
