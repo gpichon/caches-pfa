@@ -52,6 +52,7 @@ int share_level(struct node *node, unsigned long entry, void (*action)(struct li
 void load_line_hierarchy(struct node *node, unsigned long entry) {
   struct node *current_node = node;
   struct cache *current_cache = get_cache(node);
+  struct cache *current_son = get_cache(node);
   struct line *line = NULL;
   int res = 0;
   int v;
@@ -91,7 +92,7 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
 	res = 1;
       }
 
-      else if (current_cache->directory && search_from_directory(current_cache->dir, entry)){
+      else if (current_cache->directory && search_from_directory(current_cache->dir, entry, current_son)){
 	/* STATS: misses_below++ */
 	res = 1;
       }
@@ -103,6 +104,7 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
     }
 
     update_lines(current_cache, entry);
+    current_son = current_cache;
     current_node = get_parent(current_node);
   }    
 }
