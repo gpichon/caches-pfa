@@ -66,17 +66,17 @@ int id_line_to_replace_LRU(struct block *block, int priority);
  * \brief Update replacement flag. 
  * \note To be used after a hit, and uses FIFO replacement policy.
  */
-void update_FIFO(struct block *block, int nb_ways, long entry);
+void update_FIFO(struct block *block, int nb_ways, unsigned long entry);
 /**
  * \brief Update replacement flag. 
  * \note To be used after a hit, and uses LFU replacement policy.
  */
-void update_LFU(struct block *block, int nb_ways, long entry);
+void update_LFU(struct block *block, int nb_ways, unsigned long entry);
 /**
  * \brief Update replacement flag. 
  * \note To be used after a hit, and uses LRU replacement policy.
  */
-void update_LRU(struct block *block, int nb_ways, long entry);
+void update_LRU(struct block *block, int nb_ways, unsigned long entry);
 
 /**
  * \brief Load a line in the block. All structures must be initialized.

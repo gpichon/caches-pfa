@@ -5,35 +5,6 @@
  * \version 1.0
  * \date 3rd january 2014
  *
- * \note At the moment, architecture and traces cannot be given in command line. 
- * \todo Allow to choose architecture and traces in command line. 
- *       Manage options with -letter or --word.
- *       Create an usage option.
- *
- * # How to use Markdown ?? #
- * ## This is really simple. #
- * + firstly, you use some special characters
- *   - as #
- *   - or -
- *   - or +
- *   - or :
- * + secondly, RTFM
- * 
- *   [It's here](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html)
- * 
- * ## We can also make a tabular. #
- * Emacs user | Not an emacs user
- * -----------|------------------:
- * We        | Not we
- * This is a long text|And a right-justified text
- *
- * ## But what about code ? #
- * ~~~~~~~~~~~~~{.c}
- * #define CODE "my_code"
- * int copyright(char * blop){
- *   return strcmp(blop, my_code);
- * }
- * ~~~~~~~~~~~~~
  */
 
 #include <stdio.h>
@@ -49,11 +20,6 @@
  * \brief Path to the automatically generated XML configuration file, if none specified.
  */
 #define FILENAME "data/architest_archi.xml"
-/**
- * \def TEST
- * \brief Path to the result file of tests.
- */
-#define TEST "../gentraces/file.txt"
 
 #include "option.h"
 
@@ -76,26 +42,19 @@ int main(int argc, char *argv[]) {
   parse_archi_file(filename, &A);
   struct architecture *archi = &A;
   
-  struct thread **t;
-  t = malloc(4*sizeof(struct thread *));
-  struct instruction i = {.type = INSTRUCTION_INVALID};
+  struct thread **threads;
+  threads = malloc(4*sizeof(struct thread *));
+  struct instruction *ins = malloc(sizeof(struct instruction));
+  ins->type = INSTRUCTION_LOAD;
   
   /* Open trace file */
-  char trace_file1[] = "data/traces/trace1";
-  char trace_file2[] = "data/traces/trace2";
-  char trace_file3[] = "data/traces/trace3";
-  char trace_file4[] = "data/traces/trace4";
+  char **trace_files = malloc(4*sizeof(char *));
+  trace_files[0] = "MAQAO/trace0";
+  trace_files[1] = "MAQAO/trace1";
+  trace_files[2] = "MAQAO/trace2";
+  trace_files[3] = "MAQAO/trace3";
 
-
-  t[0] = create_thread(trace_file1);
-  t[1] = create_thread(trace_file2);
-  t[2] = create_thread(trace_file3);
-  t[3] = create_thread(trace_file4);
-  
-  if (!t[0] || !t[1] || !t[2] || !t[3]) {
-    fprintf(stderr, "Cannot open trace files\n");
-    return EXIT_SUCCESS;
-  }
+  create_threads(threads, trace_files, 4);
   
   /* Read trace */
   int count = 0;
@@ -105,38 +64,36 @@ int main(int argc, char *argv[]) {
 
   while (!end[0] || !end[1] || !end[2] || !end[3]){
     current = (current+1)%4; 	/* Next thread */
+
     for (j=0; j<10; j++){ 	/* 10 instructions per thread */
-      
-      if (i.type != INSTRUCTION_END_OF_THREAD) {
-	i = next_instruction(t[current]);
-	if (i.type == INSTRUCTION_LOAD) {
-	  load_line_hierarchy(archi->threads[current], i.addr);
-	  count++;
-	}
-	else if (i.type == INSTRUCTION_STORE) {
-	  store_line_hierarchy(archi->threads[current], i.addr);
-	  count++;
-	}
+      next_instruction(ins, threads, current);
+
+      if (ins->type != INSTRUCTION_END_OF_THREAD) {
+  	if (ins->type == INSTRUCTION_LOAD) {
+  	  load_line_hierarchy(archi->threads[current], ins->addr);
+  	  count++;
+  	}
+  	else if (ins->type == INSTRUCTION_STORE) {
+  	  store_line_hierarchy(archi->threads[current], ins->addr);
+  	  count++;
+  	}
       }
       else{
-	end[current] = 1;
-	i.type = INSTRUCTION_INVALID;
+  	end[current] = 1;
       }
     }
   }
 
-  
-  for (j=0; j<4; j++){
-    free_thread(t[j]);
-  }
-  free(t);
-
-  printf("Total values: %d\n", count);
   /* End of reading */
+  printf("Total values: %d\n", count);
+  destroy_threads(threads, 4);
 
   /* Informations about caches */
   print_caches(archi);
   delete_archi(archi);
 
+  free(ins);
+  free(threads);
+  free(trace_files);
   return EXIT_SUCCESS;
 }

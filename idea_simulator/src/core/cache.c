@@ -40,13 +40,13 @@ void delete_cache(struct cache *cache) {
   free(cache);
 }
 
-int block_id(struct cache *cache, long entry) {
+int block_id(struct cache *cache, unsigned long entry) {
   entry = entry / cache->linesize; //Line in principal memory
   int id_block = entry % cache->nb_blocks;
   return id_block;
 }
 
-int is_in_cache(struct cache *cache, long entry) {
+int is_in_cache(struct cache *cache, unsigned long entry) {
   int id_block = block_id(cache, entry);
   struct block *block = cache->blocks[id_block];
   int nb_ways = cache->nb_ways;
@@ -62,7 +62,7 @@ int is_in_cache(struct cache *cache, long entry) {
   return 0;
 }
 
-struct line *line_in_cache(struct cache *cache, long entry) {
+struct line *line_in_cache(struct cache *cache, unsigned long entry) {
   int id_block = block_id(cache, entry);
   struct block *block = cache->blocks[id_block];
   int nb_ways = cache->nb_ways;
@@ -75,11 +75,11 @@ struct line *line_in_cache(struct cache *cache, long entry) {
       return line;
     }
   }
-  printf("Erreur, ligne non presente avec cache inclusif\n");
+  fprintf(stderr, "Erreur, ligne non presente avec cache inclusif\n");
   exit(1);
 }
 
-void update_lines(struct cache *cache, long entry) {
+void update_lines(struct cache *cache, unsigned long entry) {
   int id_block = block_id(cache, entry);
   struct block *block = cache->blocks[id_block];
   int nb_ways = cache->nb_ways;

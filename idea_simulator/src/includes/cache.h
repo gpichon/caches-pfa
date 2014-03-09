@@ -84,7 +84,7 @@ struct cache {
   struct directory *dir; /**< The directory */
 
   int (*replacement)(struct block *, int); /**< Function pointer to replace a line for a special priority in a block. */
-  void (*update_line)(struct block *, int, long); /**< Function pointer to update line stat in a block.  */
+  void (*update_line)(struct block *, int, unsigned long); /**< Function pointer to update line stat in a block.  */
 
   int (*treat_special_flags)(struct line *, void(*)(struct line *)); /**< Function pointer to manage special flags: E, O. */
   void (*set_flags_new_line)(int, struct line *); /**< Function pointer to create a new line with right flag : S or E with MESI. */
@@ -104,13 +104,13 @@ void delete_cache(struct cache *cache);
  * \brief Return in which block the entry has to be store.
  * \param entry Range ? 
 */
-int block_id(struct cache *cache, long entry);
+int block_id(struct cache *cache, unsigned long entry);
 
 /**
  * \brief Return whether or not the cache contains the entry. 
  * \return It is 1 when true and 0 otherwise.
  */
-int is_in_cache(struct cache *cache, long entry);
+int is_in_cache(struct cache *cache, unsigned long entry);
 
 
 /**
@@ -121,12 +121,12 @@ void print_infos(struct cache *cache);
 /**
  * \brief  Returns a pointer to the line which contains the entry in the cache. 
  */
-struct line *line_in_cache(struct cache *cache, long entry);
+struct line *line_in_cache(struct cache *cache, unsigned long entry);
 
 /**
  * \brief Call the update_line function on the right line determined with the entry.
  */
-void update_lines(struct cache *cache, long entry);
+void update_lines(struct cache *cache, unsigned long entry);
 
 /* Replacement protocols */
 /**

@@ -34,10 +34,10 @@ enum status{
  * \brief Abstract Data Type for a line.
  */ 
 struct line {
-  int first_case;         /**< First element of the cache line.*/
-  int use;                /**< number of utilizations since the line is in the block */
-  enum status status;     /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
-  int priority;           /**< Priority to delete data. A data line with high priority don't seem to bedeleted */
+  unsigned long first_case; /**< First element of the cache line.*/
+  int use;                  /**< number of utilizations since the line is in the block */
+  enum status status;       /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
+  int priority;             /**< Priority to delete data. A data line with high priority don't seem to bedeleted */
 };
 
 /**

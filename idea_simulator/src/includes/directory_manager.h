@@ -61,8 +61,9 @@ int delete_from_directory(struct directory *dir, struct block *block);
  * \brief Search a data in hierarchy thanks to the directory.
  * \param The directory in the hierarchy.
  * \param The data to search.
- * \return A cache where the entry can be found.
+ * \param The sons who searches the data.
+ * \return 1 if the entry can be found in the hierarchy below, 0 otherwise.
  */
-struct cache *search_from_directory(struct directory *dir, long entry);
+int search_from_directory(struct directory *dir, unsigned long entry, struct cache *cache);
 
 #endif

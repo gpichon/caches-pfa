@@ -1,9 +1,8 @@
 Pour compiler, faire make
 
-Pour executer le code, faire ./bin/main
+Pour executer le code, faire ./bin/simulator
 
 Paquets pour le parseur xml : 
-libxml2
 libxml2-dev
 libxslt1-dev
 
