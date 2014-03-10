@@ -280,22 +280,42 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   return EXIT_SUCCESS;
 }
 
-void print_archi_rec(struct node * n){
+void print_archi_rec(struct node * n, int nb_levels){
   unsigned int i;
-  printf("\tL%d (taille : %d, ligne : %d, associativité : %d, nb_blocks : %d)\n", n->data->depth, n->data->size, n->data->linesize, n->data->nb_ways,  n->data->nb_blocks);
-  printf("\tSnooping : %d, directory_manager %d\n", n->data->snooping, n->data->directory);
-  printf("\tInfo du noeud : id %d, nombre de fils %d\n\n", n->id, n->nb_children);
+  for(i=n->data->depth; i<(unsigned int)nb_levels; i++)
+    printf("\t");
+  printf("L%d (size: %d) ", n->data->depth, n->data->size);
+  switch(n->data->type){
+  case Inclusive:
+    printf("inclusive");
+    break;
+  case Exclusive:
+    printf("exclusive");
+    break;
+  case NIIO:
+    printf("NIIO");
+    break;
+  case NIEO:
+    printf("NIEO");
+    break;
+  }
+  if(n->data->snooping)
+    printf(", with snooping");
+  if(n->data->directory)
+    printf(", with directory manager");
+  
+  printf("\n");
+
   for(i=0;i<n->nb_children;i++){
-    print_archi_rec(get_child(n,i));
+    print_archi_rec(get_child(n,i), nb_levels);
   }
 }
 
 void print_archi(struct architecture * archi){
   printf("Architecture %d bits : %s\n", archi->nb_bits, archi->name);
   printf("CPU model : %s\n", archi->CPU_name);
-  printf("Arbre des caches : \n");
   struct node * root = get_root(archi->threads[0]);
-  print_archi_rec(root);
+  print_archi_rec(root, archi->number_levels);
 }
 
 int convert_archi_xml(const char * file_in, const char * file_out){
@@ -333,6 +353,7 @@ void print_caches(struct architecture * archi){
   struct node * n = get_root(archi->threads[0]);
   int cond = 1;
   unsigned int id_beg;
+  print_archi(archi);
   printf("Liste des caches\n");
   while(cond){
     id_beg = n->id;
@@ -388,7 +409,7 @@ bool check_cache_rec(struct node * n){
   }
 
   //Check for a cache with snooping if the cache above is not inclusive (except last level)
-  if(n->data->snooping == true){
+  if(n->data->snooping == true && get_parent(n)){
     if(get_parent(n)->data->type == Inclusive && get_parent(n)->id != get_root(n)->id){
       WARNING_MESSAGE;
       fprintf(stderr, "Cache with snooping (L%d) below an inclusive cache\n", n->data->depth);
