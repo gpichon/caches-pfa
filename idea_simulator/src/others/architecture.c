@@ -358,7 +358,7 @@ void print_caches(struct architecture * archi){
   while(cond){
     id_beg = n->id;
     do{
-      printf("\tL%d (misses: %10d, hits: %10d, writes_back: %10d, broadcasts: %10d)\n", n->data->depth, n->data->misses, n->data->hits, n->data->writes_back, n->data->broadcasts);
+      printf("\tL%d (misses: %10d, hits: %10d, writes_back: %10d, broadcasts: %10d)\n", n->data->depth, n->data->misses[0], n->data->hits[0], n->data->writes_back[0], n->data->broadcasts[0]);
       n=get_sibling(n);
     } while(n->id != id_beg);
     if(n->data->depth == 1)

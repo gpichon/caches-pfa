@@ -51,34 +51,34 @@ int test_without_parser(int argc, char** argv) {
   load_line_hierarchy(threads[1], 163+2048); /* Miss L1_1 Hit L2_0 */
   load_line_hierarchy(threads[2], 163+2048); /* Miss L1_2, L2_1 Hit L3_0 */
 
-  assert(threads[0]->data->misses == 1);
-  assert(threads[1]->data->misses == 1);
-  assert(threads[2]->data->misses == 1);
+  assert(threads[0]->data->misses[0] == 1);
+  assert(threads[1]->data->misses[0] == 1);
+  assert(threads[2]->data->misses[0] == 1);
 
-  assert(cache_L2_0->misses == 1);
-  assert(cache_L2_0->hits   == 1);
-  assert(cache_L2_1->misses == 1);
+  assert(cache_L2_0->misses[0] == 1);
+  assert(cache_L2_0->hits[0]   == 1);
+  assert(cache_L2_1->misses[0] == 1);
 
-  assert(cache_L3->hits   == 1);
-  assert(cache_L3->misses == 1);
+  assert(cache_L3->hits[0]   == 1);
+  assert(cache_L3->misses[0] == 1);
 
   /* Store value in cache -> Hit */
   store_line_hierarchy(threads[0], 163+2048);   /* Hit L1_0 */
-  assert(threads[0]->data->hits == 1);
+  assert(threads[0]->data->hits[0] == 1);
 
   /* Value in L1_1 was invalidated last store, but value is still in L2_0 */
   load_line_hierarchy(threads[1], 163+2048); /* WB L1_0 Miss L1_1 Hit L2_0*/
-  assert(threads[0]->data->writes_back == 1);
-  assert(threads[1]->data->misses      == 2);
-  assert(cache_L2_0->hits              == 2);
+  assert(threads[0]->data->writes_back[0] == 1);
+  assert(threads[1]->data->misses[0]      == 2);
+  assert(cache_L2_0->hits[0]              == 2);
 
 
   /* Invalidated caches */
   store_line_hierarchy(threads[2], 163+2048); /* Miss L1_2, L2_1 WB L2_0 Hit L3_0 */
-  assert(threads[2]->data->misses == 2);
-  assert(cache_L2_1->misses       == 2);
-  assert(cache_L2_0->writes_back  == 1);
-  assert(cache_L3->hits           == 2);
+  assert(threads[2]->data->misses[0] == 2);
+  assert(cache_L2_1->misses[0]       == 2);
+  assert(cache_L2_0->writes_back[0]  == 1);
+  assert(cache_L3->hits[0]           == 2);
 
   for(i=0; i<4; i++){
     delete_cache(threads[i]->data);
