@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include "architecture.h"
 #include "node.h"
+#include "option.h"
 
 /**
  * \def CHECK_XPATH(result)
@@ -358,7 +359,9 @@ void print_caches(struct architecture * archi){
   while(cond){
     id_beg = n->id;
     do{
-      printf("\tL%d (misses: %10d, hits: %10d, writes_back: %10d, broadcasts: %10d)\n", n->data->depth, n->data->misses[0], n->data->hits[0], n->data->writes_back[0], n->data->broadcasts[0]);
+      printf("\tL%d full  (misses: %10d, hits: %10d, writes_back: %10d, broadcasts: %10d)\n", n->data->depth, n->data->misses[0], n->data->hits[0], n->data->writes_back[0], n->data->broadcasts[0]);
+      if (tracking_count == 2)
+	printf("\tL%d light (misses: %10d, hits: %10d, writes_back: %10d, broadcasts: %10d)\n\n", n->data->depth, n->data->misses[1], n->data->hits[1], n->data->writes_back[1], n->data->broadcasts[1]);
       n=get_sibling(n);
     } while(n->id != id_beg);
     if(n->data->depth == 1)

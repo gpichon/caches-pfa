@@ -13,26 +13,26 @@
 #include "cache.h"
 
 void up_stat(struct cache *cache, unsigned long entry, int stats_type) {
-	int i;
+  int i;
 	
-	for (i = 0; i < tracking_count; i++) {
-		if (tracking_lower_bound[i] <= entry && entry <= tracking_upper_bound[i]) {
-			switch (stats_type) {
-				case MISS:
-					cache->misses[i]++;
-					break;
-				case HIT:
-					cache->hits[i]++;
-					break;
-				case WRITE_BACK:
-					cache->writes_back[i]++;
-					break;
-				case BROADCAST:
-					cache->broadcasts[i]++;
-					break;
-			}
-		}
-	}
+  for (i = 0; i < tracking_count; i++) {
+    if (tracking_lower_bound[i] <= entry && entry <= tracking_upper_bound[i]) {
+      switch (stats_type) {
+      case MISS:
+	cache->misses[i]++;
+	break;
+      case HIT:
+	cache->hits[i]++;
+	break;
+      case WRITE_BACK:
+	cache->writes_back[i]++;
+	break;
+      case BROADCAST:
+	cache->broadcasts[i]++;
+	break;
+      }
+    }
+  }
 }
 
 /* Data allocations */
@@ -46,11 +46,11 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int
   cache->blocks         = blocks;
   int i;
   for (i = 0; i < tracking_count; i++) {
-  cache->misses[i]      = 0;
-  cache->hits[i]        = 0;
-  cache->writes_back[i] = 0;
-  cache->broadcasts[i]  = 0;
-  cache->invalid_back[i]= 0;
+    cache->misses[i]      = 0;
+    cache->hits[i]        = 0;
+    cache->writes_back[i] = 0;
+    cache->broadcasts[i]  = 0;
+    cache->invalid_back[i]= 0;
   }
   cache->depth          = depth;
   cache->type           = type;
