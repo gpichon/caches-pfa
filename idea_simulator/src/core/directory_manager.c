@@ -100,13 +100,28 @@ int delete_from_directory(struct directory *dir, struct block *block){
   return min_priority;
 }
 
-int search_from_directory(struct directory *dir, unsigned long entry, struct cache *cache){
+int from_node(struct node *node, struct cache *cache){
+  int nb_children = node->nb_children;
+  int i;
+  for (i=0; i<nb_children; i++){
+    if (get_cache(node->child[i]) == cache){
+      return 1;
+    }
+    from_node(node->child[i], cache);
+  }
+  return 0;
+}
+
+int search_from_directory(struct directory *dir, unsigned long entry, struct node *node){
   int nb_sons = dir->nb_sons;
   int i = 0;
 
   while(i<nb_sons){
-    if (is_in_cache(dir->sons_caches[i], entry) && (dir->sons_caches[i] != cache))
-      return 1;
+    if (is_in_cache(dir->sons_caches[i], entry)){
+      if (from_node(node, dir->sons_caches[i])){
+	return 1;
+      }
+    }
     i++;
   }
   return 0;

@@ -30,7 +30,14 @@ enum stat_type {
   MISS,
   HIT,
   WRITE_BACK,
-  BROADCAST
+  COHERENCE_EVINCTION,
+  CAPACITY_EVINCTION,
+  TYPES_EVINCTION,
+  VALUE_BY_SNOOPING,
+  VALUE_ABOVE,
+  VALUE_BELOW,
+  COHERENCE_BROADCAST,
+  SNOOPING_BROADCAST
 };
 
 /**
@@ -59,8 +66,18 @@ struct cache {
   int misses[2];       /**< Count of misses for this cache for the specific adresses. */
   int hits[2];         /**< Count of hits for this cache for the specific adresses. */
   int writes_back[2];  /**< Count of write backs for this cache for the specific adresses. */
-  int broadcasts[2];   /**< Count of broadcasts for this cache for the specific adresses. */
-  int invalid_back[2]; /**< Count of invalid back for this cache for the specific adresses. */
+
+  int evincted_coherence[2];    /**< Count of data evinctions due to coherence problems. */
+  int evincted_capacity[2];     /**< Count of data evinctions due to capacity. */
+  int evincted_caches_types[2]; /**< Count of data evinctions due to caches types. */
+
+  int misses_snooping[2]; /**< Count of misses when the data is gotten by snooping. */
+  int misses_above[2];    /**< Count of misses when the data is gotten above in the hierachy. */
+  int misses_below[2];    /**< Count of misses when the data is gotten below in the hierachy. */
+
+  int broadcast_coherence[2]; /**< Broadcast for coherence. */
+  int broadcast_snooping[2];  /**< Broadcast to search data by snooping. */
+
 
   enum cache_type type;  /**< Type of cache: inclusive, exclusive, NIIO, NIEO */
   bool snooping;         /**< Can this cache use snooping to find data? */

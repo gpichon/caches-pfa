@@ -359,9 +359,13 @@ void print_caches(struct architecture * archi){
   while(cond){
     id_beg = n->id;
     do{
-      printf("\tL%d full  (misses: %10d, hits: %10d, writes_back: %10d, broadcasts: %10d)\n", n->data->depth, n->data->misses[0], n->data->hits[0], n->data->writes_back[0], n->data->broadcasts[0]);
-      if (tracking_count == 2)
-	printf("\tL%d light (misses: %10d, hits: %10d, writes_back: %10d, broadcasts: %10d)\n\n", n->data->depth, n->data->misses[1], n->data->hits[1], n->data->writes_back[1], n->data->broadcasts[1]);
+      printf("\tL%d full   (misses: %10d, hits: %10d, writes_back: %10d)\n", n->data->depth, n->data->misses[0], n->data->hits[0], n->data->writes_back[0]);
+      if (tracking_count == 2){
+	printf("\tL%d filtre (misses: %10d, hits: %10d, writes_back: %10d)\n", n->data->depth, n->data->misses[1], n->data->hits[1], n->data->writes_back[1]);
+	printf("\t\t evinctions (coherence: %10d, capacity: %10d, cache_types: %10d)\n", n->data->evincted_coherence[1], n->data->evincted_capacity[1], n->data->evincted_caches_types[1]);
+	printf("\t\t misses     (snooping:  %10d, above:    %10d, below:       %10d)\n", n->data->misses_snooping[1], n->data->misses_above[1], n->data->misses_below[1]);
+	printf("\t\t broadcasts (coherence: %10d, snooping: %10d)\n\n", n->data->broadcast_coherence[1], n->data->broadcast_snooping[1]);
+      }
       n=get_sibling(n);
     } while(n->id != id_beg);
     if(n->data->depth == 1)

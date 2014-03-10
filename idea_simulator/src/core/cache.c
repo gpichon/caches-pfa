@@ -27,9 +27,30 @@ void up_stat(struct cache *cache, unsigned long entry, int stats_type) {
       case WRITE_BACK:
 	cache->writes_back[i]++;
 	break;
-      case BROADCAST:
-	cache->broadcasts[i]++;
+      case COHERENCE_EVINCTION:
+	cache->evincted_coherence[i]++;
 	break;
+      case CAPACITY_EVINCTION:
+	cache->evincted_capacity[i]++;
+	break;
+      case TYPES_EVINCTION:
+	cache->evincted_caches_types[i]++;
+	break;
+      case VALUE_BY_SNOOPING:
+	cache->misses_snooping[i]++;
+	break;
+      case VALUE_ABOVE:
+	cache->misses_above[i]++;
+	break;
+      case VALUE_BELOW:
+	cache->misses_below[i]++;
+	break;
+      case COHERENCE_BROADCAST:
+	cache->broadcast_coherence[i]++;
+	break;
+      case SNOOPING_BROADCAST:
+	cache->broadcast_snooping[i]++;
+    	break;
       }
     }
   }
@@ -46,11 +67,17 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int
   cache->blocks         = blocks;
   int i;
   for (i = 0; i < tracking_count; i++) {
-    cache->misses[i]      = 0;
-    cache->hits[i]        = 0;
-    cache->writes_back[i] = 0;
-    cache->broadcasts[i]  = 0;
-    cache->invalid_back[i]= 0;
+    cache->misses[i]                = 0;
+    cache->hits[i]                  = 0;
+    cache->writes_back[i]           = 0;
+    cache->evincted_coherence[i]    = 0;
+    cache->evincted_capacity[i]     = 0;
+    cache->evincted_caches_types[i] = 0;
+    cache->misses_snooping[i]       = 0;
+    cache->misses_above[i]          = 0;
+    cache->misses_below[i]          = 0;
+    cache->broadcast_coherence[i]   = 0;
+    cache->broadcast_snooping[i]    = 0;
   }
   cache->depth          = depth;
   cache->type           = type;
