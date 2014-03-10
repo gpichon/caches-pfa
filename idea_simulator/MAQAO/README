@@ -6,3 +6,8 @@ avec:
 - test.c le nom du fichier
 - par la fonction à instrumenter
 - 4 le nombre de threads
+
+
+Filter sur numero instruction:
+decommenter suppressions de fichiers dans tests.sh
+./tests.sh test.c par 4 | awk ' ~ /15/' | awk '{print }'
