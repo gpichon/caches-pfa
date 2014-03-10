@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <Architecture name="x86_64" CPU_name="Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)" number_levels="3">
-  <Level depth="3" coherence_protocol="MESI" type="inclusive" snooping="true" directory_manager="false"/>
-  <Level depth="2" coherence_protocol="MESI" type="nieo" snooping="true" directory_manager="false"/>
-  <Level depth="1" coherence_protocol="MESI" type="inclusive" snooping="true" directory_manager="false"/>
+  <Level depth="3" coherence_protocol="MESI" type="inclusive" snooping="true" directory_manager="true"/>
+  <Level depth="2" coherence_protocol="MESI" type="inclusive" snooping="false" directory_manager="true"/>
+  <Level depth="1" coherence_protocol="MESI" type="inclusive" snooping="false" directory_manager="false"/>
   <Cache depth="3" cache_size="3145728" cache_linesize="64" cache_associativity="12" replacement_protocol="LRU">
     <Cache depth="2" cache_size="262144" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU">
       <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>

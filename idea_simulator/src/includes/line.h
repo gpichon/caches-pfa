@@ -34,17 +34,17 @@ enum status{
  * \brief Abstract Data Type for a line.
  */ 
 struct line {
-  int first_case;         /**< First element of the cache line.*/
-  int use;                /**< number of utilizations since the line is in the block */
-  enum status status;     /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
-  int priority;           /**< Priority to delete data. A data line with high priority don't seem to bedeleted */
+  unsigned long first_case; /**< First element of the cache line.*/
+  int use;                  /**< number of utilizations since the line is in the block */
+  enum status status;       /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
+  int priority;             /**< Priority to delete data. A data line with high priority don't seem to bedeleted */
 };
 
 /**
  * \brief Initialization of \a nb_ways new lines. 
  * \return Return a tabular of \a nb_ways structure line pointers.
  */
-struct line** init_line(int nb_ways);
+struct line** init_lines(int nb_ways);
 
 /**
  * \brief Data removal.

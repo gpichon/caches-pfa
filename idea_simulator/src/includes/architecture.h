@@ -24,8 +24,8 @@ struct architecture {
   unsigned int nb_bits; /**< architecture 32 or 64 bits */
   char name[30]; /**< for example "x86_64" */
   char CPU_name[100]; /**< for example "Intel(R) Core(TM) i3-3120M CPU @ 2.50GHz" */
-  unsigned int number_threads; /**< Range */
-  unsigned int number_levels; /**< Range */
+  unsigned int number_threads;
+  unsigned int number_levels;
   struct node ** threads; /**< Leaves of the cache hierarchy tree (corresponding to L1 cache)*/
 };
 
@@ -56,6 +56,12 @@ int convert_archi_xml(const char * file_in, const char * file_out);
  * \param archi The architecture structure
  */
 void print_caches(struct architecture *archi);
+
+/**
+ * \brief Displays warnings if the architecture seems wrong and can generate errors
+ * \param archi The architecture structure
+ */
+void check_archi(struct architecture * archi);
 
 /**
  * Frees the structues used in the architecture structure.

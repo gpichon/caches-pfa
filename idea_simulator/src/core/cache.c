@@ -9,7 +9,31 @@
  *
  */
 
+#include "option.h"
 #include "cache.h"
+
+void up_stat(struct cache *cache, unsigned long entry, int stats_type) {
+	int i;
+	
+	for (i = 0; i < tracking_count; i++) {
+		if (tracking_lower_bound[i] <= entry && entry <= tracking_upper_bound[i]) {
+			switch (stats_type) {
+				case MISS:
+					cache->misses[i]++;
+					break;
+				case HIT:
+					cache->hits[i]++;
+					break;
+				case WRITE_BACK:
+					cache->writes_back[i]++;
+					break;
+				case BROADCAST:
+					cache->broadcasts[i]++;
+					break;
+			}
+		}
+	}
+}
 
 /* Data allocations */
 struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replace)(struct cache *), void (*coherence)(struct cache *), int type, bool snooping, bool directory) {
@@ -20,11 +44,14 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int
   cache->nb_blocks      = nb_blocks;
   struct block **blocks = init_block(nb_blocks, nb_ways, linesize);
   cache->blocks         = blocks;
-  cache->misses         = 0;
-  cache->hits           = 0;
-  cache->writes_back    = 0;
-  cache->broadcasts     = 0;
-  cache->invalid_back   = 0;
+  int i;
+  for (i = 0; i < tracking_count; i++) {
+  cache->misses[i]      = 0;
+  cache->hits[i]        = 0;
+  cache->writes_back[i] = 0;
+  cache->broadcasts[i]  = 0;
+  cache->invalid_back[i]= 0;
+  }
   cache->depth          = depth;
   cache->type           = type;
   cache->snooping       = snooping;
@@ -40,14 +67,13 @@ void delete_cache(struct cache *cache) {
   free(cache);
 }
 
-int block_id(struct cache *cache, long entry) {
+int block_id(struct cache *cache, unsigned long entry) {
   entry = entry / cache->linesize; //Line in principal memory
-
   int id_block = entry % cache->nb_blocks;
   return id_block;
 }
 
-int is_in_cache(struct cache *cache, long entry) {
+int is_in_cache(struct cache *cache, unsigned long entry) {
   int id_block = block_id(cache, entry);
   struct block *block = cache->blocks[id_block];
   int nb_ways = cache->nb_ways;
@@ -63,7 +89,7 @@ int is_in_cache(struct cache *cache, long entry) {
   return 0;
 }
 
-struct line *line_in_cache(struct cache *cache, long entry) {
+struct line *line_in_cache(struct cache *cache, unsigned long entry) {
   int id_block = block_id(cache, entry);
   struct block *block = cache->blocks[id_block];
   int nb_ways = cache->nb_ways;
@@ -75,11 +101,12 @@ struct line *line_in_cache(struct cache *cache, long entry) {
     if (is_valid(line) && (line->first_case == entry / cache->linesize * cache->linesize)) {
       return line;
     }
-  }    
-  assert(0);
+  }
+  fprintf(stderr, "Erreur, ligne non presente avec cache inclusif\n");
+  exit(1);
 }
 
-void update_lines(struct cache *cache, long entry) {
+void update_lines(struct cache *cache, unsigned long entry) {
   int id_block = block_id(cache, entry);
   struct block *block = cache->blocks[id_block];
   int nb_ways = cache->nb_ways;

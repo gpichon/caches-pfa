@@ -23,31 +23,15 @@
    Each block contains nb_ways lines and a line size is linesize */
 
 /**
- * \def UP_HITS(cache)
- * \param cache Container of the data.
- * \brief Count one hit in cache stats.
+ * \enum stat_type
+ * \brief Stat type: 
  */
-#define UP_HITS(cache) cache->hits++
-/**
- * \def UP_MISSES(cache)
- * \param cache Container of the data.
- * \brief Count one miss in cache stats.
- */
-#define UP_MISSES(cache) cache->misses++
-/**
- * \def UP_WRITE_BACKS(cache)
- * \param cache Container of the data.
- * \brief Count one write back in cache stats.
- */
-#define UP_WRITE_BACKS(cache) cache->writes_back++
-/**
- * \def UP_BROADCASTS(cache)
- * \param cache Container of the data.
- * \brief Count one broadcast in cache stats.
- */
-#define UP_BROADCASTS(cache) cache->broadcasts++
-
-
+enum stat_type {
+  MISS,
+  HIT,
+  WRITE_BACK,
+  BROADCAST
+};
 
 /**
  * \enum cache_type
@@ -72,11 +56,11 @@ struct cache {
   int nb_blocks;         /**< Number of blocks. Range ?*/
   struct block **blocks; /**< Tabular of blocks pointer.*/
 
-  int misses;       /**< Count of misses for this cache. */
-  int hits;         /**< Count of hits for this cache. */
-  int writes_back;  /**< Count of write backs for this cache. */
-  int broadcasts;   /**< Count of broadcasts for this cache. */
-  int invalid_back; /**< Count of invalid back for this cache. */
+  int misses[2];       /**< Count of misses for this cache for the specific adresses. */
+  int hits[2];         /**< Count of hits for this cache for the specific adresses. */
+  int writes_back[2];  /**< Count of write backs for this cache for the specific adresses. */
+  int broadcasts[2];   /**< Count of broadcasts for this cache for the specific adresses. */
+  int invalid_back[2]; /**< Count of invalid back for this cache for the specific adresses. */
 
   enum cache_type type;  /**< Type of cache: inclusive, exclusive, NIIO, NIEO */
   bool snooping;         /**< Can this cache use snooping to find data? */
@@ -84,11 +68,16 @@ struct cache {
   struct directory *dir; /**< The directory */
 
   int (*replacement)(struct block *, int); /**< Function pointer to replace a line for a special priority in a block. */
-  void (*update_line)(struct block *, int, long); /**< Function pointer to update line stat in a block.  */
+  void (*update_line)(struct block *, int, unsigned long); /**< Function pointer to update line stat in a block.  */
 
   int (*treat_special_flags)(struct line *, void(*)(struct line *)); /**< Function pointer to manage special flags: E, O. */
   void (*set_flags_new_line)(int, struct line *); /**< Function pointer to create a new line with right flag : S or E with MESI. */
 };
+
+/**
+ * \brief update cache stats
+ */
+void up_stat(struct cache *cache, unsigned long entry, int stats_type);
 
 /**
  * \brief Cache initialization. 
@@ -104,13 +93,13 @@ void delete_cache(struct cache *cache);
  * \brief Return in which block the entry has to be store.
  * \param entry Range ? 
 */
-int block_id(struct cache *cache, long entry);
+int block_id(struct cache *cache, unsigned long entry);
 
 /**
  * \brief Return whether or not the cache contains the entry. 
  * \return It is 1 when true and 0 otherwise.
  */
-int is_in_cache(struct cache *cache, long entry);
+int is_in_cache(struct cache *cache, unsigned long entry);
 
 
 /**
@@ -121,12 +110,12 @@ void print_infos(struct cache *cache);
 /**
  * \brief  Returns a pointer to the line which contains the entry in the cache. 
  */
-struct line *line_in_cache(struct cache *cache, long entry);
+struct line *line_in_cache(struct cache *cache, unsigned long entry);
 
 /**
  * \brief Call the update_line function on the right line determined with the entry.
  */
-void update_lines(struct cache *cache, long entry);
+void update_lines(struct cache *cache, unsigned long entry);
 
 /* Replacement protocols */
 /**
