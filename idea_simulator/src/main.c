@@ -27,8 +27,15 @@ int main(int argc, char *argv[]) {
   
   get_options(argc, argv);
   
-  if (help) printf("I HELP YOU\n");
-  else printf("NO HELP FOR YOU\n");
+  if (help){
+    printf("To work with the architecture file named arch: -f file\n");
+    printf("To trace a special data set: -b 0x000000000000:0x6fffffffffff for all values excepting stack values\n");
+    printf("To print more statistics: -v 1: basic stats\n");
+    printf("                          -v 2: evinctions\n");
+    printf("                          -v 3: more detailled misses\n");
+    printf("                          -v 4: all stats\n");
+    return EXIT_SUCCESS;
+  }
   
   char filename[256];
   if(trace_file){
@@ -85,7 +92,7 @@ int main(int argc, char *argv[]) {
   }
 
   /* End of reading */
-  printf("Total values: %d\n", count);
+  /* printf("Total values: %d\n", count); */
   destroy_threads(threads, 4);
 
   /* Informations about caches */

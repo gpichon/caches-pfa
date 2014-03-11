@@ -13,7 +13,7 @@
 #include "cache.h"
 
 void up_stat(struct cache *cache, unsigned long entry, int stats_type) {
-  int i;
+  unsigned int i;
 	
   for (i = 0; i < tracking_count; i++) {
     if (tracking_lower_bound[i] <= entry && entry <= tracking_upper_bound[i]) {
@@ -65,7 +65,7 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int
   cache->nb_blocks      = nb_blocks;
   struct block **blocks = init_block(nb_blocks, nb_ways, linesize);
   cache->blocks         = blocks;
-  int i;
+  unsigned int i;
   for (i = 0; i < tracking_count; i++) {
     cache->misses[i]                = 0;
     cache->hits[i]                  = 0;
