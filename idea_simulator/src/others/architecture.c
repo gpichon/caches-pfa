@@ -350,31 +350,28 @@ int convert_archi_xml(const char * file_in, const char * file_out){
   return EXIT_SUCCESS;
 }
 
-void print_caches_rec(struct node * n, int nb_levels){
-  unsigned int i, j, k;
-
-  for (j=0; j<tracking_count; j++){
+void print_caches_rec(struct node * n, int nb_levels, unsigned int j){
+  unsigned int i, k;
+  for(k=n->data->depth; k<(unsigned int)nb_levels; k++)
+    printf("\t\t");
+  printf("L%d  basiques   (misses:    %10d, hits:     %10d, writes_back: %10d)\n", n->data->depth, n->data->misses[j], n->data->hits[j], n->data->writes_back[j]);
+  if (verbose_mode > 1){
     for(k=n->data->depth; k<(unsigned int)nb_levels; k++)
       printf("\t\t");
-    printf("L%d  basiques   (misses:    %10d, hits:     %10d, writes_back: %10d)\n", n->data->depth, n->data->misses[j], n->data->hits[j], n->data->writes_back[j]);
-    if (verbose_mode > 1){
+    printf("    evinctions (coherence: %10d, capacity: %10d, cache_types: %10d)\n", n->data->evincted_coherence[j], n->data->evincted_capacity[j], n->data->evincted_caches_types[j]);
+    if (verbose_mode > 2){
       for(k=n->data->depth; k<(unsigned int)nb_levels; k++)
 	printf("\t\t");
-      printf("    evinctions (coherence: %10d, capacity: %10d, cache_types: %10d)\n", n->data->evincted_coherence[j], n->data->evincted_capacity[j], n->data->evincted_caches_types[j]);
-      if (verbose_mode > 2){
+      printf("    misses     (snooping:  %10d, above:    %10d, below:       %10d)\n", n->data->misses_snooping[j], n->data->misses_above[j], n->data->misses_below[j]);
+      if (verbose_mode > 3){
 	for(k=n->data->depth; k<(unsigned int)nb_levels; k++)
 	  printf("\t\t");
-	printf("    misses     (snooping:  %10d, above:    %10d, below:       %10d)\n", n->data->misses_snooping[j], n->data->misses_above[j], n->data->misses_below[j]);
-	if (verbose_mode > 3){
-	  for(k=n->data->depth; k<(unsigned int)nb_levels; k++)
-	    printf("\t\t");
-	  printf("    broadcasts (coherence: %10d, snooping: %10d)\n\n", n->data->broadcast_coherence[j], n->data->broadcast_snooping[j]);
-	}
+	printf("    broadcasts (coherence: %10d, snooping: %10d)\n\n", n->data->broadcast_coherence[j], n->data->broadcast_snooping[j]);
       }
     }
   }
   for(i=0;i<n->nb_children;i++){
-    print_caches_rec(get_child(n,i), nb_levels);
+    print_caches_rec(get_child(n,i), nb_levels, j);
   }
 }
 
@@ -382,7 +379,12 @@ void print_caches(struct architecture * archi){
   print_archi(archi);
   printf("\n\n");
   struct node * root = get_root(archi->threads[0]);
-  print_caches_rec(root, archi->number_levels);
+  unsigned int j;
+  for (j=0; j<tracking_count; j++){
+    printf("Results with %d tracked values\n", j+1);
+    print_caches_rec(root, archi->number_levels, j);
+    printf("\n\n");
+  }
 }
 
 int get_size_below_rec(struct node * n){
