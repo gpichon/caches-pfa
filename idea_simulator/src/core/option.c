@@ -23,12 +23,13 @@ int help = 0;
 unsigned int verbose_mode = 1;
 char *trace_file = NULL;
 int ignore_warning = 0;
+int nb_instr_thread = 42;
 
 void get_options(int argc, char *argv[]) {
   char c;
   char *s;
 
-  while ((c = getopt(argc, argv, "f:hb:v:w")) != -1){
+  while ((c = getopt(argc, argv, "f:hb:v:wi:")) != -1){
     switch (c){
     case 'f':	/* -f architecture_file */
       trace_file = optarg;
@@ -56,6 +57,13 @@ void get_options(int argc, char *argv[]) {
       break;
     case 'w':	/* -w */
       ignore_warning = 1;
+      break;
+    case 'i':	/* -i 42 */
+      nb_instr_thread = atoi(optarg);
+      if(nb_instr_thread < 1){
+	fprintf(stderr, "Number of instruction per thread (-i) invalid\n");
+	nb_instr_thread = 42;
+      }
       break;
     }
   }

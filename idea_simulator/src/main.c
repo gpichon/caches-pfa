@@ -34,6 +34,8 @@ int main(int argc, char *argv[]) {
     printf("                          -v 2: evinctions\n");
     printf("                          -v 3: more detailled misses\n");
     printf("                          -v 4: all stats\n");
+    printf("To ignore the architecture fatal warnings; -w\n");
+    printf("To process 10 instruction on a thread before moving to the next thread: -i 10\n");
     return EXIT_SUCCESS;
   }
   
@@ -76,7 +78,7 @@ int main(int argc, char *argv[]) {
   while (!end[0] || !end[1] || !end[2] || !end[3]){
     current = (current+1)%4; 	/* Next thread */
 
-    for (j=0; j<10; j++){ 	/* 10 instructions per thread */
+    for (j=0; j<nb_instr_thread; j++){
       next_instruction(ins, threads, current);
 
       if (ins->type != INSTRUCTION_END_OF_THREAD) {
