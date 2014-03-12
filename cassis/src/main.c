@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
   struct architecture *archi = &A;
   if(archi->warning && (!ignore_warning)){
     delete_archi(archi)
-;    return EXIT_FAILURE;
+      ;    return EXIT_FAILURE;
   }
 
   if (archi->number_threads < nb_threads){
@@ -89,6 +89,7 @@ int main(int argc, char *argv[]) {
   int j;
   int current = nb_threads-1;
   int *ends = malloc(nb_threads*sizeof(int));
+  char scan;
   for (i=0; i<nb_threads; i++){
     ends[i]=0;
   }
@@ -101,10 +102,30 @@ int main(int argc, char *argv[]) {
 
       if (ins->type != INSTRUCTION_END_OF_THREAD) {
   	if (ins->type == INSTRUCTION_LOAD) {
+	  if (debug_mode){
+	    printf("Load on entry 0x%ld, on core %d\n", ins->addr, current);
+	    printf("Enter a character, s to stop debugging mode\n");
+	    scanf("%c", &scan);
+	    if (scan=='s'){
+	      debug_mode = 0;
+	    }
+	    fflush(stdin);
+	    print_caches(archi, 0);
+	  }
   	  load_line_hierarchy(archi->threads[current], ins->addr);
   	  count++;
   	}
   	else if (ins->type == INSTRUCTION_STORE) {
+	  if (debug_mode){
+	    printf("Load on entry 0x%ld, on core %d\n", ins->addr, current);
+	    printf("Enter a character, s to stop debugging mode\n");
+	    scanf("%c", &scan);
+	    if (scan=='s'){
+	      debug_mode = 0;
+	    }
+	    fflush(stdin);
+	    print_caches(archi, 0);
+	  }
   	  store_line_hierarchy(archi->threads[current], ins->addr);
   	  count++;
   	}
@@ -119,7 +140,7 @@ int main(int argc, char *argv[]) {
   destroy_threads(threads, nb_threads);
 
   /* Informations about caches */
-  print_caches(archi);
+  print_caches(archi, 1);
   delete_archi(archi);
 
   free(ins);

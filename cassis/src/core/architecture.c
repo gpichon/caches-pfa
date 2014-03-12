@@ -403,9 +403,11 @@ void print_caches_rec(struct node * n, int nb_levels, unsigned int j){
   }
 }
 
-void print_caches(struct architecture * archi){
-  print_archi(archi);
-  printf("\n\n");
+void print_caches(struct architecture * archi, int arch){
+  if (arch){
+    print_archi(archi);
+    printf("\n\n");
+  }
   struct node * root = get_root(archi->threads[0]);
   unsigned int j;
   for (j=0; j<tracking_count; j++){

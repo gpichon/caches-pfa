@@ -25,12 +25,13 @@ char *trace_file = NULL;
 int ignore_warning = 0;
 int nb_instr_thread = 42;
 unsigned int nb_threads = 1;
+unsigned int debug_mode = 0;
 
 void get_options(int argc, char *argv[]) {
   char c;
   char *s;
 
-  while ((c = getopt(argc, argv, "f:t:hb:v:wi:")) != -1){
+  while ((c = getopt(argc, argv, "f:t:hb:v:wi:d")) != -1){
     switch (c){
     case 'f':	/* -f architecture_file */
       trace_file = optarg;
@@ -72,6 +73,9 @@ void get_options(int argc, char *argv[]) {
 	fprintf(stderr, "Number of threads (-t) invalid\n");
 	nb_threads = 1;
       }
+      break;
+    case 'd':	/* -d */
+      debug_mode = 1;
       break;
     }
   }

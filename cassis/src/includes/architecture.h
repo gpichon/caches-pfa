@@ -55,8 +55,9 @@ int convert_archi_xml(const char * file_in, const char * file_out);
 /**
  * \brief Displays the results of the program : misses, hits, ... for each cache
  * \param archi The architecture structure
+ * \param arch Whether of not to print caches types
  */
-void print_caches(struct architecture *archi);
+void print_caches(struct architecture *archi, int arch);
 
 /**
  * \brief Displays warnings if the architecture seems wrong and can generate errors

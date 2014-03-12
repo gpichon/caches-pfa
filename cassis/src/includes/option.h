@@ -24,6 +24,7 @@ extern unsigned int verbose_mode;  		/**< Verbose when printing results. */
 extern int ignore_warning;                      /**< 0 if the fatal warnings stop the program */
 extern int nb_instr_thread;                     /**< Number of instructions before changing thread */
 extern unsigned int nb_threads;                 /**< Number of threads */
+extern unsigned int debug_mode;                 /**< Debug mode */
 
 /**
  * \brief Fill options variables with program's arguments
