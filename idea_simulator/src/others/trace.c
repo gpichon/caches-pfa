@@ -15,18 +15,23 @@ void create_threads(struct thread **threads, char **trace_files, int nb_threads)
   int i;
   for (i=0; i<nb_threads; i++){
     threads[i] = malloc(sizeof(struct thread));
+    assert(threads[i]!=NULL);
     threads[i]->fd = open(trace_files[i], O_RDONLY);
     if (threads[i]->fd == -1){
-      perror("Error when opening trace");
+      perror("Error when opening trace\n");
       exit(1);
     }
   }
 }
 
 void destroy_threads(struct thread **threads, int nb_threads){
-  int i;
+  int i, err;
   for (i=0; i<nb_threads; i++){
-    close(threads[i]->fd);
+    err = close(threads[i]->fd);
+    if (err == -1){
+      perror("Erreur when closing file\n");
+      exit(1);
+    }
     free(threads[i]);
   }
 }
