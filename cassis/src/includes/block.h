@@ -26,8 +26,8 @@
  * \brief Abstract Data Type of a block.
  */
 struct block {
-  int nb_ways; /**< Number of lines in the block. */
-  int linesize; /**< Line size. */
+  int nb_ways;         /**< Number of lines in the block. */
+  int linesize;        /**< Line size. */
   struct line **lines; /**< Tabular of line structure pointer. */
 };
 

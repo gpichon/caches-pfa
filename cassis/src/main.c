@@ -14,14 +14,13 @@
 #include "add_line_hierarchy.h"
 #include "architecture.h"
 #include "trace.h"
+#include "option.h"
 
 /**
  * \def DEFAULT_ARCHITECTURE
  * \brief Path to the automatically generated XML configuration file, if none specified.
  */
 #define DEFAULT_ARCHITECTURE "architecture/architest_archi.xml"
-
-#include "option.h"
 
 int is_end(int *ends, int nb_threads){
   int i;
@@ -102,20 +101,8 @@ int main(int argc, char *argv[]) {
 
       if (ins->type != INSTRUCTION_END_OF_THREAD) {
   	if (ins->type == INSTRUCTION_LOAD) {
-	  if (debug_mode){
-	    printf("Load on entry 0x%ld, on core %d\n", ins->addr, current);
-	    printf("Enter a character, s to stop debugging mode\n");
-	    scanf("%c", &scan);
-	    if (scan=='s'){
-	      debug_mode = 0;
-	    }
-	    fflush(stdin);
-	    print_caches(archi, 0);
-	  }
   	  load_line_hierarchy(archi->threads[current], ins->addr);
   	  count++;
-  	}
-  	else if (ins->type == INSTRUCTION_STORE) {
 	  if (debug_mode){
 	    printf("Load on entry 0x%ld, on core %d\n", ins->addr, current);
 	    printf("Enter a character, s to stop debugging mode\n");
@@ -126,8 +113,20 @@ int main(int argc, char *argv[]) {
 	    fflush(stdin);
 	    print_caches(archi, 0);
 	  }
+  	}
+  	else if (ins->type == INSTRUCTION_STORE) {
   	  store_line_hierarchy(archi->threads[current], ins->addr);
   	  count++;
+	  if (debug_mode){
+	    printf("Store on entry 0x%ld, on core %d\n", ins->addr, current);
+	    printf("Enter a character, s to stop debugging mode\n");
+	    scanf("%c", &scan);
+	    if (scan=='s'){
+	      debug_mode = 0;
+	    }
+	    fflush(stdin);
+	    print_caches(archi, 0);
+	  }
   	}
       }
       else{

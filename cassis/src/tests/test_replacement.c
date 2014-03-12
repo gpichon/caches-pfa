@@ -16,7 +16,7 @@ int test_replacement(int argc, char** argv) {
 
   /* There are four ways in each block. As adress 163 is more used, it is not deleted from the cache */
   for (i=1; i<3; i++) {
-  load_line_hierarchy(threads[0], 163+2048);
+    load_line_hierarchy(threads[0], 163+2048);
   }
 
   for (i=1; i<5; i++) {
@@ -61,7 +61,7 @@ int test_replacement(int argc, char** argv) {
   node->data = L1;
 
   for (i=1; i<3; i++) {
-  load_line_hierarchy(threads[0], 163);
+    load_line_hierarchy(threads[0], 163);
   }
 
   for (i=1; i<6; i++) {

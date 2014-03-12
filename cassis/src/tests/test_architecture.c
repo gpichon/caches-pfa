@@ -2,9 +2,9 @@
 
 #define FILENAME "architecture/architest.xml"
 
-int test_architecture(int argc, char** argv){
+int test_architecture(int argc, char **argv){
 
-  struct node * n1, * n2;
+  struct node *n1, *n2;
   int i;
   struct architecture A;
   if(argc == 2){

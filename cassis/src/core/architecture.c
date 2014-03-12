@@ -82,7 +82,7 @@ struct level{
  * \brief Compare the replacement policy's name in order to choose the associated replacement function.
  * \param name Name to compare with implemented policies.
  */
-void (*get_replacement_function(char * name)) (struct cache *){
+void (*get_replacement_function(char *name)) (struct cache *){
   if(strcmp(name, "FIFO") == 0)
     return replacement_FIFO;
   if(strcmp(name, "LFU") == 0)
@@ -98,7 +98,7 @@ void (*get_replacement_function(char * name)) (struct cache *){
  * \brief Compare the coherence policy's name in order to choose the associated replacement function.
  * \param name Name to compare with implemented policies.
  */
-void (*get_coherence_function(char * name)) (struct cache *){
+void (*get_coherence_function(char *name)) (struct cache *){
   if(strcmp(name, "MSI") == 0)
     return coherence_MSI;
   if(strcmp(name, "MESI") == 0)
@@ -113,7 +113,7 @@ void (*get_coherence_function(char * name)) (struct cache *){
  * \param txt The xml text in the attribute type
  * \return The corresponding number
  */
-int get_cache_type(char * txt){
+int get_cache_type(char *txt){
   if(strcmp(txt, "exclusive") == 0)
     return Exclusive;
   if(strcmp(txt, "inclusive") == 0)
@@ -132,7 +132,7 @@ int get_cache_type(char * txt){
  * \param txt The text
  * \return The corresponding bool
  */
-bool get_bool(char * txt){
+bool get_bool(char *txt){
   if(strcmp(txt, "true") == 0)
     return true;
   if(strcmp(txt, "false") == 0)
@@ -147,7 +147,7 @@ bool get_bool(char * txt){
  * \param name Previous name.
  * \param out New name.
  */
-void change_filename(const char * name, char * out){
+void change_filename(const char *name, char *out){
   int l = strlen(name);
   char extention[30];
   strcpy(extention, &name[l-4]);
@@ -158,7 +158,7 @@ void change_filename(const char * name, char * out){
   strcat(out, ".cassis.xml");
 }
 
-int parse_archi_file(const char * filename, struct architecture * archi){
+int parse_archi_file(const char *filename, struct architecture *archi){
   int i,j;
   char file_in[50];
   char buf[100];
@@ -197,13 +197,13 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   }
   xmlXPathObjectPtr res;
   xmlNodePtr cur;
-  xmlChar * tmp;
+  xmlChar *tmp;
   int depth, size, linesize, nb_ways, nb_blocks;
   int stack_head = -1;
   char replacement_prot[10];
-  struct cache * c;
-  struct node * n;
-  struct node ** cstack;
+  struct cache *c;
+  struct node *n;
+  struct node **cstack;
 
   //Begin parsing
   //Global values
@@ -216,7 +216,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   xmlXPathFreeObject(res);
 
   //Level parsing
-  struct level * L = (struct level *) malloc(archi->number_levels * sizeof(struct level));
+  struct level *L = (struct level *) malloc(archi->number_levels * sizeof(struct level));
   CHECK_ALLOC(L);
   res = xmlXPathEvalExpression(BAD_CAST "//Level", context);
   CHECK_XPATH(res);
@@ -239,8 +239,8 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   xmlXPathFreeObject(res);
 
   //Cache parsing
-  struct node ** first_sibling = (struct node **) calloc(archi->number_levels, sizeof(struct node *));
-  struct node ** last_sibling = (struct node **) calloc(archi->number_levels, sizeof(struct node *));
+  struct node **first_sibling = (struct node **) calloc(archi->number_levels, sizeof(struct node *));
+  struct node **last_sibling = (struct node **) calloc(archi->number_levels, sizeof(struct node *));
   res = xmlXPathEvalExpression(BAD_CAST "//Cache", context);
   CHECK_XPATH(res);
   for(i=0; i<res->nodesetval->nodeNr; i++){
@@ -309,7 +309,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   return EXIT_SUCCESS;
 }
 
-void print_archi_rec(struct node * n, int nb_levels){
+void print_archi_rec(struct node *n, int nb_levels){
   unsigned int i;
   for(i=n->data->depth; i<(unsigned int)nb_levels; i++)
     printf("\t");
@@ -340,15 +340,15 @@ void print_archi_rec(struct node * n, int nb_levels){
   }
 }
 
-void print_archi(struct architecture * archi){
+void print_archi(struct architecture *archi){
   printf("Architecture %d bits : %s\n", archi->nb_bits, archi->name);
   printf("CPU model : %s\n", archi->CPU_name);
-  struct node * root = get_root(archi->threads[0]);
+  struct node *root = get_root(archi->threads[0]);
   print_archi_rec(root, archi->number_levels);
 }
 
-int convert_archi_xml(const char * file_in, const char * file_out){
-  FILE * out = fopen(file_out,"w");
+int convert_archi_xml(const char *file_in, const char *file_out){
+  FILE *out = fopen(file_out,"w");
   if(out == NULL){
     fprintf(stderr, "Cannot open %s\n", file_out);
     return EXIT_FAILURE;
@@ -360,7 +360,7 @@ int convert_archi_xml(const char * file_in, const char * file_out){
   xmlDocPtr doc = xmlParseFile(file_in);
   xsltStylesheetPtr xsl = xsltParseStylesheetFile(BAD_CAST XSL_DOC);
   int nb_params = 0;
-  const char * params[nb_params + 1];
+  const char *params[nb_params + 1];
   params[nb_params] = NULL;
   xmlDocPtr fin_doc = xsltApplyStylesheet(xsl, doc, params);
   xsltSaveResultToFile(out, fin_doc, xsl);
@@ -378,7 +378,7 @@ int convert_archi_xml(const char * file_in, const char * file_out){
   return EXIT_SUCCESS;
 }
 
-void print_caches_rec(struct node * n, int nb_levels, unsigned int j){
+void print_caches_rec(struct node *n, int nb_levels, unsigned int j){
   unsigned int i, k;
   for(k=n->data->depth; k<(unsigned int)nb_levels; k++)
     printf("\t\t");
@@ -403,12 +403,12 @@ void print_caches_rec(struct node * n, int nb_levels, unsigned int j){
   }
 }
 
-void print_caches(struct architecture * archi, int arch){
+void print_caches(struct architecture *archi, int arch){
   if (arch){
     print_archi(archi);
     printf("\n\n");
   }
-  struct node * root = get_root(archi->threads[0]);
+  struct node *root = get_root(archi->threads[0]);
   unsigned int j;
   for (j=0; j<tracking_count; j++){
     printf("Results with %d tracked values\n", j+1);
@@ -417,7 +417,7 @@ void print_caches(struct architecture * archi, int arch){
   }
 }
 
-int get_size_below_rec(struct node * n){
+int get_size_below_rec(struct node *n){
   int sum = n->data->size;
   unsigned int i;
   for(i=0;i<n->nb_children;i++){
@@ -430,7 +430,7 @@ int get_size_below_rec(struct node * n){
  * \brief Get the sum of the sizes of the caches below a cache
  * \param n The cache to check
  */
-int get_size_below(struct node * n){
+int get_size_below(struct node *n){
   unsigned int i;
   int sum = 0;
   for(i=0;i<n->nb_children;i++){
@@ -443,7 +443,7 @@ int get_size_below(struct node * n){
  * \brief Checks the architecture coherence cache by cache
  * \param n The node to check (call with the root for all caches)
  */
-bool check_cache_rec(struct node * n){
+bool check_cache_rec(struct node *n){
   unsigned int i;
   for(i=0;i<n->nb_children;i++){
     check_cache_rec(get_child(n, i));
@@ -467,9 +467,9 @@ bool check_cache_rec(struct node * n){
   return true;
 }
 
-void check_archi(struct architecture * archi){
-  struct node * root = get_root(archi->threads[0]);
-  struct node * n = archi->threads[0];
+void check_archi(struct architecture *archi){
+  struct node *root = get_root(archi->threads[0]);
+  struct node *n = archi->threads[0];
   //If last level is not inclusive and has no directory manager
   if(root->data->type != Inclusive){
     //Is there a directory manager
@@ -491,7 +491,7 @@ void check_archi(struct architecture * archi){
   check_cache_rec(root);
 }
 
-void delete_archi_rec(struct node * n){
+void delete_archi_rec(struct node *n){
   unsigned int i;
   for(i = 0; i<n->nb_children; i++){
     if(get_child(n,i)){
@@ -502,8 +502,8 @@ void delete_archi_rec(struct node * n){
   free_node(n);
 }
 
-void delete_archi(struct architecture * archi){
-  struct node * root = get_root(archi->threads[0]);
+void delete_archi(struct architecture *archi){
+  struct node *root = get_root(archi->threads[0]);
   delete_directories(root);
   delete_archi_rec(root);
   free(archi->threads);

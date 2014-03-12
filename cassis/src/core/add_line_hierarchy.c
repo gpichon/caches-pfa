@@ -33,8 +33,7 @@ int share_level(struct node *node, unsigned long entry, void (*action)(struct li
 	  up_stat(current_cache, entry, COHERENCE_EVINCTION);
 	}
 	up_stat(current_cache, entry, WRITE_BACK);
-	/* return 1; */
-	res = 1;
+	return 1;
       }
 
       if (current_cache->treat_special_flags(line, action)) {
@@ -186,7 +185,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 
     /* Debug, should be threated by architecture */
     else if (is_cache_inclusive(current_cache)){
-       fprintf(stderr, "Erreur de logique, snooping en dessous niveau inclusif...\n");
+      fprintf(stderr, "Erreur de logique, snooping en dessous niveau inclusif...\n");
       exit(1);
     }
 
@@ -251,7 +250,7 @@ void add_line_cache(struct node *node, unsigned long entry, int w) {
       if (is_cache_inclusive(cache))
 	invalid_back(node, del_line->first_case);
       
-      /* Give the del_line to the parent!!! */
+      /* Give the del_line to the parent */
       if (get_parent(node) != NULL){
 	int r;
 	struct cache *parent = get_cache(get_parent(node));

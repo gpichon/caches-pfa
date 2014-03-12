@@ -32,8 +32,8 @@ enum instruction_type {INSTRUCTION_END_OF_THREAD, INSTRUCTION_LOAD, INSTRUCTION_
  * \brief Abstract Data Type of an instruction.
  */
 struct instruction {
-int type;          /**< Instruction type, an int in the range of the instruction_type enumeration. */
-unsigned long addr; /**< Address to be used. */
+  int type;           /**< Instruction type, an int in the range of the instruction_type enumeration. */
+  unsigned long addr; /**< Address to be used. */
 };
 
 /**
@@ -41,12 +41,12 @@ unsigned long addr; /**< Address to be used. */
  * \brief Abstract Data Type of a thread.
  */
 struct thread {
-int fd;
+  int fd;
 };
 
 
 /**
- * \brief Initialization of \a nb_threads threads whit fd linked to trace_files. 
+ * \brief Initialization of \a nb_threads threads whit threads[i]->fd linked to trace_files. 
  */
 void create_threads(struct thread **threads, char **trace_files, int nb_threads);
 

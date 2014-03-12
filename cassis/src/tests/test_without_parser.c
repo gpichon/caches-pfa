@@ -6,10 +6,10 @@ int test_without_parser(int argc, char** argv) {
 
   /* Hierarchy */
   /*    L3
-     |      |
-     L2     L2
-   |   |  |   |
-   L1  L1 L1  L1 */
+	|      |
+	L2     L2
+	|   |  |   |
+	L1  L1 L1  L1 */
   
   struct node **threads = malloc(4 * sizeof(struct node *));
 

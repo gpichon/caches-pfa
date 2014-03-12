@@ -80,15 +80,15 @@ int delete_from_directory(struct directory *dir, struct block *block){
   int nb_ways = block->nb_ways;
   int min_priority = INT_MAX;
   int i, j;
-  /* At the beginning, all priorities are at 0 */
+  /* At the beginning, all priorities are set to 0 */
   for (j=0; j<nb_ways; j++){
     block->lines[j]->priority = 0;
   }
 
   for (i=0; i<dir->nb_sons; i++){
     for (j=0; j<nb_ways; j++){
-	if (is_in_cache(dir->sons_caches[i], block->lines[j]->first_case))
-	  block->lines[j]->priority++;
+      if (is_in_cache(dir->sons_caches[i], block->lines[j]->first_case))
+	block->lines[j]->priority++;
     }
   }
 

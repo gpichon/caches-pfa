@@ -17,8 +17,8 @@
 
 static unsigned int current_id = 1;
 
-struct node * init_node(){
-  struct node * n = malloc(sizeof(struct node));
+struct node *init_node(){
+  struct node *n = malloc(sizeof(struct node));
   if(n == NULL){
     fprintf(stderr, "Node allocation error\n");
     _exit(1);
@@ -32,28 +32,28 @@ struct node * init_node(){
   return n;
 }
 
-struct node * get_parent(struct node * n){
+struct node *get_parent(struct node *n){
   return n->parent;
 }
 
-struct node * get_sibling(struct node * n){
+struct node *get_sibling(struct node *n){
   return n->next_sibling;
 }
 
-struct node * get_child(struct node * n, unsigned int i){
+struct node *get_child(struct node *n, unsigned int i){
   CHECK_NULL(n);
   if(n->child == NULL || i >= n->nb_children)
     return NULL;
   return n->child[i];
 }
 
-struct cache * get_cache(struct node * n){
+struct cache *get_cache(struct node *n){
   return n->data;
 }
 
-struct node * get_root(struct node * n){
+struct node *get_root(struct node *n){
   CHECK_NULL(n);
-  struct node * root = n;
+  struct node *root = n;
   while(get_parent(root)){
     root = get_parent(root);
   }
@@ -61,21 +61,21 @@ struct node * get_root(struct node * n){
 }
 
 
-struct node * set_parent(struct node * child, struct node * parent){
+struct node *set_parent(struct node *child, struct node *parent){
   child->parent = parent;
   return child->parent;
 }
 
-struct node * set_next_sibling(struct node * n, struct node * sibling){
+struct node *set_next_sibling(struct node *n, struct node *sibling){
   n->next_sibling=n;
   if(sibling != NULL)
     n->next_sibling=sibling;
   return n->next_sibling;
 }
 
-int add_child(struct node * parent, struct node * child){
+int add_child(struct node *parent, struct node *child){
   CHECK_NULL(parent);
-  parent->child = realloc(parent->child, (parent->nb_children + 1) * sizeof(struct node *));
+  parent->child = realloc(parent->child, (parent->nb_children + 1) *sizeof(struct node *));
   if(parent->child == NULL){
     fprintf(stderr, "Allocation error\n");
     _exit(1);
@@ -84,12 +84,12 @@ int add_child(struct node * parent, struct node * child){
   return 1;
 }
 
-struct cache * set_data(struct node * n, struct cache * c){
+struct cache *set_data(struct node *n, struct cache *c){
   n->data = c;
   return n->data;
 }
 
-void free_node(struct node * n){
+void free_node(struct node *n){
   CHECK_NULL(n);
   free(n->child);
   free(n);
