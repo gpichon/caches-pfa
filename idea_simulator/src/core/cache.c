@@ -59,6 +59,7 @@ void up_stat(struct cache *cache, unsigned long entry, int stats_type) {
 /* Data allocations */
 struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replace)(struct cache *), void (*coherence)(struct cache *), int type, bool snooping, bool directory) {
   struct cache *cache   = malloc(sizeof(struct cache));
+  assert(cache!=NULL);
   cache->size           = size;
   cache->linesize       = linesize;
   cache->nb_ways        = nb_ways;

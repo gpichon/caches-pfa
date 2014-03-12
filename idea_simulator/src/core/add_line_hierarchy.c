@@ -219,6 +219,7 @@ void add_line_cache(struct node *node, unsigned long entry, int w) {
   struct line *del_line;
 
   line = malloc(sizeof(struct line));
+  assert(line!=NULL);
   line->first_case = entry / cache->linesize * cache->linesize;
   line->use = 0;
   line->priority = 0;

@@ -14,9 +14,11 @@
 /* Data allocations */
 struct line** init_lines(int nb_ways) {
   struct line **lines = malloc(nb_ways * sizeof(struct line *));
+  assert(lines!=NULL);
   int i;
   for (i=0; i<nb_ways; i++) {
     struct line *line = malloc(sizeof(struct line));
+    assert(line!=NULL);
     line->first_case = 0;
     line->use = 0;
     line->status = 0;
