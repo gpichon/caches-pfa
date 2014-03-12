@@ -21,6 +21,7 @@ extern unsigned long tracking_upper_bound[2];	/**< Upper bound of address tracki
 extern int help;					/**< help=1 when -h flag is set */
 extern char *trace_file;			/**< The artecture configuration file to use. If not set, a default file is used. */
 extern unsigned int verbose_mode;  		/**< Verbose when printing results. */
+extern int ignore_warning;                      /**< 0 if the fatal warnings stop the program */
 
 /**
  * \brief Fill options variables with program's arguments

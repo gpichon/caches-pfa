@@ -22,12 +22,13 @@ unsigned long tracking_upper_bound[2] = {0xFFFFFFFFFFFFFFFF, 0};
 int help = 0;
 unsigned int verbose_mode = 1;
 char *trace_file = NULL;
+int ignore_warning = 0;
 
 void get_options(int argc, char *argv[]) {
   char c;
   char *s;
-	
-  while ((c = getopt(argc, argv, "f:hb:v:")) != -1){
+
+  while ((c = getopt(argc, argv, "f:hb:v:w")) != -1){
     switch (c){
     case 'f':	/* -f architecture_file */
       trace_file = optarg;
@@ -52,6 +53,9 @@ void get_options(int argc, char *argv[]) {
 	printf("Invalid verbose mode\n");
 	exit(1);
       }
+      break;
+    case 'w':	/* -w */
+      ignore_warning = 1;
       break;
     }
   }

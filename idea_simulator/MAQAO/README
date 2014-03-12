@@ -1,10 +1,10 @@
-Pour lancer le script de création des traces par coeur, faire:
+Pour lancer le script de crÃ©ation des traces par coeur, faire:
 
 ./tests.sh test.c par 4
 
 avec:
 - test.c le nom du fichier
-- par la fonction à instrumenter
+- par la fonction Ã  instrumenter
 - 4 le nombre de threads
 
 

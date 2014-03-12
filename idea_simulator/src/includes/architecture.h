@@ -27,6 +27,7 @@ struct architecture {
   unsigned int number_threads;
   unsigned int number_levels;
   struct node ** threads; /**< Leaves of the cache hierarchy tree (corresponding to L1 cache)*/
+  bool warning; /**< True if there is an important warning that could create a bug*/
 };
 
 /**

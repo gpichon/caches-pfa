@@ -24,7 +24,7 @@
 #include "option.h"
 
 int main(int argc, char *argv[]) {
-  
+
   get_options(argc, argv);
   
   if (help){
@@ -48,7 +48,11 @@ int main(int argc, char *argv[]) {
   struct architecture A;
   parse_archi_file(filename, &A);
   struct architecture *archi = &A;
-  
+  if(archi->warning && (!ignore_warning)){
+    delete_archi(archi);
+    return EXIT_FAILURE;
+  }
+
   struct thread **threads;
   threads = malloc(4*sizeof(struct thread *));
   struct instruction *ins = malloc(sizeof(struct instruction));

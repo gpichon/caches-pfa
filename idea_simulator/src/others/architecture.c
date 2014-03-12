@@ -21,6 +21,7 @@
 
 // True when the user has entered a value and must be warned if the input is not correct
 bool display_warning = true;
+bool fatal = false;
 
 /**
  * \def CHECK_XPATH(result)
@@ -66,7 +67,9 @@ bool display_warning = true;
   xmlFree(tmp);								\
   buf[0] = 0
 
-#define WARNING_MESSAGE   fprintf(stderr, "\033[31mWARNING\033[0m: architecture not valid\n")
+#define FATAL_WARNING   fprintf(stderr, "\033[31mWARNING\033[0m: architecture not valid\n"); \
+  fatal = true;
+  
 
 struct level{
   int type;
@@ -185,6 +188,7 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   archi->number_threads = 0;
   archi->number_levels = 0;
   archi->threads = NULL;
+  archi->warning = false;
 
   xmlXPathInit();
   xmlXPathContextPtr context = xmlXPathNewContext(doc);
@@ -287,7 +291,10 @@ int parse_archi_file(const char * filename, struct architecture * archi){
   n = get_root(n);
   init_directories(n);
 
+  /* Check the architecture */
   check_archi(archi);
+  if(fatal == true)
+    archi->warning = true;
 
   xmlXPathFreeObject(res);
   free(L);
@@ -443,7 +450,7 @@ bool check_cache_rec(struct node * n){
   //Check size for inclusive cache
   if(n->data->type == Inclusive){
     if(get_size_below(n) > n->data->size){
-      WARNING_MESSAGE;
+      FATAL_WARNING;
       fprintf(stderr, "Size error: an inclusive cache (L%d) is too small for the lower levels\n", n->data->depth);
     }
   }
@@ -451,7 +458,7 @@ bool check_cache_rec(struct node * n){
   //Check for a cache with snooping if the cache above is not inclusive (except last level)
   if(n->data->snooping == true && get_parent(n)){
     if(get_parent(n)->data->type == Inclusive && get_parent(n)->id != get_root(n)->id){
-      WARNING_MESSAGE;
+      FATAL_WARNING;
       fprintf(stderr, "Cache with snooping (L%d) below an inclusive cache\n", n->data->depth);
     }
   }
@@ -473,7 +480,7 @@ void check_archi(struct architecture * archi){
 	n = get_parent(n);
       }
       if(all_snooping == false){
-	WARNING_MESSAGE;
+	FATAL_WARNING;
 	fprintf(stderr, "Last level (L%d) is not inclusive and has no directory manager nor snooping in all levels below\n", archi->number_levels);
       }
     }
