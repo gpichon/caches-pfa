@@ -46,6 +46,11 @@ void next_instruction(struct instruction *ins, struct thread **threads, int id_t
 
   for (i=0; i<4; i++){
     lu = read(fd, buf, 1);
+    if (lu == 0){
+      ins->type = INSTRUCTION_END_OF_THREAD;
+      return;
+    }
+
     while (buf[0] != ' '){
       if (buf[0] == '\n'){
 	break;
@@ -56,7 +61,7 @@ void next_instruction(struct instruction *ins, struct thread **threads, int id_t
       lu = read(fd, buf, 1);
       if (lu == 0){
 	ins->type = INSTRUCTION_END_OF_THREAD;
-	break;
+	return;
       }
     }
 
