@@ -23,6 +23,15 @@
 
 #include "option.h"
 
+int is_end(int *ends, int nb_threads){
+  int i;
+  for(i=0; i<nb_threads; i++){
+    if (ends[i] == 0)
+      return 0;
+  }
+  return 1;
+}
+
 int main(int argc, char *argv[]) {
 
   get_options(argc, argv);
@@ -51,32 +60,41 @@ int main(int argc, char *argv[]) {
   parse_archi_file(filename, &A);
   struct architecture *archi = &A;
   if(archi->warning && (!ignore_warning)){
-    delete_archi(archi);
+    delete_archi(archi)
+;    return EXIT_FAILURE;
+  }
+
+  if (archi->number_threads < nb_threads){
+    printf("Invalid number of threads between traces and architecture: set to 1\n");
     return EXIT_FAILURE;
   }
 
   struct thread **threads;
-  threads = malloc(4*sizeof(struct thread *));
+  threads = malloc(nb_threads*sizeof(struct thread *));
   struct instruction *ins = malloc(sizeof(struct instruction));
   ins->type = INSTRUCTION_LOAD;
   
   /* Open trace file */
-  char **trace_files = malloc(4*sizeof(char *));
-  trace_files[0] = "MAQAO/trace0";
-  trace_files[1] = "MAQAO/trace1";
-  trace_files[2] = "MAQAO/trace2";
-  trace_files[3] = "MAQAO/trace3";
+  char **trace_files = malloc(nb_threads*sizeof(char *));
+  unsigned int i;  
+  for (i=0; i<nb_threads; i++){
+    trace_files[i] = malloc(100*sizeof(char));
+    sprintf(trace_files[i], "MAQAO/trace%d", i);
+  }
 
-  create_threads(threads, trace_files, 4);
+  create_threads(threads, trace_files, nb_threads);
   
   /* Read trace */
   int count = 0;
   int j;
   int current = 3;
-  int end[4] = {0};
+  int *ends = malloc(nb_threads*sizeof(int));
+  for (i=0; i<nb_threads; i++){
+    ends[i]=0;
+  }
 
-  while (!end[0] || !end[1] || !end[2] || !end[3]){
-    current = (current+1)%4; 	/* Next thread */
+  while (!is_end(ends, nb_threads)){
+    current = (current+1)%nb_threads; 	/* Next thread */
 
     for (j=0; j<nb_instr_thread; j++){
       next_instruction(ins, threads, current);
@@ -92,21 +110,24 @@ int main(int argc, char *argv[]) {
   	}
       }
       else{
-  	end[current] = 1;
+  	ends[current] = 1;
       }
     }
   }
 
-  /* End of reading */
-  /* printf("Total values: %d\n", count); */
-  destroy_threads(threads, 4);
+  /* Ends of reading */
+  destroy_threads(threads, nb_threads);
 
   /* Informations about caches */
   print_caches(archi);
   delete_archi(archi);
 
   free(ins);
+  free(ends);
   free(threads);
+  for (i=0; i<nb_threads; i++){
+    free(trace_files[i]);
+  }
   free(trace_files);
   return EXIT_SUCCESS;
 }
