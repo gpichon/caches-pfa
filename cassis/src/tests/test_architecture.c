@@ -1,6 +1,6 @@
 #include "test_architecture.h"
 
-#define FILENAME "data/architest.xml"
+#define FILENAME "architecture/architest.xml"
 
 int test_architecture(int argc, char** argv){
 
