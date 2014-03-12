@@ -19,6 +19,9 @@
 #include "node.h"
 #include "option.h"
 
+// True when the user has entered a value and must be warned if the input is not correct
+bool display_warning = true;
+
 /**
  * \def CHECK_XPATH(result)
  * \brief Secure XPath result.
@@ -45,7 +48,9 @@
  * \brief Copy the node's text (identified by node name) in the target.
  */
 #define GET_ATTRIBUT_TXT(name,node,target)   tmp = xmlGetProp(node, BAD_CAST name); \
+  display_warning = false;							\
   if(tmp != NULL){							\
+    display_warning = true;						\
     sprintf(buf, "%s", tmp);						\
     strcpy(target, buf); }						\
   xmlFree(tmp);								\
@@ -61,7 +66,7 @@
   xmlFree(tmp);								\
   buf[0] = 0
 
-#define WARNING_MESSAGE   fprintf(stderr, "WARNING: architecture not valid\n")
+#define WARNING_MESSAGE   fprintf(stderr, "\033[31mWARNING\033[0m: architecture not valid\n")
 
 struct level{
   int type;
@@ -79,6 +84,10 @@ void (*get_replacement_function(char * name)) (struct cache *){
     return replacement_FIFO;
   if(strcmp(name, "LFU") == 0)
     return replacement_LFU;
+  if(strcmp(name, "LRU") == 0)
+    return replacement_LRU;
+  if(display_warning)
+    fprintf(stderr, "\033[31mWARNING\033[0m: Replacement protocol not recognized: %s , set to LRU\n", name);
   return replacement_LRU;
 }
 
@@ -89,6 +98,10 @@ void (*get_replacement_function(char * name)) (struct cache *){
 void (*get_coherence_function(char * name)) (struct cache *){
   if(strcmp(name, "MSI") == 0)
     return coherence_MSI;
+  if(strcmp(name, "MESI") == 0)
+    return coherence_MESI;
+  if(display_warning)
+    fprintf(stderr, "\033[31mWARNING\033[0m: Coherence protocol not recognized: %s , set to MESI\n", name);
   return coherence_MESI;
 }
 
@@ -100,10 +113,14 @@ void (*get_coherence_function(char * name)) (struct cache *){
 int get_cache_type(char * txt){
   if(strcmp(txt, "exclusive") == 0)
     return Exclusive;
+  if(strcmp(txt, "inclusive") == 0)
+    return Inclusive;
   if(strcmp(txt, "niio") == 0)
     return NIIO;
   if(strcmp(txt, "nieo") == 0)
     return NIEO;
+  if(display_warning)
+    fprintf(stderr, "\033[31mWARNING\033[0m: Cache type not recognized: %s , set to Inclusive\n", txt);
   return Inclusive;
 }
 
@@ -115,6 +132,10 @@ int get_cache_type(char * txt){
 bool get_bool(char * txt){
   if(strcmp(txt, "true") == 0)
     return true;
+  if(strcmp(txt, "false") == 0)
+    return false;
+  if(display_warning)
+    fprintf(stderr, "\033[31mWARNING\033[0m: Boolean value not recognized: %s , set to false\n", txt);
   return false;
 }
 
