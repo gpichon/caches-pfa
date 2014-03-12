@@ -33,6 +33,7 @@ int share_level(struct node *node, unsigned long entry, void (*action)(struct li
 	  up_stat(current_cache, entry, COHERENCE_EVINCTION);
 	}
 	up_stat(current_cache, entry, WRITE_BACK);
+	/* return 1; */
 	res = 1;
       }
 
@@ -134,9 +135,11 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 	up_stat(current_cache, entry, TYPES_EVINCTION);
       }
       else{
-	v = share_level(current_node, entry, &invalid_line);
+	if (is_shared(line)){
+	  v = share_level(current_node, entry, &invalid_line);
+	  up_stat(current_cache, entry, COHERENCE_BROADCAST);
+	}
 	modify_line(line);
-	up_stat(current_cache, entry, COHERENCE_BROADCAST);
       }
     }
     
@@ -181,9 +184,12 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
        fprintf(stderr, "Erreur de logique, snooping en dessous niveau inclusif...\n");
       exit(1);
     }
-    
-    share_level(current_node, entry, &invalid_line);
-    up_stat(current_cache, entry, COHERENCE_BROADCAST);
+
+    if (is_shared(line)){
+      share_level(current_node, entry, &invalid_line);
+      up_stat(current_cache, entry, COHERENCE_BROADCAST);
+    }
+
     current_node = get_parent(current_node);
     update_lines(current_cache, entry);
   }
