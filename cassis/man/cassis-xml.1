@@ -1,0 +1,58 @@
+.TH CASSIS "7" "12/03/2014" "CASSIS 1.0.0" "Architecture configuration"
+.SH NAME
+cassis \- manual describing architecture configuration for cassis
+.SH SYNOPSIS
+cassis -f file.xml -t number_threads
+.SH DESCRIPTION
+An execution of Cassis on a xml file produced by hwloc (lstopo --of xml file.xml) will create a file file.cassis.xml which describes all the parameters for the architecture. Then you can directly execute Cassis on the .cassis.xml file. You can modify the .cassis.xml file as you will to simulate the architecture you want. Therefore it is advised to begin by generating an xml file with hwloc, then run Cassis on that file, and from that point on work only with the .cassis.xml file.
+.SH FILE DESCRIPTION
+Architecture: decribes global information concerning the architecture
+.br
+	* name: name of the architecture
+.br
+	* CPU_name: name of the CPU
+.br
+	* number_levels: number of levels if the cache hierarchy
+.br
+Level: parameters shared with a cache level
+.br
+	* depth: depth of the level
+.br
+	* coherence_protocol (not for last level): MSI, MESI or MOESI (notice that MESIF would give the same results as MESI)
+.br
+	* type (not for L1): inclusive, exclusive, nieo (Note Inclusive Exclusive Oriented) or niio (Note Inclusive Inclusive Oriented).
+.br
+	* snooping (not for last level): true or false
+.br
+	* directory_manager (note for L1): true or false
+.br
+Cache: parameters specific to a cache
+.br
+	* depth: depth of the cache
+.br
+	* cache_size: size of the cache (in bytes)
+.br
+	* cache_linesize: size of a line in the cache (in bytes)
+.br
+	* cache_associativity: associativity of the cache
+.br
+	* replacement_protocol: LRU, LFU or FIFO
+.SH "EXAMPLE"
+<?xml version="1.0"?>
+<Architecture name="x86_64" CPU_name="Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)" number_levels="3">
+  <Level depth="3" type="inclusive" directory_manager="false"/>
+  <Level depth="2" coherence_protocol="MESI" type="inclusive" snooping="true" directory_manager="false"/>
+  <Level depth="1" coherence_protocol="MESI" snooping="true"/>
+  <Cache depth="3" cache_size="3145728" cache_linesize="64" cache_associativity="12" replacement_protocol="LRU">
+    <Cache depth="2" cache_size="262144" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU">
+      <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+      <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+    </Cache>
+    <Cache depth="2" cache_size="262144" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU">
+      <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+      <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+    </Cache>
+  </Cache>
+</Architecture>
+.SH AUTHORS
+Written by the CASSIS team at ENSEIRB-Matmeca, FRANCE. The team was composed of Nicolas Dubois, Nicolas Heng, Alexandre Horonat, Gilles Marait, Grégoire Pichon, Pierre Goudet.
