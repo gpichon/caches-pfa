@@ -25,6 +25,7 @@ extern int ignore_warning;                      /**< 0 if the fatal warnings sto
 extern int nb_instr_thread;                     /**< Number of instructions before changing thread */
 extern unsigned int nb_threads;                 /**< Number of threads */
 extern unsigned int debug_mode;                 /**< Debug mode */
+extern unsigned int print_mode;                 /**< Tracked values to be printed */
 
 /**
  * \brief Fill options variables with program's arguments

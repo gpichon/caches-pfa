@@ -410,8 +410,13 @@ void print_caches(struct architecture *archi, int arch){
   }
   struct node *root = get_root(archi->threads[0]);
   unsigned int j;
-  for (j=0; j<tracking_count; j++){
-    printf("Results with %d tracked values\n", j+1);
+  for (j=print_mode; j<tracking_count; j++){
+    if (j==0){
+      printf("Statistics to all instructions\n");
+    }
+    else{
+      printf("Statistics related to tracked instructions\n");
+    }
     print_caches_rec(root, archi->number_levels, j);
     printf("\n\n");
   }
