@@ -20,7 +20,6 @@ test: test_exe ../bin/test
 
 exe:
 	@make -s -C core
-	@make -s -C others
 
 ../bin/simulator: ../obj/$(OBJ) $(subst ../obj/$(OBJ),,$(subst ../obj/$(OBJ_TEST),,$(OBJS)))
 	@$(CC) $(CFLAGS)  $(subst ../obj/$(OBJ_TEST),,$(OBJS)) -o $@ $(XMLFLAGS)
@@ -44,7 +43,6 @@ endif
 
 test_exe:
 	@make -s -C core
-	@make -s -C others
 	@make -s -C tests
 
 ../bin/test:  ../obj/$(OBJ_TEST) $(subst ../obj/$(OBJ),,$(subst ../obj/$(OBJ_TEST),,$(OBJS)))
@@ -71,5 +69,4 @@ clean:
 	rm -f ../bin/simulator ../obj/$(OBJ) $(subst .c,.P,$(SRC))
 	rm -f ../bin/test ../obj/$(OBJ_TEST) $(subst .c,.P,$(SRC_TEST))
 	@make -s -C core clean
-	@make -s -C others clean
 	@make -s -C tests clean

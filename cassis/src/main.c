@@ -19,7 +19,7 @@
  * \def DEFAULT_ARCHITECTURE
  * \brief Path to the automatically generated XML configuration file, if none specified.
  */
-#define DEFAULT_ARCHITECTURE "data/architest_archi.xml"
+#define DEFAULT_ARCHITECTURE "architecture/architest_archi.xml"
 
 #include "option.h"
 
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
   /* Read trace */
   int count = 0;
   int j;
-  int current = 3;
+  int current = nb_threads-1;
   int *ends = malloc(nb_threads*sizeof(int));
   for (i=0; i<nb_threads; i++){
     ends[i]=0;
