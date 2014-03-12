@@ -174,18 +174,23 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
   
   while (current_node != NULL) {
     current_cache = get_cache(current_node);
+    int bd = 1;
+
     if (is_in_cache(current_cache, entry)){
       line = line_in_cache(current_cache, entry);
+      if (!is_shared(line)){
+	bd = 0;
+      }
       modify_line(line);
     }
-    
+
     /* Debug, should be threated by architecture */
     else if (is_cache_inclusive(current_cache)){
        fprintf(stderr, "Erreur de logique, snooping en dessous niveau inclusif...\n");
       exit(1);
     }
 
-    if (is_shared(line)){
+    if (bd){
       share_level(current_node, entry, &invalid_line);
       up_stat(current_cache, entry, COHERENCE_BROADCAST);
     }

@@ -76,11 +76,9 @@ int test_without_parser(int argc, char** argv) {
   /* Invalidated caches */
   store_line_hierarchy(threads[2], 163+2048); /* Miss L1_2, L2_1 WB L2_0 Hit L3_0 */
   assert(threads[2]->data->misses[0] == 2);
-  /* WARNING -> should be = 2 */
-  assert(cache_L2_1->misses[0]       == 1);
+  assert(cache_L2_1->misses[0]       == 2);
   assert(cache_L2_0->writes_back[0]  == 1);
-  /* WARNING -> should be = 2 */
-  assert(cache_L3->hits[0]           == 1);
+  assert(cache_L3->hits[0]           == 2);
 
   for(i=0; i<4; i++){
     delete_cache(threads[i]->data);
