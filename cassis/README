@@ -1,11 +1,31 @@
-Pour compiler, faire make
+### COMPILATION ###
 
-Pour executer le code, faire ./bin/simulator
+To compile, use:
 
-Paquets pour le parseur xml : 
+make
+
+### EXECUTION ###
+
+To execute a code line, use:
+
+./bin/simulator -f architecture_file -t number_threads
+
+### SOFTWARE MAN ###
+
+You can find man pages in the folder cassis/man.
+
+How to use the software:
+cassis/man/cassis-help.1
+
+How to use the architecture description files:
+cassis/man/cassis-xml.1
+
+### PACKAGES ###
+
+xml packages needed:
 libxml2-dev
 libxslt1-dev
 
-Paquets pour la documentation :
+documentation packages needed:
 doxygen
 graphviz

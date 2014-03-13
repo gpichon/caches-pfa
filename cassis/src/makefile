@@ -1,5 +1,5 @@
-TEXT1 := >>>>>Compilation du main effectuée<<<<<
-TEXT2 := >>>>>Compilation du main de test effectuée<<<<<
+TEXT1 := >>>>>main compiled<<<<<
+TEXT2 := >>>>>test main compiled<<<<<
 
 include includes/conf.make
 
@@ -24,7 +24,7 @@ exe:
 ../bin/simulator: ../obj/$(OBJ) $(subst ../obj/$(OBJ),,$(subst ../obj/$(OBJ_TEST),,$(OBJS)))
 	@$(CC) $(CFLAGS)  $(subst ../obj/$(OBJ_TEST),,$(OBJS)) -o $@ $(XMLFLAGS)
 ifeq ($(DEBUG),YES)
-	$(info !!Sources compilées pour débuggage!!)
+	$(info !!Sources compiled for debug!!)
 endif
 	$(info $(TEXT1))
 
@@ -48,7 +48,7 @@ test_exe:
 ../bin/test:  ../obj/$(OBJ_TEST) $(subst ../obj/$(OBJ),,$(subst ../obj/$(OBJ_TEST),,$(OBJS)))
 	$(CC) $(CFLAGS) $(subst ../obj/$(OBJ),,$(OBJS)) -o $@ $(XMLFLAGS)
 ifeq ($(DEBUG),YES)
-	$(info !!Sources compilées pour débuggage!!)
+	$(info !!Sources compiled for debug!!)
 endif
 	$(info $(TEXT2))
 
