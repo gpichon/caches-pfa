@@ -166,7 +166,6 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       else{
 	up_stat(current_cache, entry, VALUE_ABOVE);
       }
-
     }
     current_node = get_parent(current_node);
   }
@@ -185,7 +184,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 
     /* Debug, should be threated by architecture */
     else if (is_cache_inclusive(current_cache)){
-      fprintf(stderr, "Erreur de logique, snooping en dessous niveau inclusif...\n");
+      fprintf(stderr, "Erreur de logique, snooping en dessous niveau inclusif... L%d\n", current_cache->depth);
       exit(1);
     }
 
@@ -211,8 +210,8 @@ void invalid_back(struct node *node, unsigned long entry) {
       line = line_in_cache(current_cache, entry);
       invalid_line(line);
       up_stat(current_cache, entry, TYPES_EVINCTION);
-      invalid_back(current_node, entry);
     }
+    invalid_back(current_node, entry);
   }
 }
 
