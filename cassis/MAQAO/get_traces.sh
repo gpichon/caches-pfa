@@ -7,13 +7,13 @@ then echo "OK"
 
 export OMP_NUM_THREADS=$3
 
-echo "Fichier de test"
+echo "Program file"
 echo $1
 
-echo "Fonction a tester"
+echo "Function to trace"
 echo $2
 
-echo "Nombre de threads"
+echo "Number of threads"
 echo $3
 
 gcc -o test $1 -DKERNEL=$2 -fopenmp -g
@@ -27,12 +27,12 @@ cat out | awk '$3 ~ /'"$i"'/' > trace$i
 ((i += 1))
 done 
 
-else echo "PAS OK"
-fi
-
-echo "Suppressions diverses"
+echo "Removing files"
 rm test_i_mtl
 rm test
 rm trace.MTL.*
 rm madras*
 rm out
+
+else echo "Usage: ./get_traces file.c name_function number_threads"
+fi

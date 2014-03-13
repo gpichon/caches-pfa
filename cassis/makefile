@@ -1,4 +1,4 @@
-TEXT := >>>>>Compilation terminée<<<<<
+TEXT := >>>>>Compilation finished<<<<<
 
 DOC_DIR:=documentation
 OBJ_DIR:=obj
@@ -8,7 +8,7 @@ BIN_DIR:=bin
 
 # main rules
 all: dir doc main
-	$(info =====>Compilation terminée)
+	$(info =====>Compilation finished)
 
 main:
 	@make -s -C $(SRC_DIR)
@@ -27,7 +27,7 @@ clean:
 
 # tests
 test: main_test
-	$(info =====>Compilation terminée)
+	$(info =====>Compilation finished)
 
 main_test:
 	@make -s -C $(SRC_DIR) test

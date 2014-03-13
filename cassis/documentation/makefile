@@ -1,4 +1,4 @@
-TEXT = >>>>>Compilation de la documentation<<<<<
+TEXT = >>>>>Compilation of documentation<<<<<
 
 SRCS:= $(shell find ../ -name '*.c')
 SRCS_H:= $(shell find ../ -name '*.h')

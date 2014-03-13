@@ -1,4 +1,4 @@
-TEXT := >>>>>Compilation d'une source coeur effectuée<<<<<
+TEXT := >>>>>Compilation of a core file finished<<<<<
 
 include ../includes/conf.make
 

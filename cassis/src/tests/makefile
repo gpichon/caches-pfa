@@ -1,4 +1,4 @@
-TEXT := >>>>>Compilation d'une source test effectuée<<<<<
+TEXT := >>>>>Compilation of a test file finished<<<<<
 
 include ../includes/conf.make
 

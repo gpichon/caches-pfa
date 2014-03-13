@@ -1,13 +1,8 @@
-Pour lancer le script de création des traces par coeur, faire:
+Lanch the script to create the traces:
 
-./tests.sh test.c par 4
+./get_traces.sh test.c par 4
 
-avec:
-- test.c le nom du fichier
-- par la fonction à instrumenter
-- 4 le nombre de threads
-
-
-Filter sur numero instruction:
-decommenter suppressions de fichiers dans tests.sh
-./tests.sh test.c par 4 | awk ' ~ /15/' | awk '{print }'
+with:
+- test.c     name c of the file
+- par        the name of the function to trace
+- 4          the number of threads
