@@ -328,9 +328,9 @@ void print_archi_rec(struct node *n, int nb_levels){
     printf("NIEO");
     break;
   }
-  if(n->data->snooping)
+  if(n->data->snooping && n->data->depth != nb_levels)
     printf(", with snooping");
-  if(n->data->directory)
+  if(n->data->directory && n->data->depth > 1)
     printf(", with directory manager");
   
   printf("\n");
