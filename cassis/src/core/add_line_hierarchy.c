@@ -240,7 +240,7 @@ void add_line_cache(struct node *node, unsigned long entry, int w) {
   }
   del_line = add_line_block(cache->blocks[id_block], line, cache->replacement, priority);
 
-  int del_data = del_line->first_case;
+  unsigned long del_data = del_line->first_case;
   if (del_line != NULL) {
    
     if (is_valid(del_line)){
