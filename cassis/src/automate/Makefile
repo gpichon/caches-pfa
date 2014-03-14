@@ -1,0 +1,62 @@
+#################################################################
+# Macros.
+#
+
+SM_SOURCES=     coherence.sm
+SOURCES=        $(SM_SOURCES:.sm=_sm.c) \
+	        coherence.c
+HEADERS=        $(SM_SOURCES:.sm=_sm.h) \
+                coherence.h
+OBJECTS=        $(SOURCES:.c=.o)
+TARGET=         coherence.o
+CHECKSTRING=    ./$(TARGET)
+
+# Uncomment to turn on debug message generation.
+TRACE=          -g
+
+SMC=            java -jar bin/Smc.jar
+SMC_FLAGS=      -c $(TRACE)
+
+CC=             gcc
+CFLAGS=         -g -Ilib/C 
+
+RM_F=           rm -f
+
+#################################################################
+# Rules.
+#
+
+%_sm.h %_sm.c : %.sm
+		$(SMC) $(SMC_FLAGS) $<
+
+%_sm.dot :      %.sm
+		$(SMC) -graph -glevel 1 $<
+
+%_sm.png :      %_sm.dot
+		dot -T png -o $@ $<
+
+%_sm.html :     %.sm
+		$(SMC) -table $<
+
+all :           $(TARGET)
+
+$(TARGET) :     $(HEADERS) $(SOURCES)
+		$(CC) $(CFLAGS) -c $(SOURCES)
+
+test :          $(TARGET)
+
+
+graph :         $(SM_SOURCES:%.sm=%_sm.dot)
+
+png :           $(SM_SOURCES:%.sm=%_sm.png)
+
+table :         $(SM_SOURCES:%.sm=%_sm.html)
+
+clean :
+		-$(RM_F) $(TARGET)
+		-$(RM_F) $(OBJECTS)
+		-$(RM_F) *_sm.h
+		-$(RM_F) *_sm.c
+		-$(RM_F) *_sm.dot
+		-$(RM_F) *_sm.png
+		-$(RM_F) *_sm.html
