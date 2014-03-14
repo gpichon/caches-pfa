@@ -16,6 +16,16 @@
    Used for a miss when load or a hit when store 
    the parameter node is the cache which launched a share level procedure on its level */
 int share_level(struct node *node, unsigned long entry, void (*action)(struct line *)) {
+  /* TODO: ajouter pere, 1 si un fils possede la donnee, 0 si aucun sur tous les caches et -1 si un mais ailleurs dans la hierarchie */
+  /* struct node *parent = get_parent(node); */
+  /* if (get_parent(current_cache) == parent){ */
+  /*   return res = 1; */
+  /* } */
+  /* else { */
+  /*   res = -1; */
+  /* } */
+  /* return 0; */
+    
   struct node *current_node = get_sibling(node);
   struct cache *current_cache;
   struct line *line;
@@ -271,7 +281,7 @@ void add_line_cache(struct node *node, unsigned long entry, int w) {
 	    r = share_level(get_parent(node), del_data, &share_line);
 	    if (r){
 	      line = line_in_cache(parent, del_data);
-	      exclusive_line(line);
+	      share_line(line); /* TODO VERIFIER shared / exclusive */
 	    }
 	  }
 	  up_stat(parent, entry, COHERENCE_BROADCAST);
