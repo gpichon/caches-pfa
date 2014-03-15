@@ -11,8 +11,6 @@
 
 #include "line.h"
 
-int nb_lines = 0;
-
 /* Data allocations */
 struct line** init_lines(int nb_ways) {
   struct line **lines = malloc(nb_ways * sizeof(struct line *));
@@ -27,7 +25,6 @@ struct line** init_lines(int nb_ways) {
     line->priority = 0;
     line->dirty = 0;
     lines[i] = line;
-    printf("Nb lines:%d taille: %lu\n", nb_lines++, sizeof(struct line));
   }
   return lines;
 }
