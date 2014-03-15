@@ -86,4 +86,4 @@ clean:
 	@make -s -C core clean
 	@make -s -C tests clean
 	@make -s -C core-automate clean
-	@make -s -C gen-automate
+	@make -s -C gen-automate clean
