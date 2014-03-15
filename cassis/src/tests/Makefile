@@ -1,9 +1,13 @@
 TEXT := >>>>>Compilation of a test file finished<<<<<
 
-include ../includes/conf.make
+include ../conf.make
 
 
-CFLAGS += -I ../includes
+ifeq ($(AUTOMATE),NO)
+	CFLAGS += -I ../includes
+else
+	CFLAGS += -I ../includes-automate
+endif
 SRCS=$(wildcard *.c) 
 OBJS=$(patsubst %.c,../../obj/%.o,$(SRCS))
 

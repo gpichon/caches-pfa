@@ -1,0 +1,8 @@
+../../obj/test_without_parser.o: test_without_parser.c \
+ ../includes/test_without_parser.h ../includes/add_line_hierarchy.h \
+ ../includes/cache.h ../includes/block.h ../includes/line.h \
+ ../includes/node.h
+test_without_parser.c :
+ ../includes/test_without_parser.h ../includes/add_line_hierarchy.h :
+ ../includes/cache.h ../includes/block.h ../includes/line.h :
+ ../includes/node.h :

@@ -1,0 +1,8 @@
+../../obj/test_replacement.o: test_replacement.c \
+ ../includes/test_replacement.h ../includes/add_line_hierarchy.h \
+ ../includes/cache.h ../includes/block.h ../includes/line.h \
+ ../includes/node.h
+test_replacement.c :
+ ../includes/test_replacement.h ../includes/add_line_hierarchy.h :
+ ../includes/cache.h ../includes/block.h ../includes/line.h :
+ ../includes/node.h :

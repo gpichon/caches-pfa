@@ -1,4 +1,5 @@
 DEBUG=YES
+AUTOMATE=NO
 
 CC=gcc 
 CFLAGS=-W -Wall

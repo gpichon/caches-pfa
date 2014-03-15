@@ -1,6 +1,7 @@
 TEXT := >>>>>Compilation of a core file finished<<<<<
 
-include ../includes/conf.make
+include ../conf.make
+
 
 
 CFLAGS += -I ../includes

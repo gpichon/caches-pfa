@@ -1,3 +1,6 @@
+TEXT := >>>>>Compilation of a state machine file finished<<<<<
+
+
 #################################################################
 # Macros.
 #
@@ -28,6 +31,9 @@ RM_F=           rm -f
 
 %_sm.h %_sm.c : %.sm
 		$(SMC) $(SMC_FLAGS) $<
+		$(info $(TEXT))
+		$(info $*_sm.c)
+		$(info $*_sm.h)
 
 %_sm.dot :      %.sm
 		$(SMC) -graph -glevel 1 $<
@@ -40,8 +46,11 @@ RM_F=           rm -f
 
 all :           $(TARGET)
 
+
 $(TARGET) :     $(HEADERS) $(SOURCES)
 		$(CC) $(CFLAGS) -c $(SOURCES)
+		$(info $(TEXT))
+		$(info $*.c)
 
 test :          $(TARGET)
 
