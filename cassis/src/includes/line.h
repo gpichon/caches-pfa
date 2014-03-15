@@ -27,6 +27,8 @@ enum status{
   S = 1, /**< Shared */
   E = 2, /**< Exclusive */
   M = 3, /**< Modified */
+  O = 4, /**< Owned */
+  F = 5, /**< Forward */
 };
 
 /**
@@ -38,6 +40,7 @@ struct line {
   int use;                  /**< number of utilizations since the line is in the block */
   enum status status;       /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
   int priority;             /**< Priority to delete data. A data line with high priority don't seem to bedeleted */
+  int dirty;                /**< Is the line dirty */
 };
 
 /**
@@ -56,11 +59,17 @@ void invalid_line(struct line *line);
 void modify_line(struct line *line);
 void share_line(struct line *line);
 void exclusive_line(struct line *line);
+void forward_line(struct line *line);
+void owned_line(struct line *line);
+
+void dirty_line(struct line *line, int w);
 
 /* Getters */
 bool is_valid(struct line *line);
 bool is_exclusive(struct line *line);
 bool is_modified(struct line *line);
 bool is_shared(struct line *line);
+
+bool is_dirty(struct line *line);
 
 #endif
