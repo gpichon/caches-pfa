@@ -1,0 +1,453 @@
+Sans snooping, tous les caches inclusifs
+Architecture 64 bits : x86_64
+CPU model : Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)
+L3 (size: 16384) inclusive
+	L2 (size: 2048) inclusive
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+	L2 (size: 2048) inclusive
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+
+
+Statistics to all instructions
+L3  basiques   (misses:          1261, hits:           9489, writes_back:          0)
+    evinctions (coherence:          0, capacity:       1005, cache_types:          0)
+    misses     (snooping:           0, above:          1261, below:                0)
+    broadcasts (coherence:       5035, snooping:          0)
+
+		L2  basiques   (misses:          4051, hits:           2216, writes_back:       2551)
+		    evinctions (coherence:       1301, capacity:       2744, cache_types:          0)
+		    misses     (snooping:           0, above:          4051, below:                0)
+		    broadcasts (coherence:       5641, snooping:          0)
+
+				L1  basiques   (misses:          3512, hits:          26488, writes_back:       1740)
+				    evinctions (coherence:        990, capacity:       2011, cache_types:        507)
+				    misses     (snooping:           0, above:          3512, below:                0)
+				    broadcasts (coherence:       3779, snooping:          0)
+
+				L1  basiques   (misses:          2755, hits:          27245, writes_back:       1827)
+				    evinctions (coherence:       1299, capacity:       1100, cache_types:        352)
+				    misses     (snooping:           0, above:          2755, below:                0)
+				    broadcasts (coherence:       3745, snooping:          0)
+
+		L2  basiques   (misses:          6699, hits:           1525, writes_back:       2836)
+		    evinctions (coherence:        312, capacity:       6357, cache_types:         19)
+		    misses     (snooping:           0, above:          6699, below:                0)
+		    broadcasts (coherence:       9325, snooping:          0)
+
+				L1  basiques   (misses:          4101, hits:          25899, writes_back:       1762)
+				    evinctions (coherence:       1012, capacity:       1981, cache_types:       1105)
+				    misses     (snooping:           0, above:          4101, below:                0)
+				    broadcasts (coherence:       5202, snooping:          0)
+
+				L1  basiques   (misses:          4123, hits:          25877, writes_back:       1085)
+				    evinctions (coherence:        312, capacity:       1962, cache_types:       1840)
+				    misses     (snooping:           0, above:          4123, below:                0)
+				    broadcasts (coherence:       5135, snooping:          0)
+
+
+
+Sans snooping, avec un L2 exclusif
+Architecture 64 bits : x86_64
+CPU model : Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)
+L3 (size: 16384) inclusive
+	L2 (size: 2048) exclusive, with directory manager
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+	L2 (size: 2048) exclusive, with directory manager
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+
+
+Statistics to all instructions
+L3  basiques   (misses:          2748, hits:           8118, writes_back:          0)
+    evinctions (coherence:          0, capacity:       2492, cache_types:          0)
+    misses     (snooping:           0, above:          2748, below:                0)
+    broadcasts (coherence:       3016, snooping:          0)
+
+		L2  basiques   (misses:          5659, hits:            351, writes_back:        268)
+		    evinctions (coherence:        253, capacity:       2050, cache_types:        456)
+		    misses     (snooping:           0, above:          5659, below:                0)
+		    broadcasts (coherence:      12445, snooping:          0)
+
+				L1  basiques   (misses:          3077, hits:          26923, writes_back:       1223)
+				    evinctions (coherence:       1223, capacity:       1825, cache_types:         25)
+				    misses     (snooping:           0, above:          3077, below:                0)
+				    broadcasts (coherence:       3348, snooping:          0)
+
+				L1  basiques   (misses:          2933, hits:          27067, writes_back:       1333)
+				    evinctions (coherence:       1333, capacity:        969, cache_types:        628)
+				    misses     (snooping:           0, above:          2933, below:                0)
+				    broadcasts (coherence:       4156, snooping:          0)
+
+		L2  basiques   (misses:          5207, hits:             77, writes_back:          0)
+		    evinctions (coherence:         36, capacity:       2710, cache_types:        195)
+		    misses     (snooping:           0, above:          5207, below:                0)
+		    broadcasts (coherence:      12947, snooping:          0)
+
+				L1  basiques   (misses:          2352, hits:          27648, writes_back:       1328)
+				    evinctions (coherence:       1328, capacity:       1011, cache_types:          9)
+				    misses     (snooping:           0, above:          2352, below:                0)
+				    broadcasts (coherence:       3685, snooping:          0)
+
+				L1  basiques   (misses:          2932, hits:          27068, writes_back:        316)
+				    evinctions (coherence:        316, capacity:       1973, cache_types:        633)
+				    misses     (snooping:           0, above:          2932, below:                0)
+				    broadcasts (coherence:       4260, snooping:          0)
+
+
+
+Sans snooping, avec un L2 non inclusif
+Architecture 64 bits : x86_64
+CPU model : Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)
+L3 (size: 16384) inclusive
+	L2 (size: 2048) NIIO
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+	L2 (size: 2048) NIIO
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+
+
+Statistics to all instructions
+L3  basiques   (misses:          2834, hits:           3548, writes_back:          0)
+    evinctions (coherence:          0, capacity:       2578, cache_types:          0)
+    misses     (snooping:           0, above:          2834, below:                0)
+    broadcasts (coherence:       4879, snooping:          0)
+
+		L2  basiques   (misses:          3131, hits:           2895, writes_back:       1867)
+		    evinctions (coherence:       1459, capacity:        995, cache_types:        685)
+		    misses     (snooping:           0, above:          3131, below:                0)
+		    broadcasts (coherence:       9523, snooping:          0)
+
+				L1  basiques   (misses:          3091, hits:          26909, writes_back:       1878)
+				    evinctions (coherence:       1223, capacity:       1823, cache_types:         41)
+				    misses     (snooping:           0, above:          3091, below:                0)
+				    broadcasts (coherence:       3361, snooping:          0)
+
+				L1  basiques   (misses:          2935, hits:          27065, writes_back:       1800)
+				    evinctions (coherence:       1333, capacity:        969, cache_types:        630)
+				    misses     (snooping:           0, above:          2935, below:                0)
+				    broadcasts (coherence:       4158, snooping:          0)
+
+		L2  basiques   (misses:          3251, hits:           2031, writes_back:       1970)
+		    evinctions (coherence:        333, capacity:       2745, cache_types:        655)
+		    misses     (snooping:           0, above:          3251, below:                0)
+		    broadcasts (coherence:      11706, snooping:          0)
+
+				L1  basiques   (misses:          2362, hits:          27638, writes_back:       1795)
+				    evinctions (coherence:       1328, capacity:       1010, cache_types:         20)
+				    misses     (snooping:           0, above:          2362, below:                0)
+				    broadcasts (coherence:       3695, snooping:          0)
+
+				L1  basiques   (misses:          2920, hits:          27080, writes_back:       1445)
+				    evinctions (coherence:        315, capacity:       1953, cache_types:        642)
+				    misses     (snooping:           0, above:          2920, below:                0)
+				    broadcasts (coherence:       4248, snooping:          0)
+
+
+
+Sans snooping, avec un L3 exclusif
+Architecture 64 bits : x86_64
+CPU model : Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)
+L3 (size: 16384) exclusive, with directory manager
+	L2 (size: 2048) inclusive
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+	L2 (size: 2048) inclusive
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+
+
+Statistics to all instructions
+L3  basiques   (misses:          5182, hits:           5568, writes_back:          0)
+    evinctions (coherence:          0, capacity:       3428, cache_types:       5568)
+    misses     (snooping:           0, above:          5182, below:                0)
+    broadcasts (coherence:      28437, snooping:          0)
+
+		L2  basiques   (misses:          4051, hits:           2216, writes_back:       1301)
+		    evinctions (coherence:       1301, capacity:       2744, cache_types:          0)
+		    misses     (snooping:           0, above:          4051, below:                0)
+		    broadcasts (coherence:       5641, snooping:          0)
+
+				L1  basiques   (misses:          3512, hits:          26488, writes_back:       1740)
+				    evinctions (coherence:        990, capacity:       2011, cache_types:        507)
+				    misses     (snooping:           0, above:          3512, below:                0)
+				    broadcasts (coherence:       3779, snooping:          0)
+
+				L1  basiques   (misses:          2755, hits:          27245, writes_back:       1827)
+				    evinctions (coherence:       1299, capacity:       1100, cache_types:        352)
+				    misses     (snooping:           0, above:          2755, below:                0)
+				    broadcasts (coherence:       3745, snooping:          0)
+
+		L2  basiques   (misses:          6699, hits:           1525, writes_back:        312)
+		    evinctions (coherence:        312, capacity:       6357, cache_types:          0)
+		    misses     (snooping:           0, above:          6699, below:                0)
+		    broadcasts (coherence:       9325, snooping:          0)
+
+				L1  basiques   (misses:          4101, hits:          25899, writes_back:       1762)
+				    evinctions (coherence:       1012, capacity:       1981, cache_types:       1105)
+				    misses     (snooping:           0, above:          4101, below:                0)
+				    broadcasts (coherence:       5202, snooping:          0)
+
+				L1  basiques   (misses:          4123, hits:          25877, writes_back:       1085)
+				    evinctions (coherence:        312, capacity:       1962, cache_types:       1836)
+				    misses     (snooping:           0, above:          4123, below:                0)
+				    broadcasts (coherence:       5135, snooping:          0)
+
+
+
+Sans snooping, avec un L3 non inclusif
+[31mWARNING[0m: architecture not valid
+Last level (L3) is not inclusive and has no directory manager nor snooping in all levels below
+Avec snooping niveau L1, niveau L2 non inclusif
+Architecture 64 bits : x86_64
+CPU model : Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)
+L3 (size: 16384) inclusive
+	L2 (size: 2048) NIIO
+		L1 (size: 1024) inclusive, with snooping
+		L1 (size: 1024) inclusive, with snooping
+	L2 (size: 2048) NIIO
+		L1 (size: 1024) inclusive, with snooping
+		L1 (size: 1024) inclusive, with snooping
+
+
+Statistics to all instructions
+L3  basiques   (misses:          2982, hits:           3635, writes_back:          0)
+    evinctions (coherence:          0, capacity:       2726, cache_types:          0)
+    misses     (snooping:           0, above:          2982, below:                0)
+    broadcasts (coherence:       6115, snooping:          0)
+
+		L2  basiques   (misses:          3208, hits:             59, writes_back:       2692)
+		    evinctions (coherence:       1166, capacity:       3917, cache_types:         24)
+		    misses     (snooping:           0, above:          3208, below:                0)
+		    broadcasts (coherence:       6920, snooping:          0)
+
+				L1  basiques   (misses:          3092, hits:          26908, writes_back:       1796)
+				    evinctions (coherence:       1237, capacity:       1825, cache_types:         26)
+				    misses     (snooping:         904, above:          2188, below:                0)
+				    broadcasts (coherence:       3361, snooping:       2824)
+
+				L1  basiques   (misses:          3028, hits:          26972, writes_back:       1663)
+				    evinctions (coherence:       1231, capacity:       1748, cache_types:         45)
+				    misses     (snooping:        1949, above:          1079, below:                0)
+				    broadcasts (coherence:       4192, snooping:       2842)
+
+		L2  basiques   (misses:          3409, hits:             48, writes_back:       1667)
+		    evinctions (coherence:         19, capacity:       5492, cache_types:         42)
+		    misses     (snooping:           0, above:          3409, below:                0)
+		    broadcasts (coherence:      10567, snooping:          0)
+
+				L1  basiques   (misses:          3609, hits:          26391, writes_back:       1812)
+				    evinctions (coherence:       1231, capacity:       1706, cache_types:        669)
+				    misses     (snooping:        1943, above:          1666, below:                0)
+				    broadcasts (coherence:       4767, snooping:       3423)
+
+				L1  basiques   (misses:          3595, hits:          26405, writes_back:        947)
+				    evinctions (coherence:        314, capacity:       2616, cache_types:        656)
+				    misses     (snooping:        1804, above:          1791, below:                0)
+				    broadcasts (coherence:       4753, snooping:       3409)
+
+
+
+Avec snooping niveau L2, niveau L2 non inclusif
+Architecture 64 bits : x86_64
+CPU model : Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)
+L3 (size: 16384) inclusive
+	L2 (size: 2048) NIIO, with snooping
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+	L2 (size: 2048) NIIO, with snooping
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+
+
+Statistics to all instructions
+L3  basiques   (misses:          2996, hits:           5218, writes_back:          0)
+    evinctions (coherence:          0, capacity:       2740, cache_types:          0)
+    misses     (snooping:           0, above:          2996, below:                0)
+    broadcasts (coherence:       9123, snooping:          0)
+
+		L2  basiques   (misses:          5457, hits:           1244, writes_back:       2759)
+		    evinctions (coherence:       1236, capacity:       3797, cache_types:        647)
+		    misses     (snooping:        1263, above:          4194, below:                0)
+		    broadcasts (coherence:       9239, snooping:       4976)
+
+				L1  basiques   (misses:          3092, hits:          26908, writes_back:       1873)
+				    evinctions (coherence:       1218, capacity:       1825, cache_types:         45)
+				    misses     (snooping:           0, above:          3092, below:                0)
+				    broadcasts (coherence:       4678, snooping:          0)
+
+				L1  basiques   (misses:          3609, hits:          26391, writes_back:       1887)
+				    evinctions (coherence:       1236, capacity:       1706, cache_types:        664)
+				    misses     (snooping:           0, above:          3609, below:                0)
+				    broadcasts (coherence:       5244, snooping:          0)
+
+		L2  basiques   (misses:          6293, hits:            330, writes_back:       3470)
+		    evinctions (coherence:        314, capacity:       6452, cache_types:        670)
+		    misses     (snooping:        2273, above:          4020, below:                0)
+		    broadcasts (coherence:      11765, snooping:       5848)
+
+				L1  basiques   (misses:          3028, hits:          26972, writes_back:       1882)
+				    evinctions (coherence:       1231, capacity:       1748, cache_types:         45)
+				    misses     (snooping:           0, above:          3028, below:                0)
+				    broadcasts (coherence:       4663, snooping:          0)
+
+				L1  basiques   (misses:          3595, hits:          26405, writes_back:        991)
+				    evinctions (coherence:        314, capacity:       2616, cache_types:        656)
+				    misses     (snooping:           0, above:          3595, below:                0)
+				    broadcasts (coherence:       5230, snooping:          0)
+
+
+
+Avec snooping tous les niveaux, niveaux L2 non inclusif
+Architecture 64 bits : x86_64
+CPU model : Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)
+L3 (size: 16384) inclusive
+	L2 (size: 2048) NIIO, with snooping
+		L1 (size: 1024) inclusive, with snooping
+		L1 (size: 1024) inclusive, with snooping
+	L2 (size: 2048) NIIO, with snooping
+		L1 (size: 1024) inclusive, with snooping
+		L1 (size: 1024) inclusive, with snooping
+
+
+Statistics to all instructions
+L3  basiques   (misses:          3380, hits:           3084, writes_back:          0)
+    evinctions (coherence:          0, capacity:       3124, cache_types:          0)
+    misses     (snooping:           0, above:          3380, below:                0)
+    broadcasts (coherence:       6420, snooping:       3240)
+
+		L2  basiques   (misses:          3318, hits:             59, writes_back:       2609)
+		    evinctions (coherence:       1150, capacity:       3929, cache_types:         45)
+		    misses     (snooping:          95, above:          3223, below:                0)
+		    broadcasts (coherence:       6932, snooping:       2853)
+
+				L1  basiques   (misses:          3104, hits:          26896, writes_back:       1792)
+				    evinctions (coherence:       1228, capacity:       1825, cache_types:         47)
+				    misses     (snooping:         877, above:          2227, below:                0)
+				    broadcasts (coherence:       3373, snooping:       2831)
+
+				L1  basiques   (misses:          3051, hits:          26949, writes_back:       1658)
+				    evinctions (coherence:       1222, capacity:       1743, cache_types:         82)
+				    misses     (snooping:        1901, above:          1150, below:                0)
+				    broadcasts (coherence:       4215, snooping:       2856)
+
+		L2  basiques   (misses:          3543, hits:             43, writes_back:       1636)
+		    evinctions (coherence:         19, capacity:       5504, cache_types:         51)
+		    misses     (snooping:         302, above:          3241, below:                0)
+		    broadcasts (coherence:      10574, snooping:       3237)
+
+				L1  basiques   (misses:          3632, hits:          26368, writes_back:       1807)
+				    evinctions (coherence:       1222, capacity:       1701, cache_types:        706)
+				    misses     (snooping:        1895, above:          1737, below:                0)
+				    broadcasts (coherence:       4790, snooping:       3437)
+
+				L1  basiques   (misses:          3606, hits:          26394, writes_back:        947)
+				    evinctions (coherence:        309, capacity:       2607, cache_types:        681)
+				    misses     (snooping:        1757, above:          1849, below:                0)
+				    broadcasts (coherence:       4764, snooping:       3411)
+
+
+
+Avec snooping tous les niveaux et L2 exclusif
+Architecture 64 bits : x86_64
+CPU model : Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)
+L3 (size: 16384) inclusive
+	L2 (size: 2048) exclusive, with snooping
+		L1 (size: 1024) inclusive, with snooping
+		L1 (size: 1024) inclusive, with snooping
+	L2 (size: 2048) exclusive, with snooping
+		L1 (size: 1024) inclusive, with snooping
+		L1 (size: 1024) inclusive, with snooping
+
+
+Statistics to all instructions
+L3  basiques   (misses:          3390, hits:           2474, writes_back:          0)
+    evinctions (coherence:          0, capacity:       3134, cache_types:          0)
+    misses     (snooping:           0, above:          3390, below:                0)
+    broadcasts (coherence:       3779, snooping:       3250)
+
+		L2  basiques   (misses:          3731, hits:            561, writes_back:        197)
+		    evinctions (coherence:        183, capacity:       2259, cache_types:        832)
+		    misses     (snooping:          89, above:          3642, below:                0)
+		    broadcasts (coherence:      12977, snooping:       3434)
+
+				L1  basiques   (misses:          3210, hits:          26790, writes_back:       1115)
+				    evinctions (coherence:       1115, capacity:       1969, cache_types:        122)
+				    misses     (snooping:         776, above:          2434, below:                0)
+				    broadcasts (coherence:       3515, snooping:       3170)
+
+				L1  basiques   (misses:          3638, hits:          26362, writes_back:       1357)
+				    evinctions (coherence:       1357, capacity:       1498, cache_types:        780)
+				    misses     (snooping:        1780, above:          1858, below:                0)
+				    broadcasts (coherence:       4751, snooping:       3381)
+
+		L2  basiques   (misses:          2424, hits:            309, writes_back:        256)
+		    evinctions (coherence:         41, capacity:       3524, cache_types:        629)
+		    misses     (snooping:         202, above:          2222, below:                0)
+		    broadcasts (coherence:      13811, snooping:       2034)
+
+				L1  basiques   (misses:          3638, hits:          26362, writes_back:       1362)
+				    evinctions (coherence:       1362, capacity:       1498, cache_types:        774)
+				    misses     (snooping:        2084, above:          1554, below:                0)
+				    broadcasts (coherence:       4931, snooping:       3443)
+
+				L1  basiques   (misses:          3243, hits:          26757, writes_back:        310)
+				    evinctions (coherence:        305, capacity:       2873, cache_types:         56)
+				    misses     (snooping:        2064, above:          1179, below:                0)
+				    broadcasts (coherence:       4541, snooping:       3048)
+
+
+
+Avec snooping tous les niveaux et L2 oriente exclusif
+Architecture 64 bits : x86_64
+CPU model : Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)
+L3 (size: 16384) inclusive
+	L2 (size: 2048) NIEO, with snooping
+		L1 (size: 1024) inclusive, with snooping
+		L1 (size: 1024) inclusive, with snooping
+	L2 (size: 2048) NIEO, with snooping
+		L1 (size: 1024) inclusive, with snooping
+		L1 (size: 1024) inclusive, with snooping
+
+
+Statistics to all instructions
+L3  basiques   (misses:          3399, hits:           2661, writes_back:          0)
+    evinctions (coherence:          0, capacity:       3143, cache_types:          0)
+    misses     (snooping:           0, above:          3399, below:                0)
+    broadcasts (coherence:       4046, snooping:       3259)
+
+		L2  basiques   (misses:          3685, hits:            293, writes_back:        569)
+		    evinctions (coherence:        462, capacity:       2395, cache_types:        410)
+		    misses     (snooping:         113, above:          3572, below:                0)
+		    broadcasts (coherence:      12570, snooping:       3217)
+
+				L1  basiques   (misses:          3105, hits:          26895, writes_back:       1213)
+				    evinctions (coherence:       1209, capacity:       1825, cache_types:         67)
+				    misses     (snooping:         877, above:          2228, below:                0)
+				    broadcasts (coherence:       3374, snooping:       2832)
+
+				L1  basiques   (misses:          3632, hits:          26368, writes_back:       1231)
+				    evinctions (coherence:       1227, capacity:       1701, cache_types:        701)
+				    misses     (snooping:        1882, above:          1750, below:                0)
+				    broadcasts (coherence:       4777, snooping:       3437)
+
+		L2  basiques   (misses:          2918, hits:             82, writes_back:        291)
+		    evinctions (coherence:         34, capacity:       3692, cache_types:        422)
+		    misses     (snooping:         430, above:          2488, below:                0)
+		    broadcasts (coherence:      13769, snooping:       2532)
+
+				L1  basiques   (misses:          3051, hits:          26949, writes_back:       1222)
+				    evinctions (coherence:       1222, capacity:       1743, cache_types:         82)
+				    misses     (snooping:        1900, above:          1151, below:                0)
+				    broadcasts (coherence:       4214, snooping:       2856)
+
+				L1  basiques   (misses:          3606, hits:          26394, writes_back:        362)
+				    evinctions (coherence:        309, capacity:       2606, cache_types:        682)
+				    misses     (snooping:        1757, above:          1849, below:                0)
+				    broadcasts (coherence:       4764, snooping:       3411)
+
+
+

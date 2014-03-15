@@ -54,7 +54,7 @@ void get_options(int argc, char *argv[]) {
     case 'v':	/* -v 1*/
       verbose_mode = atoi(optarg);
       if (verbose_mode < 1 || verbose_mode > 4){
-	printf("Invalid verbose mode\n");
+	fprintf(stderr, "Invalid verbose mode\n");
 	exit(1);
       }
       break;
