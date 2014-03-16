@@ -12,13 +12,13 @@
 #include "block.h"
 
 /* Data allocations */
-struct block **init_block(int nb_blocks, int nb_ways, int linesize) {
+struct block **init_block(int nb_blocks, int nb_ways, int linesize, enum cache_coherence type) {
   struct block **blocks = malloc(nb_blocks * sizeof(struct block *));
   int i;
   for (i=0; i<nb_blocks; i++) {
     struct block *block = malloc(sizeof(struct block));
     block->nb_ways = nb_ways;
-    struct line ** lines = init_lines(nb_ways);
+    struct line ** lines = init_lines(nb_ways, type);
     block->lines = lines;
     block->linesize = linesize;
     blocks[i] = block;

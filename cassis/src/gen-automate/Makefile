@@ -9,7 +9,7 @@ SM_SOURCES=     coherence.sm
 SOURCES=        $(SM_SOURCES:.sm=_sm.c) \
 	        coherence.c
 HEADERS=        $(SM_SOURCES:.sm=_sm.h) \
-                coherence.h
+		../includes-automate/coherence.h
 OBJECTS=        $(SOURCES:.c=.o)
 TARGET=         coherence.o
 CHECKSTRING=    ./$(TARGET)
@@ -21,7 +21,7 @@ SMC=            java -jar bin/Smc.jar
 SMC_FLAGS=      -c $(TRACE)
 
 CC=             gcc
-CFLAGS=         -g -Ilib/C 
+CFLAGS=         -g -I../includes-automate -c
 
 RM_F=           rm -f
 
@@ -34,6 +34,7 @@ RM_F=           rm -f
 		$(info $(TEXT))
 		$(info $*_sm.c)
 		$(info $*_sm.h)
+		mv $*_sm.h ../includes-automate/$*_sm.h
 
 %_sm.dot :      %.sm
 		$(SMC) -graph -glevel 1 $<
@@ -48,7 +49,7 @@ all :           $(TARGET)
 
 
 $(TARGET) :     $(HEADERS) $(SOURCES)
-		$(CC) $(CFLAGS) -c $(SOURCES)
+		$(CC) $(CFLAGS) $(SOURCES)
 		$(info $(TEXT))
 		$(info $*.c)
 

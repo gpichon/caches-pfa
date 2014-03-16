@@ -1,3 +1,6 @@
+%declare struct node;
+%declare struct line;
+
 %start Init::Start
 %class coherence
 %header coherence.h
@@ -21,32 +24,32 @@ Start
 
 I
 {
-	i_modify       M       {}
-	i_read         S       {}                  
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}
+	i_read(n: struct node*, i: unsigned long, l: struct line*)         S       {}                  
 }
 
 M
 {
-	i_modify      M        {}
-	i_del         I        {}              
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)      M        {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)         I        {}              
 }
 
 S
 {
-	a_read        S       {}
-	a_modify      I       {}
-	i_del         I       {}                 
+	a_read(n: struct node*, i: unsigned long, l: struct line*)        S       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)      I       {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)         I       {}                 
 }
 
 
 Default
 {
-	i_read     nil    {}
-	i_modify   nil    {}
-	i_del      nil     {}
-	a_read     nil    {}
-	a_modify   nil    {}
-	a_del      nil     {}
+	i_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
 
 }
 %%
@@ -57,42 +60,42 @@ Default
 
 I
 {
-	i_read   [exist_somewhere() == 1]     S       {}                  
-	i_read   [exist_somewhere() == 0]    E       {}                  
-	i_modify    			    	      M       {}                  	
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 1]     S       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 0]    E       {}                  
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {}                  	
 }
 
 M
 {
-	a_read      S       {}                  
-	i_del       I       {}                  
-	a_modify    I       {}                  	
+	a_read(n: struct node*, i: unsigned long, l: struct line*)      S       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)       I       {}                  
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)    I       {}                  	
 }
 
 S
 {
-	i_modify       M       {}                  
-	i_del          I       {}
-	a_modify       I       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}
 }
 
 E
 {
-	a_read         S       {}
-	i_modify       M       {}                  
-	i_del          I       {}
-	a_modify       I       {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)         S       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}
 }
 
 
 Default
 {
-	i_read     nil    {}
-	i_modify   nil    {}
-	i_del      nil     {}
-	a_read     nil    {}
-	a_modify   nil    {}
-	a_del      nil     {}
+	i_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
 
 }
 %%
@@ -104,41 +107,41 @@ Default
 
 I
 {
-	i_read   [exist_somewhere() == 1]     S       {}                  
-	i_read   [exist_somewhere() == 0]    O       {}                  
-	i_modify    			    	      M       {}                  	
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 1]     S       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 0]    O       {}                  
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {}                  	
 }
 
 M
 {
-	a_read      S       {}                  
-	i_del       I       {}                  
-	a_modify    I       {}                  	
+	a_read(n: struct node*, i: unsigned long, l: struct line*)      S       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)       I       {}                  
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)    I       {}                  	
 }
 
 S
 {
-	i_modify       M       {}                  
-	i_del          I       {}
-	a_modify       I       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}
 }
 
 O
 {
-	i_modify       M       {}                  
-	i_del          I       {}
-	a_modify       I       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}
 }
 
 
 Default
 {
-	i_read     nil    {}
-	i_modify   nil    {}
-	i_del      nil     {}
-	a_read     nil    {}
-	a_modify   nil    {}
-	a_del      nil     {}
+	i_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
 
 }
 %%
@@ -150,51 +153,51 @@ Default
 
 I
 {
-	i_read   [exist_somewhere() == 1]     S       {}                  
-	i_read   [exist_somewhere() == 0]    E       {}                  
-	i_modify [exist_somewhere() == 1]     O       {}                  	
-	i_modify [exist_somewhere() == 0]     M       {}
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 1]     S       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 0]    E       {}                  
+	i_modify(n: struct node*, i: unsigned long, l: struct line*) [exist_somewhere() == 1]     O       {}                  	
+	i_modify(n: struct node*, i: unsigned long, l: struct line*) [exist_somewhere() == 0]     M       {}
 }
 
 M
 {
-	a_read      O       {}                  
-	i_del       I       {}                  
-	a_modify    S       {}                  	
+	a_read(n: struct node*, i: unsigned long, l: struct line*)      O       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)       I       {}                  
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)    S       {}                  	
 }
 
 S
 {
-	i_modify  [exist_somewhere() == 1]     O       {}                  
-	a_del  [exist_somewhere() == 1 && is_dirty() == 1 && exist_state('O') == 0]     O       {}
-	i_modify     [exist_somewhere() == 0]     M       {}
-	a_del    [exist_somewhere() == 0 && is_dirty() == 1]   M       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)  [exist_somewhere() == 1]     O       {}                  
+	a_del(n: struct node*, i: unsigned long, l: struct line*)  [exist_somewhere() == 1 && is_dirty(l) == 1 && exist_state('O') == 0]     O       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)     [exist_somewhere() == 0]     M       {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)    [exist_somewhere() == 0 && is_dirty(l) == 1]   M       {}
 }
 
 E
 {
-	a_read         S       {}
-	i_modify       M       {}                  
-	i_del          I       {}
-	a_modify       S       {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)         S       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       S       {}
 }
 
 O
 {                 
-	i_del          I       {}
-	a_modify       S       {}
-	a_del [exist_somewhere() == 0]   M    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       S       {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*) [exist_somewhere() == 0]   M    {}
 }
 
 
 Default
 {
-	i_read     nil    {}
-	i_modify   nil    {}
-	i_del      nil     {}
-	a_read     nil    {}
-	a_modify   nil    {}
-	a_del      nil     {}
+	i_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
 
 }
 %%
@@ -205,51 +208,51 @@ Default
 
 I
 {
-	i_read   [exist_state('E') == 1 || exist_state('M') == 1]     F       {}                  
-	i_read   [exist_state('F') == 1]    S       {}                  
-	i_modify    			    	      M       {}
-        i_read   [exist_somewhere() == 0]    E       {}              	
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_state('E') == 1 || exist_state('M') == 1]     F       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_state('F') == 1]    S       {}                  
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {}
+        i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 0]    E       {}              	
 }
 
 M
 {
-	a_read      S       {}                  
-	i_del       I       {}                  
-	a_modify    I       {}                  	
+	a_read(n: struct node*, i: unsigned long, l: struct line*)      S       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)       I       {}                  
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)    I       {}                  	
 }
 
 S
 {
-	i_modify     M       {}
-	i_del        I       {}                  
-	a_del  [exist_state('S') == 1 && exist_state('F') == 0]     F       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)     M       {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)        I       {}                  
+	a_del(n: struct node*, i: unsigned long, l: struct line*)  [exist_state('S') == 1 && exist_state('F') == 0]     F       {}
 }
 
 E
 {
-	a_read         S       {}
-	i_modify       M       {}                  
-	i_del          I       {}             
-	a_modify       I       {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)         S       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}             
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}
 }
 
 F
 {
-	a_del   [exist_somewhere() == 0]      E       {} //utile ? autant la laisser en F ...
-	i_modify       M       {}                  
-	i_del          I       {}
-	a_modify       I       {}              
+	a_del(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 0]      E       {} //utile ? autant la laisser en F ...
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}              
 }
 
 
 Default
 {
-	i_read     nil    {}
-	i_modify   nil    {}
-	i_del      nil     {}
-	a_read     nil    {}
-	a_modify   nil    {}
-	a_del      nil     {}
+	i_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
 
 }
 %%
