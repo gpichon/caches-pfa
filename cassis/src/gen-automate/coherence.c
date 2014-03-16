@@ -7,6 +7,7 @@ void coherence_invalid_line(struct line *line) {
 
 void coherence_modify_line(struct line *line) {
   line->status = M;
+  printf("Status:%d Line:%p\n", line->status, line);
 }
 
 void coherence_share_line(struct line *line) {
