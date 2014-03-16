@@ -19,12 +19,14 @@
 #include "node.h"
 
 
+int is_in_level(struct node *node,unsigned long entry, enum status status);
+
 /**
  * \brief Used for a miss when load or a hit when store.    
  * \param cache Is the cache which launched a share level procedure on its level.
  * \return Return 1 if there is entry is somewhere else in level.  
  */
-int share_level(struct node *current, unsigned long entry, void (*action)(struct line *));
+void share_level(struct node *node, unsigned long entry, void (*action)(struct coherenceContext, struct node*, unsigned long, struct line*));
 
 /**
  * \brief Loads the entry in the cache and applies coherence protocol. 
@@ -46,6 +48,6 @@ void invalid_back(struct node *cache, unsigned long entry);
  * \param w If w = 1, modified line. 
  * \note Call add_line_block.
  */
-void add_line_cache(struct node *cache, unsigned long entry, int w);
+void add_line_cache(struct node *cache, unsigned long entry);
 
 #endif

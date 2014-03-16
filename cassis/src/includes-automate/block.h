@@ -20,23 +20,12 @@
 #include "line.h"
 
 
-
-/**
- * \struct block
- * \brief Abstract Data Type of a block.
- */
-struct block {
-  int nb_ways;         /**< Number of lines in the block. */
-  int linesize;        /**< Line size. */
-  struct line **lines; /**< Tabular of line structure pointer. */
-};
-
 /**
  * \brief Initialization of several block and associated lines.
  * \return Return \a nb_blocks initialized blocks, 
  *  each contains \a nb_ways initialized lines.
  */
-struct block **init_block(int nb_blocks, int nb_ways, int linesize);
+struct block **init_block(int nb_blocks, int nb_ways, int linesize, enum cache_coherence type);
 
 /**
  * \brief Data removal. Contained lines are too free. 

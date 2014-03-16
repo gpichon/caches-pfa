@@ -1,19 +1,8 @@
-#ifndef __COHERENCE_H__
-#define __COHERENCE_H__
+#ifndef COHERENCE_H
+#define COHERENCE_H
 
-#include "coherence_sm.h"
-
-
-struct coherence
-{
-	struct coherenceContext _fsm;
-};
-
-int is_dirty();
-
-int exist_somewhere();
-
-int exist_state(char);
+#include "common_types.h"
+#include "node.h"
 
 void coherence_init(struct coherence*, int);
 
