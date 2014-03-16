@@ -31,16 +31,6 @@ struct line** init_lines(int nb_ways, enum cache_coherence type);
  */
 void delete_lines(struct line **lines, int nb_ways);
 
-/* Setters */
-void invalid_line(struct line *line);
-void modify_line(struct line *line);
-void share_line(struct line *line);
-void exclusive_line(struct line *line);
-void forward_line(struct line *line);
-void owned_line(struct line *line);
-
-void dirty_line(struct line *line, int w);
-
 /* Getters */
 bool is_dirty(struct line *line);
 bool is_valid(struct line *line);

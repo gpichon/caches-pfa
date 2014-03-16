@@ -46,7 +46,7 @@ RM_F=           rm -f
 
 all :           $(OBJECTS)
 
-../../obj/%.o :	%.c $(HEADERS)
+../../obj/%.o :	%.c
 		@$(CC) $(CFLAGS) -c $< -o $@
 		$(info $(TEXT))
 		$(info $*.c)

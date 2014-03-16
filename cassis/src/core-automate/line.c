@@ -42,38 +42,6 @@ void delete_lines(struct line **lines, int nb_ways) {
   free(lines);
 }
 
-void invalid_line(struct line *line) {
-  line->status = I;
-  line->dirty = 0;
-}
-
-void modify_line(struct line *line) {
-  line->status = M;
-  line->dirty = 1;
-}
-
-void share_line(struct line *line) {
-  line->status = S;
-  line->dirty = 0;
-}
-
-void exclusive_line(struct line *line) {
-  line->status = E;
-  line->dirty = 0;
-}
-
-void forward_line(struct line *line) {
-  line->status = F;
-}
-
-void owned_line(struct line *line) {
-  line->status = O;
-}
-
-void dirty_line(struct line *line, int w){
-  line->dirty = w;
-}
-
 bool is_valid(struct line *line) {
   return (line->status > 0);
 }
