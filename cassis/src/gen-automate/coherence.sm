@@ -60,8 +60,8 @@ Default
 
 I
 {
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 1]     S       {}                  
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 0]    E       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 1]     S       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    E       {}                  
 	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {}                  	
 }
 
@@ -107,8 +107,8 @@ Default
 
 I
 {
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 1]     S       {}                  
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 0]    O       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 1]     S       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    O       {}                  
 	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {}                  	
 }
 
@@ -153,10 +153,10 @@ Default
 
 I
 {
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 1]     S       {}                  
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 0]    E       {}                  
-	i_modify(n: struct node*, i: unsigned long, l: struct line*) [exist_somewhere() == 1]     O       {}                  	
-	i_modify(n: struct node*, i: unsigned long, l: struct line*) [exist_somewhere() == 0]     M       {}
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 1]     S       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    E       {}                  
+	i_modify(n: struct node*, i: unsigned long, l: struct line*) [is_in_level(n,i,I) == 1]     O       {}                  	
+	i_modify(n: struct node*, i: unsigned long, l: struct line*) [is_in_level(n,i,I) == 0]     M       {}
 }
 
 M
@@ -168,10 +168,10 @@ M
 
 S
 {
-	i_modify(n: struct node*, i: unsigned long, l: struct line*)  [exist_somewhere() == 1]     O       {}                  
-	a_del(n: struct node*, i: unsigned long, l: struct line*)  [exist_somewhere() == 1 && is_dirty(l) == 1 && exist_state('O') == 0]     O       {}
-	i_modify(n: struct node*, i: unsigned long, l: struct line*)     [exist_somewhere() == 0]     M       {}
-	a_del(n: struct node*, i: unsigned long, l: struct line*)    [exist_somewhere() == 0 && is_dirty(l) == 1]   M       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,I) == 1]     O       {}                  
+	a_del(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,I) == 1 && is_dirty(l) == 1 && is_in_level(n,i,O) == 0]     O       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)     [is_in_level(n,i,I) == 0]     M       {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)    [is_in_level(n,i,I) == 0 && is_dirty(l) == 1]   M       {}
 }
 
 E
@@ -186,7 +186,7 @@ O
 {                 
 	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
 	a_modify(n: struct node*, i: unsigned long, l: struct line*)       S       {}
-	a_del(n: struct node*, i: unsigned long, l: struct line*) [exist_somewhere() == 0]   M    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*) [is_in_level(n,i,I) == 0]   M    {}
 }
 
 
@@ -208,10 +208,10 @@ Default
 
 I
 {
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_state('E') == 1 || exist_state('M') == 1]     F       {}                  
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_state('F') == 1]    S       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,E) == 1 || is_in_level(n,i,M) == 1]     F       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,F) == 1]    S       {}                  
 	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {}
-        i_read(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 0]    E       {}              	
+        i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    E       {}              	
 }
 
 M
@@ -225,7 +225,7 @@ S
 {
 	i_modify(n: struct node*, i: unsigned long, l: struct line*)     M       {}
 	i_del(n: struct node*, i: unsigned long, l: struct line*)        I       {}                  
-	a_del(n: struct node*, i: unsigned long, l: struct line*)  [exist_state('S') == 1 && exist_state('F') == 0]     F       {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,S) == 1 && is_in_level(n,i,F) == 0]     F       {}
 }
 
 E
@@ -238,7 +238,7 @@ E
 
 F
 {
-	a_del(n: struct node*, i: unsigned long, l: struct line*)   [exist_somewhere() == 0]      E       {} //utile ? autant la laisser en F ...
+	a_del(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]      E       {} //utile ? autant la laisser en F
 	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
 	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
 	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}              

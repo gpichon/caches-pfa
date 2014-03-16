@@ -26,7 +26,7 @@ int is_in_level(struct node *node,unsigned long entry, enum status status);
  * \param cache Is the cache which launched a share level procedure on its level.
  * \return Return 1 if there is entry is somewhere else in level.  
  */
-void share_level(struct node *node, unsigned long entry, void (*action)(struct coherenceContext*, struct node*, unsigned long, struct line*));
+void share_level(struct node *node, unsigned long entry,void (*action)(struct coherenceContext*, struct node*, unsigned long, struct line*));
 
 /**
  * \brief Loads the entry in the cache and applies coherence protocol. 

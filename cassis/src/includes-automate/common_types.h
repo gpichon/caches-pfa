@@ -14,7 +14,7 @@
 #define TYPES_H
 
 #include <stdbool.h>
-
+#define NO_COHERENCE_SM_MACRO
 #include "coherence_sm.h"
 
 /* fsm */

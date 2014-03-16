@@ -753,7 +753,7 @@ static void MESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_I)\n");
     }
-    if (exist_somewhere() == 1) {
+    if (is_in_level(n,i,I) == 1) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESI_&MESI_I.i_read(n, i, l)\n");
@@ -765,7 +765,7 @@ static void MESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned
         setState(fsm, &MESI_S);
         ENTRY_STATE(getState(fsm));
     }
-    else if (exist_somewhere() == 0) {
+    else if (is_in_level(n,i,I) == 0) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESI_&MESI_I.i_read(n, i, l)\n");
@@ -1200,7 +1200,7 @@ static void MOSI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_I)\n");
     }
-    if (exist_somewhere() == 1) {
+    if (is_in_level(n,i,I) == 1) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOSI_&MOSI_I.i_read(n, i, l)\n");
@@ -1212,7 +1212,7 @@ static void MOSI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned
         setState(fsm, &MOSI_S);
         ENTRY_STATE(getState(fsm));
     }
-    else if (exist_somewhere() == 0) {
+    else if (is_in_level(n,i,I) == 0) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOSI_&MOSI_I.i_read(n, i, l)\n");
@@ -1637,7 +1637,7 @@ static void MOESI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_I)\n");
     }
-    if (exist_somewhere() == 1) {
+    if (is_in_level(n,i,I) == 1) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_I.i_modify(n, i, l)\n");
@@ -1649,7 +1649,7 @@ static void MOESI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsig
         setState(fsm, &MOESI_O);
         ENTRY_STATE(getState(fsm));
     }
-    else if (exist_somewhere() == 0) {
+    else if (is_in_level(n,i,I) == 0) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_I.i_modify(n, i, l)\n");
@@ -1672,7 +1672,7 @@ static void MOESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigne
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_I)\n");
     }
-    if (exist_somewhere() == 1) {
+    if (is_in_level(n,i,I) == 1) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_I.i_read(n, i, l)\n");
@@ -1684,7 +1684,7 @@ static void MOESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigne
         setState(fsm, &MOESI_S);
         ENTRY_STATE(getState(fsm));
     }
-    else if (exist_somewhere() == 0) {
+    else if (is_in_level(n,i,I) == 0) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_I.i_read(n, i, l)\n");
@@ -1765,7 +1765,7 @@ static void MOESI_S_a_del(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_S)\n");
     }
-    if (exist_somewhere() == 1 && is_dirty(l) == 1 && exist_state('O') == 0) {
+    if (is_in_level(n,i,I) == 1 && is_dirty(l) == 1 && is_in_level(n,i,O) == 0) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_S.a_del(n, i, l)\n");
@@ -1777,7 +1777,7 @@ static void MOESI_S_a_del(struct coherenceContext *fsm, struct node* n, unsigned
         setState(fsm, &MOESI_O);
         ENTRY_STATE(getState(fsm));
     }
-    else if (exist_somewhere() == 0 && is_dirty(l) == 1) {
+    else if (is_in_level(n,i,I) == 0 && is_dirty(l) == 1) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_S.a_del(n, i, l)\n");
@@ -1800,7 +1800,7 @@ static void MOESI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_S)\n");
     }
-    if (exist_somewhere() == 1) {
+    if (is_in_level(n,i,I) == 1) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_S.i_modify(n, i, l)\n");
@@ -1812,7 +1812,7 @@ static void MOESI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsig
         setState(fsm, &MOESI_O);
         ENTRY_STATE(getState(fsm));
     }
-    else if (exist_somewhere() == 0) {
+    else if (is_in_level(n,i,I) == 0) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_S.i_modify(n, i, l)\n");
@@ -1911,7 +1911,7 @@ static void MOESI_O_a_del(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_O)\n");
     }
-    if (exist_somewhere() == 0) {
+    if (is_in_level(n,i,I) == 0) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_O.a_del(n, i, l)\n");
@@ -2223,7 +2223,7 @@ static void MESIF_I_i_read(struct coherenceContext *fsm, struct node* n, unsigne
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_I)\n");
     }
-    if (exist_state('E') == 1 || exist_state('M') == 1) {
+    if (is_in_level(n,i,E) == 1 || is_in_level(n,i,M) == 1) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESIF_&MESIF_I.i_read(n, i, l)\n");
@@ -2235,7 +2235,7 @@ static void MESIF_I_i_read(struct coherenceContext *fsm, struct node* n, unsigne
         setState(fsm, &MESIF_F);
         ENTRY_STATE(getState(fsm));
     }
-    else if (exist_state('F') == 1) {
+    else if (is_in_level(n,i,F) == 1) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESIF_&MESIF_I.i_read(n, i, l)\n");
@@ -2247,7 +2247,7 @@ static void MESIF_I_i_read(struct coherenceContext *fsm, struct node* n, unsigne
         setState(fsm, &MESIF_S);
         ENTRY_STATE(getState(fsm));
     }
-    else if (exist_somewhere() == 0) {
+    else if (is_in_level(n,i,I) == 0) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESIF_&MESIF_I.i_read(n, i, l)\n");
@@ -2328,7 +2328,7 @@ static void MESIF_S_a_del(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_S)\n");
     }
-    if (exist_state('S') == 1 && exist_state('F') == 0) {
+    if (is_in_level(n,i,S) == 1 && is_in_level(n,i,F) == 0) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESIF_&MESIF_S.a_del(n, i, l)\n");
@@ -2464,7 +2464,7 @@ static void MESIF_F_a_del(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_F)\n");
     }
-    if (exist_somewhere() == 0) {
+    if (is_in_level(n,i,I) == 0) {
         EXIT_STATE(getState(fsm));
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESIF_&MESIF_F.a_del(n, i, l)\n");

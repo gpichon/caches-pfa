@@ -46,7 +46,7 @@ int is_in_level(struct node *node, unsigned long entry, enum status status){
 /* Return 1 if there is entry is somewhere else in level
    Used for a miss when load or a hit when store 
    the parameter node is the cache which launched a share level procedure on its level */
-void share_level(struct node *node, unsigned long entry, void (*action)(struct coherenceContext*, struct node*, unsigned long, struct line*)) {
+void share_level(struct node *node, unsigned long entry,void (*action)(struct coherenceContext*, struct node*, unsigned long, struct line*)) {
     
   struct node *current_node = get_sibling(node);
   struct cache *current_cache;
@@ -78,7 +78,7 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
 
       line = line_in_cache(current_cache, entry);
       coherenceContext_i_read(&line->coher->_fsm, current_node, entry, line);
-      share_level(current_node, entry, &coherenceContext_a_read);
+      share_level(current_node, entry, coherenceContext_a_read);
 
       /* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
       if (is_cache_exclusive(current_cache)){

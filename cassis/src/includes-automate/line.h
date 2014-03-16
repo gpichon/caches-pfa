@@ -18,7 +18,7 @@
 #include <stdbool.h>
 #include <assert.h>
 #include "common_types.h"
-
+#include "coherence.h"
 
 /**
  * \brief Initialization of \a nb_ways new lines. 

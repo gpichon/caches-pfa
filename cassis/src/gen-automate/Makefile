@@ -11,8 +11,6 @@ SOURCES=        $(SM_SOURCES:.sm=_sm.c) \
 HEADERS=        $(SM_SOURCES:.sm=_sm.h) \
 		../includes-automate/coherence.h
 OBJECTS=        $(SOURCES:.c=.o)
-TARGET=         coherence.o
-CHECKSTRING=    ./$(TARGET)
 
 # Uncomment to turn on debug message generation.
 TRACE=          -g
@@ -45,15 +43,12 @@ RM_F=           rm -f
 %_sm.html :     %.sm
 		$(SMC) -table $<
 
-all :           $(TARGET)
-
-
-$(TARGET) :     $(HEADERS) $(SOURCES)
+all :           $(HEADERS) $(SOURCES)
 		$(CC) $(CFLAGS) $(SOURCES)
 		$(info $(TEXT))
-		$(info $*.c)
+		$(info $(SOURCES))
+		mv *.o ../../obj/
 
-test :          $(TARGET)
 
 
 graph :         $(SM_SOURCES:%.sm=%_sm.dot)
@@ -63,8 +58,6 @@ png :           $(SM_SOURCES:%.sm=%_sm.png)
 table :         $(SM_SOURCES:%.sm=%_sm.html)
 
 clean :
-		-$(RM_F) $(TARGET)
-		-$(RM_F) $(OBJECTS)
 		-$(RM_F) *_sm.h
 		-$(RM_F) *_sm.c
 		-$(RM_F) *_sm.dot

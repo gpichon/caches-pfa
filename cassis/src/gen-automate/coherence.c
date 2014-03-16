@@ -1,30 +1,26 @@
 #include "coherence.h"
 
-void coherence_init(struct coherence *this, int coher)
+void coherence_init(struct coherence *this, enum cache_coherence coher)
 {
   coherenceContext_Init(&this->_fsm, this);
   switch (coher){
-  case 0: //MSI
+  case MSI:
     coherenceContext_MSI(&this->_fsm);
     break;
-  case 1: //MESI
+  case MESI:
     coherenceContext_MESI(&this->_fsm);
     break;
-  case 2: //MOESI
+  case MOSI:
     coherenceContext_MOSI(&this->_fsm);
     break;
-  case 3: //MOSI
+  case MOESI: 
     coherenceContext_MOESI(&this->_fsm);
     break;
-  case 4: //MESIF
+  case MESIF:
     coherenceContext_MESIF(&this->_fsm);
     break;
   default:
     coherenceContext_MSI(&this->_fsm);
     break;
   }
-}
-
-void foo(){
-  coherenceContext_a_aread();
 }
