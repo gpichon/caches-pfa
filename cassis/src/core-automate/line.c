@@ -12,7 +12,7 @@
 #include "line.h"
 
 /* Data allocations */
-struct line** init_lines(int nb_ways) {
+struct line** init_lines(int nb_ways, enum cache_coherence type) {
   struct line **lines = malloc(nb_ways * sizeof(struct line *));
   assert(lines!=NULL);
   int i;
@@ -24,6 +24,9 @@ struct line** init_lines(int nb_ways) {
     line->status = 0;
     line->priority = 0;
     line->dirty = 0;
+    struct coherence *policy = malloc(sizeof(struct coherence));
+    line->coher = policy;
+    coherence_init(policy,type);
     lines[i] = line;
   }
   return lines;
@@ -33,6 +36,7 @@ struct line** init_lines(int nb_ways) {
 void delete_lines(struct line **lines, int nb_ways) {
   int i;
   for (i=0; i<nb_ways; i++) {
+    free(lines[i]->coher);
     free(lines[i]);
   }
   free(lines);
@@ -73,19 +77,6 @@ void dirty_line(struct line *line, int w){
 bool is_valid(struct line *line) {
   return (line->status > 0);
 }
-
-bool is_exclusive(struct line *line) {
-  return (line->status == E);
-}
-
-bool is_modified(struct line *line) {
-  return line->dirty;
-}
-
-bool is_shared(struct line *line) {
-  return (line->status == S);
-}
-
 
 bool is_dirty(struct line *line) {
   return line->dirty;

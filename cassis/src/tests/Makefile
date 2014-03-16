@@ -1,10 +1,13 @@
-TEXT := >>>>>Compilation of a core file finished<<<<<
+TEXT := >>>>>Compilation of a test file finished<<<<<
 
 include ../conf.make
 
 
-
-CFLAGS += -I ../includes
+ifeq ($(AUTOMATE),NO)
+	CFLAGS += -I ../includes
+else
+	CFLAGS += -I ../includes-automate
+endif
 SRCS=$(wildcard *.c) 
 OBJS=$(patsubst %.c,../../obj/%.o,$(SRCS))
 
@@ -26,4 +29,3 @@ all:$(OBJS)
 clean: 
 	rm -f *.P
 	rm -f $(OBJS)
-

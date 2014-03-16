@@ -1,9 +1,14 @@
 TEXT1 := >>>>>main compiled<<<<<
 TEXT2 := >>>>>test main compiled<<<<<
 
-include includes/conf.make
+include conf.make
 
-CFLAGS += -I includes
+ifeq ($(AUTOMATE),NO)
+	CFLAGS += -I includes
+else
+	CFLAGS += -I includes-automate
+endif
+
 SRC:=main.c
 OBJ:=main.o
 SRC_TEST:=main_test.c
@@ -19,7 +24,12 @@ test: test_exe ../bin/test
 #règles pour le main
 
 exe:
+ifeq ($(AUTOMATE),NO)
 	@make -s -C core
+else
+	@make -s -C gen-automate
+	@make -s -C core-automate
+endif
 
 ../bin/simulator: ../obj/$(OBJ) $(subst ../obj/$(OBJ),,$(subst ../obj/$(OBJ_TEST),,$(OBJS)))
 	@$(CC) $(CFLAGS)  $(subst ../obj/$(OBJ_TEST),,$(OBJS)) -o $@ $(XMLFLAGS)
@@ -42,7 +52,12 @@ endif
 #règles pour le main de test
 
 test_exe:
+ifeq ($(AUTOMATE),NO)
 	@make -s -C core
+else
+	@make -s -C gen-automate
+	@make -s -C core-automate
+endif
 	@make -s -C tests
 
 ../bin/test:  ../obj/$(OBJ_TEST) $(subst ../obj/$(OBJ),,$(subst ../obj/$(OBJ_TEST),,$(OBJS)))
@@ -70,3 +85,5 @@ clean:
 	rm -f ../bin/test ../obj/$(OBJ_TEST) $(subst .c,.P,$(SRC_TEST))
 	@make -s -C core clean
 	@make -s -C tests clean
+	@make -s -C core-automate clean
+	@make -s -C gen-automate clean

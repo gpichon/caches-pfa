@@ -1,0 +1,258 @@
+%declare struct node;
+%declare struct line;
+
+%start Init::Start
+%class coherence
+%header coherence.h
+
+%map Init
+%%
+// State    Transition  End State       Action(s)
+Start
+{
+            MSI        jump(MSI::I)     {}
+            MESI       jump(MESI::I)    {}
+            MOSI       jump(MOSI::I)    {}
+            MOESI      jump(MOESI::I)   {}
+            MESIF      jump(MESIF::I)   {}
+}
+%%
+
+%map MSI
+%%
+// State    Transition  End State       Action(s)
+
+I
+{
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}
+	i_read(n: struct node*, i: unsigned long, l: struct line*)         S       {}                  
+}
+
+M
+{
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)      M        {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)         I        {}              
+}
+
+S
+{
+	a_read(n: struct node*, i: unsigned long, l: struct line*)        S       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)      I       {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)         I       {}                 
+}
+
+
+Default
+{
+	i_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+
+}
+%%
+
+%map MESI
+%%
+// State    Transition  End State       Action(s)
+
+I
+{
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 1]     S       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    E       {}                  
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {}                  	
+}
+
+M
+{
+	a_read(n: struct node*, i: unsigned long, l: struct line*)      S       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)       I       {}                  
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)    I       {}                  	
+}
+
+S
+{
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}
+}
+
+E
+{
+	a_read(n: struct node*, i: unsigned long, l: struct line*)         S       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}
+}
+
+
+Default
+{
+	i_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+
+}
+%%
+
+
+%map MOSI
+%%
+// State    Transition  End State       Action(s)
+
+I
+{
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 1]     S       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    O       {}                  
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {}                  	
+}
+
+M
+{
+	a_read(n: struct node*, i: unsigned long, l: struct line*)      S       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)       I       {}                  
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)    I       {}                  	
+}
+
+S
+{
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}
+}
+
+O
+{
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}
+}
+
+
+Default
+{
+	i_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+
+}
+%%
+
+
+%map MOESI
+%%
+// State    Transition  End State       Action(s)
+
+I
+{
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 1]     S       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    E       {}                  
+	i_modify(n: struct node*, i: unsigned long, l: struct line*) [is_in_level(n,i,I) == 1]     O       {}                  	
+	i_modify(n: struct node*, i: unsigned long, l: struct line*) [is_in_level(n,i,I) == 0]     M       {}
+}
+
+M
+{
+	a_read(n: struct node*, i: unsigned long, l: struct line*)      O       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)       I       {}                  
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)    S       {}                  	
+}
+
+S
+{
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,I) == 1]     O       {}                  
+	a_del(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,I) == 1 && is_dirty(l) == 1 && is_in_level(n,i,O) == 0]     O       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)     [is_in_level(n,i,I) == 0]     M       {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)    [is_in_level(n,i,I) == 0 && is_dirty(l) == 1]   M       {}
+}
+
+E
+{
+	a_read(n: struct node*, i: unsigned long, l: struct line*)         S       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       S       {}
+}
+
+O
+{                 
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       S       {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*) [is_in_level(n,i,I) == 0]   M    {}
+}
+
+
+Default
+{
+	i_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+
+}
+%%
+
+%map MESIF
+%%
+// State    Transition  End State       Action(s)
+
+I
+{
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,E) == 1 || is_in_level(n,i,M) == 1]     F       {}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,F) == 1]    S       {}                  
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {}
+        i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    E       {}              	
+}
+
+M
+{
+	a_read(n: struct node*, i: unsigned long, l: struct line*)      S       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)       I       {}                  
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)    I       {}                  	
+}
+
+S
+{
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)     M       {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)        I       {}                  
+	a_del(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,S) == 1 && is_in_level(n,i,F) == 0]     F       {}
+}
+
+E
+{
+	a_read(n: struct node*, i: unsigned long, l: struct line*)         S       {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}             
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}
+}
+
+F
+{
+	a_del(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]      E       {} //utile ? autant la laisser en F
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       M       {}                  
+	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)       I       {}              
+}
+
+
+Default
+{
+	i_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+
+}
+%%

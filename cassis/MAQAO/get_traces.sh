@@ -20,12 +20,7 @@ gcc -o test $1 -DKERNEL=$2 -fopenmp -g
 ./maqao instrumentation.lua test "$2.*" > /dev/null
 ./test_i_mtl 2> out
 
-i=0
-while ((i < $3))
-do
-cat out | awk '$3 ~ /'"$i"'/' > trace$i
-((i += 1))
-done 
+awk '/STORE|LOAD/ {print $0 > "trace"$3}' out
 
 echo "Removing files"
 rm test_i_mtl
