@@ -1,0 +1,14 @@
+#!/bin/bash
+
+a=1
+
+if [ "$#" == "$a" ]
+then echo "OK"
+
+echo "Line to follow"
+echo $1
+
+awk '$0 ~ /SRC@'"27"'/ {print "instr:"$1}' instr
+
+else echo "Usage: ./follow_instr line_number"
+fi
