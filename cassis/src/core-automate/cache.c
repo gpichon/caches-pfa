@@ -126,7 +126,8 @@ struct line *line_in_cache(struct cache *cache, unsigned long entry) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-    if (is_valid(line) && (line->first_case == entry / cache->linesize * cache->linesize)) {
+    /* if (is_valid(line) && (line->first_case == entry / cache->linesize * cache->linesize)) { */
+    if (line->first_case == entry / cache->linesize * cache->linesize) {
       return line;
     }
   }

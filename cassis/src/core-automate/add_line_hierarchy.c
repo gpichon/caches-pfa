@@ -40,9 +40,6 @@ int is_in_level(struct node *node, unsigned long entry, enum status status){
   return 0;
 }
 
-
-
-
 /* Return 1 if there is entry is somewhere else in level
    Used for a miss when load or a hit when store 
    the parameter node is the cache which launched a share level procedure on its level */
@@ -157,6 +154,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 	share_level(current_node, entry, &coherenceContext_a_modify);
 	update_lines(current_cache, entry);
       }
+
       /* Snooping case: get the data from a level cache if possible */
       if (is_snooping(current_cache)){
 	up_stat(current_cache, entry, SNOOPING_BROADCAST);
@@ -213,6 +211,8 @@ void add_line_cache(struct node *node, unsigned long entry) {
   line->first_case = entry / cache->linesize * cache->linesize;
   line->use = 0;
   line->priority = 0;
+  line->dirty = 0;
+  line->status = I;
   struct coherence *policy = malloc(sizeof(struct coherence));
   line->coher = policy;
   coherence_init(policy,cache->policy);
