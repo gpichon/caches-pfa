@@ -73,7 +73,8 @@ bool fatal = false;
 
 struct level{
   int type;
-  void (*coherence_protocol) (struct cache *);
+  /* void (*coherence_protocol) (struct cache *); */
+  enum cache_coherence coherence;
   bool snooping;
   bool directory_manager;
 };
@@ -98,14 +99,14 @@ void (*get_replacement_function(char *name)) (struct cache *){
  * \brief Compare the coherence policy's name in order to choose the associated replacement function.
  * \param name Name to compare with implemented policies.
  */
-void (*get_coherence_function(char *name)) (struct cache *){
+enum cache_coherence coherence (char *name){
   if(strcmp(name, "MSI") == 0)
-    return coherence_MSI;
+    return MSI;
   if(strcmp(name, "MESI") == 0)
-    return coherence_MESI;
+    return MESI;
   if(display_warning)
     fprintf(stderr, "\033[31mWARNING\033[0m: Coherence protocol not recognized: %s , set to MESI\n", name);
-  return coherence_MESI;
+  return MSI;
 }
 
 /**
@@ -230,7 +231,7 @@ int parse_archi_file(const char *filename, struct architecture *archi){
     GET_ATTRIBUT_TXT("type", cur, buf2);
     L[j].type = get_cache_type(buf2);
     GET_ATTRIBUT_TXT("coherence_protocol", cur, buf2);
-    L[j].coherence_protocol = get_coherence_function(buf2);
+    L[j].coherence = coherence(buf2);
     GET_ATTRIBUT_TXT("snooping", cur, buf2);
     L[j].snooping = get_bool(buf2);
     GET_ATTRIBUT_TXT("directory_manager", cur, buf2);
@@ -251,7 +252,7 @@ int parse_archi_file(const char *filename, struct architecture *archi){
     GET_ATTRIBUT_INT("cache_associativity", cur, nb_ways);
     nb_blocks = size / (linesize * nb_ways);
     GET_ATTRIBUT_TXT("replacement_protocol", cur, replacement_prot);
-    c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), L[depth-1].coherence_protocol, L[depth-1].type, L[depth-1].snooping, L[depth-1].directory_manager);
+    c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), MESI, L[depth-1].type, L[depth-1].snooping, L[depth-1].directory_manager);
     n = init_node();
     set_data(n, c);
 

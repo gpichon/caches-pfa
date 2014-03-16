@@ -9,11 +9,9 @@
  *
  */
 
-#include "coherence.h"
 #include "add_line_hierarchy.h"
 #include "directory_manager.h"
-
-
+#include "coherence.h"
 
 /** 
  * If status > I, return 1 if the entry exist in the level with this status,
@@ -21,7 +19,7 @@
  * return 0 otherwise.
  */
 
-int is_in_level(struct node *node,unsigned long entry, enum status status){
+int is_in_level(struct node *node, unsigned long entry, enum status status){
   struct node *current_node = get_sibling(node);
   struct cache *current_cache;
   struct line *line;
@@ -48,7 +46,7 @@ int is_in_level(struct node *node,unsigned long entry, enum status status){
 /* Return 1 if there is entry is somewhere else in level
    Used for a miss when load or a hit when store 
    the parameter node is the cache which launched a share level procedure on its level */
-void share_level(struct node *node, unsigned long entry, void (*action)(struct coherenceContext, struct node*, unsigned long, struct line*)) {
+void share_level(struct node *node, unsigned long entry, void (*action)(struct coherenceContext*, struct node*, unsigned long, struct line*)) {
     
   struct node *current_node = get_sibling(node);
   struct cache *current_cache;
@@ -59,7 +57,7 @@ void share_level(struct node *node, unsigned long entry, void (*action)(struct c
     current_cache = get_cache(current_node);
     if (is_in_cache(current_cache, entry)) {
       line = line_in_cache(current_cache, entry);
-      action(line->coher->_fsm, current_node, entry, line);
+      action(&line->coher->_fsm, current_node, entry, line);
     }
     current_node = get_sibling(current_node);
   }
@@ -79,14 +77,14 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
       up_stat(current_cache, entry, HIT);
 
       line = line_in_cache(current_cache, entry);
-      coherenceContext_i_read(line->coher->_fsm, current_node, entry, line);
-      share_level(current_node, entry, coherenceContext_a_read);
+      coherenceContext_i_read(&line->coher->_fsm, current_node, entry, line);
+      share_level(current_node, entry, &coherenceContext_a_read);
 
       /* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
       if (is_cache_exclusive(current_cache)){
 	up_stat(current_cache, entry, TYPES_EVINCTION);
-	coherenceContext_i_del(line->coher->_fsm, current_node, entry, line);
-	share_level(current_node, entry, coherenceContext_a_del);
+	coherenceContext_i_del(&line->coher->_fsm, current_node, entry, line);
+	share_level(current_node, entry, &coherenceContext_a_del);
       }
       res = 1;
     }
@@ -98,8 +96,8 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
 	add_line_cache(current_node, entry);
 	line = line_in_cache(current_cache, entry);
 	/*link with state machine */
-	coherenceContext_i_read(line->coher->_fsm, current_node, entry, line);
-	share_level(current_node, entry, coherenceContext_a_read);
+	coherenceContext_i_read(&line->coher->_fsm, current_node, entry, line);
+	share_level(current_node, entry, &coherenceContext_a_read);
       }
 	
       /* Snooping case: get the data from a level cache if possible */
@@ -139,13 +137,13 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       res = 1;
 
       line = line_in_cache(current_cache, entry);
-      coherenceContext_i_modify(line->coher->_fsm, current_node, entry, line);
-      share_level(current_node, entry, coherenceContext_a_modify);
+      coherenceContext_i_modify(&line->coher->_fsm, current_node, entry, line);
+      share_level(current_node, entry, &coherenceContext_a_modify);
 
       /* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
       if(is_cache_exclusive(current_cache)){
-	coherenceContext_i_del(line->coher->_fsm, current_node, entry, line);
-	share_level(current_node, entry, coherenceContext_a_del);
+	coherenceContext_i_del(&line->coher->_fsm, current_node, entry, line);
+	share_level(current_node, entry, &coherenceContext_a_del);
 	up_stat(current_cache, entry, TYPES_EVINCTION);
       }
     }
@@ -155,14 +153,14 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       if (is_inclusive_like(current_cache)){	
 	add_line_cache(current_node, entry);
 	line = line_in_cache(current_cache, entry);
-	coherenceContext_i_modify(line->coher->_fsm, current_node, entry, line);
-	share_level(current_node, entry, coherenceContext_a_modify);
+	coherenceContext_i_modify(&line->coher->_fsm, current_node, entry, line);
+	share_level(current_node, entry, &coherenceContext_a_modify);
 	update_lines(current_cache, entry);
       }
       /* Snooping case: get the data from a level cache if possible */
       if (is_snooping(current_cache)){
 	up_stat(current_cache, entry, SNOOPING_BROADCAST);
-	if (is_in_level(current_node,entry)){
+	if (is_in_level(current_node, entry, I)){
 	  up_stat(current_cache, entry, VALUE_BY_SNOOPING);
 	  res = 1;
 	}
@@ -196,8 +194,8 @@ void invalid_back(struct node *node, unsigned long entry) {
     current_cache = get_cache(current_node);
     if (is_in_cache(current_cache, entry)){
       line = line_in_cache(current_cache, entry);
-      coherenceContext_i_del(line->coher->_fsm, current_node, entry, line);
-      share_level(current_node, entry, coherenceContext_a_del);
+      coherenceContext_i_del(&line->coher->_fsm, current_node, entry, line);
+      share_level(current_node, entry, &coherenceContext_a_del);
       up_stat(current_cache, entry, TYPES_EVINCTION);
     }
     invalid_back(current_node, entry);
@@ -241,18 +239,18 @@ void add_line_cache(struct node *node, unsigned long entry) {
 	if (!is_in_cache(parent, del_data)){
 	  add_line_cache(get_parent(node), del_data);
 	  if (!is_dirty(del_line)) {
-	    coherenceContext_i_read(line->coher->_fsm, get_parent(node), del_data, line);
-	    share_level(get_parent(node), del_data, coherenceContext_a_read);
+	    coherenceContext_i_read(&line->coher->_fsm, get_parent(node), del_data, line);
+	    share_level(get_parent(node), del_data, &coherenceContext_a_read);
 	  }  
 	} 
 	line = line_in_cache(parent, del_data);
 	if (is_dirty(del_line)) {
 	  up_stat(cache, entry, WRITE_BACK);
-	  coherenceContext_i_modify(line->coher->_fsm, get_parent(node), del_data, line);
-	  share_level(get_parent(node), del_data, coherenceContext_a_modify);	    
+	  coherenceContext_i_modify(&line->coher->_fsm, get_parent(node), del_data, line);
+	  share_level(get_parent(node), del_data, &coherenceContext_a_modify);	    
 	}	
       }
-      share_level(node, del_data, coherenceContext_a_del);
+      share_level(node, del_data, &coherenceContext_a_del);
     }
   }
   free(del_line->coher);
