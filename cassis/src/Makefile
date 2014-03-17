@@ -5,12 +5,14 @@ include conf.make
 
 ifeq ($(AUTOMATE),NO)
 	CFLAGS += -I includes
+	SRC:=main.c
+	OBJ:=main.o
 else
 	CFLAGS += -I includes-automate
+	SRC:=main_automate.c
+	OBJ:=main_automate.o
 endif
 
-SRC:=main.c
-OBJ:=main.o
 SRC_TEST:=main_test.c
 OBJ_TEST:=main_test.o
 OBJS=$(shell find ../obj -name '*.o')
