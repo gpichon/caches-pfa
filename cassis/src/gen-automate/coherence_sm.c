@@ -393,6 +393,7 @@ static void MSI_DefaultState_a_del(struct coherenceContext *fsm, struct node* n,
 #undef MSI_I_i_modify
 static void MSI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MSI_I)\n");
@@ -401,6 +402,8 @@ static void MSI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsigne
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MSI_&MSI_I.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_I.i_modify(n, i, l)\n");
     }
@@ -411,6 +414,7 @@ static void MSI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsigne
 #undef MSI_I_i_read
 static void MSI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MSI_I)\n");
@@ -419,6 +423,8 @@ static void MSI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned 
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MSI_&MSI_I.i_read(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_I.i_read(n, i, l)\n");
     }
@@ -431,6 +437,7 @@ const struct coherenceState MSI_I = { POPULATE_STATE(MSI_I), 1, "MSI_I" };
 #undef MSI_M_i_del
 static void MSI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MSI_M)\n");
@@ -439,6 +446,8 @@ static void MSI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned l
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MSI_&MSI_M.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_M.i_del(n, i, l)\n");
     }
@@ -449,6 +458,7 @@ static void MSI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned l
 #undef MSI_M_i_modify
 static void MSI_M_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MSI_M)\n");
@@ -457,6 +467,8 @@ static void MSI_M_i_modify(struct coherenceContext *fsm, struct node* n, unsigne
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MSI_&MSI_M.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_M.i_modify(n, i, l)\n");
     }
@@ -469,6 +481,7 @@ const struct coherenceState MSI_M = { POPULATE_STATE(MSI_M), 2, "MSI_M" };
 #undef MSI_S_a_modify
 static void MSI_S_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MSI_S)\n");
@@ -477,6 +490,8 @@ static void MSI_S_a_modify(struct coherenceContext *fsm, struct node* n, unsigne
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MSI_&MSI_S.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_S.a_modify(n, i, l)\n");
     }
@@ -487,6 +502,7 @@ static void MSI_S_a_modify(struct coherenceContext *fsm, struct node* n, unsigne
 #undef MSI_S_a_read
 static void MSI_S_a_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MSI_S)\n");
@@ -495,6 +511,8 @@ static void MSI_S_a_read(struct coherenceContext *fsm, struct node* n, unsigned 
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MSI_&MSI_S.a_read(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_S.a_read(n, i, l)\n");
     }
@@ -505,6 +523,7 @@ static void MSI_S_a_read(struct coherenceContext *fsm, struct node* n, unsigned 
 #undef MSI_S_i_del
 static void MSI_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MSI_S)\n");
@@ -513,6 +532,8 @@ static void MSI_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned l
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MSI_&MSI_S.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_S.i_del(n, i, l)\n");
     }
@@ -731,6 +752,7 @@ static void MESI_DefaultState_a_del(struct coherenceContext *fsm, struct node* n
 #undef MESI_I_i_modify
 static void MESI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_I)\n");
@@ -739,6 +761,8 @@ static void MESI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESI_&MESI_I.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_I.i_modify(n, i, l)\n");
     }
@@ -749,6 +773,7 @@ static void MESI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsign
 #undef MESI_I_i_read
 static void MESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_I)\n");
@@ -758,7 +783,8 @@ static void MESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESI_&MESI_I.i_read(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_share_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MESI_&MESI_I.i_read(n, i, l)\n");
         }
@@ -770,7 +796,8 @@ static void MESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESI_&MESI_I.i_read(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_exclusive_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MESI_&MESI_I.i_read(n, i, l)\n");
         }
@@ -786,6 +813,7 @@ const struct coherenceState MESI_I = { POPULATE_STATE(MESI_I), 4, "MESI_I" };
 #undef MESI_M_a_modify
 static void MESI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_M)\n");
@@ -794,6 +822,8 @@ static void MESI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESI_&MESI_M.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_M.a_modify(n, i, l)\n");
     }
@@ -804,6 +834,7 @@ static void MESI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsign
 #undef MESI_M_a_read
 static void MESI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_M)\n");
@@ -812,6 +843,8 @@ static void MESI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESI_&MESI_M.a_read(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_M.a_read(n, i, l)\n");
     }
@@ -822,6 +855,7 @@ static void MESI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigned
 #undef MESI_M_i_del
 static void MESI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_M)\n");
@@ -830,6 +864,8 @@ static void MESI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned 
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESI_&MESI_M.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_M.i_del(n, i, l)\n");
     }
@@ -842,6 +878,7 @@ const struct coherenceState MESI_M = { POPULATE_STATE(MESI_M), 5, "MESI_M" };
 #undef MESI_S_a_modify
 static void MESI_S_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_S)\n");
@@ -850,6 +887,8 @@ static void MESI_S_a_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESI_&MESI_S.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_S.a_modify(n, i, l)\n");
     }
@@ -860,6 +899,7 @@ static void MESI_S_a_modify(struct coherenceContext *fsm, struct node* n, unsign
 #undef MESI_S_i_del
 static void MESI_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_S)\n");
@@ -868,6 +908,8 @@ static void MESI_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned 
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESI_&MESI_S.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_S.i_del(n, i, l)\n");
     }
@@ -878,6 +920,7 @@ static void MESI_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned 
 #undef MESI_S_i_modify
 static void MESI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_S)\n");
@@ -886,6 +929,8 @@ static void MESI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESI_&MESI_S.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_S.i_modify(n, i, l)\n");
     }
@@ -898,6 +943,7 @@ const struct coherenceState MESI_S = { POPULATE_STATE(MESI_S), 6, "MESI_S" };
 #undef MESI_E_a_modify
 static void MESI_E_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_E)\n");
@@ -906,6 +952,8 @@ static void MESI_E_a_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESI_&MESI_E.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_E.a_modify(n, i, l)\n");
     }
@@ -916,6 +964,7 @@ static void MESI_E_a_modify(struct coherenceContext *fsm, struct node* n, unsign
 #undef MESI_E_a_read
 static void MESI_E_a_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_E)\n");
@@ -924,6 +973,8 @@ static void MESI_E_a_read(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESI_&MESI_E.a_read(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_E.a_read(n, i, l)\n");
     }
@@ -934,6 +985,7 @@ static void MESI_E_a_read(struct coherenceContext *fsm, struct node* n, unsigned
 #undef MESI_E_i_del
 static void MESI_E_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_E)\n");
@@ -942,6 +994,8 @@ static void MESI_E_i_del(struct coherenceContext *fsm, struct node* n, unsigned 
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESI_&MESI_E.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_E.i_del(n, i, l)\n");
     }
@@ -952,6 +1006,7 @@ static void MESI_E_i_del(struct coherenceContext *fsm, struct node* n, unsigned 
 #undef MESI_E_i_modify
 static void MESI_E_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESI_E)\n");
@@ -960,6 +1015,8 @@ static void MESI_E_i_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESI_&MESI_E.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_E.i_modify(n, i, l)\n");
     }
@@ -1178,6 +1235,7 @@ static void MOSI_DefaultState_a_del(struct coherenceContext *fsm, struct node* n
 #undef MOSI_I_i_modify
 static void MOSI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_I)\n");
@@ -1186,6 +1244,8 @@ static void MOSI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOSI_&MOSI_I.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOSI_&MOSI_I.i_modify(n, i, l)\n");
     }
@@ -1196,6 +1256,7 @@ static void MOSI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsign
 #undef MOSI_I_i_read
 static void MOSI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_I)\n");
@@ -1205,7 +1266,8 @@ static void MOSI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOSI_&MOSI_I.i_read(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_share_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MOSI_&MOSI_I.i_read(n, i, l)\n");
         }
@@ -1217,7 +1279,8 @@ static void MOSI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOSI_&MOSI_I.i_read(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_owned_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MOSI_&MOSI_I.i_read(n, i, l)\n");
         }
@@ -1233,6 +1296,7 @@ const struct coherenceState MOSI_I = { POPULATE_STATE(MOSI_I), 8, "MOSI_I" };
 #undef MOSI_M_a_modify
 static void MOSI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_M)\n");
@@ -1241,6 +1305,8 @@ static void MOSI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOSI_&MOSI_M.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOSI_&MOSI_M.a_modify(n, i, l)\n");
     }
@@ -1251,6 +1317,7 @@ static void MOSI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsign
 #undef MOSI_M_a_read
 static void MOSI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_M)\n");
@@ -1259,6 +1326,8 @@ static void MOSI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOSI_&MOSI_M.a_read(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOSI_&MOSI_M.a_read(n, i, l)\n");
     }
@@ -1269,6 +1338,7 @@ static void MOSI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigned
 #undef MOSI_M_i_del
 static void MOSI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_M)\n");
@@ -1277,6 +1347,8 @@ static void MOSI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned 
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOSI_&MOSI_M.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOSI_&MOSI_M.i_del(n, i, l)\n");
     }
@@ -1289,6 +1361,7 @@ const struct coherenceState MOSI_M = { POPULATE_STATE(MOSI_M), 9, "MOSI_M" };
 #undef MOSI_S_a_modify
 static void MOSI_S_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_S)\n");
@@ -1297,6 +1370,8 @@ static void MOSI_S_a_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOSI_&MOSI_S.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOSI_&MOSI_S.a_modify(n, i, l)\n");
     }
@@ -1307,6 +1382,7 @@ static void MOSI_S_a_modify(struct coherenceContext *fsm, struct node* n, unsign
 #undef MOSI_S_i_del
 static void MOSI_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_S)\n");
@@ -1315,6 +1391,8 @@ static void MOSI_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned 
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOSI_&MOSI_S.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOSI_&MOSI_S.i_del(n, i, l)\n");
     }
@@ -1325,6 +1403,7 @@ static void MOSI_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned 
 #undef MOSI_S_i_modify
 static void MOSI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_S)\n");
@@ -1333,6 +1412,8 @@ static void MOSI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOSI_&MOSI_S.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOSI_&MOSI_S.i_modify(n, i, l)\n");
     }
@@ -1345,6 +1426,7 @@ const struct coherenceState MOSI_S = { POPULATE_STATE(MOSI_S), 10, "MOSI_S" };
 #undef MOSI_O_a_modify
 static void MOSI_O_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_O)\n");
@@ -1353,6 +1435,8 @@ static void MOSI_O_a_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOSI_&MOSI_O.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOSI_&MOSI_O.a_modify(n, i, l)\n");
     }
@@ -1363,6 +1447,7 @@ static void MOSI_O_a_modify(struct coherenceContext *fsm, struct node* n, unsign
 #undef MOSI_O_i_del
 static void MOSI_O_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_O)\n");
@@ -1371,6 +1456,8 @@ static void MOSI_O_i_del(struct coherenceContext *fsm, struct node* n, unsigned 
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOSI_&MOSI_O.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOSI_&MOSI_O.i_del(n, i, l)\n");
     }
@@ -1381,6 +1468,7 @@ static void MOSI_O_i_del(struct coherenceContext *fsm, struct node* n, unsigned 
 #undef MOSI_O_i_modify
 static void MOSI_O_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOSI_O)\n");
@@ -1389,6 +1477,8 @@ static void MOSI_O_i_modify(struct coherenceContext *fsm, struct node* n, unsign
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOSI_&MOSI_O.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOSI_&MOSI_O.i_modify(n, i, l)\n");
     }
@@ -1633,6 +1723,7 @@ static void MOESI_DefaultState_a_del(struct coherenceContext *fsm, struct node* 
 #undef MOESI_I_i_modify
 static void MOESI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_I)\n");
@@ -1642,7 +1733,8 @@ static void MOESI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsig
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_I.i_modify(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_owned_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MOESI_&MOESI_I.i_modify(n, i, l)\n");
         }
@@ -1654,7 +1746,8 @@ static void MOESI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsig
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_I.i_modify(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_modify_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MOESI_&MOESI_I.i_modify(n, i, l)\n");
         }
@@ -1668,6 +1761,7 @@ static void MOESI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsig
 #undef MOESI_I_i_read
 static void MOESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_I)\n");
@@ -1677,7 +1771,8 @@ static void MOESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigne
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_I.i_read(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_share_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MOESI_&MOESI_I.i_read(n, i, l)\n");
         }
@@ -1689,7 +1784,8 @@ static void MOESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigne
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_I.i_read(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_exclusive_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MOESI_&MOESI_I.i_read(n, i, l)\n");
         }
@@ -1705,6 +1801,7 @@ const struct coherenceState MOESI_I = { POPULATE_STATE(MOESI_I), 12, "MOESI_I" }
 #undef MOESI_M_a_modify
 static void MOESI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_M)\n");
@@ -1713,6 +1810,8 @@ static void MOESI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOESI_&MOESI_M.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOESI_&MOESI_M.a_modify(n, i, l)\n");
     }
@@ -1723,6 +1822,7 @@ static void MOESI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsig
 #undef MOESI_M_a_read
 static void MOESI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_M)\n");
@@ -1731,6 +1831,8 @@ static void MOESI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigne
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOESI_&MOESI_M.a_read(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_owned_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOESI_&MOESI_M.a_read(n, i, l)\n");
     }
@@ -1741,6 +1843,7 @@ static void MOESI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigne
 #undef MOESI_M_i_del
 static void MOESI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_M)\n");
@@ -1749,6 +1852,8 @@ static void MOESI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOESI_&MOESI_M.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOESI_&MOESI_M.i_del(n, i, l)\n");
     }
@@ -1761,6 +1866,7 @@ const struct coherenceState MOESI_M = { POPULATE_STATE(MOESI_M), 13, "MOESI_M" }
 #undef MOESI_S_a_del
 static void MOESI_S_a_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_S)\n");
@@ -1770,7 +1876,8 @@ static void MOESI_S_a_del(struct coherenceContext *fsm, struct node* n, unsigned
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_S.a_del(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_owned_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MOESI_&MOESI_S.a_del(n, i, l)\n");
         }
@@ -1782,7 +1889,8 @@ static void MOESI_S_a_del(struct coherenceContext *fsm, struct node* n, unsigned
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_S.a_del(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_modify_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MOESI_&MOESI_S.a_del(n, i, l)\n");
         }
@@ -1796,6 +1904,7 @@ static void MOESI_S_a_del(struct coherenceContext *fsm, struct node* n, unsigned
 #undef MOESI_S_i_modify
 static void MOESI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_S)\n");
@@ -1805,7 +1914,8 @@ static void MOESI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsig
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_S.i_modify(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_owned_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MOESI_&MOESI_S.i_modify(n, i, l)\n");
         }
@@ -1817,7 +1927,8 @@ static void MOESI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsig
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_S.i_modify(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_modify_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MOESI_&MOESI_S.i_modify(n, i, l)\n");
         }
@@ -1833,6 +1944,7 @@ const struct coherenceState MOESI_S = { POPULATE_STATE(MOESI_S), 14, "MOESI_S" }
 #undef MOESI_E_a_modify
 static void MOESI_E_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_E)\n");
@@ -1841,6 +1953,8 @@ static void MOESI_E_a_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOESI_&MOESI_E.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOESI_&MOESI_E.a_modify(n, i, l)\n");
     }
@@ -1851,6 +1965,7 @@ static void MOESI_E_a_modify(struct coherenceContext *fsm, struct node* n, unsig
 #undef MOESI_E_a_read
 static void MOESI_E_a_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_E)\n");
@@ -1859,6 +1974,8 @@ static void MOESI_E_a_read(struct coherenceContext *fsm, struct node* n, unsigne
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOESI_&MOESI_E.a_read(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOESI_&MOESI_E.a_read(n, i, l)\n");
     }
@@ -1869,6 +1986,7 @@ static void MOESI_E_a_read(struct coherenceContext *fsm, struct node* n, unsigne
 #undef MOESI_E_i_del
 static void MOESI_E_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_E)\n");
@@ -1877,6 +1995,8 @@ static void MOESI_E_i_del(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOESI_&MOESI_E.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOESI_&MOESI_E.i_del(n, i, l)\n");
     }
@@ -1887,6 +2007,7 @@ static void MOESI_E_i_del(struct coherenceContext *fsm, struct node* n, unsigned
 #undef MOESI_E_i_modify
 static void MOESI_E_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_E)\n");
@@ -1895,6 +2016,8 @@ static void MOESI_E_i_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOESI_&MOESI_E.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOESI_&MOESI_E.i_modify(n, i, l)\n");
     }
@@ -1907,6 +2030,7 @@ const struct coherenceState MOESI_E = { POPULATE_STATE(MOESI_E), 15, "MOESI_E" }
 #undef MOESI_O_a_del
 static void MOESI_O_a_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_O)\n");
@@ -1916,7 +2040,8 @@ static void MOESI_O_a_del(struct coherenceContext *fsm, struct node* n, unsigned
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MOESI_&MOESI_O.a_del(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_modify_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MOESI_&MOESI_O.a_del(n, i, l)\n");
         }
@@ -1931,6 +2056,7 @@ static void MOESI_O_a_del(struct coherenceContext *fsm, struct node* n, unsigned
 #undef MOESI_O_a_modify
 static void MOESI_O_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_O)\n");
@@ -1939,6 +2065,8 @@ static void MOESI_O_a_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOESI_&MOESI_O.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOESI_&MOESI_O.a_modify(n, i, l)\n");
     }
@@ -1949,6 +2077,7 @@ static void MOESI_O_a_modify(struct coherenceContext *fsm, struct node* n, unsig
 #undef MOESI_O_i_del
 static void MOESI_O_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MOESI_O)\n");
@@ -1957,6 +2086,8 @@ static void MOESI_O_i_del(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MOESI_&MOESI_O.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MOESI_&MOESI_O.i_del(n, i, l)\n");
     }
@@ -2201,6 +2332,7 @@ static void MESIF_DefaultState_a_del(struct coherenceContext *fsm, struct node* 
 #undef MESIF_I_i_modify
 static void MESIF_I_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_I)\n");
@@ -2209,6 +2341,8 @@ static void MESIF_I_i_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_I.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_I.i_modify(n, i, l)\n");
     }
@@ -2219,6 +2353,7 @@ static void MESIF_I_i_modify(struct coherenceContext *fsm, struct node* n, unsig
 #undef MESIF_I_i_read
 static void MESIF_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_I)\n");
@@ -2228,7 +2363,8 @@ static void MESIF_I_i_read(struct coherenceContext *fsm, struct node* n, unsigne
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESIF_&MESIF_I.i_read(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_forward_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MESIF_&MESIF_I.i_read(n, i, l)\n");
         }
@@ -2240,7 +2376,8 @@ static void MESIF_I_i_read(struct coherenceContext *fsm, struct node* n, unsigne
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESIF_&MESIF_I.i_read(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_share_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MESIF_&MESIF_I.i_read(n, i, l)\n");
         }
@@ -2252,7 +2389,8 @@ static void MESIF_I_i_read(struct coherenceContext *fsm, struct node* n, unsigne
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESIF_&MESIF_I.i_read(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_exclusive_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MESIF_&MESIF_I.i_read(n, i, l)\n");
         }
@@ -2268,6 +2406,7 @@ const struct coherenceState MESIF_I = { POPULATE_STATE(MESIF_I), 17, "MESIF_I" }
 #undef MESIF_M_a_modify
 static void MESIF_M_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_M)\n");
@@ -2276,6 +2415,8 @@ static void MESIF_M_a_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_M.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_M.a_modify(n, i, l)\n");
     }
@@ -2286,6 +2427,7 @@ static void MESIF_M_a_modify(struct coherenceContext *fsm, struct node* n, unsig
 #undef MESIF_M_a_read
 static void MESIF_M_a_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_M)\n");
@@ -2294,6 +2436,8 @@ static void MESIF_M_a_read(struct coherenceContext *fsm, struct node* n, unsigne
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_M.a_read(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_M.a_read(n, i, l)\n");
     }
@@ -2304,6 +2448,7 @@ static void MESIF_M_a_read(struct coherenceContext *fsm, struct node* n, unsigne
 #undef MESIF_M_i_del
 static void MESIF_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_M)\n");
@@ -2312,6 +2457,8 @@ static void MESIF_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_M.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_M.i_del(n, i, l)\n");
     }
@@ -2324,6 +2471,7 @@ const struct coherenceState MESIF_M = { POPULATE_STATE(MESIF_M), 18, "MESIF_M" }
 #undef MESIF_S_a_del
 static void MESIF_S_a_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_S)\n");
@@ -2333,7 +2481,8 @@ static void MESIF_S_a_del(struct coherenceContext *fsm, struct node* n, unsigned
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESIF_&MESIF_S.a_del(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_forward_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MESIF_&MESIF_S.a_del(n, i, l)\n");
         }
@@ -2348,6 +2497,7 @@ static void MESIF_S_a_del(struct coherenceContext *fsm, struct node* n, unsigned
 #undef MESIF_S_i_del
 static void MESIF_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_S)\n");
@@ -2356,6 +2506,8 @@ static void MESIF_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_S.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_S.i_del(n, i, l)\n");
     }
@@ -2366,6 +2518,7 @@ static void MESIF_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned
 #undef MESIF_S_i_modify
 static void MESIF_S_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_S)\n");
@@ -2374,6 +2527,8 @@ static void MESIF_S_i_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_S.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_S.i_modify(n, i, l)\n");
     }
@@ -2386,6 +2541,7 @@ const struct coherenceState MESIF_S = { POPULATE_STATE(MESIF_S), 19, "MESIF_S" }
 #undef MESIF_E_a_modify
 static void MESIF_E_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_E)\n");
@@ -2394,6 +2550,8 @@ static void MESIF_E_a_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_E.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_E.a_modify(n, i, l)\n");
     }
@@ -2404,6 +2562,7 @@ static void MESIF_E_a_modify(struct coherenceContext *fsm, struct node* n, unsig
 #undef MESIF_E_a_read
 static void MESIF_E_a_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_E)\n");
@@ -2412,6 +2571,8 @@ static void MESIF_E_a_read(struct coherenceContext *fsm, struct node* n, unsigne
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_E.a_read(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_E.a_read(n, i, l)\n");
     }
@@ -2422,6 +2583,7 @@ static void MESIF_E_a_read(struct coherenceContext *fsm, struct node* n, unsigne
 #undef MESIF_E_i_del
 static void MESIF_E_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_E)\n");
@@ -2430,6 +2592,8 @@ static void MESIF_E_i_del(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_E.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_E.i_del(n, i, l)\n");
     }
@@ -2440,6 +2604,7 @@ static void MESIF_E_i_del(struct coherenceContext *fsm, struct node* n, unsigned
 #undef MESIF_E_i_modify
 static void MESIF_E_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_E)\n");
@@ -2448,6 +2613,8 @@ static void MESIF_E_i_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_E.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_E.i_modify(n, i, l)\n");
     }
@@ -2460,6 +2627,7 @@ const struct coherenceState MESIF_E = { POPULATE_STATE(MESIF_E), 20, "MESIF_E" }
 #undef MESIF_F_a_del
 static void MESIF_F_a_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_F)\n");
@@ -2469,7 +2637,8 @@ static void MESIF_F_a_del(struct coherenceContext *fsm, struct node* n, unsigned
         if (getDebugFlag(fsm) != 0) {
             TRACE("ENTER TRANSITION: MESIF_&MESIF_F.a_del(n, i, l)\n");
         }
-        /* No actions. */
+        clearState(fsm);
+        coherence_exclusive_line(ctxt, l);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MESIF_&MESIF_F.a_del(n, i, l)\n");
         }
@@ -2484,6 +2653,7 @@ static void MESIF_F_a_del(struct coherenceContext *fsm, struct node* n, unsigned
 #undef MESIF_F_a_modify
 static void MESIF_F_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_F)\n");
@@ -2492,6 +2662,8 @@ static void MESIF_F_a_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_F.a_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_F.a_modify(n, i, l)\n");
     }
@@ -2502,6 +2674,7 @@ static void MESIF_F_a_modify(struct coherenceContext *fsm, struct node* n, unsig
 #undef MESIF_F_i_del
 static void MESIF_F_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_F)\n");
@@ -2510,6 +2683,8 @@ static void MESIF_F_i_del(struct coherenceContext *fsm, struct node* n, unsigned
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_F.i_del(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_F.i_del(n, i, l)\n");
     }
@@ -2520,6 +2695,7 @@ static void MESIF_F_i_del(struct coherenceContext *fsm, struct node* n, unsigned
 #undef MESIF_F_i_modify
 static void MESIF_F_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
+    struct coherence* ctxt = getOwner(fsm);
 
     if (getDebugFlag(fsm) != 0) {
         TRACE("LEAVING STATE   : MESIF_F)\n");
@@ -2528,6 +2704,8 @@ static void MESIF_F_i_modify(struct coherenceContext *fsm, struct node* n, unsig
     if (getDebugFlag(fsm) != 0) {
         TRACE("ENTER TRANSITION: MESIF_&MESIF_F.i_modify(n, i, l)\n");
     }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESIF_&MESIF_F.i_modify(n, i, l)\n");
     }
