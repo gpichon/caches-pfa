@@ -11,6 +11,8 @@
 
 #include "trace.h"
 
+unsigned int instruction_number;
+
 void create_threads(struct thread **threads, char **trace_files, int nb_threads){
   int i;
   for (i=0; i<nb_threads; i++){
@@ -82,5 +84,11 @@ void next_instruction(struct instruction *ins, struct thread **threads, int id_t
       unsigned long i = strtol(save, NULL, 16);
       ins->addr = i;
     }
+    
+    else if (i==3) {
+	  unsigned int ui = atoi(save);
+	  ins->number = ui;
+	  instruction_number = ins->number;
+	}
   }
 }

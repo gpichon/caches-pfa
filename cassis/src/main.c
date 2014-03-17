@@ -142,6 +142,9 @@ int main(int argc, char *argv[]) {
   print_caches(archi, 1);
   delete_archi(archi);
 
+  /* Options allocations */
+  free_options();
+
   free(ins);
   free(ends);
   free(threads);

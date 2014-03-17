@@ -17,7 +17,7 @@ echo "Number of threads"
 echo $3
 
 gcc -o test $1 -DKERNEL=$2 -fopenmp -g
-./maqao instrumentation.lua test "$2.*" > /dev/null
+./maqao instrumentation.lua test "$2.*" > instr
 ./test_i_mtl 2> out
 
 awk '/STORE|LOAD/ {print $0 > "trace"$3}' out
