@@ -1,5 +1,10 @@
 #include "coherence.h"
 
+void coherence_up_stat(struct coherence *this, struct node *node, unsigned long entry, int stats_type){
+  struct cache *cache = get_cache(node);
+  up_stat(cache, entry, stats_type);
+} 	
+
 
 void coherence_invalid_line(struct coherence *this, struct line *line) {
   line->status = I;

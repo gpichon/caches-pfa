@@ -404,6 +404,7 @@ static void MSI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsigne
     }
     clearState(fsm);
     coherence_modify_line(ctxt, l);
+    coherence_up_stat(ctxt, n, i, COHERENCE_BROADCAST);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_I.i_modify(n, i, l)\n");
     }
@@ -425,6 +426,7 @@ static void MSI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned 
     }
     clearState(fsm);
     coherence_share_line(ctxt, l);
+    coherence_up_stat(ctxt, n, i, COHERENCE_BROADCAST);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_I.i_read(n, i, l)\n");
     }
@@ -448,6 +450,7 @@ static void MSI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsigne
     }
     clearState(fsm);
     coherence_invalid_line(ctxt, l);
+    coherence_up_stat(ctxt, n, i, WRITE_BACK);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_M.a_modify(n, i, l)\n");
     }
@@ -469,6 +472,7 @@ static void MSI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigned 
     }
     clearState(fsm);
     coherence_share_line(ctxt, l);
+    coherence_up_stat(ctxt, n, i, WRITE_BACK);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_M.a_read(n, i, l)\n");
     }
@@ -490,6 +494,7 @@ static void MSI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned l
     }
     clearState(fsm);
     coherence_invalid_line(ctxt, l);
+    coherence_up_stat(ctxt, n, i, WRITE_BACK);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_M.i_del(n, i, l)\n");
     }
@@ -555,6 +560,7 @@ static void MSI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsigne
     }
     clearState(fsm);
     coherence_modify_line(ctxt, l);
+    coherence_up_stat(ctxt, n, i, COHERENCE_BROADCAST);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MSI_&MSI_S.i_modify(n, i, l)\n");
     }
@@ -784,6 +790,7 @@ static void MESI_I_i_modify(struct coherenceContext *fsm, struct node* n, unsign
     }
     clearState(fsm);
     coherence_modify_line(ctxt, l);
+    coherence_up_stat(ctxt, n, i, COHERENCE_BROADCAST);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_I.i_modify(n, i, l)\n");
     }
@@ -806,6 +813,7 @@ static void MESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned
         }
         clearState(fsm);
         coherence_share_line(ctxt, l);
+        coherence_up_stat(ctxt, n, i, COHERENCE_BROADCAST);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MESI_&MESI_I.i_read(n, i, l)\n");
         }
@@ -819,6 +827,7 @@ static void MESI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned
         }
         clearState(fsm);
         coherence_exclusive_line(ctxt, l);
+        coherence_up_stat(ctxt, n, i, COHERENCE_BROADCAST);
         if (getDebugFlag(fsm) != 0) {
             TRACE("EXIT TRANSITION : MESI_&MESI_I.i_read(n, i, l)\n");
         }
@@ -845,6 +854,7 @@ static void MESI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsign
     }
     clearState(fsm);
     coherence_invalid_line(ctxt, l);
+    coherence_up_stat(ctxt, n, i, WRITE_BACK);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_M.a_modify(n, i, l)\n");
     }
@@ -866,6 +876,7 @@ static void MESI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigned
     }
     clearState(fsm);
     coherence_share_line(ctxt, l);
+    coherence_up_stat(ctxt, n, i, WRITE_BACK);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_M.a_read(n, i, l)\n");
     }
@@ -887,6 +898,7 @@ static void MESI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned 
     }
     clearState(fsm);
     coherence_invalid_line(ctxt, l);
+    coherence_up_stat(ctxt, n, i, WRITE_BACK);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_M.i_del(n, i, l)\n");
     }
@@ -952,6 +964,7 @@ static void MESI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsign
     }
     clearState(fsm);
     coherence_modify_line(ctxt, l);
+    coherence_up_stat(ctxt, n, i, COHERENCE_BROADCAST);
     if (getDebugFlag(fsm) != 0) {
         TRACE("EXIT TRANSITION : MESI_&MESI_S.i_modify(n, i, l)\n");
     }
