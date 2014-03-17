@@ -1,32 +1,31 @@
 #include "coherence.h"
 
 
-void coherence_invalid_line(struct line *line) {
+void coherence_invalid_line(struct coherence *this, struct line *line) {
   line->status = I;
 }
 
-void coherence_modify_line(struct line *line) {
+void coherence_modify_line(struct coherence *this, struct line *line) {
   line->status = M;
-  printf("Status:%d Line:%p\n", line->status, line);
 }
 
-void coherence_share_line(struct line *line) {
+void coherence_share_line(struct coherence *this, struct line *line) {
   line->status = S;
 }
 
-void coherence_exclusive_line(struct line *line) {
+void coherence_exclusive_line(struct coherence *this, struct line *line) {
   line->status = E;
 }
 
-void coherence_forward_line(struct line *line) {
+void coherence_forward_line(struct coherence *this, struct line *line) {
   line->status = F;
 }
 
-void coherence_owned_line(struct line *line) {
+void coherence_owned_line(struct coherence *this, struct line *line) {
   line->status = O;
 }
 
-void coherence_dirty_line(struct line *line, int w){
+void coherence_dirty_line(struct coherence *this, struct line *line, int w){
   line->dirty = w;
 }
 

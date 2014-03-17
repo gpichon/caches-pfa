@@ -31,13 +31,14 @@ I
 
 M
 {
-	i_modify(n: struct node*, i: unsigned long, l: struct line*)      M        {modify_line(l);}
-	i_del(n: struct node*, i: unsigned long, l: struct line*)         I        {invalid_line(l);}              
+	a_read(n: struct node*, i: unsigned long, l: struct line*)        S       {share_line(l);}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)         I       {invalid_line(l);}              
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)      I       {invalid_line(l);}
 }
 
 S
 {
-	a_read(n: struct node*, i: unsigned long, l: struct line*)        S       {share_line(l);}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)      M        {modify_line(l);}
 	a_modify(n: struct node*, i: unsigned long, l: struct line*)      I       {invalid_line(l);}
 	i_del(n: struct node*, i: unsigned long, l: struct line*)         I       {invalid_line(l);}                 
 }

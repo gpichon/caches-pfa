@@ -434,6 +434,48 @@ static void MSI_I_i_read(struct coherenceContext *fsm, struct node* n, unsigned 
 
 const struct coherenceState MSI_I = { POPULATE_STATE(MSI_I), 1, "MSI_I" };
 
+#undef MSI_M_a_modify
+static void MSI_M_a_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
+{
+    struct coherence* ctxt = getOwner(fsm);
+
+    if (getDebugFlag(fsm) != 0) {
+        TRACE("LEAVING STATE   : MSI_M)\n");
+    }
+    EXIT_STATE(getState(fsm));
+    if (getDebugFlag(fsm) != 0) {
+        TRACE("ENTER TRANSITION: MSI_&MSI_M.a_modify(n, i, l)\n");
+    }
+    clearState(fsm);
+    coherence_invalid_line(ctxt, l);
+    if (getDebugFlag(fsm) != 0) {
+        TRACE("EXIT TRANSITION : MSI_&MSI_M.a_modify(n, i, l)\n");
+    }
+    setState(fsm, &MSI_I);
+    ENTRY_STATE(getState(fsm));
+}
+
+#undef MSI_M_a_read
+static void MSI_M_a_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
+{
+    struct coherence* ctxt = getOwner(fsm);
+
+    if (getDebugFlag(fsm) != 0) {
+        TRACE("LEAVING STATE   : MSI_M)\n");
+    }
+    EXIT_STATE(getState(fsm));
+    if (getDebugFlag(fsm) != 0) {
+        TRACE("ENTER TRANSITION: MSI_&MSI_M.a_read(n, i, l)\n");
+    }
+    clearState(fsm);
+    coherence_share_line(ctxt, l);
+    if (getDebugFlag(fsm) != 0) {
+        TRACE("EXIT TRANSITION : MSI_&MSI_M.a_read(n, i, l)\n");
+    }
+    setState(fsm, &MSI_S);
+    ENTRY_STATE(getState(fsm));
+}
+
 #undef MSI_M_i_del
 static void MSI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
@@ -452,27 +494,6 @@ static void MSI_M_i_del(struct coherenceContext *fsm, struct node* n, unsigned l
         TRACE("EXIT TRANSITION : MSI_&MSI_M.i_del(n, i, l)\n");
     }
     setState(fsm, &MSI_I);
-    ENTRY_STATE(getState(fsm));
-}
-
-#undef MSI_M_i_modify
-static void MSI_M_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
-{
-    struct coherence* ctxt = getOwner(fsm);
-
-    if (getDebugFlag(fsm) != 0) {
-        TRACE("LEAVING STATE   : MSI_M)\n");
-    }
-    EXIT_STATE(getState(fsm));
-    if (getDebugFlag(fsm) != 0) {
-        TRACE("ENTER TRANSITION: MSI_&MSI_M.i_modify(n, i, l)\n");
-    }
-    clearState(fsm);
-    coherence_modify_line(ctxt, l);
-    if (getDebugFlag(fsm) != 0) {
-        TRACE("EXIT TRANSITION : MSI_&MSI_M.i_modify(n, i, l)\n");
-    }
-    setState(fsm, &MSI_M);
     ENTRY_STATE(getState(fsm));
 }
 
@@ -499,27 +520,6 @@ static void MSI_S_a_modify(struct coherenceContext *fsm, struct node* n, unsigne
     ENTRY_STATE(getState(fsm));
 }
 
-#undef MSI_S_a_read
-static void MSI_S_a_read(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
-{
-    struct coherence* ctxt = getOwner(fsm);
-
-    if (getDebugFlag(fsm) != 0) {
-        TRACE("LEAVING STATE   : MSI_S)\n");
-    }
-    EXIT_STATE(getState(fsm));
-    if (getDebugFlag(fsm) != 0) {
-        TRACE("ENTER TRANSITION: MSI_&MSI_S.a_read(n, i, l)\n");
-    }
-    clearState(fsm);
-    coherence_share_line(ctxt, l);
-    if (getDebugFlag(fsm) != 0) {
-        TRACE("EXIT TRANSITION : MSI_&MSI_S.a_read(n, i, l)\n");
-    }
-    setState(fsm, &MSI_S);
-    ENTRY_STATE(getState(fsm));
-}
-
 #undef MSI_S_i_del
 static void MSI_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
 {
@@ -538,6 +538,27 @@ static void MSI_S_i_del(struct coherenceContext *fsm, struct node* n, unsigned l
         TRACE("EXIT TRANSITION : MSI_&MSI_S.i_del(n, i, l)\n");
     }
     setState(fsm, &MSI_I);
+    ENTRY_STATE(getState(fsm));
+}
+
+#undef MSI_S_i_modify
+static void MSI_S_i_modify(struct coherenceContext *fsm, struct node* n, unsigned long i, struct line* l)
+{
+    struct coherence* ctxt = getOwner(fsm);
+
+    if (getDebugFlag(fsm) != 0) {
+        TRACE("LEAVING STATE   : MSI_S)\n");
+    }
+    EXIT_STATE(getState(fsm));
+    if (getDebugFlag(fsm) != 0) {
+        TRACE("ENTER TRANSITION: MSI_&MSI_S.i_modify(n, i, l)\n");
+    }
+    clearState(fsm);
+    coherence_modify_line(ctxt, l);
+    if (getDebugFlag(fsm) != 0) {
+        TRACE("EXIT TRANSITION : MSI_&MSI_S.i_modify(n, i, l)\n");
+    }
+    setState(fsm, &MSI_M);
     ENTRY_STATE(getState(fsm));
 }
 
