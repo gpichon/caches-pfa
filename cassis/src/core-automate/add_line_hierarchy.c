@@ -117,6 +117,7 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
       
     }
     current_node = get_parent(current_node);
+    update_lines(current_cache, entry);
   }    
 }
 
@@ -143,6 +144,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 	share_level(current_node, entry, &coherenceContext_a_del);
 	up_stat(current_cache, entry, TYPES_EVINCTION);
       }
+      update_lines(current_cache, entry);
     }
     
     else {
@@ -225,7 +227,6 @@ void add_line_cache(struct node *node, unsigned long entry) {
 
   unsigned long del_data = del_line->first_case;
   if (del_line != NULL) {
-   
     if (is_valid(del_line)){
       up_stat(cache, entry, CAPACITY_EVINCTION);
       
