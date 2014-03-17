@@ -6,3 +6,10 @@ with:
 - test.c     name c of the file
 - par        the name of the function to trace
 - 4          the number of threads
+
+
+To follow a source code line, use:
+./follow_instr line_number
+You will get instruction instrumented by MAQAO for this line.
+As an exemple, when the script give lines 1, 2, 3 and 42, you have to use this parameters with cassis:
+cassis -r 1:2:3:42
