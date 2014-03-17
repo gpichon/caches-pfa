@@ -150,10 +150,8 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       if (is_inclusive_like(current_cache)){	
 	add_line_cache(current_node, entry);
 	line = line_in_cache(current_cache, entry);
-	printf("1 Status:%d Line:%p\n", line->status, line);
 	coherenceContext_i_modify(&line->coher->_fsm, current_node, entry, line);
 	share_level(current_node, entry, &coherenceContext_a_modify);
-	printf("2 Status:%d Line:%p\n", line->status, line);
 	update_lines(current_cache, entry);
       }
 
