@@ -18,6 +18,7 @@ int test_without_parser(int argc, char** argv) {
   for (i=0; i<4; i++) {
     struct node *node = init_node();
     struct cache *cache;
+  /* Pour version sans automates: MESI -> &coherence_MESI */
     cache = init_cache(8192, 64, 4, 32, 1, &replacement_LFU, MESI, Inclusive, false, false);
     node->data = cache;
     threads[i] = node;

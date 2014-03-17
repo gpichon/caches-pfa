@@ -150,6 +150,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 	}
 	modify_line(line);
       }
+      update_lines(current_cache, entry);
     }
     
     else{
@@ -163,9 +164,12 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 	update_lines(current_cache, entry);
       }
       /* Snooping case: get the data from a level cache if possible */
+      if (is_snooping(current_cache)){
+ 	up_stat(current_cache, entry, SNOOPING_BROADCAST);
+      }
+
       if (is_snooping(current_cache) && v){
 	res = 1;
- 	up_stat(current_cache, entry, SNOOPING_BROADCAST);
 	up_stat(current_cache, entry, VALUE_BY_SNOOPING);
       }
       else if (current_cache->directory && search_from_directory(current_cache->dir, entry, node)){
@@ -190,6 +194,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 	bd = 0;
       }
       modify_line(line);
+      update_lines(current_cache, entry);
     }
 
     /* Debug, should be threated by architecture */
@@ -204,7 +209,6 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
     }
 
     current_node = get_parent(current_node);
-    update_lines(current_cache, entry);
   }
 }
 

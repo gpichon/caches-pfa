@@ -16,7 +16,7 @@
 void up_stat(struct cache *cache, unsigned long entry, int stats_type) {
   unsigned int i;
 	
-  printf("%d ", instruction_number);
+  /* printf("%d ", instruction_number); */
   for (i = 0; i < tracking_count; i++) {
     if ((tracking_type == TRACKING_BOUND && tracking_lower_bound[i] <= entry && entry <= tracking_upper_bound[i]) || 
 		(tracking_type == TRACKING_INSTRUCTION && is_instr_tracked(instruction_number)) ||

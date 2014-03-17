@@ -11,6 +11,7 @@ int test_replacement(int argc, char** argv) {
   int i;
 
   /* Test of Least Frequently Used replacement */
+  /* Pour version sans automates: MESI -> &coherence_MESI */
   L1 = init_cache(8192, 64, 4, 32, 0, &replacement_LFU, MESI, Inclusive, false, false);
   node->data = L1;
 

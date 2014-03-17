@@ -7,5 +7,5 @@ echo "Running some benchs"
 echo "Diff for non regression"
 diff out non_regression.txt
 echo "Diff should print nothing"
-rm out
+#rm out
 cd ..

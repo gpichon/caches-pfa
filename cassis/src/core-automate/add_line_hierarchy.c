@@ -93,7 +93,7 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
 	up_stat(current_cache, entry, SNOOPING_BROADCAST);
       }
 
-      if (is_in_level(current_node,entry, I) && is_snooping(current_cache)){
+      if (is_in_level(current_node, entry, I) && is_snooping(current_cache)){
 	up_stat(current_cache, entry, VALUE_BY_SNOOPING);
 	res = 1;
       }
@@ -151,7 +151,6 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       up_stat(current_cache, entry, MISS);
 
       /* Snooping case: get the data from a level cache if possible */
-      /* Snooping case: get the data from a level cache if possible */
       if (is_snooping(current_cache)){
 	up_stat(current_cache, entry, SNOOPING_BROADCAST);
       }
@@ -162,8 +161,8 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       }
       
       else if (current_cache->directory && search_from_directory(current_cache->dir, entry, node)){
-	res = 1;
 	up_stat(current_cache, entry, VALUE_BELOW);
+	res = 1;
       }
       
       else {
