@@ -179,7 +179,13 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
   }
 
   while (current_node != NULL) {
-    update_lines(current_cache, entry);
+    current_cache = get_cache(current_node);
+    if (is_in_cache(current_cache, entry)){
+      line = line_in_cache(current_cache, entry);
+      coherenceContext_i_modify(&line->coher->_fsm, current_node, entry, line);
+      share_level(current_node, entry, &coherenceContext_a_modify);
+      update_lines(current_cache, entry);
+    }
     current_node = get_parent(current_node);
   }    
 }
