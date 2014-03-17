@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-unsigned int *tracking_instrs;
+unsigned int *tracking_instrs = NULL;
 unsigned int tracking_instr_count;
 unsigned int tracking_count = 1;
 int tracking_type = TRACKING_DISABLED;

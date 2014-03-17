@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
     printf("                          -v 4: all stats\n");
     printf("To ignore the architecture fatal warnings; -w\n");
     printf("To process 10 instruction on a thread before moving to the next thread: -i 10\n");
+    printf("To track only some instructions: -r 1:42:477\n");
     return EXIT_SUCCESS;
   }
   

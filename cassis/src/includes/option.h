@@ -29,6 +29,9 @@ extern unsigned int nb_threads;                 /**< Number of threads */
 extern unsigned int debug_mode;                 /**< Debug mode */
 extern unsigned int print_mode;                 /**< Tracked values to be printed */
 
+/**
+ * \brief Returns 1 if tracking_instrs contains instr_num
+ */
 int is_instr_tracked(unsigned int instr_num);
 
 /**

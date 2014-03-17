@@ -23,7 +23,7 @@
 #include "add_line_hierarchy.h"
 
 /**
- * \brief 
+ * \brief The last instruction identifier read with next_instruction().
  */
 extern unsigned int instruction_number;
 
