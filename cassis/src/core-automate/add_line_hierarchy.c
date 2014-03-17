@@ -134,17 +134,18 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       up_stat(current_cache, entry, HIT);
       res = 1;
 
-      line = line_in_cache(current_cache, entry);
-      coherenceContext_i_modify(&line->coher->_fsm, current_node, entry, line);
-      share_level(current_node, entry, &coherenceContext_a_modify);
-
       /* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
       if(is_cache_exclusive(current_cache)){
 	coherenceContext_i_del(&line->coher->_fsm, current_node, entry, line);
 	share_level(current_node, entry, &coherenceContext_a_del);
 	up_stat(current_cache, entry, TYPES_EVINCTION);
       }
-      update_lines(current_cache, entry);
+      else{
+	line = line_in_cache(current_cache, entry);
+	coherenceContext_i_modify(&line->coher->_fsm, current_node, entry, line);
+	share_level(current_node, entry, &coherenceContext_a_modify);
+	update_lines(current_cache, entry);
+      }
     }
     
     else {
@@ -247,17 +248,22 @@ void add_line_cache(struct node *node, unsigned long entry) {
 	struct cache *parent = get_cache(get_parent(node));
 	if (!is_in_cache(parent, del_data)){
 	  add_line_cache(get_parent(node), del_data);
+	  line = line_in_cache(parent, del_data);
 	  if (!is_dirty(del_line)) {
-	    line = line_in_cache(parent, del_data);
 	    coherenceContext_i_read(&line->coher->_fsm, get_parent(node), del_data, line);
 	    share_level(get_parent(node), del_data, &coherenceContext_a_read);
-	  }  
+	  }
+	  else {
+	    coherenceContext_i_modify(&line->coher->_fsm, get_parent(node), del_data, line);
+	    share_level(get_parent(node), del_data, &coherenceContext_a_modify);	    
+	  }
 	} 
-	if (is_dirty(del_line)) {
-	  line = line_in_cache(parent, del_data);
-	  up_stat(cache, entry, WRITE_BACK);
-	  coherenceContext_i_modify(&line->coher->_fsm, get_parent(node), del_data, line);
-	  share_level(get_parent(node), del_data, &coherenceContext_a_modify);	    
+	else {
+	  if (is_dirty(del_line)) {
+	    line = line_in_cache(parent, del_data);
+	    coherenceContext_i_modify(&line->coher->_fsm, get_parent(node), del_data, line);
+	    share_level(get_parent(node), del_data, &coherenceContext_a_modify);
+	  }
 	}	
       }
       share_level(node, del_data, &coherenceContext_a_del);

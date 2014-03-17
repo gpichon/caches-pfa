@@ -252,7 +252,7 @@ int parse_archi_file(const char *filename, struct architecture *archi){
     GET_ATTRIBUT_INT("cache_associativity", cur, nb_ways);
     nb_blocks = size / (linesize * nb_ways);
     GET_ATTRIBUT_TXT("replacement_protocol", cur, replacement_prot);
-    c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), MESI, L[depth-1].type, L[depth-1].snooping, L[depth-1].directory_manager);
+    c = init_cache(size, linesize, nb_ways, nb_blocks, depth, get_replacement_function(replacement_prot), L[depth-1].coherence, L[depth-1].type, L[depth-1].snooping, L[depth-1].directory_manager);
     n = init_node();
     set_data(n, c);
 
