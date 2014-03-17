@@ -186,12 +186,12 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
   
   while (current_node != NULL) {
     current_cache = get_cache(current_node);
-    int bd = 1;
+    int bd = 0;
 
     if (is_in_cache(current_cache, entry)){
       line = line_in_cache(current_cache, entry);
-      if (!is_shared(line)){
-	bd = 0;
+      if (is_shared(line)){
+	bd = 1;
       }
       modify_line(line);
       update_lines(current_cache, entry);
@@ -270,7 +270,6 @@ void add_line_cache(struct node *node, unsigned long entry, int w) {
 	if (is_in_cache(parent, del_data)){
 	  line = line_in_cache(parent, del_data);
 	  if (is_modified(del_line)) {
-	    up_stat(cache, entry, WRITE_BACK);
 	    modify_line(line);
 	    share_level(get_parent(node), del_data, &invalid_line);
 	    up_stat(parent, entry, COHERENCE_BROADCAST);
