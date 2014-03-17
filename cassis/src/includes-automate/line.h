@@ -1,5 +1,5 @@
 /**
- * \file line.c
+ * \file line.h
  * \brief Manage line : initialization, removal, return informations.
  * \author ~gpichon
  * \version 1.0
@@ -18,6 +18,22 @@
 #include <assert.h>
 #include "common_types.h"
 #include "coherence.h"
+
+
+
+/**
+ * \struct line
+ * \brief Abstract Data Type for a line.
+ */ 
+struct line {
+  unsigned long first_case; /**< First element of the cache line.*/
+  int use;                  /**< number of utilizations since the line is in the block */
+  enum status status;       /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
+  int priority;             /**< Priority to delete data. A data line with high priority don't seem to bedeleted */
+  int dirty;                /**< 1 if the line is dirty, 0 otherwise */
+  struct coherence * coher; /**< type for state machine */
+};
+
 
 /**
  * \brief Initialization of \a nb_ways new lines. 

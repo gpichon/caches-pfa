@@ -12,10 +12,6 @@
 #ifndef ADD_LINE_HIERARCHY_H
 #define ADD_LINE_HIERARCHY_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include "cache.h"
 #include "node.h"
 
 

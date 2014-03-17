@@ -13,11 +13,21 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include <limits.h>
 #include "line.h"
+
+
+
+/**
+ * \struct block
+ * \brief Abstract Data Type of a block.
+ */
+struct block {
+  int nb_ways;         /**< Number of lines in the block. */
+  int linesize;        /**< Line size. */
+  struct line **lines; /**< Tabular of line structure pointer. */
+};
+
 
 
 /**
