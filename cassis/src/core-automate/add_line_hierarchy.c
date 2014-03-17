@@ -253,18 +253,12 @@ void add_line_cache(struct node *node, unsigned long entry) {
 	    coherenceContext_i_read(&line->coher->_fsm, get_parent(node), del_data, line);
 	    share_level(get_parent(node), del_data, &coherenceContext_a_read);
 	  }
-	  else {
-	    coherenceContext_i_modify(&line->coher->_fsm, get_parent(node), del_data, line);
-	    share_level(get_parent(node), del_data, &coherenceContext_a_modify);	    
-	  }
 	} 
-	else {
-	  if (is_dirty(del_line)) {
-	    line = line_in_cache(parent, del_data);
-	    coherenceContext_i_modify(&line->coher->_fsm, get_parent(node), del_data, line);
-	    share_level(get_parent(node), del_data, &coherenceContext_a_modify);
-	  }
-	}	
+	if (is_dirty(del_line)) {
+	  line = line_in_cache(parent, del_data);
+	  coherenceContext_i_modify(&line->coher->_fsm, get_parent(node), del_data, line);
+	  share_level(get_parent(node), del_data, &coherenceContext_a_modify);
+	}
       }
       share_level(node, del_data, &coherenceContext_a_del);
     }
