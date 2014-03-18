@@ -2,6 +2,12 @@
 
 En vrac, non trié.
 
+===> Rajouter une intro de partie rappelant la nécéssité d'un simulateur ? (par manque de connaissance/documentation dans le domaine, etc...)
+===> Enchaîner ensuite sur le fait qu'on doit pouvoir choisir les paramètres de simulation (pour pouvoir simuler des architectures variés, et même expérimentaux ou pour obtenir le suivi de certaines données particulières)
+===> Comment on a implémenté cette entre-guillemets "modularité" -- comment l'utilisateur peut choisir ses paramètres (script Lua pour l'entrelacement, XML c'est déjà fait, etc...)
+===> D'autres trucs sur l'implém, par exemple préciser ce que ne fait pas le simulateur (calcul de bande passante, prise en compte du prefetching) ???
+===> Exemple d'entrée/sortie, comparaison de la sortie avec ceux obtenus avec d'autres logiciels (compteur hard) + graphes en fonction de la taille de l'entrée (pour voir s'il n'y a pas de déviation lorsqu'on a des programmes plus complexes)
+
 \section{Algorithmes de simulation}
 Cette section entend présenter différents algorithmes utilisés par notre simulateur. Le but du simulateur est de produire des statistiques à partir d'une trace des blocs mémoires utilisés (\textit{load}/\textit{store}). Les données utilisées ne sont pas simulées. Le comportement du simulateur peut donc varier de la réalité, pourvu que le résultat final soit identique.
 
