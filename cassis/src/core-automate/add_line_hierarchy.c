@@ -83,6 +83,7 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
 	share_level(current_node, entry, &coherenceContext_a_del);
       }
       res = 1;
+      update_lines(current_cache, entry);
     }
     
     else {
@@ -134,22 +135,20 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       up_stat(current_cache, entry, HIT);
       res = 1;
 
+      line = line_in_cache(current_cache, entry);
+
       /* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
       if(is_cache_exclusive(current_cache)){
 	coherenceContext_i_del(&line->coher->_fsm, current_node, entry, line);
 	share_level(current_node, entry, &coherenceContext_a_del);
 	up_stat(current_cache, entry, TYPES_EVINCTION);
       }
+
       else{
-	line = line_in_cache(current_cache, entry);
 	coherenceContext_i_modify(&line->coher->_fsm, current_node, entry, line);
 	share_level(current_node, entry, &coherenceContext_a_modify);
-	
-	/* le sortir du else ? */
-	update_lines(current_cache, entry);
-
-
       }
+      update_lines(current_cache, entry);
     }
     
     else {
@@ -245,7 +244,7 @@ void add_line_cache(struct node *node, unsigned long entry) {
       
       /* Inclusive case: invalid in lower levels */
       if (is_cache_inclusive(cache))
-	invalid_back(node, del_line->first_case);
+	invalid_back(node, del_data);
       
       /* Give the del_line to the parent */
       if (get_parent(node) != NULL){
