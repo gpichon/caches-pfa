@@ -66,6 +66,7 @@ void next_instruction(struct instruction *ins, struct thread **threads, int id_t
 	return;
       }
     }
+    printf("save:%s----", save);
 
     if (i==0){
       if (strcmp(save, "LOAD")==0){
@@ -77,18 +78,21 @@ void next_instruction(struct instruction *ins, struct thread **threads, int id_t
       else{
 	ins->type = INSTRUCTION_END_OF_THREAD;
       }
-      size = 0;
     }
 
     else if (i==1){
       unsigned long i = strtol(save, NULL, 16);
       ins->addr = i;
     }
-
+	else if (i==2){
+		// Thread number which is already known
+    }
     else if (i==3) {
 	  unsigned int ui = atoi(save);
 	  ins->number = ui;
 	  instruction_number = ins->number;
 	}
+	save[0] = '\0';
+    size = 0;
   }
 }
