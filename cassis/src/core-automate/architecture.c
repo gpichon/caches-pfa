@@ -106,7 +106,7 @@ enum cache_coherence coherence (char *name){
     return MESI;
   if(display_warning)
     fprintf(stderr, "\033[31mWARNING\033[0m: Coherence protocol not recognized: %s , set to MESI\n", name);
-  return MSI;
+  return MESI;
 }
 
 /**
