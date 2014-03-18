@@ -22,6 +22,11 @@
 #include "add_line_hierarchy.h"
 
 /**
+ * \brief The last instruction identifier read with next_instruction().
+ */
+extern unsigned int instruction_number;
+
+/**
  * \enum instruction_type
  * \brief Define the different instructions types.
  */
@@ -34,6 +39,7 @@ enum instruction_type {INSTRUCTION_END_OF_THREAD, INSTRUCTION_LOAD, INSTRUCTION_
 struct instruction {
   int type;           /**< Instruction type, an int in the range of the instruction_type enumeration. */
   unsigned long addr; /**< Address to be used. */
+  unsigned int number;	/**< The instruction identifier, given by MAQAO in the trace file. */
 };
 
 /**

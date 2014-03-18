@@ -38,6 +38,9 @@ endif
 ifeq ($(DEBUG),YES)
 	$(info !!Sources compiled for debug!!)
 endif
+ifeq ($(AUTOMATE),YES)
+	$(info !!Sources compiled with state machine!!)
+endif
 	$(info $(TEXT1))
 
 
@@ -56,16 +59,21 @@ endif
 test_exe:
 ifeq ($(AUTOMATE),NO)
 	@make -s -C core
+	@make -s -C tests
 else
 	@make -s -C gen-automate
 	@make -s -C core-automate
+	@make -s -C tests-automate
 endif
-	@make -s -C tests
+
 
 ../bin/test:  ../obj/$(OBJ_TEST) $(subst ../obj/$(OBJ),,$(subst ../obj/$(OBJ_TEST),,$(OBJS)))
 	$(CC) $(CFLAGS) $(subst ../obj/$(OBJ),,$(OBJS)) -o $@ $(XMLFLAGS)
 ifeq ($(DEBUG),YES)
 	$(info !!Sources compiled for debug!!)
+endif
+ifeq ($(AUTOMATE),YES)
+	$(info !!Sources compiled with state machine!!)
 endif
 	$(info $(TEXT2))
 
@@ -82,10 +90,12 @@ endif
 
 #règles de mrpropre
 
-clean: 
+clean: 	
+	rm -f *.P
 	rm -f ../bin/simulator ../obj/$(OBJ) $(subst .c,.P,$(SRC))
 	rm -f ../bin/test ../obj/$(OBJ_TEST) $(subst .c,.P,$(SRC_TEST))
 	@make -s -C core clean
 	@make -s -C tests clean
 	@make -s -C core-automate clean
 	@make -s -C gen-automate clean
+	@make -s -C tests-automate clean

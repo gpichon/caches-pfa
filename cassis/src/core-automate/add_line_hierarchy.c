@@ -144,7 +144,11 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 	line = line_in_cache(current_cache, entry);
 	coherenceContext_i_modify(&line->coher->_fsm, current_node, entry, line);
 	share_level(current_node, entry, &coherenceContext_a_modify);
+	
+	/* le sortir du else ? */
 	update_lines(current_cache, entry);
+
+
       }
     }
     
@@ -260,6 +264,8 @@ void add_line_cache(struct node *node, unsigned long entry) {
 	  share_level(get_parent(node), del_data, &coherenceContext_a_modify);
 	}
       }
+      /* rajout de la ligne 266*/
+      coherenceContext_i_del(&del_line->coher->_fsm, node, del_data, del_line);
       share_level(node, del_data, &coherenceContext_a_del);
     }
   }

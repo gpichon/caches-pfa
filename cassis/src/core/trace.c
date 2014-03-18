@@ -84,7 +84,7 @@ void next_instruction(struct instruction *ins, struct thread **threads, int id_t
       unsigned long i = strtol(save, NULL, 16);
       ins->addr = i;
     }
-    
+
     else if (i==3) {
 	  unsigned int ui = atoi(save);
 	  ins->number = ui;
