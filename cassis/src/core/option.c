@@ -24,6 +24,8 @@ unsigned long tracking_upper_bound[2] = {0xFFFFFFFFFFFFFFFF, 0};
 int help = 0;
 unsigned int verbose_mode = 1;
 char *trace_file = NULL;
+char *lua_file = NULL;
+char *trace_directory = NULL;
 int ignore_warning = 0;
 int nb_instr_thread = 42;
 unsigned int nb_threads = 1;
@@ -47,10 +49,11 @@ void get_options(int argc, char *argv[]) {
 
   int tot = 0;
 
-  while ((c = getopt(argc, argv, "f:t:hb:v:wi:dor:")) != -1){
+  while ((c = getopt(argc, argv, "f:t:hb:v:wi:dor:l:")) != -1){
     switch (c){
     case 'f':	/* -f architecture_file */
       trace_file = optarg;
+      tot++;
       break;
     case 'b':	/* -b 0x5555:0x6666 */
       s = optarg;
@@ -84,26 +87,6 @@ void get_options(int argc, char *argv[]) {
       ignore_warning = 1;
       break;
     case 'i':	/* -i 42 */
-      nb_instr_thread = atoi(optarg);
-      if(nb_instr_thread < 1){
-	fprintf(stderr, "Number of instruction per thread (-i) invalid\n");
-	nb_instr_thread = 42;
-      }
-      break;
-    case 't':	/* -t 4 */
-      nb_threads = atoi(optarg);
-      if(nb_threads < 1){
-	fprintf(stderr, "Number of threads (-t) invalid\n");
-	nb_threads = 1;
-      }
-      break;
-    case 'd':	/* -d */
-      debug_mode = 1;
-      break;
-    case 'o':	/* -o */
-      print_mode = 1;
-      break;
-    case 'r':	/* -r */
       s = optarg;
       tracking_instr_count = 1;
       while ((s = strchr(s, ':')) != NULL) {
@@ -124,10 +107,31 @@ void get_options(int argc, char *argv[]) {
       tracking_type += TRACKING_INSTRUCTION;
       tracking_count = 2;
       break;
+    case 't':	/* -t 4 */
+      nb_threads = atoi(optarg);
+      if(nb_threads < 1){
+	fprintf(stderr, "Number of threads (-t) invalid\n");
+	nb_threads = 1;
+      }
+      tot++;
+      break;
+    case 'd':	/* -d */
+      debug_mode = 1;
+      break;
+    case 'o':	/* -o */
+      print_mode = 1;
+      break;
+    case 'l':	/* -l */
+	  lua_file = optarg;
+      break;
+    case 'r':	/* -r */
+	  trace_directory = optarg;
+	  tot++;
+      break;
     }
   }
-  if (tot!=2){
-    fprintf(stderr, "Please enter an architecture file with -f and a number of threads with -t\n");
+  if (tot!=3){
+    fprintf(stderr, "Please enter an architecture file with -f , a number of threads with -t and the trace directory with -r\n");
     exit(1);
   }    
 }

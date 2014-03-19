@@ -26,6 +26,12 @@
  */
 #define DEFAULT_ARCHITECTURE "architecture/architest_archi.xml"
 
+/**
+ * \def DEFAULT_LUA_FILE
+ * \brief Default path for the lua interweaving file.
+ */
+#define DEFAULT_LUA_FILE	"threads.lua"
+
 int is_end(int *ends, int nb_threads){
   int i;
   for(i=0; i<nb_threads; i++){
@@ -40,15 +46,15 @@ int main(int argc, char *argv[]) {
   get_options(argc, argv);
   
   if (help){
-    printf("To work with the architecture file named arch: -f file\n");
-    printf("To trace a special data set: -b 0x000000000000:0x6fffffffffff for all values excepting stack values\n");
+    printf("To work with the architecture file: -f file\n");
+    printf("To trace a special data set: -b 0x000000000000:0x6fffffffffff or -b no_stack for all values excepting stack values\n");
     printf("To print more statistics: -v 1: basic stats\n");
     printf("                          -v 2: evinctions\n");
     printf("                          -v 3: more detailled misses\n");
     printf("                          -v 4: all stats\n");
     printf("To ignore the architecture fatal warnings; -w\n");
-    printf("To process 10 instruction on a thread before moving to the next thread: -i 10\n");
-    printf("To track only some instructions: -r 1:42:477\n");
+    printf("To specify the interweaving lua file: -r file\n");
+    printf("To track only some instructions: -i 1:3:42\n");
     return EXIT_SUCCESS;
   }
   
@@ -58,6 +64,14 @@ int main(int argc, char *argv[]) {
   }
   else {
     strcpy(filename, DEFAULT_ARCHITECTURE);
+  }
+  
+  char luafile[256];
+  if(lua_file){
+    strcpy(luafile, lua_file);
+  }
+  else {
+    strcpy(luafile, DEFAULT_LUA_FILE);
   }
 
   struct architecture A;
@@ -83,7 +97,10 @@ int main(int argc, char *argv[]) {
   unsigned int i;  
   for (i=0; i<nb_threads; i++){
     trace_files[i] = malloc(100*sizeof(char));
-    sprintf(trace_files[i], "MAQAO/trace%d", i);
+    if (trace_directory)
+      sprintf(trace_files[i], "%s/trace%d", trace_directory, i);
+	else
+      sprintf(trace_files[i], "./trace%d", i);
   }
 
   create_threads(threads, trace_files, nb_threads);
@@ -98,8 +115,8 @@ int main(int argc, char *argv[]) {
   }
 
   lua_State *L = luaL_newstate();   /* opens Lua  state*/
-  luaL_openlibs(L);   
-  luaL_loadfile(L, "entrelacement.lua");
+  luaL_openlibs(L);
+  luaL_loadfile(L, luafile);
   lua_call(L, 0, 0);
 
   while (!is_end(ends, nb_threads)){
