@@ -81,6 +81,8 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
 	line = line_in_cache(current_cache, entry);
 	up_stat(current_cache, entry, TYPES_EVINCTION);
 	invalid_line(line);
+      } else {
+	update_lines(current_cache, entry);
       }
       res = 1;
     }
@@ -94,6 +96,7 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
 	up_stat(current_cache, entry, COHERENCE_BROADCAST);
 	line = line_in_cache(current_cache, entry);
 	current_cache->set_flags_new_line(v, line);
+	update_lines(current_cache, entry);    
       }
 	
       /* Snooping case: get the data from a level cache if possible */
@@ -117,7 +120,6 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
       
     }
 
-    update_lines(current_cache, entry);
     current_node = get_parent(current_node);
   }    
 }
@@ -149,8 +151,8 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 	  up_stat(current_cache, entry, COHERENCE_BROADCAST);
 	}
 	modify_line(line);
+	update_lines(current_cache, entry);
       }
-      update_lines(current_cache, entry);
     }
     
     else{

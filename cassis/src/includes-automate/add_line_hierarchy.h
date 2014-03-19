@@ -44,6 +44,6 @@ void invalid_back(struct node *cache, unsigned long entry);
  * \param w If w = 1, modified line. 
  * \note Call add_line_block.
  */
-void add_line_cache(struct node *cache, unsigned long entry);
+void add_line_cache(struct node *cache, unsigned long entry, void (*action)(struct coherenceContext*, struct node*, unsigned long, struct line*));
 
 #endif

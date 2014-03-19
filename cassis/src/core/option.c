@@ -51,6 +51,7 @@ void get_options(int argc, char *argv[]) {
     switch (c){
     case 'f':	/* -f architecture_file */
       trace_file = optarg;
+      tot++;
       break;
     case 'b':	/* -b 0x5555:0x6666 */
       s = optarg;
@@ -96,6 +97,7 @@ void get_options(int argc, char *argv[]) {
 	fprintf(stderr, "Number of threads (-t) invalid\n");
 	nb_threads = 1;
       }
+      tot++;
       break;
     case 'd':	/* -d */
       debug_mode = 1;

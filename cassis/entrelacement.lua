@@ -1,4 +1,4 @@
-sizeofblock = 3	
+sizeofblock = 10	
 i = 0
 
 
