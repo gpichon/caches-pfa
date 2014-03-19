@@ -188,7 +188,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
     }
     /* Debug, should be threated by architecture */
     else if (is_cache_inclusive(current_cache)){
-      fprintf(stderr, "Erreur de logique, snooping en dessous niveau inclusif... L%d\n", current_cache->depth);
+      fprintf(stderr, "Error: data is not present in an inclusive cache\n");
       exit(1);
     }
 
@@ -259,11 +259,15 @@ void add_line_cache(struct node *node, unsigned long entry, void (*action)(struc
       if (get_parent(node) != NULL){
 	struct cache *parent = get_cache(get_parent(node));
 	if (!is_in_cache(parent, del_data)){
+	  if (is_cache_inclusive(parent)){
+	    fprintf(stderr, "Error: data is not present in an inclusive cache\n");
+	    exit(1);
+	  }
 	  if (!is_dirty(del_line)) {
-	    add_line_cache(get_parent(node), del_data,&coherenceContext_i_read, not_rm);
+	    add_line_cache(get_parent(node), del_data, &coherenceContext_i_read, not_rm);
 	  }
 	  else {
-	    add_line_cache(get_parent(node), del_data,&coherenceContext_i_modify, not_rm);
+	    add_line_cache(get_parent(node), del_data, &coherenceContext_i_modify, not_rm);
 	  }
 	} 
 	else if (is_dirty(del_line)) {

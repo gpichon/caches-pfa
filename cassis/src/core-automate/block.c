@@ -53,7 +53,7 @@ int id_line_to_replace_LFU(struct block *block, int priority, unsigned long not_
       id = i;
     }
   }
-  if (line->first_case != not_rm_line)
+  if (block->lines[id]->first_case != not_rm_line)
     return id;
   else
     return (id+1)%nb_ways;
