@@ -3,11 +3,9 @@ cmake_minimum_required(VERSION 2.8)
 project(caches-pfa)
 set(EXECUTABLE_OUTPUT_PATH bin)
 
-find_package(LibXml2)
-find_package(LibXslt)
-find_package(Lua52)
-
-#~ ADD_SUBDIRECTORY(src/gen-automate)
+find_package(LibXml2 REQUIRED)
+find_package(LibXslt REQUIRED)
+find_package(Lua51)
 
 option(TEST "Build test main" OFF)
 option(AUTOMATE "Build with smc diagram" ON)
@@ -36,7 +34,7 @@ add_executable(
 	${main_file} ${source_files}
 )
 
-target_link_libraries(${executable_name} ${LIBXML2_LIBRARIES} ${LIBXSLT_LIBRARIES} ${LUA_LIBRARIES})
+target_link_libraries(${executable_name} ${LIBXML2_LIBRARIES} ${LIBXSLT_LIBRARIES} lua5.2 lua)
 
 #~ Documentation
 find_package (Doxygen)
