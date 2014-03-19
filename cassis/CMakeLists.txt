@@ -5,6 +5,7 @@ set(EXECUTABLE_OUTPUT_PATH bin)
 
 find_package(LibXml2)
 find_package(LibXslt)
+find_package(Lua52)
 
 #~ ADD_SUBDIRECTORY(src/gen-automate)
 
@@ -12,7 +13,7 @@ option(TEST "Build test main" OFF)
 option(AUTOMATE "Build with smc diagram" ON)
 if(TEST)
 	set(main_file src/main_test.c)
-	file(GLOB source_files src/tests/*.c src/core/*.c)
+	file(GLOB source_files src/tests/*.c src/core/*)
 	set(executable_name test) 
 elseif(AUTOMATE)
 	set(main_file src/main.c)
@@ -20,7 +21,7 @@ elseif(AUTOMATE)
 	execute_process(
 		COMMAND java -jar bin/Smc.jar -c coherence.sm
 		WORKING_DIRECTORY src/gen-automate)
-	file(GLOB source_files src/core-automate/*.c src/gen-automate/*.c)	
+	file(GLOB source_files src/core-automate/* src/gen-automate/*)	
 	include_directories (src/includes-automate src/gen-automate/*.h)
 else()
 	set(main_file src/main.c)
@@ -35,7 +36,7 @@ add_executable(
 	${main_file} ${source_files}
 )
 
-target_link_libraries(${executable_name} ${LIBXML2_LIBRARIES} ${LIBXSLT_LIBRARIES})
+target_link_libraries(${executable_name} ${LIBXML2_LIBRARIES} ${LIBXSLT_LIBRARIES} ${LUA_LIBRARIES})
 
 #~ Documentation
 find_package (Doxygen)
