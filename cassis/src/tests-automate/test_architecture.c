@@ -1,6 +1,7 @@
 #include "test_architecture.h"
 
-#define FILENAME "architecture/architest.xml"
+#define FILENAME "src/tests-automate/architest.xml"
+#define OUTNAME "src/tests-automate/architest.cassis.xml"
 
 int test_architecture(int argc, char **argv){
 
@@ -77,5 +78,6 @@ int test_architecture(int argc, char **argv){
   }
 
   delete_archi(&A);
+  unlink(OUTNAME);
   return EXIT_SUCCESS;
 }
