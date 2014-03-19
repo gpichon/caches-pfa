@@ -9,7 +9,7 @@ with:
 
 
 To follow a source code line, use:
-./follow_instr line_number
+./get_instrs_from_line line_number
 You will get instruction instrumented by MAQAO for this line.
 As an exemple, when the script give lines 1, 2, 3 and 42, you have to use this parameters with cassis:
 cassis -r 1:2:3:42

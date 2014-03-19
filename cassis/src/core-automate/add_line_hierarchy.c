@@ -73,8 +73,6 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
       up_stat(current_cache, entry, HIT);
 
       line = line_in_cache(current_cache, entry);
-      coherenceContext_i_read(&line->coher->_fsm, current_node, entry, line);
-      share_level(current_node, entry, coherenceContext_a_read);
 
       /* Exclusive case: invalid line. Impossible for L1, which is always inclusive */
       if (is_cache_exclusive(current_cache)){
@@ -82,8 +80,12 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
 	coherenceContext_i_del(&line->coher->_fsm, current_node, entry, line);
 	share_level(current_node, entry, &coherenceContext_a_del);
       }
+      else {      
+	coherenceContext_i_read(&line->coher->_fsm, current_node, entry, line);
+	share_level(current_node, entry, coherenceContext_a_read);
+	update_lines(current_cache, entry);
+      }
       res = 1;
-      update_lines(current_cache, entry);
     }
     
     else {
@@ -109,16 +111,11 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
       }
 
       if (is_inclusive_like(current_cache)){
-	add_line_cache(current_node, entry);
-	line = line_in_cache(current_cache, entry);
-	/* link with state machine */
-	coherenceContext_i_read(&line->coher->_fsm, current_node, entry, line);
-	share_level(current_node, entry, &coherenceContext_a_read);
+	add_line_cache(current_node, entry, &coherenceContext_i_read, entry);
+	update_lines(current_cache, entry);
       }
-      
     }
     current_node = get_parent(current_node);
-    update_lines(current_cache, entry);
   }    
 }
 
@@ -147,8 +144,8 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       else{
 	coherenceContext_i_modify(&line->coher->_fsm, current_node, entry, line);
 	share_level(current_node, entry, &coherenceContext_a_modify);
+	update_lines(current_cache, entry);
       }
-      update_lines(current_cache, entry);
     }
     
     else {
@@ -174,10 +171,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       }
 
       if (is_inclusive_like(current_cache)){	
-	add_line_cache(current_node, entry);
-	line = line_in_cache(current_cache, entry);
-	coherenceContext_i_modify(&line->coher->_fsm, current_node, entry, line);
-	share_level(current_node, entry, &coherenceContext_a_modify);
+	add_line_cache(current_node, entry,&coherenceContext_i_modify, entry);
 	update_lines(current_cache, entry);
       }
     } 
@@ -192,6 +186,12 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       share_level(current_node, entry, &coherenceContext_a_modify);
       update_lines(current_cache, entry);
     }
+    /* Debug, should be threated by architecture */
+    else if (is_cache_inclusive(current_cache)){
+      fprintf(stderr, "Error: data is not present in an inclusive cache\n");
+      exit(1);
+    }
+
     current_node = get_parent(current_node);
   }    
 }
@@ -207,14 +207,13 @@ void invalid_back(struct node *node, unsigned long entry) {
     if (is_in_cache(current_cache, entry)){
       line = line_in_cache(current_cache, entry);
       coherenceContext_i_del(&line->coher->_fsm, current_node, entry, line);
-      share_level(current_node, entry, &coherenceContext_a_del);
       up_stat(current_cache, entry, TYPES_EVINCTION);
     }
     invalid_back(current_node, entry);
   }
 }
 
-void add_line_cache(struct node *node, unsigned long entry) {
+void add_line_cache(struct node *node, unsigned long entry, void (*action)(struct coherenceContext*, struct node*, unsigned long, struct line*), unsigned long not_rm) {
   struct cache *cache = get_cache(node);
   int id_block = block_id(cache, entry);
   struct line *line;
@@ -230,16 +229,26 @@ void add_line_cache(struct node *node, unsigned long entry) {
   struct coherence *policy = malloc(sizeof(struct coherence));
   line->coher = policy;
   coherence_init(policy,cache->policy);
+
+  action(&line->coher->_fsm, node, entry, line);
+  if (&coherenceContext_i_read == action){
+    share_level(node, entry, &coherenceContext_a_read);
+  }
+  else {
+    share_level(node, entry, &coherenceContext_a_modify);
+  }
  
   int priority = 0;
   if (cache->directory){
     priority = delete_from_directory(cache->dir, cache->blocks[id_block]);
   }
-  del_line = add_line_block(cache->blocks[id_block], line, cache->replacement, priority);
+  del_line = add_line_block(cache->blocks[id_block], line, cache->replacement, priority, not_rm);
+
 
   unsigned long del_data = del_line->first_case;
   if (del_line != NULL) {
     if (is_valid(del_line)){
+      share_level(node, del_data, &coherenceContext_a_del);
       up_stat(cache, entry, CAPACITY_EVINCTION);
       
       /* Inclusive case: invalid in lower levels */
@@ -250,24 +259,25 @@ void add_line_cache(struct node *node, unsigned long entry) {
       if (get_parent(node) != NULL){
 	struct cache *parent = get_cache(get_parent(node));
 	if (!is_in_cache(parent, del_data)){
-	  add_line_cache(get_parent(node), del_data);
-	  line = line_in_cache(parent, del_data);
+	  if (is_cache_inclusive(parent)){
+	    fprintf(stderr, "Error: data is not present in an inclusive cache\n");
+	    exit(1);
+	  }
 	  if (!is_dirty(del_line)) {
-	    coherenceContext_i_read(&line->coher->_fsm, get_parent(node), del_data, line);
-	    share_level(get_parent(node), del_data, &coherenceContext_a_read);
+	    add_line_cache(get_parent(node), del_data, &coherenceContext_i_read, not_rm);
+	  }
+	  else {
+	    add_line_cache(get_parent(node), del_data, &coherenceContext_i_modify, not_rm);
 	  }
 	} 
-	if (is_dirty(del_line)) {
+	else if (is_dirty(del_line)) {
 	  line = line_in_cache(parent, del_data);
 	  coherenceContext_i_modify(&line->coher->_fsm, get_parent(node), del_data, line);
 	  share_level(get_parent(node), del_data, &coherenceContext_a_modify);
 	}
       }
-      /* rajout de la ligne 266*/
-      coherenceContext_i_del(&del_line->coher->_fsm, node, del_data, del_line);
-      share_level(node, del_data, &coherenceContext_a_del);
     }
+    free(del_line->coher);
+    free(del_line);
   }
-  free(del_line->coher);
-  free(del_line);
 }

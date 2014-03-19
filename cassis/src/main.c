@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
     lua_call(L, 2, 1);  
 
     current = lua_tonumber(L, -1);
-    lua_pop(L, 1);  
+    lua_pop(L, 1);
 
     next_instruction(ins, threads, current);
       

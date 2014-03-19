@@ -95,6 +95,13 @@ int id_line_to_replace_LRU(struct block *block, int priority) {
 
 struct line *add_line_block(struct block *block, struct line *line, int (*replacement)(struct block *, int), int priority) {
   int id_line = replacement(block, priority);
+  int i;
+  for (i=0; i<block->nb_ways; i++) {
+    if (!is_valid(block->lines[i])){
+      id_line = i;
+      break;
+    }
+  }
   struct line *del_line = block->lines[id_line];
   block->lines[id_line] = line;
   return del_line;
