@@ -29,3 +29,7 @@ libxslt1-dev
 documentation packages needed:
 doxygen
 graphviz
+
+lua package needed:
+liblua5.2-0
+liblua5.2-dev

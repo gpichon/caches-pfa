@@ -66,7 +66,6 @@ void next_instruction(struct instruction *ins, struct thread **threads, int id_t
 	return;
       }
     }
-    printf("save:%s----", save);
 
     if (i==0){
       if (strcmp(save, "LOAD")==0){

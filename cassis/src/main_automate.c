@@ -11,6 +11,10 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+
 #include "add_line_hierarchy.h"
 #include "architecture.h"
 #include "trace.h"
@@ -86,7 +90,6 @@ int main(int argc, char *argv[]) {
   
   /* Read trace */
   int count = 0;
-  int j;
   int current = nb_threads-1;
   int *ends = malloc(nb_threads*sizeof(int));
   char scan;
@@ -94,50 +97,63 @@ int main(int argc, char *argv[]) {
     ends[i]=0;
   }
 
+  lua_State *L = luaL_newstate();   /* opens Lua  state*/
+  luaL_openlibs(L);   
+  luaL_loadfile(L, "entrelacement.lua");
+  lua_call(L, 0, 0);
+
   while (!is_end(ends, nb_threads)){
-    current = (current+1)%nb_threads; 	/* Next thread */
+    lua_getglobal(L, "interweave");                  
+    lua_pushnumber(L, current);                     
+    lua_pushnumber(L, nb_threads);                    
+    
+    /* Next thread */
+    lua_call(L, 2, 1);  
 
-    for (j=0; j<nb_instr_thread; j++){
-      next_instruction(ins, threads, current);
+    current = lua_tonumber(L, -1);
+    lua_pop(L, 1);  
 
-      if (ins->type != INSTRUCTION_END_OF_THREAD) {
-  	if (ins->type == INSTRUCTION_LOAD) {
-  	  load_line_hierarchy(archi->threads[current], ins->addr);
-  	  count++;
-	  if (debug_mode){
-	    printf("Load on entry 0x%ld, on core %d\n", ins->addr, current);
-	    printf("Enter a character, s to stop debugging mode\n");
-	    scanf("%c", &scan);
-	    if (scan=='s'){
-	      debug_mode = 0;
-	    }
-	    fflush(stdin);
-	    print_caches(archi, 0);
+    next_instruction(ins, threads, current);
+    
+    if (ins->type != INSTRUCTION_END_OF_THREAD) {
+      if (ins->type == INSTRUCTION_LOAD) {
+	load_line_hierarchy(archi->threads[current], ins->addr);
+	count++;
+	if (debug_mode){
+	  printf("Load on entry 0x%ld, on core %d\n", ins->addr, current);
+	  printf("Enter a character, s to stop debugging mode\n");
+	  scanf("%c", &scan);
+	  if (scan=='s'){
+	    debug_mode = 0;
 	  }
-  	}
-  	else if (ins->type == INSTRUCTION_STORE) {
-  	  store_line_hierarchy(archi->threads[current], ins->addr);
-  	  count++;
-	  if (debug_mode){
-	    printf("Store on entry 0x%ld, on core %d\n", ins->addr, current);
-	    printf("Enter a character, s to stop debugging mode\n");
-	    scanf("%c", &scan);
-	    if (scan=='s'){
-	      debug_mode = 0;
-	    }
-	    fflush(stdin);
-	    print_caches(archi, 0);
+	  fflush(stdin);
+	  print_caches(archi, 0);
+	}
+      }
+      else if (ins->type == INSTRUCTION_STORE) {
+	store_line_hierarchy(archi->threads[current], ins->addr);
+	count++;
+	if (debug_mode){
+	  printf("Store on entry 0x%ld, on core %d\n", ins->addr, current);
+	  printf("Enter a character, s to stop debugging mode\n");
+	  scanf("%c", &scan);
+	  if (scan=='s'){
+	    debug_mode = 0;
 	  }
-  	}
+	  fflush(stdin);
+	  print_caches(archi, 0);
+	}
       }
-      else{
-  	ends[current] = 1;
-      }
+    }
+    else{
+      ends[current] = 1;
     }
   }
 
+
   /* Ends of reading */
   destroy_threads(threads, nb_threads);
+  lua_close(L);
 
   /* Informations about caches */
   print_caches(archi, 1);

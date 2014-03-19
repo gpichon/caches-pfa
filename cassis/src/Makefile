@@ -13,9 +13,11 @@ else
 	OBJ:=main_automate.o
 endif
 
+LUAFLAGS:=-llua5.2 -I/usr/include/lua5.2
 SRC_TEST:=main_test.c
 OBJ_TEST:=main_test.o
 OBJS=$(shell find ../obj -name '*.o')
+
 
 #règles générales
 
@@ -34,7 +36,7 @@ else
 endif
 
 ../bin/simulator: ../obj/$(OBJ) $(subst ../obj/$(OBJ),,$(subst ../obj/$(OBJ_TEST),,$(OBJS)))
-	@$(CC) $(CFLAGS)  $(subst ../obj/$(OBJ_TEST),,$(OBJS)) -o $@ $(XMLFLAGS)
+	@$(CC) $(CFLAGS)  $(subst ../obj/$(OBJ_TEST),,$(OBJS)) -o $@ $(XMLFLAGS) $(LUAFLAGS)
 ifeq ($(DEBUG),YES)
 	$(info !!Sources compiled for debug!!)
 endif
@@ -45,7 +47,7 @@ endif
 
 
 ../obj/$(OBJ): $(SRC)
-	@$(CC) -MMD $(CFLAGS) -c $< -o $@ $(XMLFLAGS)
+	@$(CC) -MMD $(CFLAGS) -c $< -o $@ $(XMLFLAGS) $(LUAFLAGS)
 	@cp ../obj/$*.d ./$(subst .c,.P,$(SRC)); \
 		sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 			-e '/^$$/ d' -e 's/$$/ :/' < ../obj/$*.d >> ./$(subst .c,.P,$(SRC)); \
