@@ -113,6 +113,7 @@ void get_options(int argc, char *argv[]) {
       }
       tracking_instrs[i] = strtol(p, NULL, 10);
       tracking_type += TRACKING_INSTRUCTION;
+	  tracking_count = 2;
       break;
     }
   }
