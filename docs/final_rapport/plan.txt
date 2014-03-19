@@ -1,0 +1,29 @@
+
+#Introduction
+~nheng
+
+#Généralité sur les caches
+~gpichon
+
+#Présentation de Cassis
+~ndubois
+  #Introduction
+    #Outils utilisés : hwloc, MAQAO
+    #Format des traces d'entrée
+  #Description de l'outil
+    #Ce qu'il permet / ne permet pas de faire
+    #Métriques mises en places / sorties
+
+#Paramétrisation de l'outil
+  #Architecture
+  ~gmarait
+  #Entrelacement des threads
+  ~pgoudet
+  #Gestion des politiques de cohérence à l'aide d'automates
+  ~ahonorat
+
+Annexes
+#Dessins des automates
+#Tutoriel d'ajout d'une politique de coherence + remplacement
+#Documentation (pages de man)
+

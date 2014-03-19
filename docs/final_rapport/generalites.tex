@@ -1,6 +1,32 @@
-\chapter{Fonctionnement des caches}
+\chapter{Généralités sur les caches}
 
 Le but de cette partie est de résumer un certain nombre de techniques relatives à la gestion de la hiérarchie des caches. Nous commencerons par expliciter le comportement d'un cache en général, avant d'étudier les moyens mis en {\oe}uvre afin d'assurer la cohérence de l'ensemble des caches. Nous finirons par étudier les problèmes posés par la simulation des caches d'une architecture multi-c{\oe}urs, notamment le prefetching.
+
+\subsection{Utilité des caches}
+
+Jusqu'aux années 2000, la vitesse des processeurs a considérablement augmenté (loi de Moore) alors que le temps d'accès à la mémoire RAM (Random-Access Memory) est resté globalement le même. Pour permettre au processeur d'accèder plus rapidement à des éléments mémoire, des caches sont donc utilisés entre les processeurs et la RAM. Cela permet de hiérarchiser la mémoire, avec des éléments dont le temps d'accès est différent. Cette organisation hiérarchique de la mémoire présente plusieurs objectifs : \\
+\begin{itemize}
+\item permettre de contenir un nombre conséquent de données ;
+\item être organisée de manière à être rapide ;
+\item ne pas coûter trop cher.\\ 
+\end{itemize}
+
+Les caches permettent de stocker la mémoire utilisée récemment par le processeur, en se basant sur deux concepts: la localité spatiale et la localité temporelle. La localité temporelle stipule qu'une cellule mémoire accédée récemment sera très probablement utilisée dans un futur proche. La localité spatiale est l'idée que si l'on accède à une cellule mémoire $X$, la cellule mémoire $X+1$ a de grandes chances d'être utilisée. \\
+
+Les mémoires de haut niveau -- les plus proches du processeur sont notées L1 -- sont généralement de petite taille. Leur coût est conséquent mais leur accès est très rapide. Il existe plusieurs niveaux de caches, $3$ dans la plupart des architectures récentes. Les L1 sont très rapides mais peuvent contenir peu de données (de l'ordre de la dizaine de Ko) alors que le L3 est plus lent mais contient beaucoup de données (de l'ordre du Mo). On peut résumer comme par la figure \ref{img:hierarchy} une hiérarchie mémoire classique.\\
+
+\begin{figure}[!h]
+\begin{center}
+   \includegraphics[scale=0.75]{images/hierarchy.png}
+   \caption{\label{img:hierarchy} Hiérachie mémoire}
+\end{center}
+\end{figure}
+
+==> Préciser source de l'image + légende\\
+
+De cette manière, quand le processeur utilise une donnée qui est dans le cache, il fait un \textit{hit} : il n'a pas besoin de la charger à partir de la mémoire principale. Lorsque la donnée dont il a besoin n'est pas présente dans le cache, il fait un \textit{miss} et le coût d'accès à la donnée est beaucoup plus important. \\
+
+Les données mémoire vont être lues via des \textit{load} et écrites via des \textit{store}. Lorsqu'une donnée est modifiée, il est nécessaire de propager les modifications jusqu'à la mémoire principale (c'est donc un \textit{store}), afin de garantir la cohérence du système. Une politique basique, le \textit{write-through}, serait de réécrire directement en mémoire après toute modification. Dans la suite de ce document, nous considérerons uniquement la politique \textit{write-back}, qui permet de retarder la réecriture tant que la donnée n'est pas lue pas une autre entité que celle qui l'a modifiée.
 
 \section{Principes généraux d'un cache}
 Cette section entend préciser le fonctionnement général d'un cache : comment il est possible d'y ajouter une donnée, quelle est la correspondance entre les blocs de la mémoire principale et les lignes de cache ou encore comment une donnée peut être evincée d'un cache. \\
@@ -12,7 +38,7 @@ Pour pouvoir retrouver une donnée dans le cache, une table d'étiquettes est te
 
 \begin{figure}[!h]
 \begin{center}
-   \includegraphics[scale=0.50]{etiquette.jpeg}
+   \includegraphics[scale=0.50]{images/etiquette.jpeg}
    \caption{\label{img:etiquette} Adresse mémoire}
 \end{center}
 \end{figure}
@@ -41,7 +67,7 @@ Les deux cas présentés précedemment présentent des inconvénients. Général
 
 \begin{figure}[!h]
 \begin{center}
-   \includegraphics[scale=0.60]{associative.png}
+   \includegraphics[scale=0.60]{images/associative.png}
    \caption{\label{img:associative} Fonction de correspondance}
 \end{center}
 \end{figure}
@@ -89,7 +115,7 @@ Le protocole est souvent représenté sous la forme d'un automate, dont les éta
 
 \begin{figure}[!h]
 \begin{center}
-   \includegraphics[scale=0.45]{mesi.png}
+   \includegraphics[scale=0.45]{images/mesi.png}
    \caption{\label{img:mesi} Automate du protocole MESI}
 \end{center}
 \end{figure}
@@ -109,7 +135,7 @@ Le fonctionnement d'un cache inclusif est relativement simple. En cas de \textit
 
 \begin{figure}[!h]
 \begin{center}
-   \includegraphics[scale=0.7]{inclusifs.png}
+   \includegraphics[scale=0.7]{images/inclusifs.png}
    \caption{\label{img:inclusifs} Caches de niveau 2 et 3 inclusifs}
 \end{center}
 \end{figure}
