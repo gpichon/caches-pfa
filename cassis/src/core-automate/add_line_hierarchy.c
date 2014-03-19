@@ -111,7 +111,7 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
       }
 
       if (is_inclusive_like(current_cache)){
-	add_line_cache(current_node, entry, &coherenceContext_i_read);
+	add_line_cache(current_node, entry, &coherenceContext_i_read, entry);
 	update_lines(current_cache, entry);
       }
     }
@@ -171,7 +171,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
       }
 
       if (is_inclusive_like(current_cache)){	
-	add_line_cache(current_node, entry,&coherenceContext_i_modify);
+	add_line_cache(current_node, entry,&coherenceContext_i_modify, entry);
 	update_lines(current_cache, entry);
       }
     } 
@@ -213,7 +213,7 @@ void invalid_back(struct node *node, unsigned long entry) {
   }
 }
 
-void add_line_cache(struct node *node, unsigned long entry, void (*action)(struct coherenceContext*, struct node*, unsigned long, struct line*)) {
+void add_line_cache(struct node *node, unsigned long entry, void (*action)(struct coherenceContext*, struct node*, unsigned long, struct line*), unsigned long not_rm) {
   struct cache *cache = get_cache(node);
   int id_block = block_id(cache, entry);
   struct line *line;
@@ -242,7 +242,7 @@ void add_line_cache(struct node *node, unsigned long entry, void (*action)(struc
   if (cache->directory){
     priority = delete_from_directory(cache->dir, cache->blocks[id_block]);
   }
-  del_line = add_line_block(cache->blocks[id_block], line, cache->replacement, priority);
+  del_line = add_line_block(cache->blocks[id_block], line, cache->replacement, priority, not_rm);
 
 
   unsigned long del_data = del_line->first_case;
@@ -260,10 +260,10 @@ void add_line_cache(struct node *node, unsigned long entry, void (*action)(struc
 	struct cache *parent = get_cache(get_parent(node));
 	if (!is_in_cache(parent, del_data)){
 	  if (!is_dirty(del_line)) {
-	    add_line_cache(get_parent(node), del_data,&coherenceContext_i_read);
+	    add_line_cache(get_parent(node), del_data,&coherenceContext_i_read, not_rm);
 	  }
 	  else {
-	    add_line_cache(get_parent(node), del_data,&coherenceContext_i_modify);
+	    add_line_cache(get_parent(node), del_data,&coherenceContext_i_modify, not_rm);
 	  }
 	} 
 	else if (is_dirty(del_line)) {
@@ -276,7 +276,4 @@ void add_line_cache(struct node *node, unsigned long entry, void (*action)(struc
     free(del_line->coher);
     free(del_line);
   }
-  if (!is_in_cache(cache,entry))
-      printf("c'est la merde\n");
-
 }

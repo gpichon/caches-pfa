@@ -65,7 +65,7 @@ struct cache {
   bool directory;        /**< Can this cache use a directory manager to trace its sons data? */
   struct directory *dir; /**< The directory */
 
-  int (*replacement)(struct block *, int); /**< Function pointer to replace a line for a special priority in a block. */
+  int (*replacement)(struct block *, int, unsigned long); /**< Function pointer to replace a line for a special priority in a block. */
   void (*update_line)(struct block *, int, unsigned long); /**< Function pointer to update line stat in a block.  */
 };
 
