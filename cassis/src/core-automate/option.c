@@ -31,12 +31,12 @@ unsigned int debug_mode = 0;
 unsigned int print_mode = 0;
 
 int is_instr_tracked(unsigned int instr_num) {
-	unsigned int i = 0;
-	for (i = 0; i < tracking_instr_count; i++) {
-		if (tracking_instrs[i] == instr_num)
-			return 1;
-	}
-	return 0;
+  unsigned int i = 0;
+  for (i = 0; i < tracking_instr_count; i++) {
+    if (tracking_instrs[i] == instr_num)
+      return 1;
+  }
+  return 0;
 }
 
 void get_options(int argc, char *argv[]) {
@@ -45,13 +45,23 @@ void get_options(int argc, char *argv[]) {
   unsigned int i;
   tracking_type = TRACKING_DISABLED;
 
+  int tot = 0;
+
   while ((c = getopt(argc, argv, "f:t:hb:v:wi:dor:")) != -1){
     switch (c){
     case 'f':	/* -f architecture_file */
       trace_file = optarg;
+      tot++;
       break;
     case 'b':	/* -b 0x5555:0x6666 */
       s = optarg;
+      if (strcmp(s, "no_stack") == 00) {
+	tracking_lower_bound[1] = 0x0;
+	tracking_upper_bound[1] = 0x6fffffffffff;
+	tracking_type += TRACKING_BOUND;
+	tracking_count = 2;
+	break;
+      }
       if ((s = strchr(s, ':')) == NULL) {
 	fprintf(stderr, "Bad parameter form");
 	break;
@@ -87,6 +97,7 @@ void get_options(int argc, char *argv[]) {
 	fprintf(stderr, "Number of threads (-t) invalid\n");
 	nb_threads = 1;
       }
+      tot++;
       break;
     case 'd':	/* -d */
       debug_mode = 1;
@@ -113,12 +124,16 @@ void get_options(int argc, char *argv[]) {
       }
       tracking_instrs[i] = strtol(p, NULL, 10);
       tracking_type += TRACKING_INSTRUCTION;
-	  tracking_count = 2;
+      tracking_count = 2;
       break;
     }
   }
+  if (tot!=2){
+    fprintf(stderr, "Please enter an architecture file with -f and a number of threads with -t\n");
+    exit(1);
+  }    
 }
 
 void free_options() {
-	free(tracking_instrs);
+  free(tracking_instrs);
 }
