@@ -311,8 +311,6 @@ int parse_archi_file(const char *filename, struct architecture *archi){
 
 void print_archi_rec(struct node *n, int nb_levels){
   unsigned int i;
-  for(i=n->data->depth; i<(unsigned int)nb_levels; i++)
-    printf("\t");
   printf("L%d (size: %d) ", n->data->depth, n->data->size);
   switch(n->data->type){
   case Inclusive:
@@ -380,20 +378,12 @@ int convert_archi_xml(const char *file_in, const char *file_out){
 
 void print_caches_rec(struct node *n, int nb_levels, unsigned int j){
   unsigned int i, k;
-  for(k=n->data->depth; k<(unsigned int)nb_levels; k++)
-    printf("\t\t");
   printf("L%d  basiques   (misses:    %10d, hits:     %10d, writes_back: %10d)\n", n->data->depth, n->data->misses[j], n->data->hits[j], n->data->writes_back[j]);
   if (verbose_mode > 1){
-    for(k=n->data->depth; k<(unsigned int)nb_levels; k++)
-      printf("\t\t");
     printf("    evinctions (coherence: %10d, capacity: %10d, cache_types: %10d)\n", n->data->evincted_coherence[j], n->data->evincted_capacity[j], n->data->evincted_caches_types[j]);
     if (verbose_mode > 2){
-      for(k=n->data->depth; k<(unsigned int)nb_levels; k++)
-	printf("\t\t");
       printf("    misses     (snooping:  %10d, above:    %10d, below:       %10d)\n", n->data->misses_snooping[j], n->data->misses_above[j], n->data->misses_below[j]);
       if (verbose_mode > 3){
-	for(k=n->data->depth; k<(unsigned int)nb_levels; k++)
-	  printf("\t\t");
 	printf("    broadcasts (coherence: %10d, snooping: %10d)\n\n", n->data->broadcast_coherence[j], n->data->broadcast_snooping[j]);
       }
     }

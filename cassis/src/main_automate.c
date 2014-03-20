@@ -78,8 +78,8 @@ int main(int argc, char *argv[]) {
   parse_archi_file(filename, &A);
   struct architecture *archi = &A;
   if(archi->warning && (!ignore_warning)){
-    delete_archi(archi)
-      ;    return EXIT_FAILURE;
+    delete_archi(archi);
+    return EXIT_FAILURE;
   }
 
   if (archi->number_threads < nb_threads){

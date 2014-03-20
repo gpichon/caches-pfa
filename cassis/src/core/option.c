@@ -75,6 +75,7 @@ void get_options(int argc, char *argv[]) {
       break;
     case 'h':	/* -h */
       help = 1;
+      tot = 3;
       break;
     case 'v':	/* -v 1*/
       verbose_mode = atoi(optarg);
@@ -151,7 +152,7 @@ void get_options(int argc, char *argv[]) {
       break;
     }
   }
-  if (tot!=3){
+  if (tot<3){
     fprintf(stderr, "Please enter an architecture file with -f , a number of threads with -t and the trace directory with -r\n");
     exit(1);
   }    
