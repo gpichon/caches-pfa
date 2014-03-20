@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Architecture name="i686" CPU_name="" number_levels="2">
+  <Level depth="2" type="inclusive" directory_manager="false"/>
+  <Level depth="1" type="inclusive" directory_manager="false"/>
+  <Cache depth="2" cache_size="4194304" cache_linesize="64" cache_associativity="16" replacement_protocol="LRU">
+    <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+    <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+  </Cache>
+  <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+</Architecture>

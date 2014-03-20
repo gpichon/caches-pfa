@@ -1,6 +1,8 @@
 #!/bin/bash
-make
-cd non_regression
+cd ..
+make 
+make test
+cd tests/non_regression
 ./unitary_tests.sh
 echo "Running some benchs"
 ./bench.sh > out 2>&1

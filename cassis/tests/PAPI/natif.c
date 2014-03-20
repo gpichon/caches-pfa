@@ -59,7 +59,7 @@ int main(int argc, char **argv){
 
   for (i=0; native_name[i] != NULL; i++) {
     fprintf(stderr, "%-40s: ", native_name[i]);
-    fprintf(stderr, "values %ld\n", values[i]);
+    fprintf(stderr, "values %lld\n", values[i]);
   }
 
   retval = PAPI_cleanup_eventset(EventSet);
