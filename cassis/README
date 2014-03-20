@@ -15,10 +15,10 @@ To execute a code line, use:
 You can find man pages in the folder cassis/man.
 
 How to use the software:
-cassis/man/cassis-help.1
+cassis/documentation/man/cassis.1
 
 How to use the architecture description files:
-cassis/man/cassis-xml.1
+cassis/documentation/man/cassis-xml.1
 
 ### PACKAGES ###
 

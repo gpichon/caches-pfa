@@ -23,11 +23,11 @@ gcc -o test $1 -DKERNEL=$2 -fopenmp -g
 awk '/STORE|LOAD/ {print $0 > "trace"$3}' out
 
 echo "Removing files"
-rm test_i_mtl
-rm test
-rm trace.MTL.*
-rm madras*
-rm out
+rm -f test_i_mtl
+rm -f test
+rm -f trace.MTL.*
+rm -f madras*
+rm -f out
 
 else echo "Usage: ./get_traces file.c name_function number_threads"
 fi
