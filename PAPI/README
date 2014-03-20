@@ -8,8 +8,8 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 Afin de pouvoir utiliser la librarie dynamique libpapi.so
 
 
-Pour avoir l'ensemble des métriques disponibles: 
+Pour avoir l'ensemble des mÃ©triques disponibles: 
 papi_avail
 
-Pour tester si des métriques sont compatibles: 
-papi_event_chooser métrique1 métrique2 ...
+Pour tester si des mÃ©triques sont compatibles: 
+papi_event_chooser mÃ©trique1 mÃ©trique2 ...

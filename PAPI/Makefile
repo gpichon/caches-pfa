@@ -1,6 +1,6 @@
 all: 
-	gcc example.c -o example -g -O0 -lpapi
+	gcc test.c -o test -g -O0 -lpapi -fopenmp
 	gcc natif.c -o natif -g -O0 -lpapi
 
 clean:
-	rm -f *~ example natif
+	rm -f *~ test natif
