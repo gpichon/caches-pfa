@@ -19,10 +19,5 @@ cd ..
 done
 done
 
-
-
-
-
-echo "Results are in speed_test/out"
 rm -f ../MAQAO/trace*
 rm -f ../MAQAO/instr

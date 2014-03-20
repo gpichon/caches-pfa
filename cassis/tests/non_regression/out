@@ -11,40 +11,40 @@ L3 (size: 16384) inclusive
 
 
 Statistics to all instructions
-L3  basiques   (misses:          1261, hits:          10386, writes_back:          0)
-    evinctions (coherence:          0, capacity:       1005, cache_types:          0)
-    misses     (snooping:           0, above:          1261, below:                0)
-    broadcasts (coherence:       1261, snooping:          0)
+L3  basiques   (misses:          1466, hits:          11213, writes_back:          0)
+    evinctions (coherence:          0, capacity:       1210, cache_types:          0)
+    misses     (snooping:           0, above:          1466, below:                0)
+    broadcasts (coherence:       1466, snooping:          0)
 
-		L2  basiques   (misses:          4954, hits:           3317, writes_back:       2252)
-		    evinctions (coherence:       2752, capacity:       2698, cache_types:          7)
-		    misses     (snooping:           0, above:          4954, below:                0)
-		    broadcasts (coherence:       7329, snooping:          0)
+		L2  basiques   (misses:          3170, hits:           3676, writes_back:       2536)
+		    evinctions (coherence:       2985, capacity:          0, cache_types:        179)
+		    misses     (snooping:           0, above:          3170, below:                0)
+		    broadcasts (coherence:       5141, snooping:          0)
 
-				L1  basiques   (misses:          4339, hits:          25661, writes_back:       2252)
-				    evinctions (coherence:       2193, capacity:       1585, cache_types:       1395)
-				    misses     (snooping:           0, above:          4339, below:                0)
-				    broadcasts (coherence:       6617, snooping:          0)
+				L1  basiques   (misses:          3777, hits:          26223, writes_back:       2500)
+				    evinctions (coherence:       2956, capacity:        718, cache_types:         99)
+				    misses     (snooping:           0, above:          3777, below:                0)
+				    broadcasts (coherence:       5498, snooping:          0)
 
-				L1  basiques   (misses:          3932, hits:          26068, writes_back:       2252)
-				    evinctions (coherence:       2689, capacity:        870, cache_types:       1362)
-				    misses     (snooping:           0, above:          3932, below:                0)
-				    broadcasts (coherence:       6275, snooping:          0)
+				L1  basiques   (misses:          3069, hits:          26931, writes_back:       2500)
+				    evinctions (coherence:       2985, capacity:          0, cache_types:         80)
+				    misses     (snooping:           0, above:          3069, below:                0)
+				    broadcasts (coherence:       5040, snooping:          0)
 
-		L2  basiques   (misses:          6693, hits:           1481, writes_back:       2453)
-		    evinctions (coherence:       2252, capacity:       5178, cache_types:         13)
-		    misses     (snooping:           0, above:          6693, below:                0)
-		    broadcasts (coherence:       9515, snooping:          0)
+		L2  basiques   (misses:          9509, hits:           1583, writes_back:       2889)
+		    evinctions (coherence:       2460, capacity:       6818, cache_types:        200)
+		    misses     (snooping:           0, above:          9509, below:                0)
+		    broadcasts (coherence:      11912, snooping:          0)
 
-				L1  basiques   (misses:          4151, hits:          25849, writes_back:       2237)
-				    evinctions (coherence:       1002, capacity:       1592, cache_types:       2819)
-				    misses     (snooping:           0, above:          4151, below:                0)
-				    broadcasts (coherence:       6835, snooping:          0)
+				L1  basiques   (misses:          5710, hits:          24290, writes_back:       2002)
+				    evinctions (coherence:       1361, capacity:        982, cache_types:       3351)
+				    misses     (snooping:           0, above:          5710, below:                0)
+				    broadcasts (coherence:       7630, snooping:          0)
 
-				L1  basiques   (misses:          4023, hits:          25977, writes_back:       2251)
-				    evinctions (coherence:       2251, capacity:       1614, cache_types:       1243)
-				    misses     (snooping:           0, above:          4023, below:                0)
-				    broadcasts (coherence:       5866, snooping:          0)
+				L1  basiques   (misses:          5382, hits:          24618, writes_back:       2500)
+				    evinctions (coherence:       2460, capacity:          0, cache_types:       2918)
+				    misses     (snooping:           0, above:          5382, below:                0)
+				    broadcasts (coherence:       6692, snooping:          0)
 
 
 
@@ -61,45 +61,93 @@ L3 (size: 16384) inclusive
 
 
 Statistics to all instructions
-L3  basiques   (misses:          1997, hits:          10419, writes_back:          0)
-    evinctions (coherence:          0, capacity:       1936, cache_types:          0)
-    misses     (snooping:           0, above:          1997, below:                0)
-    broadcasts (coherence:       2192, snooping:          0)
+L3  basiques   (misses:         10233, hits:           9825, writes_back:          0)
+    evinctions (coherence:          0, capacity:       9977, cache_types:          0)
+    misses     (snooping:           0, above:         10233, below:                0)
+    broadcasts (coherence:      10233, snooping:          0)
 
-		L2  basiques   (misses:          6613, hits:            218, writes_back:         27)
-		    evinctions (coherence:          5, capacity:        506, cache_types:        331)
-		    misses     (snooping:           0, above:          6613, below:                0)
-		    broadcasts (coherence:        845, snooping:          0)
+		L2  basiques   (misses:          9130, hits:            639, writes_back:          0)
+		    evinctions (coherence:          0, capacity:          0, cache_types:        701)
+		    misses     (snooping:           0, above:          9130, below:                0)
+		    broadcasts (coherence:        701, snooping:          0)
 
-				L1  basiques   (misses:          3768, hits:          26232, writes_back:       2487)
-				    evinctions (coherence:       2955, capacity:        781, cache_types:        105)
-				    misses     (snooping:           0, above:          3768, below:                0)
-				    broadcasts (coherence:       5510, snooping:          0)
+				L1  basiques   (misses:          3837, hits:          26163, writes_back:       2500)
+				    evinctions (coherence:       2882, capacity:        701, cache_types:        250)
+				    misses     (snooping:           0, above:          3837, below:                0)
+				    broadcasts (coherence:       5535, snooping:          0)
 
-				L1  basiques   (misses:          3063, hits:          26937, writes_back:       2482)
-				    evinctions (coherence:       2930, capacity:         82, cache_types:        126)
-				    misses     (snooping:           0, above:          3063, below:                0)
-				    broadcasts (coherence:       5096, snooping:          0)
+				L1  basiques   (misses:          5932, hits:          24068, writes_back:       2500)
+				    evinctions (coherence:       2881, capacity:          0, cache_types:       3048)
+				    misses     (snooping:           0, above:          5932, below:                0)
+				    broadcasts (coherence:       7852, snooping:          0)
 
-		L2  basiques   (misses:          5803, hits:             51, writes_back:        104)
-		    evinctions (coherence:          4, capacity:       1532, cache_types:        371)
-		    misses     (snooping:           0, above:          5803, below:                0)
-		    broadcasts (coherence:       1916, snooping:          0)
+		L2  basiques   (misses:         10928, hits:             72, writes_back:        257)
+		    evinctions (coherence:          0, capacity:        897, cache_types:        592)
+		    misses     (snooping:           0, above:         10928, below:                0)
+		    broadcasts (coherence:       1519, snooping:          0)
 
-				L1  basiques   (misses:          3092, hits:          26908, writes_back:       1206)
-				    evinctions (coherence:       1420, capacity:       1610, cache_types:        391)
-				    misses     (snooping:           0, above:          3092, below:                0)
-				    broadcasts (coherence:       5347, snooping:          0)
+				L1  basiques   (misses:          5558, hits:          24442, writes_back:       1304)
+				    evinctions (coherence:       1405, capacity:       1519, cache_types:       2618)
+				    misses     (snooping:           0, above:          5558, below:                0)
+				    broadcasts (coherence:       7477, snooping:          0)
 
-				L1  basiques   (misses:          2762, hits:          27238, writes_back:       2425)
-				    evinctions (coherence:       2407, capacity:        322, cache_types:        404)
-				    misses     (snooping:           0, above:          2762, below:                0)
-				    broadcasts (coherence:       4480, snooping:          0)
+				L1  basiques   (misses:          5442, hits:          24558, writes_back:       2500)
+				    evinctions (coherence:       2401, capacity:          0, cache_types:       3038)
+				    misses     (snooping:           0, above:          5442, below:                0)
+				    broadcasts (coherence:       6827, snooping:          0)
 
 
 
 Sans snooping, avec un L2 non inclusif
-Erreur de logique, snooping en dessous niveau inclusif... L3
+Architecture 64 bits : x86_64
+CPU model : Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)
+L3 (size: 16384) inclusive
+	L2 (size: 2048) NIIO
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+	L2 (size: 2048) NIIO
+		L1 (size: 1024) inclusive
+		L1 (size: 1024) inclusive
+
+
+Statistics to all instructions
+L3  basiques   (misses:         10233, hits:           5398, writes_back:          0)
+    evinctions (coherence:          0, capacity:       9977, cache_types:          0)
+    misses     (snooping:           0, above:         10233, below:                0)
+    broadcasts (coherence:      10233, snooping:          0)
+
+		L2  basiques   (misses:          6173, hits:           3596, writes_back:       2599)
+		    evinctions (coherence:       2881, capacity:          0, cache_types:       3287)
+		    misses     (snooping:           0, above:          6173, below:                0)
+		    broadcasts (coherence:       8093, snooping:          0)
+
+				L1  basiques   (misses:          3837, hits:          26163, writes_back:       2500)
+				    evinctions (coherence:       2882, capacity:        701, cache_types:        250)
+				    misses     (snooping:           0, above:          3837, below:                0)
+				    broadcasts (coherence:       5535, snooping:          0)
+
+				L1  basiques   (misses:          5932, hits:          24068, writes_back:       2500)
+				    evinctions (coherence:       2881, capacity:          0, cache_types:       3048)
+				    misses     (snooping:           0, above:          5932, below:                0)
+				    broadcasts (coherence:       7852, snooping:          0)
+
+		L2  basiques   (misses:          9458, hits:           1542, writes_back:       2857)
+		    evinctions (coherence:       2401, capacity:       1195, cache_types:       5832)
+		    misses     (snooping:           0, above:          9458, below:                0)
+		    broadcasts (coherence:      11858, snooping:          0)
+
+				L1  basiques   (misses:          5558, hits:          24442, writes_back:       1300)
+				    evinctions (coherence:       1405, capacity:       1523, cache_types:       2614)
+				    misses     (snooping:           0, above:          5558, below:                0)
+				    broadcasts (coherence:       7477, snooping:          0)
+
+				L1  basiques   (misses:          5442, hits:          24558, writes_back:       2500)
+				    evinctions (coherence:       2401, capacity:          0, cache_types:       3038)
+				    misses     (snooping:           0, above:          5442, below:                0)
+				    broadcasts (coherence:       6827, snooping:          0)
+
+
+
 Sans snooping, avec un L3 exclusif
 Architecture 64 bits : x86_64
 CPU model : Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)
@@ -113,40 +161,40 @@ L3 (size: 16384) exclusive, with directory manager
 
 
 Statistics to all instructions
-L3  basiques   (misses:          7656, hits:           3991, writes_back:       1424)
-    evinctions (coherence:          0, capacity:       2927, cache_types:       3991)
-    misses     (snooping:           0, above:          7656, below:                0)
-    broadcasts (coherence:       6980, snooping:          0)
+L3  basiques   (misses:          6664, hits:           8247, writes_back:        425)
+    evinctions (coherence:          0, capacity:        993, cache_types:       8247)
+    misses     (snooping:           0, above:          6664, below:                0)
+    broadcasts (coherence:       9493, snooping:          0)
 
-		L2  basiques   (misses:          4954, hits:           3317, writes_back:       2252)
-		    evinctions (coherence:       2752, capacity:       2698, cache_types:          0)
-		    misses     (snooping:           0, above:          4954, below:                0)
-		    broadcasts (coherence:       7329, snooping:          0)
+		L2  basiques   (misses:          3006, hits:           3720, writes_back:       2500)
+		    evinctions (coherence:       3000, capacity:          0, cache_types:          0)
+		    misses     (snooping:           0, above:          3006, below:                0)
+		    broadcasts (coherence:       4946, snooping:          0)
 
-				L1  basiques   (misses:          4339, hits:          25661, writes_back:       2251)
-				    evinctions (coherence:       2193, capacity:       1585, cache_types:       1394)
-				    misses     (snooping:           0, above:          4339, below:                0)
-				    broadcasts (coherence:       6617, snooping:          0)
+				L1  basiques   (misses:          3722, hits:          26278, writes_back:       2500)
+				    evinctions (coherence:       3000, capacity:        718, cache_types:          0)
+				    misses     (snooping:           0, above:          3722, below:                0)
+				    broadcasts (coherence:       5412, snooping:          0)
 
-				L1  basiques   (misses:          3932, hits:          26068, writes_back:       2252)
-				    evinctions (coherence:       2689, capacity:        870, cache_types:       1362)
-				    misses     (snooping:           0, above:          3932, below:                0)
-				    broadcasts (coherence:       6275, snooping:          0)
+				L1  basiques   (misses:          3004, hits:          26996, writes_back:       2500)
+				    evinctions (coherence:       3000, capacity:          0, cache_types:          0)
+				    misses     (snooping:           0, above:          3004, below:                0)
+				    broadcasts (coherence:       5004, snooping:          0)
 
-		L2  basiques   (misses:          6693, hits:           1481, writes_back:       2440)
-		    evinctions (coherence:       2252, capacity:       5178, cache_types:          0)
-		    misses     (snooping:           0, above:          6693, below:                0)
-		    broadcasts (coherence:       9515, snooping:          0)
+		L2  basiques   (misses:         11905, hits:           1804, writes_back:       2600)
+		    evinctions (coherence:       2380, capacity:       9493, cache_types:          0)
+		    misses     (snooping:           0, above:         11905, below:                0)
+		    broadcasts (coherence:      14099, snooping:          0)
 
-				L1  basiques   (misses:          4151, hits:          25849, writes_back:       2237)
-				    evinctions (coherence:       1002, capacity:       1592, cache_types:       2819)
-				    misses     (snooping:           0, above:          4151, below:                0)
-				    broadcasts (coherence:       6835, snooping:          0)
+				L1  basiques   (misses:          6996, hits:          23004, writes_back:       2131)
+				    evinctions (coherence:       1132, capacity:       1488, cache_types:       4360)
+				    misses     (snooping:           0, above:          6996, below:                0)
+				    broadcasts (coherence:       8752, snooping:          0)
 
-				L1  basiques   (misses:          4023, hits:          25977, writes_back:       2251)
-				    evinctions (coherence:       2251, capacity:       1614, cache_types:       1243)
-				    misses     (snooping:           0, above:          4023, below:                0)
-				    broadcasts (coherence:       5866, snooping:          0)
+				L1  basiques   (misses:          6713, hits:          23287, writes_back:       2500)
+				    evinctions (coherence:       2380, capacity:          0, cache_types:       4330)
+				    misses     (snooping:           0, above:          6713, below:                0)
+				    broadcasts (coherence:       7755, snooping:          0)
 
 
 
@@ -166,40 +214,40 @@ L3 (size: 16384) inclusive
 
 
 Statistics to all instructions
-L3  basiques   (misses:          2187, hits:            182, writes_back:          0)
-    evinctions (coherence:          0, capacity:       2212, cache_types:          0)
-    misses     (snooping:           0, above:          2187, below:                0)
-    broadcasts (coherence:       2468, snooping:          0)
+L3  basiques   (misses:         10233, hits:             24, writes_back:          0)
+    evinctions (coherence:          0, capacity:       9977, cache_types:          0)
+    misses     (snooping:           0, above:         10233, below:                0)
+    broadcasts (coherence:      10233, snooping:          0)
 
-		L2  basiques   (misses:           402, hits:              7, writes_back:         91)
-		    evinctions (coherence:         37, capacity:        740, cache_types:        164)
-		    misses     (snooping:           0, above:           402, below:                0)
-		    broadcasts (coherence:        943, snooping:          0)
+		L2  basiques   (misses:          3216, hits:              0, writes_back:        343)
+		    evinctions (coherence:        138, capacity:          0, cache_types:       3258)
+		    misses     (snooping:           0, above:          3216, below:                0)
+		    broadcasts (coherence:       3539, snooping:          0)
 
-				L1  basiques   (misses:          3766, hits:          26234, writes_back:       2488)
-				    evinctions (coherence:       2917, capacity:        761, cache_types:        158)
-				    misses     (snooping:        3546, above:           220, below:                0)
-				    broadcasts (coherence:       5505, snooping:       3766)
+				L1  basiques   (misses:          3837, hits:          26163, writes_back:       2500)
+				    evinctions (coherence:       2882, capacity:        701, cache_types:        250)
+				    misses     (snooping:        3596, above:           241, below:                0)
+				    broadcasts (coherence:       5535, snooping:       3837)
 
-				L1  basiques   (misses:          3171, hits:          26829, writes_back:       2460)
-				    evinctions (coherence:       2878, capacity:        211, cache_types:        229)
-				    misses     (snooping:        2982, above:           189, below:                0)
-				    broadcasts (coherence:       5230, snooping:       3171)
+				L1  basiques   (misses:          5932, hits:          24068, writes_back:       2500)
+				    evinctions (coherence:       2881, capacity:          0, cache_types:       3048)
+				    misses     (snooping:        2957, above:          2975, below:                0)
+				    broadcasts (coherence:       7852, snooping:       5932)
 
-		L2  basiques   (misses:          1967, hits:              1, writes_back:        195)
-		    evinctions (coherence:          3, capacity:       3303, cache_types:        177)
-		    misses     (snooping:           0, above:          1967, below:                0)
-		    broadcasts (coherence:       3507, snooping:          0)
+		L2  basiques   (misses:          7041, hits:              8, writes_back:        460)
+		    evinctions (coherence:        139, capacity:       4293, cache_types:       3128)
+		    misses     (snooping:           0, above:          7041, below:                0)
+		    broadcasts (coherence:       7591, snooping:          0)
 
-				L1  basiques   (misses:          3058, hits:          26942, writes_back:       1233)
-				    evinctions (coherence:       1411, capacity:       1560, cache_types:        406)
-				    misses     (snooping:        2698, above:           360, below:                0)
-				    broadcasts (coherence:       5267, snooping:       3058)
+				L1  basiques   (misses:          5548, hits:          24452, writes_back:       1339)
+				    evinctions (coherence:       1420, capacity:       1436, cache_types:       2676)
+				    misses     (snooping:        2725, above:          2823, below:                0)
+				    broadcasts (coherence:       7467, snooping:       5548)
 
-				L1  basiques   (misses:          2800, hits:          27200, writes_back:       2430)
-				    evinctions (coherence:       2379, capacity:        356, cache_types:        407)
-				    misses     (snooping:        1192, above:          1608, below:                0)
-				    broadcasts (coherence:       4459, snooping:       2800)
+				L1  basiques   (misses:          5442, hits:          24558, writes_back:       2500)
+				    evinctions (coherence:       2401, capacity:          0, cache_types:       3038)
+				    misses     (snooping:        1216, above:          4226, below:                0)
+				    broadcasts (coherence:       6842, snooping:       5442)
 
 
 
@@ -216,40 +264,40 @@ L3 (size: 16384) inclusive
 
 
 Statistics to all instructions
-L3  basiques   (misses:          2768, hits:            625, writes_back:          0)
-    evinctions (coherence:          0, capacity:       3081, cache_types:          0)
-    misses     (snooping:           0, above:          2768, below:                0)
-    broadcasts (coherence:       4750, snooping:          0)
+L3  basiques   (misses:         10233, hits:             60, writes_back:          0)
+    evinctions (coherence:          0, capacity:       9977, cache_types:          0)
+    misses     (snooping:           0, above:         10233, below:                0)
+    broadcasts (coherence:      11661, snooping:          0)
 
-		L2  basiques   (misses:          3959, hits:           3307, writes_back:       2395)
-		    evinctions (coherence:       2802, capacity:       1067, cache_types:        341)
-		    misses     (snooping:        2932, above:          1027, below:                0)
-		    broadcasts (coherence:       6422, snooping:       3959)
+		L2  basiques   (misses:          6173, hits:           3596, writes_back:       2599)
+		    evinctions (coherence:       2881, capacity:          0, cache_types:       3287)
+		    misses     (snooping:        2949, above:          3224, below:                0)
+		    broadcasts (coherence:       8197, snooping:       6173)
 
-				L1  basiques   (misses:          3822, hits:          26178, writes_back:       2475)
-				    evinctions (coherence:       2873, capacity:        821, cache_types:        252)
-				    misses     (snooping:           0, above:          3822, below:                0)
-				    broadcasts (coherence:       5653, snooping:          0)
+				L1  basiques   (misses:          3837, hits:          26163, writes_back:       2500)
+				    evinctions (coherence:       2882, capacity:        701, cache_types:        250)
+				    misses     (snooping:           0, above:          3837, below:                0)
+				    broadcasts (coherence:       5587, snooping:          0)
 
-				L1  basiques   (misses:          3444, hits:          26556, writes_back:       2395)
-				    evinctions (coherence:       2800, capacity:        525, cache_types:        617)
-				    misses     (snooping:           0, above:          3444, below:                0)
-				    broadcasts (coherence:       5839, snooping:          0)
+				L1  basiques   (misses:          5932, hits:          24068, writes_back:       2500)
+				    evinctions (coherence:       2881, capacity:          0, cache_types:       3048)
+				    misses     (snooping:           0, above:          5932, below:                0)
+				    broadcasts (coherence:       7904, snooping:          0)
 
-		L2  basiques   (misses:          4986, hits:           1155, writes_back:       2636)
-		    evinctions (coherence:       2321, capacity:       3872, cache_types:        324)
-		    misses     (snooping:        2620, above:          2366, below:                0)
-		    broadcasts (coherence:      10091, snooping:       4986)
+		L2  basiques   (misses:          9514, hits:           1476, writes_back:       3033)
+		    evinctions (coherence:       2393, capacity:       3980, cache_types:       3650)
+		    misses     (snooping:        2445, above:          7069, below:                0)
+		    broadcasts (coherence:      13580, snooping:       9514)
 
-				L1  basiques   (misses:          3208, hits:          26792, writes_back:       1242)
-				    evinctions (coherence:       1404, capacity:       1681, cache_types:        604)
-				    misses     (snooping:           0, above:          3208, below:                0)
-				    broadcasts (coherence:       5610, snooping:          0)
+				L1  basiques   (misses:          5548, hits:          24452, writes_back:       1341)
+				    evinctions (coherence:       1421, capacity:       1433, cache_types:       2678)
+				    misses     (snooping:           0, above:          5548, below:                0)
+				    broadcasts (coherence:       7520, snooping:          0)
 
-				L1  basiques   (misses:          2933, hits:          27067, writes_back:       2397)
-				    evinctions (coherence:       2321, capacity:        514, cache_types:        596)
-				    misses     (snooping:           0, above:          2933, below:                0)
-				    broadcasts (coherence:       5811, snooping:          0)
+				L1  basiques   (misses:          5442, hits:          24558, writes_back:       2500)
+				    evinctions (coherence:       2401, capacity:          0, cache_types:       3038)
+				    misses     (snooping:           0, above:          5442, below:                0)
+				    broadcasts (coherence:       7888, snooping:          0)
 
 
 
@@ -266,40 +314,40 @@ L3 (size: 16384) inclusive
 
 
 Statistics to all instructions
-L3  basiques   (misses:          2187, hits:            153, writes_back:          0)
-    evinctions (coherence:          0, capacity:       2212, cache_types:          0)
-    misses     (snooping:           0, above:          2187, below:                0)
-    broadcasts (coherence:       2468, snooping:       2187)
+L3  basiques   (misses:         10233, hits:             24, writes_back:          0)
+    evinctions (coherence:          0, capacity:       9977, cache_types:          0)
+    misses     (snooping:           0, above:         10233, below:                0)
+    broadcasts (coherence:      10233, snooping:      10233)
 
-		L2  basiques   (misses:           402, hits:              7, writes_back:         91)
-		    evinctions (coherence:         37, capacity:        740, cache_types:        164)
-		    misses     (snooping:          21, above:           381, below:                0)
-		    broadcasts (coherence:        943, snooping:        402)
+		L2  basiques   (misses:          3216, hits:              0, writes_back:        343)
+		    evinctions (coherence:        138, capacity:          0, cache_types:       3258)
+		    misses     (snooping:           0, above:          3216, below:                0)
+		    broadcasts (coherence:       3539, snooping:       3216)
 
-				L1  basiques   (misses:          3766, hits:          26234, writes_back:       2488)
-				    evinctions (coherence:       2917, capacity:        761, cache_types:        158)
-				    misses     (snooping:        3546, above:           220, below:                0)
-				    broadcasts (coherence:       5505, snooping:       3766)
+				L1  basiques   (misses:          3837, hits:          26163, writes_back:       2500)
+				    evinctions (coherence:       2882, capacity:        701, cache_types:        250)
+				    misses     (snooping:        3596, above:           241, below:                0)
+				    broadcasts (coherence:       5535, snooping:       3837)
 
-				L1  basiques   (misses:          3171, hits:          26829, writes_back:       2460)
-				    evinctions (coherence:       2878, capacity:        211, cache_types:        229)
-				    misses     (snooping:        2982, above:           189, below:                0)
-				    broadcasts (coherence:       5230, snooping:       3171)
+				L1  basiques   (misses:          5932, hits:          24068, writes_back:       2500)
+				    evinctions (coherence:       2881, capacity:          0, cache_types:       3048)
+				    misses     (snooping:        2957, above:          2975, below:                0)
+				    broadcasts (coherence:       7852, snooping:       5932)
 
-		L2  basiques   (misses:          1967, hits:              1, writes_back:        195)
-		    evinctions (coherence:          3, capacity:       3303, cache_types:        177)
-		    misses     (snooping:           8, above:          1959, below:                0)
-		    broadcasts (coherence:       3507, snooping:       1967)
+		L2  basiques   (misses:          7041, hits:              8, writes_back:        460)
+		    evinctions (coherence:        139, capacity:       4293, cache_types:       3128)
+		    misses     (snooping:           0, above:          7041, below:                0)
+		    broadcasts (coherence:       7591, snooping:       7041)
 
-				L1  basiques   (misses:          3058, hits:          26942, writes_back:       1233)
-				    evinctions (coherence:       1411, capacity:       1560, cache_types:        406)
-				    misses     (snooping:        2698, above:           360, below:                0)
-				    broadcasts (coherence:       5267, snooping:       3058)
+				L1  basiques   (misses:          5548, hits:          24452, writes_back:       1339)
+				    evinctions (coherence:       1420, capacity:       1436, cache_types:       2676)
+				    misses     (snooping:        2725, above:          2823, below:                0)
+				    broadcasts (coherence:       7467, snooping:       5548)
 
-				L1  basiques   (misses:          2800, hits:          27200, writes_back:       2430)
-				    evinctions (coherence:       2379, capacity:        356, cache_types:        407)
-				    misses     (snooping:        1192, above:          1608, below:                0)
-				    broadcasts (coherence:       4459, snooping:       2800)
+				L1  basiques   (misses:          5442, hits:          24558, writes_back:       2500)
+				    evinctions (coherence:       2401, capacity:          0, cache_types:       3038)
+				    misses     (snooping:        1216, above:          4226, below:                0)
+				    broadcasts (coherence:       6842, snooping:       5442)
 
 
 
@@ -316,40 +364,40 @@ L3 (size: 16384) inclusive
 
 
 Statistics to all instructions
-L3  basiques   (misses:          1868, hits:           5279, writes_back:          0)
-    evinctions (coherence:          0, capacity:       1618, cache_types:          0)
-    misses     (snooping:           0, above:          1868, below:                0)
-    broadcasts (coherence:       1874, snooping:       1868)
+L3  basiques   (misses:         10233, hits:              0, writes_back:          0)
+    evinctions (coherence:          0, capacity:       9977, cache_types:          0)
+    misses     (snooping:           0, above:         10233, below:                0)
+    broadcasts (coherence:      10233, snooping:      10233)
 
-		L2  basiques   (misses:          4429, hits:            570, writes_back:        685)
-		    evinctions (coherence:        654, capacity:       7149, cache_types:        790)
-		    misses     (snooping:         646, above:          3783, below:                0)
-		    broadcasts (coherence:       8598, snooping:       4429)
+		L2  basiques   (misses:          3216, hits:            469, writes_back:        469)
+		    evinctions (coherence:          0, capacity:          0, cache_types:        486)
+		    misses     (snooping:           0, above:          3216, below:                0)
+		    broadcasts (coherence:        486, snooping:       3216)
 
-				L1  basiques   (misses:          8390, hits:          21610, writes_back:       2038)
-				    evinctions (coherence:       2327, capacity:       6745, cache_types:        111)
-				    misses     (snooping:        5003, above:          3387, below:                0)
-				    broadcasts (coherence:      10214, snooping:       8390)
+				L1  basiques   (misses:          3774, hits:          26226, writes_back:       2343)
+				    evinctions (coherence:       2725, capacity:        733, cache_types:        312)
+				    misses     (snooping:        3221, above:           553, below:                0)
+				    broadcasts (coherence:       5694, snooping:       3774)
 
-				L1  basiques   (misses:          4417, hits:          25583, writes_back:       1963)
-				    evinctions (coherence:       2262, capacity:       2633, cache_types:        147)
-				    misses     (snooping:        2805, above:          1612, below:                0)
-				    broadcasts (coherence:       6340, snooping:       4417)
+				L1  basiques   (misses:          5932, hits:          24068, writes_back:       2500)
+				    evinctions (coherence:       2881, capacity:          0, cache_types:       3048)
+				    misses     (snooping:        2800, above:          3132, below:                0)
+				    broadcasts (coherence:       7695, snooping:       5932)
 
-		L2  basiques   (misses:          4139, hits:            401, writes_back:        932)
-		    evinctions (coherence:        516, capacity:       3858, cache_types:        628)
-		    misses     (snooping:         775, above:          3364, below:                0)
-		    broadcasts (coherence:       5010, snooping:       4139)
+		L2  basiques   (misses:          7017, hits:            174, writes_back:        475)
+		    evinctions (coherence:          0, capacity:        866, cache_types:        522)
+		    misses     (snooping:           0, above:          7017, below:                0)
+		    broadcasts (coherence:       1418, snooping:       7017)
 
-				L1  basiques   (misses:          4382, hits:          25618, writes_back:        904)
-				    evinctions (coherence:       1097, capacity:       3672, cache_types:        101)
-				    misses     (snooping:        2769, above:          1613, below:                0)
-				    broadcasts (coherence:       5944, snooping:       4382)
+				L1  basiques   (misses:          5952, hits:          24048, writes_back:       1315)
+				    evinctions (coherence:       1452, capacity:       1593, cache_types:       2892)
+				    misses     (snooping:        2955, above:          2997, below:                0)
+				    broadcasts (coherence:       7871, snooping:       5952)
 
-				L1  basiques   (misses:          4113, hits:          25887, writes_back:       2032)
-				    evinctions (coherence:       1975, capacity:       2677, cache_types:         89)
-				    misses     (snooping:        1186, above:          2927, below:                0)
-				    broadcasts (coherence:       5203, snooping:       4113)
+				L1  basiques   (misses:          5442, hits:          24558, writes_back:       2500)
+				    evinctions (coherence:       2401, capacity:          0, cache_types:       3038)
+				    misses     (snooping:        1248, above:          4194, below:                0)
+				    broadcasts (coherence:       6874, snooping:       5442)
 
 
 
@@ -366,40 +414,40 @@ L3 (size: 16384) inclusive
 
 
 Statistics to all instructions
-L3  basiques   (misses:          1896, hits:             36, writes_back:          0)
-    evinctions (coherence:          0, capacity:       1670, cache_types:          0)
-    misses     (snooping:           0, above:          1896, below:                0)
-    broadcasts (coherence:       1926, snooping:       1896)
+L3  basiques   (misses:         10233, hits:              0, writes_back:          0)
+    evinctions (coherence:          0, capacity:       9977, cache_types:          0)
+    misses     (snooping:           0, above:         10233, below:                0)
+    broadcasts (coherence:      10233, snooping:      10233)
 
-		L2  basiques   (misses:           347, hits:              0, writes_back:         27)
-		    evinctions (coherence:          5, capacity:        450, cache_types:        254)
-		    misses     (snooping:           6, above:           341, below:                0)
-		    broadcasts (coherence:        712, snooping:        347)
+		L2  basiques   (misses:          3216, hits:              0, writes_back:        138)
+		    evinctions (coherence:        138, capacity:          0, cache_types:         79)
+		    misses     (snooping:           0, above:          3216, below:                0)
+		    broadcasts (coherence:        218, snooping:       3216)
 
-				L1  basiques   (misses:          3768, hits:          26232, writes_back:       2486)
-				    evinctions (coherence:       2922, capacity:        764, cache_types:        154)
-				    misses     (snooping:        3583, above:           185, below:                0)
-				    broadcasts (coherence:       5529, snooping:       3768)
+				L1  basiques   (misses:          3837, hits:          26163, writes_back:       2500)
+				    evinctions (coherence:       2882, capacity:        701, cache_types:        250)
+				    misses     (snooping:        3596, above:           241, below:                0)
+				    broadcasts (coherence:       5535, snooping:       3837)
 
-				L1  basiques   (misses:          3142, hits:          26858, writes_back:       2481)
-				    evinctions (coherence:       2917, capacity:        160, cache_types:        155)
-				    misses     (snooping:        2980, above:           162, below:                0)
-				    broadcasts (coherence:       5164, snooping:       3142)
+				L1  basiques   (misses:          5932, hits:          24068, writes_back:       2500)
+				    evinctions (coherence:       2881, capacity:          0, cache_types:       3048)
+				    misses     (snooping:        2957, above:          2975, below:                0)
+				    broadcasts (coherence:       7852, snooping:       5932)
 
-		L2  basiques   (misses:          1597, hits:              2, writes_back:         55)
-		    evinctions (coherence:          4, capacity:       1254, cache_types:        242)
-		    misses     (snooping:           6, above:          1591, below:                0)
-		    broadcasts (coherence:       1511, snooping:       1597)
+		L2  basiques   (misses:          7017, hits:             47, writes_back:        366)
+		    evinctions (coherence:          0, capacity:        737, cache_types:        676)
+		    misses     (snooping:           0, above:          7017, below:                0)
+		    broadcasts (coherence:       1443, snooping:       7017)
 
-				L1  basiques   (misses:          2893, hits:          27107, writes_back:       1272)
-				    evinctions (coherence:       1457, capacity:       1354, cache_types:        148)
-				    misses     (snooping:        2735, above:           158, below:                0)
-				    broadcasts (coherence:       4905, snooping:       2893)
+				L1  basiques   (misses:          5558, hits:          24442, writes_back:       1308)
+				    evinctions (coherence:       1405, capacity:       1515, cache_types:       2622)
+				    misses     (snooping:        2735, above:          2823, below:                0)
+				    broadcasts (coherence:       7477, snooping:       5558)
 
-				L1  basiques   (misses:          2672, hits:          27328, writes_back:       2468)
-				    evinctions (coherence:       2416, capacity:        196, cache_types:        209)
-				    misses     (snooping:        1231, above:          1441, below:                0)
-				    broadcasts (coherence:       4228, snooping:       2672)
+				L1  basiques   (misses:          5442, hits:          24558, writes_back:       2500)
+				    evinctions (coherence:       2401, capacity:          0, cache_types:       3038)
+				    misses     (snooping:        1201, above:          4241, below:                0)
+				    broadcasts (coherence:       6827, snooping:       5442)
 
 
 
