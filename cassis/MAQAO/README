@@ -1,11 +1,12 @@
 Lanch the script to create the traces:
 
-./get_traces.sh test.c par 4
+./get_traces.sh test.c par 4 [100]
 
 with:
 - test.c     name c of the file
 - par        the name of the function to trace
 - 4          the number of threads
+- 100        optionnal parameter of test.c
 
 
 To follow a source code line, use:
