@@ -1,18 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
-#~ preciser src et bin et include
-#~ 0x6fffffffffffful : initialiser bien!
-#~ virer les atoi!
-#~ -pedantic -Wall -Wextra
 
 project(caches-pfa)
 set(EXECUTABLE_OUTPUT_PATH bin)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}") #~ -pedantic -Wall -Wextra -std=c99
 
 find_package(LibXml2 REQUIRED)
 find_package(LibXslt REQUIRED)
 find_package(Lua51 QUIET)
 find_package(Lua52 QUIET)
-find_program(LUA_LIBRAIRIES lua lua5.2 QUIET)
+find_program(LUA_LIBRAIRIES llua lua5.2 QUIET)
 
 if (NOT LUA_LIBRARIES)
   message(FATAL_ERROR "Please precise your lua libraries with -DLUA_LIBRARIES=")
@@ -27,14 +23,16 @@ set(test_main_file tests/main_test.c)
 option(TEST "Build tests" OFF)
 set(main_file src/main_automate.c)
 set(executable_name simulator)
+set(src_dir ${CMAKE_SOURCE_DIR}/src)
+
 execute_process(
   COMMAND java -jar bin/Smc.jar -c coherence.sm
-  WORKING_DIRECTORY src/gen-automate)
-file(GLOB source_files src/core-automate/*.c src/gen-automate/*.c)	
-include_directories (src/includes-automate src/gen-automate)
+  WORKING_DIRECTORY ${src_dir}/gen-automate)
+file(GLOB source_files ${src_dir}/core-automate/*.c ${src_dir}/gen-automate/*.c)	
+include_directories (${src_dir}/includes-automate ${src_dir}/gen-automate)
 
 if(TEST)
-  file(GLOB automate_test_source_files tests/tests-automate/*.c src/core-automate/*.c src/gen-automate/*.c)
+  file(GLOB automate_test_source_files tests/tests-automate/*.c ${src_dir}/core-automate/*.c ${src_dir}/gen-automate/*.c)
   add_executable(
     test
     ${test_main_file} ${automate_test_source_files}
