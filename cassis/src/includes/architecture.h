@@ -26,12 +26,12 @@ struct architecture {
   char CPU_name[100]; /**< for example "Intel(R) Core(TM) i3-3120M CPU @ 2.50GHz" */
   unsigned int number_threads;
   unsigned int number_levels;
-  struct node ** threads; /**< Leaves of the cache hierarchy tree (corresponding to L1 cache)*/
+  struct node ** threads; /**< Leaves of the cache hierarchy tree (corresponding to L1 caches)*/
   bool warning; /**< True if there is an important warning that could create a bug*/
 };
 
 /**
- * \brief Sets the architecture parsing the file describing the architecture (xml)
+ * \brief Sets the architecture parsing the file describing the architecture (cassis.xml)
  * \param filename Name of the xml file to parse.
  * \param archi The architecture structure storing the result.
  * \return EXIT_FAILURE or EXIT_SUCCESS
