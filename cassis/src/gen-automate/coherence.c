@@ -12,6 +12,7 @@ void coherence_invalid_line(struct coherence *this, struct line *line) {
 
 void coherence_modify_line(struct coherence *this, struct line *line) {
   line->status = M;
+  line->status = 1;
 }
 
 void coherence_share_line(struct coherence *this, struct line *line) {

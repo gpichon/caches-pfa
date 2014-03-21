@@ -2,10 +2,10 @@
 .SH NAME
 cassis \- manual page for cassis.
 .SH SYNOPSIS
-cassis -f file -t number_threads [-w] [-v] [-i number_instr] [-b addr:addr] [...]
+cassis -f file.xml -t number_threads -r traces_dir [-w] [-v int] [-i number_instr1[:...]] [-b addr_begin:addr_end] [...]
 .SH DESCRIPTION
 CasSiS, Cache Simulation Software. This software analyses a maqao generated trace to provide statistics towards cache performance. The architecture can be generated from hwloc (with lstopo --of xml file.xml) and enhanced by our file format file.cassis.xml.
-.SH OPTIONS
+.SH PARAMETERS
 .TP
 \fB\-f <file>
 Select architecture file. The architecture can be a file generated from hwloc (xml) or a file created by the user (cassis.xml). See cassis-xml for more details.
@@ -13,13 +13,20 @@ Select architecture file. The architecture can be a file generated from hwloc (x
 \fB\-t <int>
 Select the number of threads. The number of threads must be lower than the number of cores, because this software cannot deal with context changement.
 .TP
+\fB\-r <dir>
+Specify the directory to open trace files.
+.SH OPTIONS
+.TP
 \fB\-i <int>
 Track only specified instructions for stats. Can be used with -b.
 .SH ""
-	-r 1:3:42 Track only 3 instructions.
+	-i 1:3:42 Track only 3 instructions.
 .TP
 \fB\-b <long:long>
-Trace only the values between two addresses. For instance, with -b 0x000000000000:0x6fffffffffff, all values values that are not in the stack are tracked. Can be used with -r.
+Trace only the values between two addresses. For instance, with -b 0x000000000000:0x6fffffffffff, all values values that are not in the stack are tracked. Can be used with -i.
+.TP
+\fB\-l <file>
+Select the file for threads interweaving. (Default: "./threads.lua")
 .TP
 \fB\-v <int>
 Select the verbose mode.
@@ -39,16 +46,10 @@ Print mode. Print only tracked values, not all instructions results.
 Debug mode. Useful for printing caches after each instruction.
 .TP
 \fB\-w
-Ignore fatal warnings. However the program will probably not be able play the trace.
+Ignore fatal warnings. However the program will probably not be able to play the trace.
 .TP
 \fB\-h
 Print this man page.
-.TP
-\fB\-r <file>
-Specify the directory to open trace files.
-.TP
-\fB\-l <file>
-Select the file for threads interweaving. (Default: "./threads.lua")
 
 .SH AUTHORS
 Written by the CASSIS team at ENSEIRB-Matmeca, FRANCE. The team was composed of Nicolas Dubois, Nicolas Heng, Alexandre Horonat, Gilles Marait, Grégoire Pichon, Pierre Goudet.

@@ -46,15 +46,20 @@ int main(int argc, char *argv[]) {
   get_options(argc, argv);
   
   if (help){
-    printf("To work with the architecture file: -f file\n");
-    printf("To trace a special data set: -b 0x000000000000:0x6fffffffffff or -b no_stack for all values excepting stack values\n");
-    printf("To print more statistics: -v 1: basic stats\n");
-    printf("                          -v 2: evinctions\n");
-    printf("                          -v 3: more detailled misses\n");
-    printf("                          -v 4: all stats\n");
-    printf("To ignore the architecture fatal warnings; -w\n");
-    printf("To specify the interweaving lua file: -r file\n");
-    printf("To track only some instructions: -i 1:3:42\n");
+    printf("To work with the architecture file: -f file.xml\n");
+    printf("To precise number of threads: -t int\n");
+    printf("To precise traces directory: -r file.xml\n");
+    printf("To trace a special data set: -b 0x000000000000:0x6fffffffffff or -b no_stack for all values excepting stack values (optional)\n");
+    printf("To print more statistics: -v 1: basic stats (default)\n");
+    printf("                          -v 2: evinctions (optional)\n");
+    printf("                          -v 3: more detailled misses (optional)\n");
+    printf("                          -v 4: all stats (optional)\n");
+    printf("To ignore the architecture fatal warnings: -w (optional)\n");
+    printf("To specify the interweaving lua file: -l file (optional if threads.lua exists)\n");
+    printf("To track only some instructions: -i 1:3:42 (optional)\n");
+    printf("To execute step by step (press s to run all instructions): -d (optional)\n");
+    printf("To print only the tracked values stats: -o (optional)\n");
+    printf("To print this help: -h\n");
     return EXIT_SUCCESS;
   }
   
