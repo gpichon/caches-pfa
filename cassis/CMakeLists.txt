@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 2.8)
-#~ def LUA_ tester si existe
 #~ preciser src et bin et include
 #~ 0x6fffffffffffful : initialiser bien!
 #~ virer les atoi!
@@ -15,17 +14,13 @@ find_package(Lua51 QUIET)
 find_package(Lua52 QUIET)
 find_program(LUA_LIBRAIRIES lua lua5.2 QUIET)
 
-if (LUA_LIBRARIES)
-  message("OK")
-else ()
-  message(fatal_error "NOT OK")
-endif (LUA_LIBRARIES)
+if (NOT LUA_LIBRARIES)
+  message(FATAL_ERROR "Please precise your lua libraries with -DLUA_LIBRARIES=")
+endif (NOT LUA_LIBRARIES)
 
-if (LUA_INCLUDE_DIR)
-  message("OK")
-else ()
-  message(fatal_error "NOT OK")
-endif (LUA_INCLUDE_DIR)
+if (NOT LUA_INCLUDE_DIR)
+  message(FATAL_ERROR "Please precise your lua include dir with -DLUA_INCLUDE_DIR=")
+endif (NOT LUA_INCLUDE_DIR)
 
 set(test_main_file tests/main_test.c)
 
