@@ -18,7 +18,7 @@ if (NOT LUA_INCLUDE_DIR)
   message(FATAL_ERROR "Please precise your lua include dir with -DLUA_INCLUDE_DIR=")
 endif (NOT LUA_INCLUDE_DIR)
 
-set(test_main_file tests/main_test.c)
+set(test_main_file src/main_test.c)
 
 option(TEST "Build tests" OFF)
 set(main_file src/main.c)
@@ -32,10 +32,11 @@ file(GLOB source_files ${src_dir}/core/*.c ${src_dir}/gen-automata/*.c)
 include_directories (${src_dir}/includes ${src_dir}/gen-automata)
 
 if(TEST)
-  file(GLOB automate_test_source_files tests/tests/*.c ${src_dir}/core/*.c ${src_dir}/gen-automata/*.c)
+  file(GLOB test_source_files ${src_dir}/tests/*.c ${src_dir}/core/*.c ${src_dir}/gen-automata/*.c)
+  include_directories (${src_dir}/includes ${src_dir}/gen-automata ${src_dir}/tests)
   add_executable(
     test
-    ${test_main_file} ${automate_test_source_files}
+    ${test_main_file} ${test_source_files}
     )
   target_link_libraries(test ${LIBXML2_LIBRARIES} ${LIBXSLT_LIBRARIES} ${LUA_LIBRARIES})
 endif(TEST)
