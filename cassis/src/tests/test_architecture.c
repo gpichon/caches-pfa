@@ -79,6 +79,5 @@ int test_architecture(int argc, char **argv){
 
   delete_archi(&A);
   unlink(OUTNAME);
-
   return EXIT_SUCCESS;
 }

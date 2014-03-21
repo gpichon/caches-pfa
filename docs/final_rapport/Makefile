@@ -7,4 +7,4 @@ rapport: rapport.tex rapport.bib
 	pdflatex rapport.tex
 
 clean: 
-	rm *.aux *.log *~ *.bbl *.blg *.dvi *.toc *.pdf
+	rm -f *.aux *.log *~ *.bbl *.blg *.dvi *.toc *.pdf

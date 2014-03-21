@@ -37,8 +37,8 @@ enum instruction_type {INSTRUCTION_END_OF_THREAD, INSTRUCTION_LOAD, INSTRUCTION_
  * \brief Abstract Data Type of an instruction.
  */
 struct instruction {
-  int type;		/**< Instruction type, an int in the range of the instruction_type enumeration. */
-  unsigned long addr;	/**< Address to be used. */
+  int type;           /**< Instruction type, an int in the range of the instruction_type enumeration. */
+  unsigned long addr; /**< Address to be used. */
   unsigned int number;	/**< The instruction identifier, given by MAQAO in the trace file. */
 };
 

@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
   }
 
   lua_State *L = luaL_newstate();   /* opens Lua  state*/
-  luaL_openlibs(L);   
+  luaL_openlibs(L);
   luaL_loadfile(L, luafile);
   lua_call(L, 0, 0);
 
@@ -123,15 +123,15 @@ int main(int argc, char *argv[]) {
     lua_getglobal(L, "interweave");                  
     lua_pushnumber(L, current);                     
     lua_pushnumber(L, nb_threads);                    
- 
+    
     /* Next thread */
     lua_call(L, 2, 1);  
 
     current = lua_tonumber(L, -1);
-    lua_pop(L, 1);
+    lua_pop(L, 1);  
 
     next_instruction(ins, threads, current);
-      
+    
     if (ins->type != INSTRUCTION_END_OF_THREAD) {
       if (ins->type == INSTRUCTION_LOAD) {
 	load_line_hierarchy(archi->threads[current], ins->addr);
@@ -166,6 +166,7 @@ int main(int argc, char *argv[]) {
       ends[current] = 1;
     }
   }
+
 
   /* Ends of reading */
   destroy_threads(threads, nb_threads);

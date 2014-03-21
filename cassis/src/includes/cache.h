@@ -13,32 +13,11 @@
 #ifndef CACHE_H
 #define CACHE_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include <stdbool.h>
 #include "block.h"
 
 /* A cache of size size, with nb_blocks blocks.
    Each block contains nb_ways lines and a line size is linesize */
-
-/**
- * \enum stat_type
- * \brief Stat type: 
- */
-enum stat_type {
-  MISS,
-  HIT,
-  WRITE_BACK,
-  COHERENCE_EVINCTION,
-  CAPACITY_EVINCTION,
-  TYPES_EVINCTION,
-  VALUE_BY_SNOOPING,
-  VALUE_ABOVE,
-  VALUE_BELOW,
-  COHERENCE_BROADCAST,
-  SNOOPING_BROADCAST
-};
 
 /**
  * \enum cache_type
@@ -50,6 +29,7 @@ enum cache_type{
  NIIO = 2,
  NIEO = 3
 };
+
 
 /**
  * \struct cache
@@ -80,16 +60,17 @@ struct cache {
 
 
   enum cache_type type;  /**< Type of cache: inclusive, exclusive, NIIO, NIEO */
+  enum cache_coherence policy; /**< Coherence policy : MSI, MESI, MOESI, MESIF, MOSI */
   bool snooping;         /**< Can this cache use snooping to find data? */
   bool directory;        /**< Can this cache use a directory manager to trace its sons data? */
   struct directory *dir; /**< The directory */
 
-  int (*replacement)(struct block *, int); /**< Function pointer to replace a line for a special priority in a block. */
+  int (*replacement)(struct block *, int, unsigned long); /**< Function pointer to replace a line for a special priority in a block. */
   void (*update_line)(struct block *, int, unsigned long); /**< Function pointer to update line stat in a block.  */
-
-  int (*treat_special_flags)(struct line *, void(*)(struct line *)); /**< Function pointer to manage special flags: E, O. */
-  void (*set_flags_new_line)(int, struct line *); /**< Function pointer to create a new line with right flag : S or E with MESI. */
 };
+
+
+
 
 /**
  * \brief update cache stats
@@ -99,7 +80,7 @@ void up_stat(struct cache *cache, unsigned long entry, int stats_type);
 /**
  * \brief Cache initialization. 
  */
-struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replacement)(struct cache *), void (*coherence)(struct cache *), int type, bool snooping, bool manager);
+struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replacement)(struct cache *), enum cache_coherence policy, int type, bool snooping, bool manager);
 
 /**
  * \brief Cache removal.
@@ -149,36 +130,6 @@ void replacement_FIFO(struct cache *cache);
 void replacement_LRU(struct cache *cache);
 
 /* Coherency protocols */
-/**
- * \brief Set the MESI coherence policy for the cache.
- */
-void coherence_MESI(struct cache *cache);
-/**
- * \brief Set the MSI coherence policy for the cache.
- */
-void coherence_MSI(struct cache *cache);
-
-/**
- * \brief Call the given function if the flag allow it.
- * \return True (=1) if the given function has be called, 0 otherwise. 
- */
-int flags_MESI(struct line *line, void (*action) (struct line*));
-/**
- * \brief Initiate the right flag for the given line. 
- * \param ret: 1 if a cache in level have the data, 0 otherwise. 
- */
-void flags_new_line_MESI(int ret, struct line *line);
-
-/**
- * \brief Call the right function given if the flag allow it.
- * \return True (=1) if the given function has be called, 0 otherwise.
- */
-int flags_MSI(struct line *line, void (*action) (struct line*));
-/**
- * \brief Initiate the right flag for the given line. 
- * \param ret: 1 if a cache in level have the data, 0 otherwise.
- */
-void flags_new_line_MSI(int ret, struct line *line);
 
 /**
  * \brief Return whether or not a cache is inclusive.

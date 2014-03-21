@@ -1,9 +1,10 @@
 #!/bin/bash
 
 a=3
+b=4
 
-if [ "$#" == "$a" ]
-then echo "OK"
+if [ "$a" -le "$#" ]
+then
 
 export OMP_NUM_THREADS=$3
 
@@ -18,7 +19,15 @@ echo $3
 
 gcc -o test $1 -DKERNEL=$2 -fopenmp -g
 ./maqao instrumentation.lua test "$2.*" > instr
+
+if [ "$b" == "$#" ]
+then
+echo "Program parameter"
+echo $4
+./test_i_mtl $4 2> out
+else
 ./test_i_mtl 2> out
+fi
 
 awk '/STORE|LOAD/ {print $0 > "trace"$3}' out
 

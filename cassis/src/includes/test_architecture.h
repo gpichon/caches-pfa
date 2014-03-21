@@ -6,6 +6,7 @@
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <assert.h>
+#include <unistd.h>
 
 #include "architecture.h"
 

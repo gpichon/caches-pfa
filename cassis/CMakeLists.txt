@@ -2,49 +2,60 @@ cmake_minimum_required(VERSION 2.8)
 
 project(caches-pfa)
 set(EXECUTABLE_OUTPUT_PATH bin)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}") #~ -pedantic -Wall -Wextra -std=c99
 
 find_package(LibXml2 REQUIRED)
 find_package(LibXslt REQUIRED)
-find_package(Lua51)
+find_package(Lua51 QUIET)
+find_package(Lua52 QUIET)
+find_program(LUA_LIBRAIRIES llua lua5.2 QUIET)
 
-option(TEST "Build test main" OFF)
-option(AUTOMATE "Build with smc diagram" ON)
+if (NOT LUA_LIBRARIES)
+  message(FATAL_ERROR "Please precise your lua libraries with -DLUA_LIBRARIES=")
+endif (NOT LUA_LIBRARIES)
+
+if (NOT LUA_INCLUDE_DIR)
+  message(FATAL_ERROR "Please precise your lua include dir with -DLUA_INCLUDE_DIR=")
+endif (NOT LUA_INCLUDE_DIR)
+
+set(test_main_file src/main_test.c)
+
+option(TEST "Build tests" OFF)
+set(main_file src/main.c)
+set(executable_name simulator)
+set(src_dir ${CMAKE_SOURCE_DIR}/src)
+
+execute_process(
+  COMMAND java -jar bin/Smc.jar -c coherence.sm
+  WORKING_DIRECTORY ${src_dir}/gen-automata)
+file(GLOB source_files ${src_dir}/core/*.c ${src_dir}/gen-automata/*.c)	
+include_directories (${src_dir}/includes ${src_dir}/gen-automata)
+
 if(TEST)
-	set(main_file src/main_test.c)
-	file(GLOB source_files src/tests/*.c src/core/*)
-	set(executable_name test) 
-elseif(AUTOMATE)
-	set(main_file src/main.c)
-	set(executable_name simulator)
-	execute_process(
-		COMMAND java -jar bin/Smc.jar -c coherence.sm
-		WORKING_DIRECTORY src/gen-automate)
-	file(GLOB source_files src/core-automate/* src/gen-automate/*)	
-	include_directories (src/includes-automate src/gen-automate/*.h)
-else()
-	set(main_file src/main.c)
-	set(executable_name simulator_nosmc)
-	file(GLOB source_files src/core/*.c)
+  file(GLOB test_source_files ${src_dir}/tests/*.c ${src_dir}/core/*.c ${src_dir}/gen-automata/*.c)
+  include_directories (${src_dir}/includes ${src_dir}/gen-automata ${src_dir}/tests)
+  add_executable(
+    test
+    ${test_main_file} ${test_source_files}
+    )
+  target_link_libraries(test ${LIBXML2_LIBRARIES} ${LIBXSLT_LIBRARIES} ${LUA_LIBRARIES})
 endif(TEST)
 
-include_directories (AFTER src/includes ${LIBXML2_INCLUDE_DIR} ${LIBXSLT_INCLUDE_DIR})
+include_directories (AFTER ${LIBXML2_INCLUDE_DIR} ${LIBXSLT_INCLUDE_DIR} ${LUA_INCLUDE_DIR})
 
 add_executable(
-	${executable_name}
-	${main_file} ${source_files}
-)
-
-target_link_libraries(${executable_name} ${LIBXML2_LIBRARIES} ${LIBXSLT_LIBRARIES} lua5.2 lua)
+  ${executable_name}
+  ${main_file} ${source_files}
+  )
+target_link_libraries(${executable_name} ${LIBXML2_LIBRARIES} ${LIBXSLT_LIBRARIES} ${LUA_LIBRARIES})
 
 #~ Documentation
 find_package (Doxygen)
 if (DOXYGEN_FOUND)
-	set (doxygenConfigFile "${CMAKE_CURRENT_SOURCE_DIR}/documentation/doxygen.conf")
-	add_custom_target (
-		doc
-		${DOXYGEN_EXECUTABLE} ${doxygenConfigFile}
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/documentation	VERBATIM
-	)
+  set (doxygenConfigFile "${CMAKE_CURRENT_SOURCE_DIR}/documentation/doxygen.conf")
+  add_custom_target (
+    doc
+    ${DOXYGEN_EXECUTABLE} ${doxygenConfigFile}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/documentation	VERBATIM
+    )
 endif(DOXYGEN_FOUND)
-
-

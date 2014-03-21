@@ -3,7 +3,7 @@
  * \brief define options and tracking
  * \author ~ndubois
  * \version 1.1
- * \date 5th march 2014
+ * \date 18th march 2014
  * 
  * 
  *
@@ -88,27 +88,6 @@ void get_options(int argc, char *argv[]) {
       ignore_warning = 1;
       break;
     case 'i':	/* -i 42 */
-      nb_instr_thread = atoi(optarg);
-      if(nb_instr_thread < 1){
-	fprintf(stderr, "Number of instruction per thread (-i) invalid\n");
-	nb_instr_thread = 42;
-      }
-      break;
-    case 't':	/* -t 4 */
-      nb_threads = atoi(optarg);
-      if(nb_threads < 1){
-	fprintf(stderr, "Number of threads (-t) invalid\n");
-	nb_threads = 1;
-      }
-      tot++;
-      break;
-    case 'd':	/* -d */
-      debug_mode = 1;
-      break;
-    case 'o':	/* -o */
-      print_mode = 1;
-      break;
-    case 'r':	/* -r */
       s = optarg;
       tracking_instr_count = 1;
       while ((s = strchr(s, ':')) != NULL) {

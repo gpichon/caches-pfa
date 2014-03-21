@@ -1,7 +1,7 @@
 #!/bin/bash
 cd ..
+cmake -DTEST=ON
 make 
-make test
 cd tests/non_regression
 ./unitary_tests.sh
 echo "Running some benchs"
@@ -9,5 +9,5 @@ echo "Running some benchs"
 echo "Diff for non regression"
 diff out non_regression.txt
 echo "Diff should print nothing"
-#rm out
+rm out
 cd ..

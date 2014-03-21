@@ -1,5 +1,5 @@
 /**
- * \file line.c
+ * \file line.h
  * \brief Manage line : initialization, removal, return informations.
  * \author ~gpichon
  * \version 1.0
@@ -15,21 +15,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <assert.h>
+#include "common_types.h"
+#include "coherence.h"
 
-/**
- * \enum status
- * \brief Status for coherency protocols.
- */ 
-enum status{
-  I = 0, /**< Invalid */
-  S = 1, /**< Shared */
-  E = 2, /**< Exclusive */
-  M = 3, /**< Modified */
-  O = 4, /**< Owned */
-  F = 5, /**< Forward */
-};
+
 
 /**
  * \struct line
@@ -40,36 +30,24 @@ struct line {
   int use;                  /**< number of utilizations since the line is in the block */
   enum status status;       /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
   int priority;             /**< Priority to delete data. A data line with high priority don't seem to bedeleted */
-  int dirty;                /**< Is the line dirty */
+  int dirty;                /**< 1 if the line is dirty, 0 otherwise */
+  struct coherence * coher; /**< type for state machine */
 };
+
 
 /**
  * \brief Initialization of \a nb_ways new lines. 
  * \return Return a tabular of \a nb_ways structure line pointers.
  */
-struct line** init_lines(int nb_ways);
+struct line** init_lines(int nb_ways, enum cache_coherence type);
 
 /**
  * \brief Data removal.
  */
 void delete_lines(struct line **lines, int nb_ways);
 
-/* Setters */
-void invalid_line(struct line *line);
-void modify_line(struct line *line);
-void share_line(struct line *line);
-void exclusive_line(struct line *line);
-void forward_line(struct line *line);
-void owned_line(struct line *line);
-
-void dirty_line(struct line *line, int w);
-
 /* Getters */
-bool is_valid(struct line *line);
-bool is_exclusive(struct line *line);
-bool is_modified(struct line *line);
-bool is_shared(struct line *line);
-
 bool is_dirty(struct line *line);
+bool is_valid(struct line *line);
 
 #endif

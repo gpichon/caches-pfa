@@ -58,7 +58,7 @@ int i;
 
 int main (int argc, char** argv)
 {
-   int n = 1000;
+   int n = 10;
    if (argc == 2) n = atoi (argv[1]);
    if (n <= 0) n = 10;
    double* tab = malloc (n*sizeof (double));

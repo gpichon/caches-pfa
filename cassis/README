@@ -2,13 +2,14 @@
 
 To compile, use:
 
+cmake dir
 make
 
 ### EXECUTION ###
 
 To execute a code line, use:
 
-./bin/simulator -f architecture_file -t number_threads
+./bin/simulator -f architecture_file -t number_threads -r traces_repertory
 
 ### SOFTWARE MAN ###
 

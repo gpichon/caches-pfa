@@ -12,13 +12,13 @@
 #include "block.h"
 
 /* Data allocations */
-struct block **init_block(int nb_blocks, int nb_ways, int linesize) {
+struct block **init_block(int nb_blocks, int nb_ways, int linesize, enum cache_coherence type) {
   struct block **blocks = malloc(nb_blocks * sizeof(struct block *));
   int i;
   for (i=0; i<nb_blocks; i++) {
     struct block *block = malloc(sizeof(struct block));
     block->nb_ways = nb_ways;
-    struct line ** lines = init_lines(nb_ways);
+    struct line ** lines = init_lines(nb_ways, type);
     block->lines = lines;
     block->linesize = linesize;
     blocks[i] = block;
@@ -36,65 +36,77 @@ void delete_blocks(struct block **blocks, int nb_blocks) {
   free(blocks);
 }
 
-int id_line_to_replace_LFU(struct block *block, int priority) {
+int id_line_to_replace_LFU(struct block *block, int priority, unsigned long not_rm) {
   int nb_ways = block->nb_ways;
   int use = INT_MAX;
   int id = 0;
   int line_use;
+  struct line *line;
+  unsigned long not_rm_line =  not_rm / block->linesize * block->linesize;
 
   int i;
   for (i=0; i<nb_ways; i++) {
-    line_use = block->lines[i]->use;
-    if (line_use < use && block->lines[i]->priority==priority) {
+    line = block->lines[i];
+    line_use = line->use;
+    if (line_use < use && line->priority==priority && line->first_case != not_rm_line) {
       use = line_use;
       id = i;
     }
   }
-  return id;
+  if (block->lines[id]->first_case != not_rm_line)
+    return id;
+  else
+    return (id+1)%nb_ways;
 }
 
-int id_line_to_replace_FIFO(struct block *block, int priority) {
+int id_line_to_replace_FIFO(struct block *block, int priority, unsigned long not_rm) {
   int nb_ways = block->nb_ways;
   int use = 0;
   int id = 0;
   int line_use;
+  struct line *line;
+  unsigned long not_rm_line =  not_rm / block->linesize * block->linesize;
 
   int i;
   for (i=0; i<nb_ways; i++) {
+    line = block->lines[i];
     line_use = block->lines[i]->use;
-    if (line_use > use && block->lines[i]->priority==priority) {
+    if (line_use > use && line->priority==priority && line->first_case != not_rm_line) {
       use = line_use;
       id = i;
     }
-    if (line_use == 0) {
+    if (line_use == 0 && line->first_case != not_rm_line) {
       return i;
     }
   }
   return id;
 }
 
-int id_line_to_replace_LRU(struct block *block, int priority) {
+int id_line_to_replace_LRU(struct block *block, int priority, unsigned long not_rm) {
   int nb_ways = block->nb_ways;
   int use = INT_MAX;
   int id = 0;
   int line_use;
+  struct line *line;
+  unsigned long not_rm_line =  not_rm / block->linesize * block->linesize;
 
   int i;
   for (i=0; i<nb_ways; i++) {
-    line_use = block->lines[i]->use;
-    if (line_use < use && block->lines[i]->priority==priority) {
+    line = block->lines[i];
+    line_use = line->use;
+    if (line_use < use && line->priority==priority && line->first_case != not_rm_line) {
       use = line_use;
       id = i;
     }
-    if (line_use == 0) {
+    if (line_use == 0 && line->first_case != not_rm_line) {
       return i;
     }
   }
   return id;
 }
 
-struct line *add_line_block(struct block *block, struct line *line, int (*replacement)(struct block *, int), int priority) {
-  int id_line = replacement(block, priority);
+struct line *add_line_block(struct block *block, struct line *line, int (*replacement)(struct block *, int, unsigned long), int priority, unsigned long not_rm) {
+  int id_line = replacement(block, priority, not_rm);
   int i;
   for (i=0; i<block->nb_ways; i++) {
     if (!is_valid(block->lines[i])){
