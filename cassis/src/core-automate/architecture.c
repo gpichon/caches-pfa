@@ -25,7 +25,7 @@ bool fatal = false;
 
 /**
  * \def CHECK_XPATH(result)
- * \brief Secure XPath result.
+ * \brief Check XPath result
  */
 #define CHECK_XPATH(result) do { if (result == NULL) { fprintf(stderr, "Error XPath request\n"); \
       return EXIT_FAILURE;						\
@@ -33,7 +33,7 @@ bool fatal = false;
 
 /**
  * \def CHECK_ALLOC(ptr)
- * \brief Check if the allocation on ptr worked.
+ * \brief Check if the allocation on ptr worked
  */
 #define CHECK_ALLOC(ptr) do { if(ptr == NULL) { fprintf(stderr, "Allocation error\n"); _exit(1); } } while(0)
 
@@ -49,7 +49,7 @@ bool fatal = false;
  * \brief Copy the node's text (identified by node name) in the target.
  */
 #define GET_ATTRIBUT_TXT(name,node,target)   tmp = xmlGetProp(node, BAD_CAST name); \
-  display_warning = false;							\
+  display_warning = false;						\
   if(tmp != NULL){							\
     display_warning = true;						\
     sprintf(buf, "%s", tmp);						\
@@ -67,13 +67,15 @@ bool fatal = false;
   xmlFree(tmp);								\
   buf[0] = 0
 
+/**
+ * \def FATAL_WARNING
+ * \brief Warning that can crash the program execution
+ */
 #define FATAL_WARNING   fprintf(stderr, "\033[31mWARNING\033[0m: architecture not valid\n"); \
   fatal = true;
   
-
 struct level{
   int type;
-  /* void (*coherence_protocol) (struct cache *); */
   enum cache_coherence coherence;
   bool snooping;
   bool directory_manager;
@@ -104,6 +106,18 @@ enum cache_coherence coherence (char *name){
     return MSI;
   if(strcmp(name, "MESI") == 0)
     return MESI;
+  if(strcmp(name, "MOSI") == 0){
+    fprintf(stderr, "\033[31mWARNING\033[0m: Coherence protocol %s is experimental\n", name);
+    return MOSI;
+  }
+  if(strcmp(name, "MOESI") == 0){
+    fprintf(stderr, "\033[31mWARNING\033[0m: Coherence protocol %s is experimental\n", name);
+    return MOESI;
+  }
+  if(strcmp(name, "MESIF") == 0){
+    fprintf(stderr, "\033[31mWARNING\033[0m: Coherence protocol %s is experimental\n", name);
+    return MESIF;
+  }
   if(display_warning)
     fprintf(stderr, "\033[31mWARNING\033[0m: Coherence protocol not recognized: %s , set to MESI\n", name);
   return MESI;
@@ -436,8 +450,9 @@ int get_size_below(struct node *n){
 }
 
 /**
- * \brief Checks the architecture coherence cache by cache
+ * \brief Checks the architecture consistency cache by cache
  * \param n The node to check (call with the root for all caches)
+ * \return true if no error has occured
  */
 bool check_cache_rec(struct node *n){
   unsigned int i;

@@ -13,7 +13,7 @@
 #include <unistd.h>
 #include "node.h"
 
-#define CHECK_NULL(n) do { if(n == NULL) { fprintf(stderr, "Error : node given in %s is NULL\n", __func__); _exit(1);} } while(0)
+#define CHECK_NULL(n) do { if(n == NULL) { fprintf(stderr, "Error : node given in %s (%s:l%s)is NULL\n", __func__, __file__, __line__); exit(1);} } while(0)
 
 static unsigned int current_id = 1;
 
