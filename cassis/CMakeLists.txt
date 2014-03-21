@@ -21,18 +21,18 @@ endif (NOT LUA_INCLUDE_DIR)
 set(test_main_file tests/main_test.c)
 
 option(TEST "Build tests" OFF)
-set(main_file src/main_automate.c)
+set(main_file src/main.c)
 set(executable_name simulator)
 set(src_dir ${CMAKE_SOURCE_DIR}/src)
 
 execute_process(
   COMMAND java -jar bin/Smc.jar -c coherence.sm
-  WORKING_DIRECTORY ${src_dir}/gen-automate)
-file(GLOB source_files ${src_dir}/core-automate/*.c ${src_dir}/gen-automate/*.c)	
-include_directories (${src_dir}/includes-automate ${src_dir}/gen-automate)
+  WORKING_DIRECTORY ${src_dir}/gen-automata)
+file(GLOB source_files ${src_dir}/core/*.c ${src_dir}/gen-automata/*.c)	
+include_directories (${src_dir}/includes ${src_dir}/gen-automata)
 
 if(TEST)
-  file(GLOB automate_test_source_files tests/tests-automate/*.c ${src_dir}/core-automate/*.c ${src_dir}/gen-automate/*.c)
+  file(GLOB automate_test_source_files tests/tests/*.c ${src_dir}/core/*.c ${src_dir}/gen-automata/*.c)
   add_executable(
     test
     ${test_main_file} ${automate_test_source_files}

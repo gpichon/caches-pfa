@@ -15,7 +15,8 @@
 
 void up_stat(struct cache *cache, unsigned long entry, int stats_type) {
   unsigned int i;
-	
+
+  /* printf("%d ", instruction_number); */	
   for (i = 0; i < tracking_count; i++) {
     if (i == 0 || ((tracking_type == TRACKING_BOUND && tracking_lower_bound[i] <= entry && entry <= tracking_upper_bound[i]) || 
 		(tracking_type == TRACKING_INSTRUCTION && is_instr_tracked(instruction_number)) ||
@@ -61,14 +62,14 @@ void up_stat(struct cache *cache, unsigned long entry, int stats_type) {
 }
 
 /* Data allocations */
-struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replace)(struct cache *), void (*coherence)(struct cache *), int type, bool snooping, bool directory) {
+struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int depth, void (*replace)(struct cache *), enum cache_coherence policy, int type, bool snooping, bool directory) {
   struct cache *cache   = malloc(sizeof(struct cache));
   assert(cache!=NULL);
   cache->size           = size;
   cache->linesize       = linesize;
   cache->nb_ways        = nb_ways;
   cache->nb_blocks      = nb_blocks;
-  struct block **blocks = init_block(nb_blocks, nb_ways, linesize);
+  struct block **blocks = init_block(nb_blocks, nb_ways, linesize, policy);
   cache->blocks         = blocks;
   unsigned int i;
   for (i = 0; i < tracking_count; i++) {
@@ -88,8 +89,8 @@ struct cache* init_cache(int size, int linesize, int nb_ways, int nb_blocks, int
   cache->type           = type;
   cache->snooping       = snooping;
   cache->directory      = directory;
+  cache->policy         = policy;
   replace(cache);
-  coherence(cache);
   return cache;
 }
 
@@ -130,7 +131,8 @@ struct line *line_in_cache(struct cache *cache, unsigned long entry) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-    if (is_valid(line) && (line->first_case == entry / cache->linesize * cache->linesize)) {
+    /* if (is_valid(line) && (line->first_case == entry / cache->linesize * cache->linesize)) { */
+    if (line->first_case == entry / cache->linesize * cache->linesize) {
       return line;
     }
   }
@@ -159,45 +161,6 @@ void replacement_LRU(struct cache *cache) {
   cache->replacement = id_line_to_replace_LRU;
   cache->update_line = update_LRU;
 }
-
-void coherence_MESI(struct cache *cache) {
-  cache->treat_special_flags = &flags_MESI;
-  cache->set_flags_new_line = &flags_new_line_MESI;
-}
-
-void coherence_MSI(struct cache *cache) {
-  cache->treat_special_flags = &flags_MSI;
-  cache->set_flags_new_line = &flags_new_line_MSI;
-}
-
-int flags_MESI(struct line *line, void (*action) (struct line*)) {
-  if (is_exclusive(line)) {
-    action(line);
-    return 1;
-  }
-  return 0;
-}
-
-void flags_new_line_MESI(int ret, struct line *line) {
-  if (ret) {
-    share_line(line);
-  }
-  else {
-    exclusive_line(line);
-  }  
-}
-
-int flags_MSI(struct line *line, void (*action) (struct line*)) {
-  (void) line;
-  (void) action;
-  return 0;
-}
-
-void flags_new_line_MSI(int ret, struct line *line) {
-  (void) ret;
-  share_line(line);
-}
-
 
 bool is_cache_inclusive(struct cache *cache){
   return (cache->type == Inclusive);

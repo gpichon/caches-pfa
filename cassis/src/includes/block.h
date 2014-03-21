@@ -13,9 +13,6 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include <limits.h>
 #include "line.h"
 
@@ -31,12 +28,14 @@ struct block {
   struct line **lines; /**< Tabular of line structure pointer. */
 };
 
+
+
 /**
  * \brief Initialization of several block and associated lines.
  * \return Return \a nb_blocks initialized blocks, 
  *  each contains \a nb_ways initialized lines.
  */
-struct block **init_block(int nb_blocks, int nb_ways, int linesize);
+struct block **init_block(int nb_blocks, int nb_ways, int linesize, enum cache_coherence type);
 
 /**
  * \brief Data removal. Contained lines are too free. 
@@ -46,21 +45,24 @@ void delete_blocks(struct block **blocks, int nb_blocks);
 /**
  * \brief Returns the number line to replace in the set.
  * \param The line to eject' priority.
+ * \param not_rm value which is to be kept.
  * \note To be used when a block is full and uses LFU replacement policy.
  */
-int id_line_to_replace_LFU(struct block *block, int priority);
+int id_line_to_replace_LFU(struct block *block, int priority, unsigned long not_rm);
 /**
  * \brief Returns the number line to replace in the set. 
  * \param The line to eject' priority.
+ * \param not_rm value which is to be kept.
  * \note To be used when a block is full and uses FIFO replacement policy.
  */
-int id_line_to_replace_FIFO(struct block *block, int priority);
+int id_line_to_replace_FIFO(struct block *block, int priority, unsigned long not_rm);
 /**
  * \brief Returns the number line to replace in the set. 
  * \param The line to eject' priority.
+ * \param not_rm value which is to be kept.
  * \note To be used when a block is full and uses LRU replacement policy.
  */
-int id_line_to_replace_LRU(struct block *block, int priority);
+int id_line_to_replace_LRU(struct block *block, int priority, unsigned long not_rm);
 
 /**
  * \brief Update replacement flag. 
@@ -81,8 +83,9 @@ void update_LRU(struct block *block, int nb_ways, unsigned long entry);
 /**
  * \brief Load a line in the block. All structures must be initialized.
  * \param priority Priority of the data to be deleted.
+ * \param not_rm value which is to be kept.
  * \note Pointer function in parameter returns 1 if write back (when deleting a modified line), else 0.
  */
-struct line *add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *, int), int priority);
+struct line *add_line_block(struct block *block, struct line *line, int (*coherence)(struct block *, int, unsigned long), int priority, unsigned long not_rm);
 
 #endif

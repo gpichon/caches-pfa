@@ -1,10 +1,9 @@
-TEXT := >>>>>Compilation of a core file finished<<<<<
+TEXT := >>>>>Compilation of a core-automate file finished<<<<<
 
 include ../conf.make
 
 
-
-CFLAGS += -I ../includes
+CFLAGS += -I ../includes-automate
 SRCS=$(wildcard *.c) 
 OBJS=$(patsubst %.c,../../obj/%.o,$(SRCS))
 
