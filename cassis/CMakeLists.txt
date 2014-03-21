@@ -15,6 +15,18 @@ find_package(Lua51 QUIET)
 find_package(Lua52 QUIET)
 find_program(LUA_LIBRAIRIES lua lua5.2 QUIET)
 
+if (LUA_LIBRARIES)
+  message("OK")
+else ()
+  message(fatal_error "NOT OK")
+endif (LUA_LIBRARIES)
+
+if (LUA_INCLUDE_DIR)
+  message("OK")
+else ()
+  message(fatal_error "NOT OK")
+endif (LUA_INCLUDE_DIR)
+
 set(test_main_file tests/main_test.c)
 
 option(TEST "Build tests" OFF)
