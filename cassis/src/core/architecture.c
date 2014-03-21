@@ -377,8 +377,8 @@ int convert_archi_xml(const char *file_in, const char *file_out){
 }
 
 void print_caches_rec(struct node *n, int nb_levels, unsigned int j){
-  unsigned int i, k;
-  printf("L%d  basiques   (misses:    %10d, hits:     %10d, writes_back: %10d)\n", n->data->depth, n->data->misses[j], n->data->hits[j], n->data->writes_back[j]);
+  unsigned int i;
+  printf("L%d  basics   (misses:    %10d, hits:     %10d, writes_back: %10d)\n", n->data->depth, n->data->misses[j], n->data->hits[j], n->data->writes_back[j]);
   if (verbose_mode > 1){
     printf("    evinctions (coherence: %10d, capacity: %10d, cache_types: %10d)\n", n->data->evincted_coherence[j], n->data->evincted_capacity[j], n->data->evincted_caches_types[j]);
     if (verbose_mode > 2){
