@@ -1,22 +1,20 @@
 cmake_minimum_required(VERSION 2.8)
-
-project(caches-pfa)
-set(EXECUTABLE_OUTPUT_PATH bin)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wextra")
-
-find_package(LibXml2 REQUIRED)
-find_package(LibXslt REQUIRED)
-#~ find_package(Lua52)
-find_program(LUA_LIBRAIRIES lua lua.5.2)
-#~ find_package(Lua52)
 #~ def LUA_ tester si existe
 #~ preciser src et bin et include
 #~ 0x6fffffffffffful : initialiser bien!
 #~ virer les atoi!
-#~ protéger scanf
-#~ coherence_sm.h pas de ./
-#~ CFLAGS -std=c99
 #~ -pedantic -Wall -Wextra
+
+project(caches-pfa)
+set(EXECUTABLE_OUTPUT_PATH bin)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
+
+find_package(LibXml2 REQUIRED)
+find_package(LibXslt REQUIRED)
+find_package(Lua51 QUIET)
+find_package(Lua52 QUIET)
+find_program(LUA_LIBRAIRIES lua lua5.2 QUIET)
+
 set(test_main_file tests/main_test.c)
 
 option(TEST "Build tests" OFF)
@@ -44,7 +42,6 @@ add_executable(
   ${main_file} ${source_files}
   )
 target_link_libraries(${executable_name} ${LIBXML2_LIBRARIES} ${LIBXSLT_LIBRARIES} ${LUA_LIBRARIES})
-
 
 #~ Documentation
 find_package (Doxygen)
