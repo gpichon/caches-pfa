@@ -1,7 +1,7 @@
 #include "test_architecture.h"
 
-#define FILENAME "src/tests-automate/architest.xml"
-#define OUTNAME "src/tests-automate/architest.cassis.xml"
+#define FILENAME "src/tests/architest.xml"
+#define OUTNAME "src/tests/architest.cassis.xml"
 
 int test_architecture(int argc, char **argv){
 
