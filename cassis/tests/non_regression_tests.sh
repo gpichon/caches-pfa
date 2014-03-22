@@ -2,7 +2,7 @@
 
 mkdir build
 cd build
-cmake ../../ -DTEST=ON -DLUA_LIBRARIES=-llua5.2 -DLUA_INCLUDE_DIR=/usr/include/lua5.2 
+cmake ../../ -DTEST=ON
 make
 
 cd ../non_regression

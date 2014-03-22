@@ -1,27 +1,50 @@
 #!/bin/bash
 
-mkdir build
-cd build
-cmake ../../ -DLUA_LIBRARIES=-llua5.2 -DLUA_INCLUDE_DIR=/usr/include/lua5.2
-make
+a=2 
+if [ "$#" -ne "$a" ]
+then 
+echo "Values, functions please"
+else
+
 cd ..
+make
+cd tests
+mkdir tmp
+touch tmp/values
+
+i=0
+for value in $(cat $1)
+do
+i=`expr $i + 1`
+done
+
+j=0
+for value in $(cat $2)
+do
+j=`expr $j + 1`
+done
+
 echo "Running some benchs"
 echo "Time for the test  with x values in y ms."
-for j in par falsesharing pipeline broadcast
+for func in $(cat $2)
 do
+touch tmp/test_$func
 echo "---------------------------------"
-echo "Running "$j" test "
-for i in 1000 5000 10000 50000 100000
+echo "Running "$func" test "
+for value in $(cat $1)
 do
-echo -n -e $i "\t"
+echo $value
 cd ../MAQAO
-./get_traces.sh ../tests/speed_test/test.c $j 4 $i > /dev/null
+./get_traces.sh ../tests/speed_test/test.c $func 4 $value > /dev/null
 cd ../tests/speed_test
-/usr/bin/time ./bench.sh 2>&1 | awk '/WARNING|Err/ {print $0} /user/ {print 60000*substr($3,0,1)+1000*substr($3,3,2)+substr($3,6,2)}' > res_speed.txt
+/usr/bin/time ./bench.sh 2>&1 | awk '/WARNING|Err/ {print $0} /user/ {print 60000*substr($3,0,1)+1000*substr($3,3,2)+substr($3,6,2)}' >> ../tmp/test_$func
 cd ..
 done
 done
 
+python speed_test/plot_stats.py $1 $2 $i $j
+
 rm -f ../MAQAO/trace*
 rm -f ../MAQAO/instr
-rm -rf build 
+rm -rf tmp
+fi
