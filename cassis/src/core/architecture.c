@@ -468,13 +468,6 @@ bool check_cache_rec(struct node *n){
     }
   }
 
-  //Check for a cache with snooping if the cache above is not inclusive (except last level)
-  if(n->data->snooping == true && get_parent(n)){
-    if(get_parent(n)->data->type == Inclusive && get_parent(n)->id != get_root(n)->id){
-      FATAL_WARNING;
-      fprintf(stderr, "Cache with snooping (L%d) below an inclusive cache\n", n->data->depth);
-    }
-  }
   return true;
 }
 
