@@ -62,7 +62,7 @@ Default
 
 I
 {
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 1]     S       {share_line(l);up_stat(n,i,COHERENCE_BROADCAST);}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) != 0]     S       {share_line(l);up_stat(n,i,COHERENCE_BROADCAST);}                  
 	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    E       {exclusive_line(l);up_stat(n,i,COHERENCE_BROADCAST);}                  
 	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {modify_line(l);up_stat(n,i,COHERENCE_BROADCAST);}                  	
 }
@@ -109,7 +109,7 @@ Default
 
 I
 {
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 1]     S       {share_line(l);}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) != 0]     S       {share_line(l);}                  
 	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    O       {owned_line(l);}                  
 	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {modify_line(l);}                  	
 }
@@ -155,9 +155,9 @@ Default
 
 I
 {
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 1]     S       {share_line(l);}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) != 0]     S       {share_line(l);}                  
 	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    E       {exclusive_line(l);}                  
-	i_modify(n: struct node*, i: unsigned long, l: struct line*) [is_in_level(n,i,I) == 1]     O       {owned_line(l);dirty_line(l, 1);} 
+	i_modify(n: struct node*, i: unsigned long, l: struct line*) [is_in_level(n,i,I) != 0]     O       {owned_line(l);dirty_line(l, 1);} 
 	i_modify(n: struct node*, i: unsigned long, l: struct line*) [is_in_level(n,i,I) == 0]     M       {modify_line(l);}
 }
 
@@ -170,8 +170,8 @@ M
 
 S
 {
-	i_modify(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,I) == 1]     O       {owned_line(l);dirty_line(l, 1);}  
-	a_del(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,I) == 1 && is_dirty(l) == 1 && is_in_level(n,i,O) == 0]     O       {owned_line(l);}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,I) != 0]     O       {owned_line(l);dirty_line(l, 1);}  
+	a_del(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,I) != 0 && is_dirty(l) == 1 && is_in_level(n,i,O) == 0]     O       {owned_line(l);}
 	i_modify(n: struct node*, i: unsigned long, l: struct line*)     [is_in_level(n,i,I) == 0]     M       {modify_line(l);}
 	a_del(n: struct node*, i: unsigned long, l: struct line*)    [is_in_level(n,i,I) == 0 && is_dirty(l) == 1]   M       {modify_line(l);}
 	a_modify(n: struct node*, i: unsigned long, l: struct line*)          nil        {dirty_line(l, 1);}
@@ -211,8 +211,8 @@ Default
 
 I
 {
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,E) == 1 || is_in_level(n,i,M) == 1]     F       {forward_line(l);}                  
-	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,F) == 1]    S       {share_line(l);}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,E) != 0 || is_in_level(n,i,M) != 0]     F       {forward_line(l);}                  
+	i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,F) != 0]    S       {share_line(l);}                  
 	i_modify(n: struct node*, i: unsigned long, l: struct line*)    			    	      M       {modify_line(l);}
         i_read(n: struct node*, i: unsigned long, l: struct line*)   [is_in_level(n,i,I) == 0]    E       {exclusive_line(l);}              	
 }
@@ -228,7 +228,7 @@ S
 {
 	i_modify(n: struct node*, i: unsigned long, l: struct line*)     M       {modify_line(l);}
 	i_del(n: struct node*, i: unsigned long, l: struct line*)        I       {invalid_line(l);}                  
-	a_del(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,S) == 1 && is_in_level(n,i,F) == 0]     F       {forward_line(l);}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)  [is_in_level(n,i,S) != 0 && is_in_level(n,i,F) == 0]     F       {forward_line(l);}
 }
 
 E

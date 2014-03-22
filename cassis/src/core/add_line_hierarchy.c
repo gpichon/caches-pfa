@@ -15,7 +15,7 @@
 
 /** 
  * If status > I, return 1 if the entry exist in the level with this status,
- * if status == I, return 1 if the entry exist in the level,
+ * if status == I, return 1 if the entry exist in the level with the same parent, -1 if with another parent,
  * return 0 otherwise.
  */
 
@@ -23,20 +23,29 @@ int is_in_level(struct node *node, unsigned long entry, enum status status){
   struct node *current_node = get_sibling(node);
   struct cache *current_cache;
   struct line *line;
+  int res = 0;
   
   /* Get next cache in level */
   while (current_node != node){
     current_cache = get_cache(current_node);
     if (is_in_cache(current_cache, entry)) {
       line = line_in_cache(current_cache, entry);
-      if (status == I && line->status > I)
-	return 1;
-      if (line->status == status && status > I)
-	return 1;
+      if (status == I && line->status > I){
+	if (get_parent(current_node) == get_parent(node) || get_parent(node) == NULL){
+	  return 1;
+	}
+	res = -1;
+      }
+      if (line->status == status && status > I){
+	if (get_parent(current_node) == get_parent(node) || get_parent(node) == NULL){	  
+	  return 1;
+	}
+	res = -1;
+      }
     }
     current_node = get_sibling(current_node);
   }
-  return 0;
+  return res;
 }
 
 /* Return 1 if there is entry is somewhere else in level
@@ -96,7 +105,7 @@ void load_line_hierarchy(struct node *node, unsigned long entry) {
 	up_stat(current_cache, entry, SNOOPING_BROADCAST);
       }
 
-      if (is_in_level(current_node, entry, I) && is_snooping(current_cache)){
+      if ((is_in_level(current_node, entry, I) == 1) && is_snooping(current_cache)){
 	up_stat(current_cache, entry, VALUE_BY_SNOOPING);
 	res = 1;
       }
@@ -156,7 +165,7 @@ void store_line_hierarchy(struct node *node, unsigned long entry) {
 	up_stat(current_cache, entry, SNOOPING_BROADCAST);
       }
 
-      if (is_in_level(current_node,entry, I) && is_snooping(current_cache)){
+      if ((is_in_level(current_node,entry, I) == 1) && is_snooping(current_cache)){
 	up_stat(current_cache, entry, VALUE_BY_SNOOPING);
 	res = 1;
       }
