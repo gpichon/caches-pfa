@@ -11,6 +11,10 @@ import os, sys
 b = (sys.argv[1]) # Functions
 d = (sys.argv[2]) # Number of functions
 
+e = (sys.argv[3]) # Size of the problem
+f = (sys.argv[4]) # Cache level
+
+
 file2 = open(b, 'r')
 file2_l = file2.readlines()
 
@@ -36,17 +40,42 @@ for i in range(0, nb_functions):
 a=""
 for i in range(0, nb_functions):
     a = a + file2_l[i].replace('\n','')
-    for j in range(0, 15):
+    for j in range(0, 100/nb_functions):
         a = a + " " 
  
 
-plt.title("Statistiques de base")
-plt.xlabel(a)
-plt.ylabel("Stats")
-for i in range(0, nb_functions):
-    plt.plot(3*i,   Y[i,0], 'o', color='r', label='Miss')
-    plt.plot(3*i+1, Y[i,1], 'o', color='b', label='Hits')
-    plt.plot(3*i+2, Y[i,2], 'o', color='g', label='WB')
+fig = plt.figure()
+ax = fig.add_subplot(111)
+frame1 = plt.gca()
+frame1.axes.get_xaxis().set_ticks([])
 
+plt.title("Statistiques de base")
+plt.ylabel("Stats")
+i=0
+x = np.arange(1)
+y = np.arange(1)
+x[0] = 3*i+0.5
+y[0] = Y[i, 0]
+rects1 = ax.bar(x, y, 0.50, color='red', label='Miss')
+x[0] = 3*i+1.5
+y[0] = Y[i, 1]
+rects2 = ax.bar(x, y, 0.50, color='green', label='Hit')
+x[0] = 3*i+2.5
+y[0] = Y[i, 2]
+rects3 = ax.bar(x, y, 0.50, color='blue', label='WB')
+for i in range(1, nb_functions):
+    x = np.arange(1)
+    y = np.arange(1)
+    x[0] = 3*i+0.5
+    y[0] = Y[i, 0]
+    rects1 = ax.bar(x, y, 0.50, color='red')
+    x[0] = 3*i+1.5
+    y[0] = Y[i, 1]
+    rects2 = ax.bar(x, y, 0.50, color='green')
+    x[0] = 3*i+2.5
+    y[0] = Y[i, 2]
+    rects3 = ax.bar(x, y, 0.50, color='blue')
+
+plt.xlabel(a)
 plt.legend()
-plt.savefig("images/stats.png")
+plt.savefig("images/stats_"+e+"_"+f+".png")
