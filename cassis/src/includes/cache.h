@@ -36,11 +36,11 @@ enum cache_type{
  * \brief Abstract Data Type for a cache.
  */
 struct cache {
-  int depth;             /**< Level of the cache. Range ?*/
-  int size;              /**< Size of the cache. Unity = byte ? */
-  int linesize;          /**< Size of the line. Unity = byte ?*/
+  int depth;             /**< Level of the cache. From 1 to 3 in general cases.*/
+  int size;              /**< Size of the cache. Unity = byte */
+  int linesize;          /**< Size of the line. Unity = byte */
   int nb_ways;           /**< Number of lines in a block. */
-  int nb_blocks;         /**< Number of blocks. Range ?*/
+  int nb_blocks;         /**< Number of blocks.*/
   struct block **blocks; /**< Tabular of blocks pointer.*/
 
   int misses[2];       /**< Count of misses for this cache for the specific adresses. */
@@ -59,16 +59,15 @@ struct cache {
   int broadcast_snooping[2];  /**< Broadcast to search data by snooping. */
 
 
-  enum cache_type type;  /**< Type of cache: inclusive, exclusive, NIIO, NIEO */
+  enum cache_type type;        /**< Type of cache: inclusive, exclusive, NIIO, NIEO */
   enum cache_coherence policy; /**< Coherence policy : MSI, MESI, MOESI, MESIF, MOSI */
-  bool snooping;         /**< Can this cache use snooping to find data? */
-  bool directory;        /**< Can this cache use a directory manager to trace its sons data? */
-  struct directory *dir; /**< The directory */
+  bool snooping;               /**< Can this cache use snooping to find data? */
+  bool directory;              /**< Can this cache use a directory manager to trace its sons data? */
+  struct directory *dir;       /**< The directory */
 
-  int (*replacement)(struct block *, int, unsigned long); /**< Function pointer to replace a line for a special priority in a block. */
-  void (*update_line)(struct block *, int, unsigned long); /**< Function pointer to update line stat in a block.  */
+  int (*replacement)(struct block *, int, unsigned long);  /**< Function pointer to replace a line for a special priority in a block. */
+  void (*update_line)(struct block *, int, unsigned long); /**< Function pointer to update line stat in a block. */
 };
-
 
 
 
@@ -90,7 +89,7 @@ void delete_cache(struct cache *cache);
 /**
  * \brief Return in which block the entry has to be store.
  * \param entry Range ? 
-*/
+ */
 int block_id(struct cache *cache, unsigned long entry);
 
 /**
@@ -99,14 +98,13 @@ int block_id(struct cache *cache, unsigned long entry);
  */
 int is_in_cache(struct cache *cache, unsigned long entry);
 
-
 /**
- * \brief Prints informations about a cache. 
+ * \brief Print informations about a cache. 
  */
 void print_infos(struct cache *cache);
 
 /**
- * \brief  Returns a pointer to the line which contains the entry in the cache. 
+ * \brief Return a pointer to the line which contains the entry in the cache. 
  */
 struct line *line_in_cache(struct cache *cache, unsigned long entry);
 
@@ -115,7 +113,9 @@ struct line *line_in_cache(struct cache *cache, unsigned long entry);
  */
 void update_lines(struct cache *cache, unsigned long entry);
 
+
 /* Replacement protocols */
+
 /**
  * \brief Set the Least Frequently Used replacement policy for the cache.
  */
@@ -128,6 +128,7 @@ void replacement_FIFO(struct cache *cache);
  * \brief Set the Least Recently Used replacement policy for the cache.
  */
 void replacement_LRU(struct cache *cache);
+
 
 /* Coherency protocols */
 

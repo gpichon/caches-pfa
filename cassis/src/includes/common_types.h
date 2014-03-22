@@ -18,9 +18,8 @@
 
 /* fsm */
 
-struct coherence
-{
-	struct coherenceContext _fsm;
+struct coherence{
+  struct coherenceContext _fsm;
 };
 
 /* line */

@@ -29,7 +29,7 @@ struct line {
   unsigned long first_case; /**< First element of the cache line.*/
   int use;                  /**< number of utilizations since the line is in the block */
   enum status status;       /**< 0 invalid, 1 shared, 2 exclusive, 3 modified */
-  int priority;             /**< Priority to delete data. A data line with high priority don't seem to bedeleted */
+  int priority;             /**< Priority to delete data. A data line with high priority is to be kept. */
   int dirty;                /**< 1 if the line is dirty, 0 otherwise */
   struct coherence * coher; /**< type for state machine */
 };

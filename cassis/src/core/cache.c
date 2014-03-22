@@ -19,9 +19,9 @@ void up_stat(struct cache *cache, unsigned long entry, int stats_type) {
   /* printf("%d ", instruction_number); */	
   for (i = 0; i < tracking_count; i++) {
     if (i == 0 || ((tracking_type == TRACKING_BOUND && tracking_lower_bound[i] <= entry && entry <= tracking_upper_bound[i]) || 
-		(tracking_type == TRACKING_INSTRUCTION && is_instr_tracked(instruction_number)) ||
-		(tracking_type == TRACKING_BOUND + TRACKING_INSTRUCTION && tracking_lower_bound[i] <= entry && entry <= tracking_upper_bound[i] 
-		&& is_instr_tracked(instruction_number)) || tracking_type == TRACKING_DISABLED)) {
+		   (tracking_type == TRACKING_INSTRUCTION && is_instr_tracked(instruction_number)) ||
+		   (tracking_type == TRACKING_BOUND + TRACKING_INSTRUCTION && tracking_lower_bound[i] <= entry && entry <= tracking_upper_bound[i] 
+		    && is_instr_tracked(instruction_number)) || tracking_type == TRACKING_DISABLED)) {
       switch (stats_type) {
       case MISS:
 	cache->misses[i]++;
@@ -131,12 +131,11 @@ struct line *line_in_cache(struct cache *cache, unsigned long entry) {
   int i;
   for (i=0; i<nb_ways; i++) {
     line = block->lines[i];
-    /* if (is_valid(line) && (line->first_case == entry / cache->linesize * cache->linesize)) { */
     if (line->first_case == entry / cache->linesize * cache->linesize) {
       return line;
     }
   }
-  fprintf(stderr, "Erreur, ligne non presente avec cache inclusif\n");
+  fprintf(stderr, "Error: data not present is an inclusive cache\n");
   exit(1);
 }
 

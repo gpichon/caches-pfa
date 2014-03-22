@@ -20,7 +20,7 @@ int is_in_level(struct node *node,unsigned long entry, enum status status);
 /**
  * \brief Used for a miss when load or a hit when store.    
  * \param cache Is the cache which launched a share level procedure on its level.
- * \return Return 1 if there is entry is somewhere else in level.  
+ * \return Return 1 if there is entry is somewhere else in level with same parent, -1 with another parent.  
  */
 void share_level(struct node *node, unsigned long entry,void (*action)(struct coherenceContext*, struct node*, unsigned long, struct line*));
 
