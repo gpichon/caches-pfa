@@ -1,3 +1,13 @@
+/**
+ * \file coherence.c
+ * \brief Initialize SMC structure, link from SMC to C.
+ * \author ~ahonorat
+ * \version 1.7
+ * \date 16th march 2014
+ *
+ */
+
+
 #include "coherence.h"
 
 void coherence_up_stat(struct coherence *this, struct node *node, unsigned long entry, int stats_type){

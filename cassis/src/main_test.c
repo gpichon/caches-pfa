@@ -1,3 +1,13 @@
+/**
+ * \file main_test.c
+ * \brief Run 3 unitary tests. Should print 4 OK. 
+ * \author ~gpichon
+ * \version 1.0
+ * \date 3rd january 2014
+ *
+ */
+
+
 #include <stdio.h>
 #include <stdlib.h>
 
