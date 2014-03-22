@@ -1,5 +1,0 @@
-La commande a utilisé pour compilé le programme main.c est la suivante:
-
-gcc -Wall -Wextra main.c -llua5.1
-
-Il faut au préalable avoir installé la version 5.1 de lua disponible sur le sitelua.org.

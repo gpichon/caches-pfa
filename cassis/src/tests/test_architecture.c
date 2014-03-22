@@ -1,7 +1,18 @@
 #include "test_architecture.h"
 
-#define FILENAME "src/tests/architest.xml"
-#define OUTNAME "src/tests/architest.cassis.xml"
+#define QUOTE(name) #name
+#define STR(macro) QUOTE(macro)
+
+
+#ifndef FILE_ARCHI
+#define FILE_ARCHI architecture/architest.xml
+#endif
+#ifndef OUT_ARCHI
+#define OUT_ARCHI architecture/architest.cassis.xml
+#endif
+
+#define FILENAME STR(FILE_ARCHI)
+#define OUTNAME STR(OUT_ARCHI)
 
 int test_architecture(int argc, char **argv){
 

@@ -30,7 +30,12 @@
  * Tricky method, source at :
  * http://stackoverflow.com/questions/195975/how-to-make-a-char-string-from-a-c-macros-value
  */
+#ifndef DEFAULT_LUA_FILE
+#define DEFAULT_LUA_FILE manage_threads.lua
+#endif
+
 #define LUA_FILE STR(DEFAULT_LUA_FILE)
+
 
 int is_end(int *ends, int nb_threads){
   int i;

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd ../..
+cd ../build
 valgrind ./bin/test
-cd tests/non_regression
+cd ../non_regression

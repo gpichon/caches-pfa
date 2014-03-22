@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(caches-pfa)
 set(EXECUTABLE_OUTPUT_PATH bin)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -DDEFAULT_LUA_FILE=${CMAKE_CURRENT_SOURCE_DIR}/manage_threads.lua")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -DDEFAULT_LUA_FILE=${CMAKE_CURRENT_SOURCE_DIR}/manage_threads.lua -DXSL_DOC_FILE=${CMAKE_CURRENT_SOURCE_DIR}/architecture/archi_maker.xsl")
 find_package(LibXml2 REQUIRED)
 find_package(LibXslt REQUIRED)
 find_package(Lua51 QUIET)
@@ -31,6 +31,7 @@ file(GLOB source_files ${src_dir}/core/*.c ${src_dir}/state-machine/*.c)
 include_directories (${src_dir}/includes ${src_dir}/state-machine)
 
 if(TEST)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DFILE_ARCHI=${CMAKE_CURRENT_SOURCE_DIR}/architecture/architest.xml -DOUT_ARCHI=${CMAKE_CURRENT_SOURCE_DIR}/architecture/architest.cassis.xml")
   file(GLOB test_source_files ${src_dir}/tests/*.c ${src_dir}/core/*.c ${src_dir}/state-machine/*.c)
   include_directories (${src_dir}/includes ${src_dir}/state-machine ${src_dir}/tests)
   add_executable(

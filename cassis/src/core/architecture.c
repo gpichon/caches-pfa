@@ -23,6 +23,10 @@
 bool display_warning = true;
 bool fatal = false;
 
+#define QUOTE(name) #name
+#define STR(macro) QUOTE(macro)
+
+
 /**
  * \def CHECK_XPATH(result)
  * \brief Check XPath result
@@ -37,12 +41,18 @@ bool fatal = false;
  */
 #define CHECK_ALLOC(ptr) do { if(ptr == NULL) { fprintf(stderr, "Allocation error\n"); _exit(1); } } while(0)
 
+
+#ifndef XSL_DOC_FILE
+#define XSL_DOC_FILE architecture/archi_maker.xsl
+#endif
+
+
 /**
  * \def XSL_DOC
  * \param path 
  * \brief Relative path of the xsl sheet describing the transfomation hwloc -> cassis
  */
-#define XSL_DOC "architecture/archi_maker.xsl"
+#define XSL_DOC STR(XSL_DOC_FILE)
 
 /**
  * \def GET_ATTRIBUT_TXT(name,node,target)
