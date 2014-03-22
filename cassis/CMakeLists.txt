@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(caches-pfa)
 set(EXECUTABLE_OUTPUT_PATH bin)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}") #~ -pedantic -Wall -Wextra -std=c99
-
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -DDEFAULT_LUA_FILE=${CMAKE_CURRENT_SOURCE_DIR}/manage_threads.lua")
 find_package(LibXml2 REQUIRED)
 find_package(LibXslt REQUIRED)
 find_package(Lua51 QUIET)
@@ -11,29 +10,29 @@ find_package(Lua52 QUIET)
 find_program(LUA_LIBRAIRIES llua lua5.2 QUIET)
 
 if (NOT LUA_LIBRARIES)
-  message(FATAL_ERROR "Please precise your lua libraries with -DLUA_LIBRARIES=")
+  message(FATAL_ERROR "Please precise your lua libraries with -DLUA_LIBRARIES=-llua5.2 for example")
 endif (NOT LUA_LIBRARIES)
 
 if (NOT LUA_INCLUDE_DIR)
-  message(FATAL_ERROR "Please precise your lua include dir with -DLUA_INCLUDE_DIR=")
+  message(FATAL_ERROR "Please precise your lua include dir with -DLUA_INCLUDE_DIR=/usr/include/lua5.2 for example")
 endif (NOT LUA_INCLUDE_DIR)
 
 set(test_main_file src/main_test.c)
 
 option(TEST "Build tests" OFF)
 set(main_file src/main.c)
-set(executable_name simulator)
+set(executable_name cassis)
 set(src_dir ${CMAKE_SOURCE_DIR}/src)
 
 execute_process(
   COMMAND java -jar bin/Smc.jar -c coherence.sm
-  WORKING_DIRECTORY ${src_dir}/gen-automata)
-file(GLOB source_files ${src_dir}/core/*.c ${src_dir}/gen-automata/*.c)	
-include_directories (${src_dir}/includes ${src_dir}/gen-automata)
+  WORKING_DIRECTORY ${src_dir}/state-machine)
+file(GLOB source_files ${src_dir}/core/*.c ${src_dir}/state-machine/*.c)	
+include_directories (${src_dir}/includes ${src_dir}/state-machine)
 
 if(TEST)
-  file(GLOB test_source_files ${src_dir}/tests/*.c ${src_dir}/core/*.c ${src_dir}/gen-automata/*.c)
-  include_directories (${src_dir}/includes ${src_dir}/gen-automata ${src_dir}/tests)
+  file(GLOB test_source_files ${src_dir}/tests/*.c ${src_dir}/core/*.c ${src_dir}/state-machine/*.c)
+  include_directories (${src_dir}/includes ${src_dir}/state-machine ${src_dir}/tests)
   add_executable(
     test
     ${test_main_file} ${test_source_files}

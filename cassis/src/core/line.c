@@ -47,6 +47,5 @@ bool is_valid(struct line *line) {
 }
 
 bool is_dirty(struct line *line) {
-  return (line->status == M); 	/* TODO delete */
   return line->dirty;
 }

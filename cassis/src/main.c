@@ -20,17 +20,17 @@
 #include "trace.h"
 #include "option.h"
 
-/**
- * \def DEFAULT_ARCHITECTURE
- * \brief Path to the automatically generated XML configuration file, if none specified.
- */
-#define DEFAULT_ARCHITECTURE "architecture/architest_archi.xml"
+
+#define QUOTE(name) #name
+#define STR(macro) QUOTE(macro)
 
 /**
  * \def DEFAULT_LUA_FILE
  * \brief Default path for the lua interweaving file.
+ * Tricky method, source at :
+ * http://stackoverflow.com/questions/195975/how-to-make-a-char-string-from-a-c-macros-value
  */
-#define DEFAULT_LUA_FILE	"threads.lua"
+#define LUA_FILE STR(DEFAULT_LUA_FILE)
 
 int is_end(int *ends, int nb_threads){
   int i;
@@ -46,15 +46,20 @@ int main(int argc, char *argv[]) {
   get_options(argc, argv);
   
   if (help){
-    printf("To work with the architecture file: -f file\n");
-    printf("To trace a special data set: -b 0x000000000000:0x6fffffffffff or -b no_stack for all values excepting stack values\n");
-    printf("To print more statistics: -v 1: basic stats\n");
-    printf("                          -v 2: evinctions\n");
-    printf("                          -v 3: more detailled misses\n");
-    printf("                          -v 4: all stats\n");
-    printf("To ignore the architecture fatal warnings; -w\n");
-    printf("To specify the interweaving lua file: -r file\n");
-    printf("To track only some instructions: -i 1:3:42\n");
+    printf("To work with the architecture file: -f file.xml\n");
+    printf("To precise number of threads: -t int\n");
+    printf("To precise traces directory: -r file.xml\n");
+    printf("To trace a special data set: -b 0x000000000000:0x6fffffffffff or -b no_stack for all values excepting stack values (optional)\n");
+    printf("To print more statistics: -v 1: basic stats (default)\n");
+    printf("                          -v 2: evinctions (optional)\n");
+    printf("                          -v 3: more detailled misses (optional)\n");
+    printf("                          -v 4: all stats (optional)\n");
+    printf("To ignore the architecture fatal warnings: -w (optional)\n");
+    printf("To specify the interweaving lua file: -l file (optional if threads.lua exists)\n");
+    printf("To track only some instructions: -i 1:3:42 (optional)\n");
+    printf("To execute step by step (press s to run all instructions): -d (optional)\n");
+    printf("To print only the tracked values stats: -o (optional)\n");
+    printf("To print this help: -h\n");
     return EXIT_SUCCESS;
   }
   
@@ -62,16 +67,13 @@ int main(int argc, char *argv[]) {
   if(trace_file){
     strcpy(filename, trace_file);
   }
-  else {
-    strcpy(filename, DEFAULT_ARCHITECTURE);
-  }
   
   char luafile[256];
   if(lua_file){
     strcpy(luafile, lua_file);
   }
   else {
-    strcpy(luafile, DEFAULT_LUA_FILE);
+    strcpy(luafile, LUA_FILE);
   }
 
   struct architecture A;
@@ -114,10 +116,13 @@ int main(int argc, char *argv[]) {
     ends[i]=0;
   }
 
-  lua_State *L = luaL_newstate();   /* opens Lua  state*/
+  /* lua initialization */
+  lua_State *L = luaL_newstate();  
   luaL_openlibs(L);
   luaL_loadfile(L, luafile);
   lua_call(L, 0, 0);
+
+
 
   while (!is_end(ends, nb_threads)){
     lua_getglobal(L, "interweave");                  

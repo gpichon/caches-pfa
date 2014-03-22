@@ -10,6 +10,7 @@
  */
 #include "option.h"
 
+#include <getopt.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
@@ -123,11 +124,11 @@ void get_options(int argc, char *argv[]) {
       print_mode = 1;
       break;
     case 'l':	/* -l */
-	  lua_file = optarg;
+      lua_file = optarg;
       break;
     case 'r':	/* -r */
-	  trace_directory = optarg;
-	  tot++;
+      trace_directory = optarg;
+      tot++;
       break;
     }
   }

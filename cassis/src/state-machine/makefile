@@ -27,6 +27,7 @@ RM_F=           rm -f
 # Rules.
 #
 
+#usefull for not remove temporary files (here coherence_sm.c)
 .SECONDARY: $(SOURCES)
 
 ../includes-automate/%_sm.h %_sm.c : 	%.sm
