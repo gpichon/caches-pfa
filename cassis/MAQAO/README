@@ -1,3 +1,5 @@
+If MAQAO doesn't run, try to add libmt-gomp.so in your LD_LIBRARY_PATH.
+
 Lanch the script to create the traces:
 
 ./get_traces.sh test.c par 4 [100]
