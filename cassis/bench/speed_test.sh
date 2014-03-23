@@ -8,7 +8,7 @@ else
 
 cd ..
 make
-cd tests
+cd bench
 mkdir tmp
 touch tmp/values
 
@@ -35,8 +35,8 @@ for value in $(cat $1)
 do
 echo $value
 cd ../MAQAO
-./get_traces.sh ../tests/speed_test/test.c $func 4 $value > /dev/null
-cd ../tests/speed_test
+./get_traces.sh ../bench/speed_test/test.c $func 4 $value > /dev/null
+cd ../bench/speed_test
 /usr/bin/time ./bench.sh 2>&1 | awk '/WARNING|Err/ {print $0} /user/ {print 60000*substr($3,0,1)+1000*substr($3,3,2)+substr($3,6,2)}' >> ../tmp/test_$func
 cd ..
 done
