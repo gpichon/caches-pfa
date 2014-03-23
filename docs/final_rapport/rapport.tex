@@ -36,7 +36,8 @@
   tabsize=2,                       % sets default tabsize to 2 spaces
   title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
 }
-
+\usepackage{hyperref}
+\hypersetup{colorlinks=true}
 
 \pagestyle{fancy}
 
@@ -71,7 +72,7 @@
 \input{man.tex}
 \chapter{Dessins des automates}
 \input{automates.tex}
-\chapter{Tutoriel d'ajout d'une politique de cohérence}
+\chapter{Tutoriel d'ajout d'une politique de cohérence/remplacement}
 \input{tutoriel.tex}
 \nocite{*}
 \bibliographystyle{plain}
