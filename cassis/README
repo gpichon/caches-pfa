@@ -4,22 +4,33 @@ To compile, use:
 
 cmake dir
 make
+make doc (if you want to generate doxygen documentation).
+
+We advise you to choose <dir> out of cassis directory. It may bother the bench.
 
 ### EXECUTION ###
 
-To execute a code line, use:
+To execute a code line in your build directory <dir>, use :
 
-./bin/simulator -f architecture_file -t number_threads -r traces_repertory
+./bin/simulator -f architecture_file -t number_threads -r traces_directory
+
+Warning : you must have generated traces before, thanks to the script in MAQAO/ directory.
+Warning : be aware of the interweaving configuration (in manage_threads.lua). 
 
 ### SOFTWARE MAN ###
 
-You can find man pages in the folder cassis/man.
+You can find man pages in cassis/documentation/man/ directory.
 
 How to use the software:
-cassis/documentation/man/cassis.1
+man cassis/documentation/man/cassis.1
 
 How to use the architecture description files:
-cassis/documentation/man/cassis-xml.1
+man cassis/documentation/man/cassis-xml.1
+
+Doxygen documentation is in cassis/documentation/html/ directory
+(start with index.html). You must before run the command :
+make doc, from your build directory.
+
 
 ### PACKAGES ###
 
