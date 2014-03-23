@@ -1,0 +1,24 @@
+ .----------------.  .----------------.  .----------------.  .----------------.  .----------------.  .----------------. 
+| .--------------. || .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |
+| |     ______   | || |      __      | || |    _______   | || |    _______   | || |     _____    | || |    _______   | |
+| |   .' ___  |  | || |     /  \     | || |   /  ___  |  | || |   /  ___  |  | || |    |_   _|   | || |   /  ___  |  | |
+| |  / .'   \_|  | || |    / /\ \    | || |  |  (__ \_|  | || |  |  (__ \_|  | || |      | |     | || |  |  (__ \_|  | |
+| |  | |         | || |   / ____ \   | || |   '.___`-.   | || |   '.___`-.   | || |      | |     | || |   '.___`-.   | |
+| |  \ `.___.'\  | || | _/ /    \ \_ | || |  |`\____) |  | || |  |`\____) |  | || |     _| |_    | || |  |`\____) |  | |
+| |   `._____.'  | || ||____|  |____|| || |  |_______.'  | || |  |_______.'  | || |    |_____|   | || |  |_______.'  | |
+| |              | || |              | || |              | || |              | || |              | || |              | |
+| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |
+ '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------' 
+
+
+# Description
+
+CasSiS, Cache Simulation Software. 
+This software analyses a maqao generated trace to provide statistics towards cache performance (hits, misses, etc). The architecture can be generated from hwloc (with lstopo --of xml file.xml) and enhanced by our file format file.cassis.xml. 
+You will find the software and the documentation in cassis/ directory. Some documents are available in docs/, but there are in french. A report describes the working more precisely, and explains how to modify the source code.
+
+# Authors
+
+Written by the CASSIS team at ENSEIRB-Matmeca, FRANCE. The team is composed of Nicolas Dubois, Nicolas Heng, Alexandre Horonat, Gilles Marait, Grégoire Pichon, Pierre Goudet.
+
+# License

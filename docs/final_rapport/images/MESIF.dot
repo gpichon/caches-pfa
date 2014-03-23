@@ -1,0 +1,82 @@
+digraph coherence {
+
+    node
+        [shape=Mrecord width=1.5];
+
+    subgraph cluster_MESIF {
+
+        label="MESIF";
+
+        //
+        // States (Nodes)
+        //
+
+        "MESIF::I"
+            [label="{I}"];
+
+        "MESIF::M"
+            [label="{M}"];
+
+        "MESIF::S"
+            [label="{S}"];
+
+        "MESIF::E"
+            [label="{E}"];
+
+        "MESIF::F"
+            [label="{F}"];
+
+        //
+        // Transitions (Edges)
+        //
+
+        "MESIF::I" -> "MESIF::F"
+            [label="i_read()\l\[is_in_level(n,i,I) == 1\]/\lforward_line(l);\lup_stat(n, i, COHERENCE_BROADCAST);\l"];
+
+        "MESIF::I" -> "MESIF::E"
+            [label="i_read()\l\[is_in_level(n,i,I) == 0\]/\lexclusive_line(l);\lup_stat(n, i, COHERENCE_BROADCAST);\l"];
+
+        "MESIF::I" -> "MESIF::M"
+            [label="i_modify()/\lmodify_line(l);\lup_stat(n, i, COHERENCE_BROADCAST);\l"];
+
+        "MESIF::M" -> "MESIF::S"
+            [label="a_read()/\lshare_line(l);\lup_stat(n, i, WRITE_BACK);\l"];
+
+        "MESIF::M" -> "MESIF::I"
+            [label="i_del()/\linvalid_line(l);\lup_stat(n, i, WRITE_BACK);\l"];
+
+        "MESIF::M" -> "MESIF::I"
+            [label="a_modify()/\linvalid_line(l);\lup_stat(n, i, WRITE_BACK);\l"];
+
+        "MESIF::S" -> "MESIF::M"
+            [label="i_modify()/\lmodify_line(l);\lup_stat(n, i, COHERENCE_BROADCAST);\l"];
+
+        "MESIF::S" -> "MESIF::I"
+            [label="i_del()/\linvalid_line(l);\l"];
+
+        "MESIF::E" -> "MESIF::F"
+            [label="a_read()/\lforward_line(l);\l"];
+
+        "MESIF::E" -> "MESIF::M"
+            [label="i_modify()/\lmodify_line(l);\lup_stat(n, i, COHERENCE_BROADCAST);\l"];
+
+        "MESIF::E" -> "MESIF::I"
+            [label="i_del()/\linvalid_line(l);\l"];
+
+        "MESIF::E" -> "MESIF::I"
+            [label="a_modify()/\linvalid_line(l);\l"];
+
+        "MESIF::F" -> "MESIF::S"
+            [label="a_read()/\lshare_line(l);\l"];
+
+        "MESIF::F" -> "MESIF::M"
+            [label="i_modify()/\lmodify_line(l);\lup_stat(n, i, COHERENCE_BROADCAST);\l"];
+
+        "MESIF::F" -> "MESIF::I"
+            [label="i_del()/\linvalid_line(l);\l"];
+
+        "MESIF::F" -> "MESIF::I"
+            [label="a_modify()/\linvalid_line(l);\l"];
+    }
+
+}

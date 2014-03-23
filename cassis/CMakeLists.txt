@@ -22,11 +22,15 @@ set(test_main_file src/main_test.c)
 option(TEST "Build tests" OFF)
 set(main_file src/main.c)
 set(executable_name cassis)
-set(src_dir ${CMAKE_SOURCE_DIR}/src)
+set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 execute_process(
   COMMAND java -jar bin/Smc.jar -c coherence.sm
-  WORKING_DIRECTORY ${src_dir}/state-machine)
+  WORKING_DIRECTORY ${src_dir}/state-machine
+  ERROR_VARIABLE err_smc)
+if (err_smc)
+  message(FATAL_ERROR "Bad smc file :\n${err_smc}")
+endif (err_smc)
 file(GLOB source_files ${src_dir}/core/*.c ${src_dir}/state-machine/*.c)	
 include_directories (${src_dir}/includes ${src_dir}/state-machine)
 
