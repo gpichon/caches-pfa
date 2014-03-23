@@ -1,5 +1,3 @@
-\chapter{Généralités sur les caches}
-
 Le but de cette partie est de résumer un certain nombre de techniques relatives à la gestion de la hiérarchie des caches. Nous commencerons par expliciter le comportement d'un cache en général, avant d'étudier les moyens mis en {\oe}uvre afin d'assurer la cohérence de l'ensemble des caches. Nous finirons par étudier les problèmes posés par la simulation des caches d'une architecture multi-c{\oe}urs, notamment le prefetching.
 
 \subsection{Utilité des caches}
@@ -75,6 +73,7 @@ Les deux cas présentés précedemment présentent des inconvénients. Général
 ==> Préciser source de l'image\\
 
 \subsection{Politiques de remplacement}
+\label{remplacement}
  Lorsque l'on souhaite ajouter une ligne dans un set plein, il faut au préalable évincer une ligne de ce set. Pour cela, il existe différentes méthodes :
 
 \paragraph{FIFO.} La première solution consiste à supprimer la ligne la plus ancienne du cache. Cela correspond à la formule: ``First In, First Out''.
@@ -93,6 +92,7 @@ Les caches sont utilisés à chaque \textit{load}/\textit{store}. S'il est possi
 Par ailleurs, un protocole de cohérence est mis en {\oe}uvre à chaque \textit{load}/\textit{store} afin que les différents caches soient informés des modifications les concernant et que la consistance du système soit assurée. Ce protocole est propre à un niveau de cache. Dans un cas classique, il y aura un protocole de cohérence entre les L1 et entre les L2.
 
 \subsection{Protocoles de cohérence}
+\label{coherence}
  Nous étudierons uniquement le protocole de type MSI et ses dérivés : MESI, MOSI et MOESI. Chaque ligne de cache possède un état qui permet de gérer la cohérence. Les différents états sont: \\
 \begin{itemize}
 \item M: Une ligne est dans l'état modifié si c'est la seule copie valide dans l'ensemble des caches du niveau. Dans ce cas, si la ligne est evincée du cache, elle doit être recopiée en mémoire, via un write back. \\
@@ -130,6 +130,7 @@ La cohérence expliquée jusqu'à présent correspondait à celle d'un niveau de
 
 Le cas inclusif est plutôt orienté \textsc{Intel} alors que le cas exclusif est plutôt mis en place par \textsc{AMD}. De son côté \textsc{ARM} oscille entre les deux solutions proposées.
 
+\label{inclusivite}
 \subsection{Caches inclusifs}
 Le fonctionnement d'un cache inclusif est relativement simple. En cas de \textit{hit}, la donnée est propagée au cache (ou au processeur) qui a préalablement demandé la donnée. En cas de \textit{miss}, une demande de donnée est effectuée au niveau du dessus. La donnée est ensuite propagée à la mémoire d'en dessous. Dans le cas d'une hiérarchie avec uniquement des caches inclusifs, les messages utilisés pour demander/donner les données se font uniquement de façon verticale dans la hiérarchie. Il y a parallèlement, des messages destinés à garantir la consistance du système qui sont gérés différemment et qui influent sur la totalité de la hiérarchie. Voici un résumé des messages envoyés dans le cas d'une demande de donnée, en ne tenant pas compte de la gestion de la cohérence : \\
 
@@ -165,6 +166,7 @@ Il existe un autre cas de figure, qui peut être considéré comme une variante 
 Un autre cas de figure est un cache non-inclusif qui fonctionne avec plus de souplesse qu'un cache inclusif. Les données sont toujours laissées au passage, par contre l'inclusivité n'est pas formelle: il peut perdurer dans un L1 une donnée qui a été ejectée d'un L2 par exemple.
 
 \subsection{Ajout du snooping}
+\label{snooping}
  Il est possible que les caches d'un même niveau soient reliés ensemble par un bus. La méthode de recherche sur ce bus est alors appelée snooping. Prenons l'exemple d'une hiérarchie à trois niveaux où les L2 seraient reliés par un bus. Lorsqu'un L1 fait un \textit{miss}, il demande au L2 associé de lui fournir la donnée. En cas de nouveau \textit{miss}, la demande est envoyée en broadcast sur le bus afin de récupérer la donnée sans passer par le L3. Si aucun cache ne possède la donnée, la demande est alors transmise au L3.
 
 \newpage

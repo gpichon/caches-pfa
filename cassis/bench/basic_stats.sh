@@ -8,7 +8,7 @@ else
 
 cd ..
 make
-cd tests
+cd bench
 mkdir tmp
 touch tmp/values
 
@@ -26,8 +26,8 @@ touch tmp/test_$func
 echo "---------------------------------"
 echo "Running "$func" test "
 cd ../MAQAO
-./get_traces.sh ../tests/speed_test/test.c $func 4 $1 > /dev/null
-cd ../tests/speed_test
+./get_traces.sh ../bench/speed_test/test.c $func 4 $1 > /dev/null
+cd ../bench/speed_test
 ./../../bin/cassis -f ../architectures/architest_INTEL.cassis.xml -t 4 -v 1 -r ../../MAQAO -b no_stack -o| awk '/'"$3"'/ {print $0}' | awk '/misses/ {print substr($4, 0, length($4)-1)} /hits/ {print substr($6, 0, length($6)-1)} /writes_back/ {print substr($8, 0, length($8)-1)}' >> ../tmp/test_$func
 cd ..
 done
