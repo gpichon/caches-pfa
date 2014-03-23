@@ -47,6 +47,7 @@ An execution of Cassis on a xml file produced by hwloc (lstopo --of xml file.xml
 	* replacement_protocol: LRU, LFU or FIFO
 .SH "EXAMPLE"
 <?xml version="1.0"?>
+.br
 <Architecture name="x86_64" CPU_name="Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)" number_levels="3">
   <Level depth="3" type="inclusive" directory_manager="false"/>
   <Level depth="2" coherence_protocol="MESI" type="inclusive" snooping="true" directory_manager="false"/>
@@ -61,6 +62,7 @@ An execution of Cassis on a xml file produced by hwloc (lstopo --of xml file.xml
       <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
     </Cache>
   </Cache>
+.br
 </Architecture>
 .SH AUTHORS
 Written by the CASSIS team at ENSEIRB-Matmeca, FRANCE. The team was composed of Nicolas Dubois, Pierre Goudet, Nicolas Heng, Alexandre Horonat, Gilles Marait, Grégoire Pichon.

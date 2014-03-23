@@ -1,0 +1,52 @@
+\section{Manuel de paramétrisation de l'architecture}
+\label{manarchi}
+\begin{lstlisting}
+FILE DESCRIPTION
+       <Architecture>: decribes global information concerning the architecture
+
+            * name: name of the architecture
+            * CPU_name: name of the CPU
+            * number_levels: number of levels if the cache hierarchy
+
+       <Level>: parameters shared with a cache level
+
+            * depth: depth of the level
+            * coherence_protocol (not for last level): MSI or MESI
+            * type (not for L1): inclusive, exclusive, nieo (Not Inclusive Exclusive Oriented) or niio (Not Inclusive Inclusive Oriented).
+            * snooping (not for last level): true or false
+            * directory_manager (note for L1): true or false
+
+       <Cache>: parameters specific to a cache
+
+            * depth: depth of the cache
+            * cache_size: size of the cache (in bytes)
+            * cache_linesize: size of a line in the cache (in bytes)
+            * cache_associativity: associativity of the cache
+            * replacement_protocol: LRU, LFU or FIFO
+
+EXAMPLE
+       <?xml version="1.0"?>
+       <Architecture name="x86_64" CPU_name="Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)" number_levels="3">
+         <Level depth="3" type="inclusive" directory_manager="false"/>
+         <Level depth="2" coherence_protocol="MESI" type="inclusive" snooping="true" directory_manager="false"/>
+         <Level depth="1" coherence_protocol="MESI" snooping="true"/>
+         <Cache depth="3" cache_size="3145728" cache_linesize="64" cache_associativity="12" replacement_protocol="LRU">
+           <Cache depth="2" cache_size="262144" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU">
+             <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+             <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+           </Cache>
+           <Cache depth="2" cache_size="262144" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU">
+             <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+             <Cache depth="1" cache_size="32768" cache_linesize="64" cache_associativity="8" replacement_protocol="LRU"/>
+           </Cache>
+         </Cache>
+       </Architecture>
+AUTHORS
+       Written by the CASSIS team at ENSEIRB-Matmeca, FRANCE. The team was composed of Nicolas Dubois, Pierre Goudet, Nicolas Heng, Alexandre Horonat, Gilles Marait, Gregoire Pichon.
+
+SEE ALSO
+       cassis(1), lstopo(1)
+
+CASSIS 1.0.0                                                                                                  12/03/2014                                                                                                     CASSIS(7)
+\end{lstlisting}
+
