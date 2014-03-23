@@ -37,7 +37,7 @@ RM_F=           rm -f
 
 
 %_sm.dot :      %.sm
-		$(SMC) -graph -glevel 1 $<
+		$(SMC) -graph -glevel 2 $<
 
 %_sm.png :      %_sm.dot
 		dot -T png -o $@ $<
