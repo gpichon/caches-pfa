@@ -4,7 +4,7 @@ To compile, use:
 
 cmake dir
 make
-make doc (if you want to generate doxygen documentation).
+make doc (if you want to generate doxygen documentation)
 
 We advise you to choose <dir> out of cassis directory. It may bother the bench.
 
