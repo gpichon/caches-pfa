@@ -1,0 +1,67 @@
+digraph coherence {
+
+    node
+        [shape=Mrecord width=1.5];
+
+    subgraph cluster_MOSI {
+
+        label="MOSI";
+
+        //
+        // States (Nodes)
+        //
+
+        "MOSI::I"
+            [label="{I}"];
+
+        "MOSI::M"
+            [label="{M}"];
+
+        "MOSI::S"
+            [label="{S}"];
+
+        "MOSI::O"
+            [label="{O}"];
+
+        //
+        // Transitions (Edges)
+        //
+
+        "MOSI::I" -> "MOSI::S"
+            [label="i_read()\l\[is_in_level(n,i,I) != 0\]/\lshare_line(l);\lup_stat(n, i, COHERENCE_BROADCAST);\l"];
+
+        "MOSI::I" -> "MOSI::O"
+            [label="i_read()\l\[is_in_level(n,i,I) == 0\]/\lowned_line(l);\lup_stat(n, i, COHERENCE_BROADCAST);\l"];
+
+        "MOSI::I" -> "MOSI::M"
+            [label="i_modify()/\lmodify_line(l);\lup_stat(n, i, COHERENCE_BROADCAST);\l"];
+
+        "MOSI::M" -> "MOSI::S"
+            [label="a_read()/\lshare_line(l);\lup_stat(n, i, WRITE_BACK);\l"];
+
+        "MOSI::M" -> "MOSI::I"
+            [label="i_del()/\linvalid_line(l);\lup_stat(n, i, WRITE_BACK);\l"];
+
+        "MOSI::M" -> "MOSI::I"
+            [label="a_modify()/\linvalid_line(l);\lup_stat(n, i, WRITE_BACK);\lup_stat(n, i, COHERENCE_EVINCTION);\l"];
+
+        "MOSI::S" -> "MOSI::M"
+            [label="i_modify()/\lmodify_line(l);\lup_stat(n, i, COHERENCE_BROADCAST);\l"];
+
+        "MOSI::S" -> "MOSI::I"
+            [label="i_del()/\linvalid_line(l);\l"];
+
+        "MOSI::S" -> "MOSI::I"
+            [label="a_modify()/\linvalid_line(l);\lup_stat(n, i, COHERENCE_EVINCTION);\l"];
+
+        "MOSI::O" -> "MOSI::M"
+            [label="i_modify()/\lmodify_line(l);\lup_stat(n, i, COHERENCE_BROADCAST);\l"];
+
+        "MOSI::O" -> "MOSI::I"
+            [label="i_del()/\linvalid_line(l);\l"];
+
+        "MOSI::O" -> "MOSI::I"
+            [label="a_modify()/\linvalid_line(l);\lup_stat(n, i, COHERENCE_EVINCTION);\l"];
+    }
+
+}
