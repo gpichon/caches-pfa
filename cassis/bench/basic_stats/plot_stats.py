@@ -37,12 +37,14 @@ for i in range(0, nb_functions):
     for j in range(0, 3):
         Y[i, j] = 3 * Y[i, j] / tot
 
-a=""
+
+place = []
+mots = []
+
 for i in range(0, nb_functions):
-    a = a + file2_l[i].replace('\n','')
-    for j in range(0, 100/nb_functions):
-        a = a + " " 
- 
+    place.append(3*i+1.5)
+    mots.append(file2_l[i].replace('\n',''))
+print place, mots 
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -76,6 +78,6 @@ for i in range(1, nb_functions):
     y[0] = Y[i, 2]
     rects3 = ax.bar(x, y, 0.50, color='blue')
 
-plt.xlabel(a)
+plt.xticks(place, mots)
 plt.legend()
 plt.savefig("images/stats_"+e+"_"+f+".png")
