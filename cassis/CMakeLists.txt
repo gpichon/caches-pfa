@@ -27,7 +27,8 @@ set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 execute_process(
   COMMAND java -jar bin/Smc.jar -c coherence.sm
-  WORKING_DIRECTORY ${src_dir}/state-machine)
+  WORKING_DIRECTORY ${src_dir}/state-machine
+  ERROR_VARIABLE err_smc)
 if (err_smc)
   message(FATAL_ERROR "Bad smc file :\n${err_smc}")
 endif (err_smc)
