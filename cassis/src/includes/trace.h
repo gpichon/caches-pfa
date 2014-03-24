@@ -1,9 +1,9 @@
 /**
- * \file trace.c
+ * \file trace.h
  * \brief Driver for reading MAQAO' traces.
  * \authors ~ndubois, ~gpichon
  * \version 2.0
- * \date 7rd march 2014
+ * \date 7th march 2014
  *
  * 
  *

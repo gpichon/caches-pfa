@@ -3,9 +3,9 @@
  * \brief Driver for reading MAQAO' traces.
  * \authors ~ndubois, ~gpichon
  * \version 2.0
- * \date 7rd march 2014
+ * \date 7th march 2014
  *
- * 
+ *
  *
  */
 
@@ -52,12 +52,12 @@ void next_instruction(struct instruction *ins, struct thread **threads, int id_t
       ins->type = INSTRUCTION_END_OF_THREAD;
       return;
     }
-
+    
     while (buf[0] != ' '){
       if (buf[0] == '\n'){
 	break;
       }
-
+      
       sprintf(save+size, "%c", buf[0]);
       size++;
       lu = read(fd, buf, 1);
@@ -78,20 +78,20 @@ void next_instruction(struct instruction *ins, struct thread **threads, int id_t
 	ins->type = INSTRUCTION_END_OF_THREAD;
       }
     }
-
+    
     else if (i==1){
       unsigned long i = strtol(save, NULL, 16);
       ins->addr = i;
     }
-	else if (i==2){
-		// Thread number which is already known
+    else if (i==2){
+      // Thread number which is already known
     }
     else if (i==3) {
-	  unsigned int ui = atoi(save);
-	  ins->number = ui;
-	  instruction_number = ins->number;
-	}
-	save[0] = '\0';
+      unsigned int ui = atoi(save);
+      ins->number = ui;
+      instruction_number = ins->number;
+    }
+    save[0] = '\0';
     size = 0;
   }
 }
