@@ -1,6 +1,6 @@
 /**
  * \file block.h
- * \brief Manage a block : initialization, removal, replacement policy -- Header
+ * \brief Manage a block: update replacement flags and add a line in a block -- Header
  * \author ~gpichon
  * \version 1.0
  * \date 3rd january 2014

@@ -1,6 +1,6 @@
 /**
  * \file directory_manager.h
- * \brief A way for a cache to trace its sons data.
+ * \brief A way for a cache to trace its sons data.  -- Header
  * \author ~gpichon
  * \version 1.0
  * \date 5th february 2014

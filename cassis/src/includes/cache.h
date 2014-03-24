@@ -1,6 +1,6 @@
 /**
  * \file cache.h
- * \brief Manage a block : initiate, removal, print data, coherence and replacement policy -- Header
+ * \brief Manage a cache: replacement policies, cache types -- Header
  * \author ~gpichon
  * \version 1.0
  * \date 3rd january 2014
