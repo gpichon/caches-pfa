@@ -1,2 +1,23 @@
 \chapter*{Introduction}
 
+1er draft... Puis en fonction de l'intro du chapitre 2, il risque d'y avoir quelques redites.
+
+\paragraph{}
+Dans un ordinateur, le processeur accède aux instructions du programme à exécuter ainsi qu'aux données nécessaires
+à son exécution depuis la mémoire.
+De ce fait, la mémoire est un élément déterminant dans ses performances. \\
+Les registres du processeur sont les emplacements de mémoire les plus rapides car directement implantées sur le processeur, mais 
+ils sont aussi les plus chers notamment pour des raisons évidentes de place sur le processeur. Leur taille est donc limitée à quelques dizaines d'octets. \\
+Pour pallier ce peu d'espace mémoire, il existe une hiérarchie de la mémoire. Plus on s'éloigne du processeur, plus les mémoires sont grandes et peu chères.
+En contrepartie, leur vitesse diminue : l'accès à ces mémoires nécéssitent de plus en plus de cycles processeur.
+\paragraph{}
+Dans le cadre de ce PFA, nous nous intéressons à la mémoire cache. Dans la hiérarchie, elle se situe en dessous des registres du processeur.
+Tout comme les registres, elle est interne au processeur. Elle est toutefois bien moins chère et plus large que cette dernière. En contrepartie, son temps d'accès est supérieur.
+L'amélioration des performances d'un processeur, outre l'augmentation du nombre de coeurs ou de sa fréquence d'horloge peut provenir également de
+l'optimisation de sa mémoire cache. C'est en ce sens que nous développons le simulateur de caches Cassis. \\
+Le principe du simulateur est de rejouer une trace d'exécution d'un programme multithreadé, préalablement
+généré, afin d'obtenir des métriques associées aux caches sur une architecture de processeur paramétrable. Si les métriques obtenues par Cassis sont relativement peu utiles pour l'utilisateur lambda,
+elles peuvent néanmoins être très utiles pour la recherche, d'autant plus qu'il existe actuellement peu d'outils similaires.
+\paragraph{}
+Prérequis pour réaliser ce simulateur, il faut connaître le fonctionnement des caches. C'est ce que nous verrons dans la première partie de ce document.
+Dès lors nous pourrons examiner plus en détail le fonctionnement de Cassis.
