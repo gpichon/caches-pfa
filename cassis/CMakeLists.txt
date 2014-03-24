@@ -5,7 +5,7 @@ set(EXECUTABLE_OUTPUT_PATH bin)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -DDEFAULT_LUA_FILE=${CMAKE_CURRENT_SOURCE_DIR}/manage_threads.lua -DXSL_DOC_FILE=${CMAKE_CURRENT_SOURCE_DIR}/architecture/archi_maker.xsl")
 find_package(LibXml2 REQUIRED)
 find_package(LibXslt REQUIRED)
-find_package(Java REQUIRED)
+find_package(Java QUIET)
 find_package(Lua51 QUIET)
 find_package(Lua52 QUIET)
 find_program(LUA_LIBRAIRIES llua lua5.2 QUIET)
@@ -27,8 +27,10 @@ set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 execute_process(
   COMMAND java -jar bin/Smc.jar -c coherence.sm
-  WORKING_DIRECTORY ${src_dir}/state-machine
-  )
+  WORKING_DIRECTORY ${src_dir}/state-machine)
+if (err_smc)
+  message(FATAL_ERROR "Bad smc file :\n${err_smc}")
+endif (err_smc)
 file(GLOB source_files ${src_dir}/core/*.c ${src_dir}/state-machine/*.c)	
 include_directories (${src_dir}/includes ${src_dir}/state-machine)
 
