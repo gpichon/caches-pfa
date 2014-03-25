@@ -1,20 +1,21 @@
- \section{Entrelacement des threads}
+\section{Entrelacement des threads}
 
-Nous récupérons les traces d'exécutions à partir du logiciel MAQAO. Ces traces représentent une suite linéaires et ne reflètent pas le comportement réel de l'exécution parallèle du programme. 
+Les traces simulées sont générées par MAQAO, elles représentent une suite linéaire d'instructions. Elles ne reflètent donc pas le comportement réel de l'exécution parallèle du programme où les instructions sont réparties entre les différents c\oe ur du processeur. 
 
+\subsection{Nécessité de l'entrelacement}
 
-\subsection{}
-Sur une architecture multi-coeur plusieurs threads sont exécutés à la fois. Les threads exécutent donc des instructions en parallèle permettant ainsi d'augmenter la vitesse de calcul. Mais lorsque l'on observe les traces exécutions final du programme, cette information est perdue. Nous pouvons savoir sur quel coeur une instruction a été exécutée, mais nous ne pouvons pas connaître sa position dans l'exécution global du programme. L'ordre dans lequel les instructions sont exécutées entre les différents coeur ne peut être déterminée précisément. Nous avons donc dû implémentés un modèle de base qui permet d'avoir une idée de l'ordre instructions sur les différents threads. Ce modèle nous permet à partir des traces d'exécution de simuler une exécution du programme. Le choisi pour notre simulateur fonctionne de la manière suivante, on exécute les instructions sur un coeur une nombre de fois choisis, puis on change de coeur sur lequel les instructions doivent être exécutes et on recommence jusqu'à la fin de l'exécution. Cela revient à séquencialiser le programme en entrelaçant les instructions sur les différents threads.
+Sur une architecture multi-coeur plusieurs threads sont exécutés à la fois. Les threads exécutent donc des instructions en parallèle permettant ainsi d'augmenter la vitesse de calcul. Le problème est qu'il est possible de savoir sur quel c\oe ur une instruction a été exécutée, mais pas sa position dans l'exécution global du programme. En effet un c\oe ur a pu recevoir un appel système et temporairement exécuter d'autres opérations que celles du programme simulé, l'ordre d'exécution des instructions sur tous les c\oe ur ne peut donc pas a priori être connu. 
+
+\paragraph{}
+Un modèle de base a donc été implémenté afin de configurer l'ordre d'exécution des traces, appelé entrelacement des threads. Celui choisi pour le simulateur fonctionne de la manière suivante : un certain nombre d'instructions sont exécutées sur un thread, une fois terminées ce sont autant d'instructions qui sont exécutées sur le c\oe ur suivant (modulo le nombre de c\oe urs, car c'est un cycle). Cela revient à séquencialiser le programme en entrelaçant les instructions sur les différents threads.
 
 \subsection{Entrelacement bloc par bloc}
-Le choix d'entrelacement que nous avons fait permet de manière cyclique de changer de coeur sur lequel il faut exécuter les instructions. La technologies utilisé est un script LUA qui retourne le prochain coeur sur lequel le simulateur doit exécuter les instructions. Ce script permet fixer un nombre de bloc de instructions à exécuter avant de changer de coeur, pour changer de coeur à chaque instructions il faut donc réduire la taille du bloc d'instructions à exécuter à une seule instructions.
+
+Le choix d'entrelacement qui a été fait permet donc de changer de coeur sur lequel il faut exécuter les instructions de manière cyclique. La technologie utilisée est un script LUA qui retourne le prochain coeur sur lequel le simulateur doit exécuter les instructions. Ce script permet de fixer un nombre d'instructions à exécuter avant de changer de coeur, pour changer de coeur à chaque instructions il faut donc réduire la taille du bloc d'instructions à exécuter à une seule instruction.\\
 
 ===============> Joli schéma de l'exécution bloc par bloc
 
 
-\subsection{Limites et approximation}
-Sur cette partie du simulateur une certain nombre d'hypothèse on été réalisées. En effet le matériel lui-même est donc le constructeur ont un modèle de répartitions du travail sur les coeur que nous pouvons pas connaître. De même nous ne prenons le comportement du programme dans le cas d'interruptions et d'exécution en mode noyau.
-
-\subsection{Pour aller plus loin}
-Le modèle d'entrelacement des threads étant placé dans un fichier LUA, celui reste modifiable. Il existe d'autre méthode d'entrelacement des threads connue, notamment dans les scheduler de OpenCL. Si l'on sait que le programme fait appel à ce genre d'outil, il est possible de rajouter une autre méthode d'entrelacement dans le simulateur pour permettre de se rapprocher d'une estimation plus réaliste de l'ordre d'exécution.
+\paragraph{}
+Le modèle d'entrelacement des threads étant placé dans un fichier LUA, celui-ci est modifiable sans nouvelle compilation. Dans le cas où les traces n'ont pas toutes le même nombre d'instructions, il n'est toutefois pas possible depuis le script de savoir si une trace est terminée alors que les autres non. Si le c\oe ur renvoyé par le script n'a plus d'instruction à lire sur la trace associée, rien ne se produira, et le script renverra le c\oe ur suivant. 
 

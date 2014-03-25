@@ -1,0 +1,70 @@
+digraph coherence {
+
+    node
+        [shape=Mrecord width=1.5];
+
+    subgraph cluster_MESI {
+
+        label="MESI";
+
+        //
+        // States (Nodes)
+        //
+
+        "MESI::I"
+            [label="{I}"];
+
+        "MESI::M"
+            [label="{M}"];
+
+        "MESI::S"
+            [label="{S}"];
+
+        "MESI::E"
+            [label="{E}"];
+
+        //
+        // Transitions (Edges)
+        //
+
+        "MESI::I" -> "MESI::S"
+            [label="i_read\l\[is_in_level(n,i,I) != 0\]\lCOHERENCE_BROADCAST"];
+
+        "MESI::I" -> "MESI::E"
+            [label="i_read\l\[is_in_level(n,i,I) == 0\]\lCOHERENCE_BROADCAST"];
+
+        "MESI::I" -> "MESI::M"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MESI::M" -> "MESI::S"
+            [label="a_read\lWRITE_BACK"];
+
+        "MESI::M" -> "MESI::I"
+            [label="i_del\lWRITE_BACK"];
+
+        "MESI::M" -> "MESI::I"
+            [label="a_modify\lCOHERENCE_EVINCTION"];
+
+        "MESI::S" -> "MESI::M"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MESI::S" -> "MESI::I"
+            [label="i_del"];
+
+        "MESI::S" -> "MESI::I"
+            [label="a_modify\lCOHERENCE_EVINCTION"];
+
+        "MESI::E" -> "MESI::S"
+            [label="a_read"];
+
+        "MESI::E" -> "MESI::M"
+            [label="i_modify"];
+
+        "MESI::E" -> "MESI::I"
+            [label="i_del"];
+
+        "MESI::E" -> "MESI::I"
+            [label="a_modify\lCOHERENCE_EVINCTION"];
+    }
+
+}

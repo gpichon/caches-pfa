@@ -1,0 +1,82 @@
+digraph coherence {
+
+    node
+        [shape=Mrecord width=1.5];
+
+    subgraph cluster_MESIF {
+
+        label="MESIF";
+
+        //
+        // States (Nodes)
+        //
+
+        "MESIF::I"
+            [label="{I}"];
+
+        "MESIF::M"
+            [label="{M}"];
+
+        "MESIF::S"
+            [label="{S}"];
+
+        "MESIF::E"
+            [label="{E}"];
+
+        "MESIF::F"
+            [label="{F}"];
+
+        //
+        // Transitions (Edges)
+        //
+
+        "MESIF::I" -> "MESIF::F"
+            [label="i_read\l\[is_in_level(n,i,I) == 1\]\lCOHERENCE_BROADCAST"];
+
+        "MESIF::I" -> "MESIF::E"
+            [label="i_read\l\[is_in_level(n,i,I) == 0\]\lCOHERENCE_BROADCAST"];
+
+        "MESIF::I" -> "MESIF::M"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MESIF::M" -> "MESIF::S"
+            [label="a_read\lWRITE_BACK"];
+
+        "MESIF::M" -> "MESIF::I"
+            [label="i_del\lWRITE_BACK"];
+
+        "MESIF::M" -> "MESIF::I"
+            [label="a_modify\lWRITE_BACK"];
+
+        "MESIF::S" -> "MESIF::M"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MESIF::S" -> "MESIF::I"
+            [label="i_del"];
+
+        "MESIF::E" -> "MESIF::F"
+            [label="a_read"];
+
+        "MESIF::E" -> "MESIF::M"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MESIF::E" -> "MESIF::I"
+            [label="i_del"];
+
+        "MESIF::E" -> "MESIF::I"
+            [label="a_modify"];
+
+        "MESIF::F" -> "MESIF::S"
+            [label="a_read"];
+
+        "MESIF::F" -> "MESIF::M"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MESIF::F" -> "MESIF::I"
+            [label="i_del"];
+
+        "MESIF::F" -> "MESIF::I"
+            [label="a_modify"];
+    }
+
+}

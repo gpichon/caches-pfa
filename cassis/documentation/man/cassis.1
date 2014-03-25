@@ -23,7 +23,7 @@ Track only specified instructions for stats. Can be used with -b.
 	-i 1:3:42 Track only 3 instructions.
 .TP
 \fB\-b <long:long>
-Trace only the values between two addresses. For instance, with -b 0x000000000000:0x6fffffffffff, all values values that are not in the stack are tracked. Can be used with -i.
+Track only the values between two addresses : -b 0x000000000000:0x6fffffffffff for all values ; -b no_stack for values that are not in the stack. Can be used with -i.
 .TP
 \fB\-l <file>
 Select the file for threads interweaving. (Default: "./threads.lua")

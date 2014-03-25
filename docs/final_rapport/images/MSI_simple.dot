@@ -1,0 +1,51 @@
+digraph coherence {
+
+    node
+        [shape=Mrecord width=1.5];
+
+    subgraph cluster_MSI {
+
+        label="MSI";
+
+        //
+        // States (Nodes)
+        //
+
+        "MSI::I"
+            [label="{I}"];
+
+        "MSI::M"
+            [label="{M}"];
+
+        "MSI::S"
+            [label="{S}"];
+
+        //
+        // Transitions (Edges)
+        //
+
+        "MSI::I" -> "MSI::M"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MSI::I" -> "MSI::S"
+            [label="i_read\lCOHERENCE_BROADCAST"];
+
+        "MSI::M" -> "MSI::S"
+            [label="a_read\lWRITE_BACK"];
+
+        "MSI::M" -> "MSI::I"
+            [label="i_del\lWRITE_BACK"];
+
+        "MSI::M" -> "MSI::I"
+            [label="a_modify\lWRITE_BACK\lCOHERENCE_EVINCTION"];
+
+        "MSI::S" -> "MSI::M"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MSI::S" -> "MSI::I"
+            [label="a_modify\lCOHERENCE_EVINCTION"];
+
+        "MSI::S" -> "MSI::I"
+            [label="i_del"];
+    }
+}

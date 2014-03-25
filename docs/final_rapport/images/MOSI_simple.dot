@@ -1,0 +1,67 @@
+digraph coherence {
+
+    node
+        [shape=Mrecord width=1.5];
+
+    subgraph cluster_MOSI {
+
+        label="MOSI";
+
+        //
+        // States (Nodes)
+        //
+
+        "MOSI::I"
+            [label="{I}"];
+
+        "MOSI::M"
+            [label="{M}"];
+
+        "MOSI::S"
+            [label="{S}"];
+
+        "MOSI::O"
+            [label="{O}"];
+
+        //
+        // Transitions (Edges)
+        //
+
+        "MOSI::I" -> "MOSI::S"
+            [label="i_read\l\[is_in_level(n,i,I) != 0\]\lCOHERENCE_BROADCAST"];
+
+        "MOSI::I" -> "MOSI::O"
+            [label="i_read\l\[is_in_level(n,i,I) == 0\]\lCOHERENCE_BROADCAST"];
+
+        "MOSI::I" -> "MOSI::M"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MOSI::M" -> "MOSI::S"
+            [label="a_read\lWRITE_BACK"];
+
+        "MOSI::M" -> "MOSI::I"
+            [label="i_del\lWRITE_BACK"];
+
+        "MOSI::M" -> "MOSI::I"
+            [label="a_modify\lWRITE_BACK\lCOHERENCE_EVINCTION"];
+
+        "MOSI::S" -> "MOSI::M"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MOSI::S" -> "MOSI::I"
+            [label="i_del"];
+
+        "MOSI::S" -> "MOSI::I"
+            [label="a_modify\lCOHERENCE_EVINCTION"];
+
+        "MOSI::O" -> "MOSI::M"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MOSI::O" -> "MOSI::I"
+            [label="i_del"];
+
+        "MOSI::O" -> "MOSI::I"
+            [label="a_modify\lCOHERENCE_EVINCTION"];
+    }
+
+}

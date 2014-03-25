@@ -25,7 +25,7 @@ OPTIONS
               Track only specified instructions for stats. Can be used with -b.
             -i 1:3:42 Track only 3 instructions.
        -b <long:long>
-              Trace only the values between two addresses. For instance, with -b 0x000000000000:0x6fffffffffff, all values values that are not in the stack are tracked. Can be used with -i.
+              Track only the values between two addresses : -b 0x000000000000:0x6fffffffffff for all values ; -b no_stack for values that are not in the stack. Can be used with -i.
        -l <file>
               Select the file for threads interweaving. (Default: "./threads.lua")
        -v <int>
@@ -68,7 +68,7 @@ FILE DESCRIPTION
        <Level>: parameters shared with a cache level
 
             * depth: depth of the level
-            * coherence_protocol (not for last level): MSI or MESI
+            * coherence_protocol (not for last level): MSI or MESI. MEOSI, MESIF and MOSI are available but not tested yet.
             * type (not for L1): inclusive, exclusive, nieo (Not Inclusive Exclusive Oriented) or niio (Not Inclusive Inclusive Oriented).
             * snooping (not for last level): true or false
             * directory_manager (note for L1): true or false

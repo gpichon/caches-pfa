@@ -1,0 +1,88 @@
+digraph coherence {
+
+    node
+        [shape=Mrecord width=1.5];
+
+    subgraph cluster_MOESI {
+
+        label="MOESI";
+
+        //
+        // States (Nodes)
+        //
+
+        "MOESI::I"
+            [label="{I}"];
+
+        "MOESI::M"
+            [label="{M}"];
+
+        "MOESI::S"
+            [label="{S}"];
+
+        "MOESI::E"
+            [label="{E}"];
+
+        "MOESI::O"
+            [label="{O}"];
+
+        //
+        // Transitions (Edges)
+        //
+
+        "MOESI::I" -> "MOESI::S"
+            [label="i_read\l\[is_in_level(n,i,I) != 0\]\lCOHERENCE_BROADCAST"];
+
+        "MOESI::I" -> "MOESI::E"
+            [label="i_read\l\[is_in_level(n,i,I) == 0\]\lCOHERENCE_BROADCAST"];
+
+        "MOESI::I" -> "MOESI::O"
+            [label="i_modify\l\[is_in_level(n,i,I) != 0\]\lCOHERENCE_BROADCAST"];
+
+        "MOESI::I" -> "MOESI::M"
+            [label="i_modify\l\[is_in_level(n,i,I) == 0\]\lCOHERENCE_BROADCAST"];
+
+        "MOESI::M" -> "MOESI::O"
+            [label="a_read"];
+
+        "MOESI::M" -> "MOESI::I"
+            [label="i_del\lWRITE_BACK"];
+
+        "MOESI::M" -> "MOESI::S"
+            [label="a_modify"];
+
+        "MOESI::S" -> "MOESI::O"
+            [label="i_modify\lCOHERENCE_BROADCAST"];
+
+        "MOESI::S" -> "MOESI::O"
+            [label="a_del\l\[is_in_level(n,i,I) != 0 && is_dirty(l) == 1 && is_in_level(n,i,O) == 0\]"];
+
+        "MOESI::S" -> "MOESI::M"
+            [label="a_del\l\[is_in_level(n,i,I) == 0 && is_dirty(l) == 1\]"];
+
+        "MOESI::S" -> "MOESI::E"
+            [label="a_del\l\[is_in_level(n,i,I) == 0 && is_dirty(l) == 0\]"];
+
+        "MOESI::E" -> "MOESI::S"
+            [label="a_read"];
+
+        "MOESI::E" -> "MOESI::M"
+            [label="i_modify"];
+
+        "MOESI::E" -> "MOESI::I"
+            [label="i_del"];
+
+        "MOESI::E" -> "MOESI::S"
+            [label="a_modify"];
+
+        "MOESI::O" -> "MOESI::I"
+            [label="i_del\lCOHERENCE_BROADCAST"];
+
+        "MOESI::O" -> "MOESI::S"
+            [label="a_modify"];
+
+        "MOESI::O" -> "MOESI::M"
+            [label="a_del\l\[is_in_level(n,i,I) == 0\]"];
+    }
+
+}
