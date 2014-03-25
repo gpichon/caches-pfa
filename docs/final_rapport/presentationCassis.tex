@@ -93,25 +93,26 @@ L'algorithme de cohérence (MSI, MESI, MOSI ou MOESI) est donc relativement faci
 
 --C'est limite expliquer les politiques et un peu la partie juste au dessus--
 
-\section{Validation de la simulation}
-
-Le simulateur ressort des statistiques qui se doivent d'être correcte. Une des grandes difficultés de ce logiciel est de vérifier la justesse de ces statistiques.
-
-\subsection{Tests unitaires}
-
-Des tests unitaires sont effectués pour vérfifier le bon fonctionnement du programme. Les tests portent sur les parties critiques du code, à savoir le chargement d'une architecture ainsi que les politiques de cohérence et de remplacement des données.
-
-\subsection{Validation comparative}
-
-Afin de s'assurer que les politiques de cohérence fonctionnaient, des tests de comparaison sur un petit nombre d'opérations (moins de dix) furent entrepris avec les résultats théoriques attendus. Ces tests ont permis dans un premier temps de valider le code dans le cas où les caches sont vides. Cependant, ces valisations sont fastidieuse et le simulateur doit fonctionner pour un très grand nombre d'opération. Comme on ne peut avoir de vérifications exactes, la validation des résultats a pu se faire grâce à d'autres logiciels.\\
-
-Dans un premier temps, le logiciel PAPI (Performance Application Programming Interface) permet d'utiliser les compteurs hardware. Ces compteurs comportent plusieurs problèmes. Le premier point est qu'il ne sont très dépendant des machines. Les compteurs peuvent être très différents d'une machine à une autre, ou ne sont pas toujours activés. Le second point vient du fait que l'on obtient les opérations exactes de la mémoire. Ces opérations prennent en compte un trop grand nombre d'optimisations pour être simulée facilement.\\
-
---Mettre des chiffres pour PAPI ?--
-
-Dans un second temps, nous avons effectué des tests avec le logiciel valgrind (logiciel de débogage pas à pas), plus précisement le module nommé cachegrind qui permet d'observer les opérations sur la mémoire lors de l'exécution d'un programme.
---Je sais pas trop ce qu'il s'est passé avec cachegrind--
-
-\subsection{Benchmarks}
-
-Des benchmarks ont été mis en place pour tester le schmilblick.
+\input{validation.tex}
+%\section{Validation de la simulation}
+%
+%Le simulateur ressort des statistiques qui se doivent d'être correcte. Une des grandes difficultés de ce logiciel est de vérifier la justesse de ces statistiques.
+%
+%\subsection{Tests unitaires}
+%
+%Des tests unitaires sont effectués pour vérfifier le bon fonctionnement du programme. Les tests portent sur les parties critiques du code, à savoir le chargement d'une architecture ainsi que les politiques de cohérence et de remplacement des données.
+%
+%\subsection{Validation comparative}
+%
+%Afin de s'assurer que les politiques de cohérence fonctionnaient, des tests de comparaison sur un petit nombre d'opérations (moins de dix) furent entrepris avec les résultats théoriques attendus. Ces tests ont permis dans un premier temps de valider le code dans le cas où les caches sont vides. Cependant, ces valisations sont fastidieuse et le simulateur doit fonctionner pour un très grand nombre d'opération. Comme on ne peut avoir de vérifications exactes, la validation des résultats a pu se faire grâce à d'autres logiciels.\\
+%
+%Dans un premier temps, le logiciel PAPI (Performance Application Programming Interface) permet d'utiliser les compteurs hardware. Ces compteurs comportent plusieurs problèmes. Le premier point est qu'il ne sont très dépendant des machines. Les compteurs peuvent être très différents d'une machine à une autre, ou ne sont pas toujours activés. Le second point vient du fait que l'on obtient les opérations exactes de la mémoire. Ces opérations prennent en compte un trop grand nombre d'optimisations pour être simulée facilement.\\
+%
+%--Mettre des chiffres pour PAPI ?--
+%
+%Dans un second temps, nous avons effectué des tests avec le logiciel valgrind (logiciel de débogage pas à pas), plus précisement le module nommé cachegrind qui permet d'observer les opérations sur la mémoire lors de l'exécution d'un programme.
+%--Je sais pas trop ce qu'il s'est passé avec cachegrind--
+%
+%\subsection{Benchmarks}
+%
+%Des benchmarks ont été mis en place pour tester le schmilblick.
