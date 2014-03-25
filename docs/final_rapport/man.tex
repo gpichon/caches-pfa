@@ -1,6 +1,63 @@
+\section{Manuel de Cassis}
+\begin{lstlisting}[style=styleMan]
+CASSIS(1)
+
+NAME
+       cassis - manual page for cassis.
+
+SYNOPSIS
+       cassis -f file.xml -t number_threads -r traces_dir [-w] [-v int] [-i number_instr1[:...]] [-b addr_begin:addr_end] [...]
+
+DESCRIPTION
+       CasSiS, Cache Simulation Software. This software analyses a maqao generated trace to provide statistics towards cache performance. The architecture can be generated from hwloc (with lstopo --of xml file.xml) and enhanced by
+       our file format file.cassis.xml.
+
+PARAMETERS
+       -f <file>
+              Select architecture file. The architecture can be a file generated from hwloc (xml) or a file created by the user (cassis.xml). See cassis-xml for more details.
+       -t <int>
+              Select the number of threads. The number of threads must be lower than the number of cores, because this software cannot deal with context changement.
+       -r <dir>
+              Specify the directory to open trace files.
+
+OPTIONS
+       -i <int>
+              Track only specified instructions for stats. Can be used with -b.
+            -i 1:3:42 Track only 3 instructions.
+       -b <long:long>
+              Trace only the values between two addresses. For instance, with -b 0x000000000000:0x6fffffffffff, all values values that are not in the stack are tracked. Can be used with -i.
+       -l <file>
+              Select the file for threads interweaving. (Default: "./threads.lua")
+       -v <int>
+              Select the verbose mode.
+            -v 1: print basic statistics: misses, hits and writes-back
+            -v 2: print statisctics about data evinctions
+            -v 3: print more detailled statistics about misses
+            -v 4: print broadcast statistics
+       -o     Print mode. Print only tracked values, not all instructions results.
+       -d     Debug mode. Useful for printing caches after each instruction.
+       -w     Ignore fatal warnings. However the program will probably not be able to play the trace.
+       -h     Print this man page.
+
+AUTHORS
+       Written by the CASSIS team at ENSEIRB-Matmeca, FRANCE. The team was composed of Nicolas Dubois, Nicolas Heng, Alexandre Horonat, Gilles Marait, Gregoire Pichon, Pierre Goudet.
+
+REPORTING BUGS
+       Report bugs to <caches-pfa@listes.enseirb-matmeca.fr>.
+
+COPYRIGHT
+       This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public  License
+       for more details.
+
+SEE ALSO
+       cassis-xml(1)
+
+CASSIS 1.0.0                                                                                                  12/03/2014                                                                                                     CASSIS(1)
+\end{lstlisting}
+\newpage
 \section{Manuel de paramétrisation de l'architecture}
 \label{manarchi}
-\begin{lstlisting}
+\begin{lstlisting}[style=styleMan]
 FILE DESCRIPTION
        <Architecture>: decribes global information concerning the architecture
 
@@ -25,6 +82,8 @@ FILE DESCRIPTION
             * replacement_protocol: LRU, LFU or FIFO
 
 EXAMPLE
+\end{lstlisting}
+\begin{lstlisting}[style=styleXml]
        <?xml version="1.0"?>
        <Architecture name="x86_64" CPU_name="Intel(R) Core(TM) i5-3340M CPU @ 2.70GHz (modified)" number_levels="3">
          <Level depth="3" type="inclusive" directory_manager="false"/>
@@ -41,6 +100,8 @@ EXAMPLE
            </Cache>
          </Cache>
        </Architecture>
+\end{lstlisting}
+\begin{lstlisting}[style=styleMan]
 AUTHORS
        Written by the CASSIS team at ENSEIRB-Matmeca, FRANCE. The team was composed of Nicolas Dubois, Pierre Goudet, Nicolas Heng, Alexandre Horonat, Gilles Marait, Gregoire Pichon.
 
