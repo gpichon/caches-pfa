@@ -18,18 +18,15 @@ La validation comparative s'est donc révelée être un échec, les écarts entr
 \subsection{Benchmarks}
 La validation de notre outil a donc été possible en étudiant des codes connus pour être plus ou moins bons d'un point de vue des caches. L'étude porte sur une architecture de type \textsf{Intel} i3, i5 ou i7. Il y a $4$ caches L1, $2$ caches L2 exclusifs et $1$ L3 inclusif. La fonction ``par'' réalise des écritures sur un tableau en le partageant correctement entre les différents c{\oe}urs. La fonction ``falsesharing'' réalise une opération semblable, mais des lignes de cache sont utilisées simultanément par plusieurs c{\oe}urs. Avec la fonction ``broadcast'', tous les threads accèdent aux données du premier et avec la fonction ``pipeline'', il y a également des échanges entre les caches. Les graphiques suivants résument les statistiques basiques pour chaque niveau de cache, en faisant un moyenne lorsqu'il y a plusieurs caches pour un seul niveau.\\
 
-\begin{figure}[!h]
-\begin{center}
-   \includegraphics[scale=0.40]{images/stats_L1.png}
-   \caption{\label{img:inclusifs} Statistiques pour les L1 avec des problèmes connus}
-\end{center}
-\end{figure}
-
-\begin{figure}[!h]
-\begin{center}
-   \includegraphics[scale=0.40]{images/stats_L2.png}
-   \caption{\label{img:inclusifs} Statistiques pour les L2 avec des problèmes connus}
-\end{center}
+\begin{figure}[l]
+   \begin{minipage}[l]{.46\textwidth}
+     \includegraphics[scale=0.40]{images/stats_L1.png}
+     \caption{\label{img:inclusifs} Statistiques pour les L1 avec des problèmes connus}
+   \end{minipage} \hfill
+   \begin{minipage}[r]{.46\textwidth}
+     \includegraphics[scale=0.40]{images/stats_L2.png}
+     \caption{\label{img:inclusifs} Statistiques pour les L2 avec des problèmes connus}
+   \end{minipage}
 \end{figure}
 
 \begin{figure}[!h]
@@ -40,7 +37,7 @@ La validation de notre outil a donc été possible en étudiant des codes connus
 \end{figure}
 
 
-Par ailleurs, voici une petite étude afin de prouver que les performances du logiciel sont bien linéaire en fonction du temps: \\
+Par ailleurs, une petite étude afin de prouver que les performances du logiciel sont bien linéaire en fonction du temps est présentée figure \ref{img:inclusifs}. \\
 
 \begin{figure}[!h]
 \begin{center}
@@ -48,6 +45,3 @@ Par ailleurs, voici une petite étude afin de prouver que les performances du lo
    \caption{\label{img:inclusifs} Etude de la scalabilite du programme}
 \end{center}
 \end{figure}
-
-
-===> Préciser les légendes, être plus verbeux sur les graphiques
