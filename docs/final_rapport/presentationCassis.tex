@@ -1,118 +1,105 @@
 
-En vrac, non trié.
-
-===> Rajouter une intro de partie rappelant la nécéssité d'un simulateur ? (par manque de connaissance/documentation dans le domaine, etc...)
-
-===> Enchaîner ensuite sur le fait qu'on doit pouvoir choisir les paramètres de simulation (pour pouvoir simuler des architectures variés, et même expérimentaux ou pour obtenir le suivi de certaines données particulières)
-
-===> Comment on a implémenté cette entre-guillemets "modularité" -- comment l'utilisateur peut choisir ses paramètres (script Lua pour l'entrelacement, XML c'est déjà fait, etc...)
 
 ===> D'autres trucs sur l'implém, par exemple préciser ce que ne fait pas le simulateur (calcul de bande passante, prise en compte du prefetching) ???
-
-===> Exemple d'entrée/sortie, comparaison de la sortie avec ceux obtenus avec d'autres logiciels (compteur hard) + graphes en fonction de la taille de l'entrée (pour voir s'il n'y a pas de déviation lorsqu'on a des programmes plus complexes)
-
 
 
 \section{Cadre du simulateur}
 
-Un simulateur est un programme qui va chercher à reproduire le fonctionnement de quelque chose. Un simulateur peut être nécessaire dans beaucoup de domaines. Par exemple, en météorologie, la simulation du mouvement des masses d'air permet de prévoir le temps avec des calculs probabilistes. C'est la même chose dans notre cas, nous voulons essayer de mesurer l'efficacité d'un programme sur différentes architectures de caches.
+Un simulateur est un programme qui va reproduire le fonctionnement d'un système afin de pouvoir en étudier certaine caractéristiques de manière moins contraignante que sur le système réel. Dans le cas du programme \textsc{Cassis}, c'est l'utilisation des caches par un programme donné qui est simulée.
 
 \subsection{Origine du projet}
 
-La mémoire est un facteur de ralentissement des programmes très important de nos jours. Une mauvaise gestion de la mémoire peut être désastreux au niveau des performances, et pourtant, il n'existe pas de moyen efficace et précis de connaître l'utilisation de la mémoire au niveau des caches. Notre simulateur a pour objectif de pouvoir tester un programme ou un algorithme et d'observer le comportement des caches.
+La mémoire est un facteur de ralentissement des programmes très important de nos jours. Une mauvaise gestion de la mémoire peut être désastreuse au niveau des performances, et pourtant, il n'existe pas de moyen efficace et précis de connaître l'utilisation de la mémoire au niveau des caches. Le but de \textsc{Cassis} est donc d'étudier l'utilisation précise des caches par un programme, afin d'aider l'utilisateur à tester les performances du programmes, ainsi que les analyser pour les améliorer.
 
-Les processeurs et les caches sont très optimisés par les constructeurs. La plupart des fonctionnalités sont connues, mais leur implémentation est gardée secrète. Pour connaître le fonctionnement des caches, il faut regarder la documentation pour savoir quels algorithmes sont implémentés.\\
+\paragraph{}
+Le besoin d'un tel simulateur est avant tout dû au manque d'informations des caches. Deux phénomènes se produisent du côté des constructeurs de processeurs. D'une part ils doivent les optimiser afin d'être concurrents, et il devient alors difficile pour eux de rajouter des fonctionnalités dédiées aux développeurs afin d'améliorer leur code, par exemple des compteurs exacts du nombre de \emph{hits}. D'autre part il n'est pas dans leur intérêt de révéler le fonctionnement de leurs produits, pour des raisons économiques évidentes. Par exemple, le \emph{prefetching} permet de charger des lignes de caches en avance en fonction des accès mémoires courants du programme et cette fonctionnalité n'est pas implémentée dans le simulateur car son fonctionnement n'est pas totalement divulgué.
 
-Il existe des compteurs hardware qui permettent de connaître certaines statistiques sur les caches. Ces statistiques sont les données auxquelles il faudrait se rapprocher le plus. Elle ne sont cependant pas atteignable, les constructeurs optimisants un maximum les étapes. Par exemple, le prefetching permet de charger des lignes de caches en avance en fonction des accès mémoires courants du programme.
-
-\subsection{Outils à disposition de l'utilisateur}
-
-Les outils listés ci-dessous sont ceux utilisés par l'équipe de projet. Si d'autres outils offrent des fonctionnalités similaires, ils peuvent être utilisés en remplacement tant que les fichiers d'entrée du programme sont dans le bon format.
-
-\paragraph{HWLoc}
-
-est un logiciel qui permet de récupérer l'architecture des caches d'une machine. Il permet de générer un fichier xml que nous enrichissons. La paramétrisation de l'architecture des caches ne prend pas en compte les caches d'instructions, mais seulement les caches de données. L'utilisation de ce fichier est détaillé dans la section \ref{param_xml}.
-
-\paragraph{MAQAO}
-
-(Modular Assembly Quality Analyzer and Optimizer) est un outil d'analyse et d'optimisation de programmes. Nous n'utilisons qu'une fonctionnalité de MAQAO qui permet d'instrumenter un programme binaire afin de récupérer les opérations faites lors de l'exécution. Le paramétrage de MAQAO est effectué grâce à un fichier lua pour générer des traces de la forme voulue.
+\paragraph{}
+L'intérêt d'un tel simulateur est donc de pouvoir tester des programmes en produisant certaines statistiques, mais aussi de pouvoir tester l'exécution sur des architectures qui n'existent pas afin de connaître la pertinence d'une nouvelle politique de cohérence par exemple.
 
 \subsection{Données simulées : analyses possibles des résultats}
 
---A finir ce soir--
+Différentes statistiques sont relevées par le simulateur, les principales sont les \emph{misses}, les \emph{hits} et les \emph{write-backs}. Il est aussi possible de connaître le nombre de messages envoyés sur le bus par un cache afin d'effectuer la cohérence, ainsi que le nombre de données qui ont été invalidées à cause de la cohérence ou à cause de l'inclusivité, et enfin comment la donnée a été atteinte (qui l'a transmis au cache s'il ne l'avait pas : son parent, ou un cache de même niveau). Une sortie classique serait donc :
 
 \begin{lstlisting}
-L3  basics     (misses:             6, hits:              0, writes_back:          0)
-L2  basics     (misses:             6, hits:              0, writes_back:          0)
-L1  basics     (misses:             4, hits:             44, writes_back:          1)
-L1  basics     (misses:             6, hits:             42, writes_back:          2)
-L2  basics     (misses:             0, hits:              0, writes_back:          0)
-L1  basics     (misses:             0, hits:              0, writes_back:          0)
-L1  basics     (misses:             0, hits:              0, writes_back:          0)
+L3  basics   (misses:   6, hits:   0, writes_back:   0)
+L2  basics   (misses:   6, hits:   0, writes_back:   0)
+L1  basics   (misses:   4, hits:  44, writes_back:   1)
+L1  basics   (misses:   6, hits:  42, writes_back:   2)
+L2  basics   (misses:   0, hits:   0, writes_back:   0)
+L1  basics   (misses:   0, hits:   0, writes_back:   0)
+L1  basics   (misses:   0, hits:   0, writes_back:   0)
 \end{lstlisting}
+
+\paragraph{}
+Ces statistiques ont été choisie afin que l'utilisateur puisse constater certains problèmes particuliers. En effet un nombre trop élevé de \emph{write-backs} et/ou de \emph{coherence evinctions} révèlent que les c\oe urs modifient les mêmes données et que le parallélisme n'est donc pas bien réalisé. Mais les statistiques ne sont pas les seuls paramètres d'analyse, la sélection des données à analyser à aussi un rôle important. Le simulateur permet de suivre les statistiques d'une ou plusieurs instructions données, et ainsi de déterminer quelles instructions causent des ralentissements à l'exécution, i.e. un trop grand nombre de \emph{misses}.
+
+\subsection{Outils à disposition de l'utilisateur}
+
+Le simulateur s'appuie sur des outils préexistants, pour la génération des traces et de l'architecture. Les outils listés ci-dessous sont ceux utilisés par l'équipe de projet. Si d'autres outils offrent des fonctionnalités similaires, ils peuvent être utilisés en remplacement tant que les fichiers d'entrée du programme sont dans le bon format.
+
+\paragraph{HWLOC} est un logiciel qui permet de récupérer l'architecture des caches d'une machine. Il permet de générer un fichier xml que nous enrichissons. La paramétrisation de l'architecture des caches ne prend pas en compte les caches d'instructions, mais seulement les caches de données. L'utilisation de ce fichier est détaillé dans la section \ref{param_xml}.
+
+\paragraph{MAQAO} (Modular Assembly Quality Analyzer and Optimizer) est un outil d'analyse et d'optimisation de programmes. Une seule fonctionnalité de \textsf{MAQAO} est utilisée, celle qui permet d'instrumenter un programme binaire afin de récupérer les opérations faites lors de l'exécution. Le paramétrage de \textsf{MAQAO} est effectué grâce à un fichier lua pour générer des traces de la forme voulue.
+
+\paragraph{}
+L'utilisateur peut aussi vouloir comparer les résultats de la simulation. Bien qu'il n'existe par actuellement de tel simulateur pour faire la comparaison, il existe des compteurs hardware --par exemple \textsf{PAPI} -- qui permettent de connaître certaines statistiques sur les caches. Ces statistiques sont celles desquelles il faudrait le plus se rapprocher, bien qu'elles ne soient pas non plus exactes.
+
 
 \section{Déroulement de la simulation}
 
---A finir ce soir--
-Je voudrai faire un petit schéma pour montrer ça, c'est pas long à faire, ça sera cool et ça prendra de la place. Les sous sections du dessous se ressemblent un peu, faudra voir j'arrive à mettre quelque chose dedans sans faire de redites.
+La simulation consiste à rejouer un certain nombre d'instructions, et de comptabiliser certaines métriques à destination de l'utilisateur. Comme il s'agit d'une simulation, tout ne se passe pas exactement comme dans le cas réel. Il est donc nécessaire d'expliciter les similitudes comme les différences afin que l'utilisateur ne soit pas surpris à la fois par les résultats, et à la fois par les méthodes de calculs si son objectif est de modifier le code.
 
 \subsection{Traitement d'une instruction : load/store}
 
-\begin{lstlisting}
-function interweave (current, nb_thread)
-    i = i+1	 
-    if i > sizeofblock then 
-        i = 1 
-        current = (current +1) % nb_thread
-    end
-    return current
-end
-\end{lstlisting}
+La simulation, même d'un programme parallèle, est une séquence d'instructions effecutant des modifications (lecture ou écriture) sur les caches. Les deux premières possibilités pour une instruction sont soit une lecture de donnée, soit une écriture. Une fois cela déterminé, il faut savoir où se trouve la donnée, elle peut déjà être dans le cache, ou dans un de ses voisins, ou dans un de ses parents. La donnée est alors rappatriée en prévenant les autres caches de l'action en cours. 
 
---Explication de ce qu'il y a à l'intérieur des fonction load/store, application de la cohérence et remplacement--
+\paragraph{}
+Tous les caches concernés appliquent alors la politique de cohérence : une action a été faite sur la donnée, elle a été lue ou modifiée, par un autre cache ou par soi-même. L'automate change alors l'état de la ligne suivant la nature de la transition. Il faut aussi penser à gérer le cas ou le cache est plein : le rappatriement d'une donnée donne alors lieu à la suppression d'une autre, il faut aussi propager cette information, et veiller à la cohérence de la donnée dans le reste de l'architecture.
 
-Un des objectifs supplémentaire était d'optimiser la lecture des traces afin de gagner du temps sur les exécutions longues. Le format des traces actuel ne permet plus d'effectuer cela facilement, car il n'y a plus de boucles comme lors des premiers tests effectués. Cela est dû à MAQAO, qui ne peut pas à la fois optimiser la sortie avec des boucles \emph{for} et grouper les résultats pour chaque thread.
+\paragraph{}
+L'ordre des tests est le suivant : 
+\begin{enumerate}
+  \item{il s'agit d'un \emph{load} ou d'un \emph{store}}
+  \item{la donnée est présente dans le cache ou non (récursif)
+    \begin{enumerate}
+      \item{si non, l'ajouter}
+      \item{appel de la procédure de suppression en cas de cache plein}
+      \item{prévenir le cache supérieur que la donnée est accédée}
+      \item{revenir au point 2}
+  \end{enumerate}}
+  \item{modifier les statistiques d'utilisation de la ligne}
+\end{enumerate}
 
 \subsection{Rapatriement prédictif d'une ligne}
 
---Je sais pas trop ce qu'il faut dire ici, c'est le fait que l'on considère que la donnée arrive quoi qu'il arrive ?--
+Les étapes précédentes de l'algorithme montrent que la ligne est ajoutée avant même que les caches de niveau supérieur aient confirmé qu'ils l'ont ou non. Contrairement au cas réel, nous considérons donc que nous avons la donnée dans tous les cas, et nous propageons uniquement la demande aux niveaux supérieurs. Cela augement la rapidité car il n'y a pas d'aller/retour de messages entre les niveaux de caches, ceux-ci ne font \emph{a priori} que monter vers les caches supérieurs.
+
+\paragraph{}
+Cette particularité est à prendre en compte dans l'écriture des politiques de cohérences. En effet certaines politiques se basent sur la présence ou non de la même ligne dans le niveau du cache demandant la donnée. Il faut alors être conscient que la donnée est déjà dans le niveau lorsque les voisins sont prévenus.
+
+\paragraph{}
+En résumé il faut considérer que le cache effectuant la requête de ligne l'ajoute, prévient ses voisins, puis prévient le niveau supérieur. La cohérence entre les niveaux est toujours assurée, mais celle sur le niveau-même n'est donc pas exactement la même que dans le cas réel où les voisins sont informés avant l'ajout effectif de la ligne.
+
 
 \subsection{Mise à jour des lignes}
 
---Lister les différentes options disponibles offertes par les politiques et leurs applications, expliquer pourquoi--
+Lorsque les lignes sont accédées il faut mettre à jour leurs statistiques d'utilisation suivant la politique de remplacement du cache associé. Cette mise à jour intervient dès que la ligne a été ajoutée si elle n'était pas déjà présente. Et ce avant même d'avoir prévenu les caches parents, mais après avoir prévenu les caches voisins.
 
-La cohérence étant propre à un niveau de cache, elle peut être mise en place directement en considérant l'ensemble des caches de ce niveau. En réalité, les L1 ou les L2 n'intéreagissent pas toujours directement: s'ils ne sont pas reliés par un bus (cas du snooping), il faut passer par les niveaux haut dessus pour envoyer les messages. Cependant, la quantité de messages envoyés par cache pouvant être retrouvée à partir du nombre de \textit{misses} et de \textit{hits}, il n'est pas nécessaire de la calculer. \\
-
-L'algorithme de cohérence (MSI, MESI, MOSI ou MOESI) est donc relativement facile à implémenter. Dans le cas du protocole MESI, il y a deux cas majeurs à gérer: \\
-\begin{itemize}
-\item Lorsqu'un cache fait un \textit{miss}, il parcours l'ensemble des autres caches pour savoir s'il doit mettre la donnée dans l'état E ou S. Dans le cas S, il modifie les données des autres caches pour quelles soient dans l'état S.
-\item Quand un cache modifie une donnée qu'il avait dans l'état S, il invalide la donnée dans les autres caches.
-\end{itemize}
+\paragraph{}
+Le type de cache, inclusif ou exclusif ou autre, influe ici sur la mise à jour des lignes. En effet dans le cas d'un cache orienté inclusif, celui-ci contiendra effectivement la donnée rappatriée et il mettra à jour son utilisation. Mais remarquons que dans le cas d'un cache exclusif, celui-ci ne fait que faire transiter la donnée vers le cache inférieur, donc il ne faut pas augmenter les statistiques d'utilisation de cette ligne qui n'est pas présente.
 
 \subsection{Problème d'ajout de ligne dans un cache plein}
 
---C'est limite expliquer les politiques et un peu la partie juste au dessus--
+Lorsqu'un cache nécessite une donnée alors qu'il est plein, il en supprime une autre. Mais dans le cas d'une architecture totalement inclusive, cela pose un problème lié au faite que si l'on supprime la donnée d'un niveau inclusif, il faut la supprimer dans tous les niveaux inférieurs.
+
+\paragraph{}
+Le cas est le suivant : une donnée A est accédée par un L1. Pour ce faire le L1, éjecte la donnée B. Or le L2 est inclusif, donc il doit stocker la donnée B, mais pour ce faire, étant plein aussi, il doit supprimer la donnée A. Par conséquent l'inclusivité pour A n'est plus vraie, elle est maintenant dans le L1 mais plus dans le L2. 
+
+\paragraph{}
+Le rapatriement prédictif pose donc ici un problème qui ne se pose pas dans le cas réel. En effet dans le cas réel, le L2 ayant reçu la demande de la part du L1 pour la donnée A, évince la donnée B, prévient le L1 que cette donnée a été supprimée, puis seulement après lui transmet la donnée A. Le L1 a donc au moins une place disponible pour recevoir cette donnée et n'en suprrime pas d'autres. 
+
+\paragraph{}
+Pour pallier ce problème, une donnée supplémentaire a été ajouté aux différentes fonctions : il s'agit de la ligne en cours d'ajout, qui ne doit pas être supprimée par les caches de niveaux supérieurs.
 
 \input{validation.tex}
-%\section{Validation de la simulation}
-%
-%Le simulateur ressort des statistiques qui se doivent d'être correcte. Une des grandes difficultés de ce logiciel est de vérifier la justesse de ces statistiques.
-%
-%\subsection{Tests unitaires}
-%
-%Des tests unitaires sont effectués pour vérfifier le bon fonctionnement du programme. Les tests portent sur les parties critiques du code, à savoir le chargement d'une architecture ainsi que les politiques de cohérence et de remplacement des données.
-%
-%\subsection{Validation comparative}
-%
-%Afin de s'assurer que les politiques de cohérence fonctionnaient, des tests de comparaison sur un petit nombre d'opérations (moins de dix) furent entrepris avec les résultats théoriques attendus. Ces tests ont permis dans un premier temps de valider le code dans le cas où les caches sont vides. Cependant, ces valisations sont fastidieuse et le simulateur doit fonctionner pour un très grand nombre d'opération. Comme on ne peut avoir de vérifications exactes, la validation des résultats a pu se faire grâce à d'autres logiciels.\\
-%
-%Dans un premier temps, le logiciel PAPI (Performance Application Programming Interface) permet d'utiliser les compteurs hardware. Ces compteurs comportent plusieurs problèmes. Le premier point est qu'il ne sont très dépendant des machines. Les compteurs peuvent être très différents d'une machine à une autre, ou ne sont pas toujours activés. Le second point vient du fait que l'on obtient les opérations exactes de la mémoire. Ces opérations prennent en compte un trop grand nombre d'optimisations pour être simulée facilement.\\
-%
-%--Mettre des chiffres pour PAPI ?--
-%
-%Dans un second temps, nous avons effectué des tests avec le logiciel valgrind (logiciel de débogage pas à pas), plus précisement le module nommé cachegrind qui permet d'observer les opérations sur la mémoire lors de l'exécution d'un programme.
-%--Je sais pas trop ce qu'il s'est passé avec cachegrind--
-%
-%\subsection{Benchmarks}
-%
-%Des benchmarks ont été mis en place pour tester le schmilblick.
