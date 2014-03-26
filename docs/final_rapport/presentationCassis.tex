@@ -1,15 +1,14 @@
-
-
-===> D'autres trucs sur l'implém, par exemple préciser ce que ne fait pas le simulateur (calcul de bande passante, prise en compte du prefetching) ???
-
+\textsf{Cassis} est un simulateur de caches sur architecture multi-c\oe ur développé dans le cadre d'un PFA -- Projet au Fil de l'Année -- à l'\textsc{Enseirb-Matmeca}, sur une idée proposée par Denis BARTHOU pour le compte de l'\textsf{INRIA}. L'\textsf{INRIA} est un institut publique de recherche français en informatique et automatismes ; et bien que ce projet soit réalisé dans un cadre scolaire, l'objectif est de le rendre utilisable par les équipes de recherche des thématiques associées aux caches et au parallèlisme.
 
 \section{Cadre du simulateur}
 
+\paragraph{}
 Un simulateur est un programme qui va reproduire le fonctionnement d'un système afin de pouvoir en étudier certaine caractéristiques de manière moins contraignante que sur le système réel. Dans le cas du programme \textsc{Cassis}, c'est l'utilisation des caches par un programme donné qui est simulée.
 
 \subsection{Origine du projet}
 
-La mémoire est un facteur de ralentissement des programmes très important de nos jours. Une mauvaise gestion de la mémoire peut être désastreuse au niveau des performances, et pourtant, il n'existe pas de moyen efficace et précis de connaître l'utilisation de la mémoire au niveau des caches. Le but de \textsc{Cassis} est donc d'étudier l'utilisation précise des caches par un programme, afin d'aider l'utilisateur à tester les performances du programmes, ainsi que les analyser pour les améliorer.
+\paragraph{}
+La mémoire est un facteur de ralentissement des programmes très important de nos jours. Une mauvaise gestion de la mémoire peut être désastreuse au niveau des performances, et pourtant, il n'existe pas de moyen efficace et précis de connaître l'utilisation de la mémoire au niveau des caches. Le but de \textsf{Cassis} est donc d'étudier l'utilisation précise des caches par un programme, afin d'aider l'utilisateur à tester les performances du programmes, ainsi que les analyser pour les améliorer.
 
 \paragraph{}
 Le besoin d'un tel simulateur est avant tout dû au manque d'informations des caches. Deux phénomènes se produisent du côté des constructeurs de processeurs. D'une part ils doivent les optimiser afin d'être concurrents, et il devient alors difficile pour eux de rajouter des fonctionnalités dédiées aux développeurs afin d'améliorer leur code, par exemple des compteurs exacts du nombre de \emph{hits}. D'autre part il n'est pas dans leur intérêt de révéler le fonctionnement de leurs produits, pour des raisons économiques évidentes. Par exemple, le \emph{prefetching} permet de charger des lignes de caches en avance en fonction des accès mémoires courants du programme et cette fonctionnalité n'est pas implémentée dans le simulateur car son fonctionnement n'est pas totalement divulgué.
@@ -48,10 +47,12 @@ L'utilisateur peut aussi vouloir comparer les résultats de la simulation. Bien 
 
 \section{Déroulement de la simulation}
 
+\paragraph{}
 La simulation consiste à rejouer un certain nombre d'instructions, et de comptabiliser certaines métriques à destination de l'utilisateur. Comme il s'agit d'une simulation, tout ne se passe pas exactement comme dans le cas réel. Il est donc nécessaire d'expliciter les similitudes comme les différences afin que l'utilisateur ne soit pas surpris à la fois par les résultats, et à la fois par les méthodes de calculs si son objectif est de modifier le code.
 
 \subsection{Traitement d'une instruction : load/store}
 
+\paragraph{}
 La simulation, même d'un programme parallèle, est une séquence d'instructions effecutant des modifications (lecture ou écriture) sur les caches. Les deux premières possibilités pour une instruction sont soit une lecture de donnée, soit une écriture. Une fois cela déterminé, il faut savoir où se trouve la donnée, elle peut déjà être dans le cache, ou dans un de ses voisins, ou dans un de ses parents. La donnée est alors rappatriée en prévenant les autres caches de l'action en cours. 
 
 \paragraph{}
@@ -63,43 +64,33 @@ L'ordre des tests est le suivant :
   \item{il s'agit d'un \emph{load} ou d'un \emph{store}}
   \item{la donnée est présente dans le cache ou non (récursif)
     \begin{enumerate}
-      \item{si non, l'ajouter}
+      \item{si non, l'ajouter et faire :}
       \item{appel de la procédure de suppression en cas de cache plein}
       \item{prévenir le cache supérieur que la donnée est accédée}
       \item{revenir au point 2}
   \end{enumerate}}
   \item{modifier les statistiques d'utilisation de la ligne}
+  \item{dans le cas d'un \emph{store}, propager l'action de modification dans tous les caches de niveaux supérieurs}
 \end{enumerate}
+
+\paragraph{}
+Dans le code du simulateur, le traitement d'une instruction est ainsi différent s'il s'agit d'un \emph{load} ou d'un \emph{store}. En effet les deux versions se distinguent par la dernière étape dans le cas d'un \emph{store}, qui nécessite de prévenir tous les caches parents. En effet si la donnée est simplement lue, il n'y a pas lieu de prévenir les caches parents, ni d'augmenter les statistiques de la ligne dans ces caches.
 
 \subsection{Rapatriement prédictif d'une ligne}
 
+\paragraph{}
 Les étapes précédentes de l'algorithme montrent que la ligne est ajoutée avant même que les caches de niveau supérieur aient confirmé qu'ils l'ont ou non. Contrairement au cas réel, nous considérons donc que nous avons la donnée dans tous les cas, et nous propageons uniquement la demande aux niveaux supérieurs. Cela augement la rapidité car il n'y a pas d'aller/retour de messages entre les niveaux de caches, ceux-ci ne font \emph{a priori} que monter vers les caches supérieurs.
 
 \paragraph{}
-Cette particularité est à prendre en compte dans l'écriture des politiques de cohérences. En effet certaines politiques se basent sur la présence ou non de la même ligne dans le niveau du cache demandant la donnée. Il faut alors être conscient que la donnée est déjà dans le niveau lorsque les voisins sont prévenus.
+Cette particularité est à prendre en compte dans l'écriture des politiques de cohérences. En effet certaines politiques se basent sur la présence ou non de la même ligne dans le niveau du cache demandant la donnée, voir à ce sujet les conditions de transitions d'automates dans la partie \ref{aut}. Il faut alors être conscient que la donnée est déjà dans le niveau lorsque les voisins sont prévenus.
 
 \paragraph{}
 En résumé il faut considérer que le cache effectuant la requête de ligne l'ajoute, prévient ses voisins, puis prévient le niveau supérieur. La cohérence entre les niveaux est toujours assurée, mais celle sur le niveau-même n'est donc pas exactement la même que dans le cas réel où les voisins sont informés avant l'ajout effectif de la ligne.
 
 
-\subsection{Mise à jour des lignes}
-
-Lorsque les lignes sont accédées il faut mettre à jour leurs statistiques d'utilisation suivant la politique de remplacement du cache associé. Cette mise à jour intervient dès que la ligne a été ajoutée si elle n'était pas déjà présente. Et ce avant même d'avoir prévenu les caches parents, mais après avoir prévenu les caches voisins.
-
-\paragraph{}
-Le type de cache, inclusif ou exclusif ou autre, influe ici sur la mise à jour des lignes. En effet dans le cas d'un cache orienté inclusif, celui-ci contiendra effectivement la donnée rappatriée et il mettra à jour son utilisation. Mais remarquons que dans le cas d'un cache exclusif, celui-ci ne fait que faire transiter la donnée vers le cache inférieur, donc il ne faut pas augmenter les statistiques d'utilisation de cette ligne qui n'est pas présente.
-
 \subsection{Problème d'ajout de ligne dans un cache plein}
 
-Lorsqu'un cache nécessite une donnée alors qu'il est plein, il en supprime une autre. Mais dans le cas d'une architecture totalement inclusive, cela pose un problème lié au faite que si l'on supprime la donnée d'un niveau inclusif, il faut la supprimer dans tous les niveaux inférieurs.
 
-\paragraph{}
-Le cas est le suivant : une donnée A est accédée par un L1. Pour ce faire le L1, éjecte la donnée B. Or le L2 est inclusif, donc il doit stocker la donnée B, mais pour ce faire, étant plein aussi, il doit supprimer la donnée A. Par conséquent l'inclusivité pour A n'est plus vraie, elle est maintenant dans le L1 mais plus dans le L2. 
-
-\paragraph{}
-Le rapatriement prédictif pose donc ici un problème qui ne se pose pas dans le cas réel. En effet dans le cas réel, le L2 ayant reçu la demande de la part du L1 pour la donnée A, évince la donnée B, prévient le L1 que cette donnée a été supprimée, puis seulement après lui transmet la donnée A. Le L1 a donc au moins une place disponible pour recevoir cette donnée et n'en suprrime pas d'autres. 
-
-\paragraph{}
-Pour pallier ce problème, une donnée supplémentaire a été ajouté aux différentes fonctions : il s'agit de la ligne en cours d'ajout, qui ne doit pas être supprimée par les caches de niveaux supérieurs.
+Donner exemples montrant la nécessité de \verb:not_rm:.
 
 \input{validation.tex}

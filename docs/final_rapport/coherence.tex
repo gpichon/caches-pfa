@@ -1,9 +1,50 @@
 \section{Gestion des politiques de coherence}
 
+Les politiques de cohérences pré-implémentées sont MSI, MESI, MOESI, MESIF et MOSI. Elles sont nécessaires pour décrire l'état d'une ligne dans un cache et se représentent facilement par des automates dont les états sont ceux de la ligne, et les transitions sont des actions effectuées sur la ligne. Il est possible de rajouter d'autres politiques comme expliqué dans le tutoriel de la partie \ref{tuto_aut}, la section ci-dessous a pour vocation uniquement de préciser la paramétrisation des politiques déjà définies, sans évoquer la syntaxe à utiliser.
+
 \subsection{Actions réalisées par une politique de cohérence}
+
+\paragraph{}
+Une politique de cohérence est utilisée dans les caches afin de garantir la cohérence des données dans tous les caches d'un même niveau : c'est-à-dire éviter qu'un cache ne possède une donnée qui n'est pas à jour car modifiée par un autre cache. L'objectif des constructeurs est donc de limiter les invalidations de lignes ou les messages de cohérence (voire l'envoi de la ligne) entre les caches, en cas de modification d'une ligne par un cache tiers. 
+
+\paragraph{}
+Dans le cas de \textsf{Cassis}, les politiques de cohérence s'occupent donc simplement de renvoyer le nouvel état de la ligne en cas d'action sur celle-ci. Les actions (qui sont donc les transitions des automates) peuvent être une lecture, une écriture ou une suppression, par le cache-même ou par un des caches du même niveau. Certaines statistiques dépendent aussi de ces actions. Ainsi les \verb!COHERENCE_EVINCTION!, \verb!COHERENCE_BROADCAST! et les \verb!WRITE_BACK! sont comptabilisées par les politiques de cohérence, respectivement dans le cas d'une invalidation de la ligne pour cause de modification dans un autre cache, pour l'envoi d'un message ou d'une donnée aux autres caches et enfin pour l'écriture de la donnée dans le cache parent. 
 
 \subsection{Utilisation de SMC}
 
+\paragraph{}
+Afin de décrire facilement ces automates, l'utilsateur dispose d'un unique fichier à modifier qui contient toutes les desciptions de politiques. Celui-ci est rédigé grâce à un DSL -- Domain Specific Language -- nommé \textsf{SMC}, pour State Machine Compiler. Le fichier concerné est \verb!coherence.sm! situé au niveau des sources dans le dossier \verb!state-machine!. Il nécessite pour générer le code \texttt{C} associé d'une version standard de \texttt{Java}.
+
+\paragraph{}
+Ce DSL permet de définir plusieurs automates, dont les transitions sont les fonctions à appeler pour modifier leur état. \textsf{SMC} tel qu'utilisé dans le simulateur permet de réaliser plusieurs opérations : décrire les états de l'automate, décrire les transitions (entre états d'un même automate ou non), appliquer des conditions aux transitions, et enfin effectuer des actions spécifiques lors de l'appel d'une transition.
+
+\paragraph{}
+Certaines subtilités peuvent toutefois sembler complexe pour l'utilisateur : par exemple le nommage des fonctions possibles à l'intérieur du fichier de description. Les règles typographiques des transitions, et les possibilités d'action sont restreintes, nous vous renvoyons pour cela à la partie \ref{tuto_aut}.
+
 \subsection{\'Ecriture d'une politique}
+
+\paragraph{}
+La première phase de l'écriture d'une politique est de pouvoir l'initialiser. En effet l'automate de départ n'est qu'un automate de départ vers les politiques : la première transition appelée correspond au choix de la politique, et va placer l'automate dans l'état I (\emph{invalid}) de la politique voulue. Il faut donc ajouter la transition dans l'automate de départ du fichier, automate nommé \texttt{Init} et ne comportant qu'un seul état mais autant de transitions que de politiques différentes.
+
+\paragraph{}
+Chaque politique doit donc contenir au moins l'état I ; et pour chaque état qu'elle définit elle peut ajouter des transitions, éventuellement conditionnelles. Les actions réalisées lors d'une transition doivent contenir à la fois les statistiques si nécessaires et à la fois la modification de l'état dans le structure contenant l'automate. En effet il n'a pas été possible de récupérer l'état courant de l'automate nécessaire à certaines fonctions. Cet état doit donc être sauvegardé dans la structure d'une ligne, en plus de la structure même de l'automate. Il s'agit d'une duplication d'information nécessaire au fonctionnement général du simulateur, et dû à des problèmes d'interfaçage entre le \texttt{C} et \textsf{SMC}.
+
+\paragraph{}
+\'A la fin de toute description d'une politiqe se trouve aussi un certain de nombre de transitions dites par défaut : si elles sont appelées sur un état ne les définissant pas, elles boucles dessus. Cela sert à factoriser les transitions n'effectuant aucune action sur un état.
+
+\subsection{\'Eléments paramétrisables}
+
+\paragraph{}
+Les éléments dits paramétrisables de ce fichier, sont ceux qui ne nécessitent pas d'intervention dans d'autres fichiers du code source. Il n'est ainsi pas possible de rajouter de nouveau type de transition ou de nouvel automate, car ceux-ci ne seraient pas appelées par le programme principal. Sont donc modifiables :
+\begin{itemize}
+\item{les noms des états et des automates, il est aussi possible d'enlever ou d'ajouter d'autres états,}
+\item{les actions des transitions, i.e. la modification de l'état tel que visible par le simulateur et l'incrémentation d'une statistique déjà existante,}
+\item{les transition conditionnelles (en rajouter ou supprimer mais uniquement en utilisant les fonctions de tests préexistantes),}
+\item{les transitions par défaut et actions associées (en rajouter ou supprimer).}
+\end{itemize}
+
+\paragraph{}
+Deux fonctions sont disponibles pour les tests des transitions conditionnelles, il s'agit pour l'une de savoir si une ligne est marquée comme \emph{dirty} ou non, et pour l'autre de savoir si une ligne est présente ailleurs dans le niveau, avec possibilité de chercher une ligne dans un état spécifique. Attention, si l'état en paramètre est I, alors ce sont toutes les lignes valides qui sont recherchées. Il n'est donc pas possible de savoir si une ligne est dans l'état I ailleurs dans le niveau.
+
 
 
