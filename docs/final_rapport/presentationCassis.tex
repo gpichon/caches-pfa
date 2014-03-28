@@ -16,23 +16,6 @@ Le besoin d'un tel simulateur est avant tout dû au manque d'informations des ca
 \paragraph{}
 L'intérêt d'un tel simulateur est donc de pouvoir tester des programmes en produisant certaines statistiques, mais aussi de pouvoir tester l'exécution sur des architectures qui n'existent pas afin de connaître la pertinence d'une nouvelle politique de cohérence par exemple. Seuls les caches de données sont simulés, le but étant d'essayer d'optimiser la mémoire d'un programme. Le chargement du code du programme est fait par le processeur sans intervention de l'utilisateur.
 
-\subsection{Données simulées : analyses possibles des résultats}
-
-Différentes statistiques sont relevées par le simulateur, les principales sont les \emph{misses}, les \emph{hits} et les \emph{write-backs}. Il est aussi possible de connaître le nombre de messages envoyés sur le bus par un cache afin d'effectuer la cohérence, ainsi que le nombre de données qui ont été invalidées à cause de la cohérence ou à cause de l'inclusivité, et enfin comment la donnée a été atteinte (qui l'a transmis au cache s'il ne l'avait pas : son parent, ou un cache de même niveau). Une sortie classique serait donc :
-
-\begin{lstlisting}
-L3  basics   (misses:   6, hits:   0, writes_back:   0)
-L2  basics   (misses:   6, hits:   0, writes_back:   0)
-L1  basics   (misses:   4, hits:  44, writes_back:   1)
-L1  basics   (misses:   6, hits:  42, writes_back:   2)
-L2  basics   (misses:   0, hits:   0, writes_back:   0)
-L1  basics   (misses:   0, hits:   0, writes_back:   0)
-L1  basics   (misses:   0, hits:   0, writes_back:   0)
-\end{lstlisting}
-
-\paragraph{}
-Ces statistiques ont été choisie afin que l'utilisateur puisse constater certains problèmes particuliers. En effet un nombre trop élevé de \emph{write-backs} et/ou de \emph{coherence evinctions} révèlent que les c\oe urs modifient les mêmes données et que le parallélisme n'est donc pas bien réalisé. Mais les statistiques ne sont pas les seuls paramètres d'analyse, la sélection des données à analyser à aussi un rôle important. Le simulateur permet de suivre les statistiques d'une ou plusieurs instructions données, et ainsi de déterminer quelles instructions causent des ralentissements à l'exécution, i.e. un trop grand nombre de \emph{misses}.
-
 \subsection{Outils à disposition de l'utilisateur}
 
 Le simulateur s'appuie sur des outils préexistants, pour la génération des traces et de l'architecture. Les outils listés ci-dessous sont ceux utilisés par l'équipe de projet. Si d'autres outils offrent des fonctionnalités similaires, ils peuvent être utilisés en remplacement tant que les fichiers d'entrée du programme sont dans le bon format.
@@ -91,5 +74,31 @@ En résumé il faut considérer que le cache effectuant la requête de ligne l'a
 
 
 Donner exemples montrant la nécessité de \verb:not_rm:.
+
+\section{Données simulées : analyses des statistiques}
+
+Différentes statistiques sont relevées par le simulateur, les principales sont les \emph{misses}, les \emph{hits} et les \emph{write-backs}. Dans l'exemple ci dessous, Il est aussi possible de connaître le nombre de messages envoyés sur le bus par un cache afin d'effectuer la cohérence, ainsi que le nombre de données qui ont été invalidées à cause de la cohérence ou à cause de l'inclusivité, et enfin comment la donnée a été atteinte (qui l'a transmis au cache s'il ne l'avait pas : son parent, ou un cache de même niveau). Une sortie classique serait donc :
+
+\begin{lstlisting}
+L3  basics   (misses:   6, hits:   0, writes_back:   0)
+L2  basics   (misses:   6, hits:   0, writes_back:   0)
+L1  basics   (misses:   4, hits:  44, writes_back:   1)
+L1  basics   (misses:   6, hits:  42, writes_back:   2)
+L2  basics   (misses:   0, hits:   0, writes_back:   0)
+L1  basics   (misses:   0, hits:   0, writes_back:   0)
+L1  basics   (misses:   0, hits:   0, writes_back:   0)
+\end{lstlisting}
+
+
+
+\begin{lstlisting}
+L1  basics     (misses:      8, hits:        40, writes_back:   4)
+    evinctions (coherence:   4, capacity:    0, cache_types:    0)
+    misses     (snooping:    3, above:       5, below:          0)
+    broadcasts (coherence:   10, snooping:   8)
+\end{lstlisting}
+
+\paragraph{}
+Ces statistiques ont été choisie afin que l'utilisateur puisse constater certains problèmes particuliers. En effet un nombre trop élevé de \emph{write-backs} et/ou de \emph{coherence evinctions} révèlent que les c\oe urs modifient les mêmes données et que le parallélisme n'est donc pas bien réalisé. Mais les statistiques ne sont pas les seuls paramètres d'analyse, la sélection des données à analyser à aussi un rôle important. Le simulateur permet de suivre les statistiques d'une ou plusieurs instructions données, et ainsi de déterminer quelles instructions causent des ralentissements à l'exécution, i.e. un trop grand nombre de \emph{misses}.
 
 \input{validation.tex}
