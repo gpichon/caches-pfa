@@ -77,7 +77,7 @@ Donner exemples montrant la nécessité de \verb:not_rm:.
 
 \section{Données simulées : analyses des statistiques}
 
-Différentes statistiques sont relevées par le simulateur, les principales sont les \emph{misses}, les \emph{hits} et les \emph{write-backs}. Dans l'exemple ci dessous, Il est aussi possible de connaître le nombre de messages envoyés sur le bus par un cache afin d'effectuer la cohérence, ainsi que le nombre de données qui ont été invalidées à cause de la cohérence ou à cause de l'inclusivité, et enfin comment la donnée a été atteinte (qui l'a transmis au cache s'il ne l'avait pas : son parent, ou un cache de même niveau). Une sortie classique serait donc :
+Différentes statistiques sont relevées par le simulateur, les principales sont les \emph{misses}, les \emph{hits} et les \emph{write-backs}. Dans l'exemple ci dessous, on peut observer une sortie standard de \textsf{Cassis}: \\
 
 \begin{lstlisting}
 L3  basics   (misses:   6, hits:   0, writes_back:   0)
@@ -90,7 +90,7 @@ L1  basics   (misses:   0, hits:   0, writes_back:   0)
 \end{lstlisting}
 
 
-
+Il est également possible d'avoir plus de statistiques, voici le schéma maximal pour un seul cache:
 \begin{lstlisting}
 L1  basics     (misses:      8, hits:        40, writes_back:   4)
     evinctions (coherence:   4, capacity:    0, cache_types:    0)
@@ -98,7 +98,32 @@ L1  basics     (misses:      8, hits:        40, writes_back:   4)
     broadcasts (coherence:   10, snooping:   8)
 \end{lstlisting}
 
-\paragraph{}
-Ces statistiques ont été choisie afin que l'utilisateur puisse constater certains problèmes particuliers. En effet un nombre trop élevé de \emph{write-backs} et/ou de \emph{coherence evinctions} révèlent que les c\oe urs modifient les mêmes données et que le parallélisme n'est donc pas bien réalisé. Mais les statistiques ne sont pas les seuls paramètres d'analyse, la sélection des données à analyser à aussi un rôle important. Le simulateur permet de suivre les statistiques d'une ou plusieurs instructions données, et ainsi de déterminer quelles instructions causent des ralentissements à l'exécution, i.e. un trop grand nombre de \emph{misses}.
+
+Ces statistiques ont été choisies afin que l'utilisateur puisse constater certains problèmes particuliers. Par exemple, un nombre trop élevé de \emph{write-backs} et/ou de \emph{coherence evinctions} révèle que les c\oe urs modifient les mêmes données et que la manière de paralléliser le code n'est donc pas efficace. \\
+
+L'affichage des statistiques est configurable en ligne de commande, avec l'option \texttt{-v i}, pour $i$ allant de $1$ à $4$, selon le nombre de lignes de statistiques à afficher. La première ligne correpsond aux statistiques de base, qui ont déjà été vues. \\
+
+Par rapport aux évictions de données, $3$ cas se présentent:
+\begin{itemize}
+\item coherence: ce cas se produit lorsqu'une donnée est invalidée dans un cache à cause d'une écriture dans un autre cache,
+\item capacity: c'est le cas ``classique `` d'éviction: la taille du cache est trop faible pour contenir beaucoup de données,
+\item cache\char`_types: ce cas se produit lorsqu'un cache exclusif donne une donnée: il doit l'invalider pour garantir l'exclusivité; ou encore lorsqu'un cache inclusif invalide une donnée: il doit également l'invalider dans les niveaux en dessous afin de conserver le caractère inclusif. \\ 
+\end{itemize}
+
+En cas de \emph{Miss}, $3$ solutions sont possibles pour trouver les données dans la hiérarchie:
+\begin{itemize}
+\item snooping: la donnée est obtenue via du snooping avec un cache de même niveau,
+\item above: la donnée est obtenue en remontant dans la hiérarchie,
+\item below: la donnée est obtenu en parcourant la hiérarchie vers les niveaux inférieurs. Dans le cas étudié, cette situation ne peut se présenter qu'avec l'utilisation de \emph{directory manager}. \\
+\end{itemize}
+
+Pour finir, $2$ types de \emph{broadcast} font partie des statistiques:
+\begin{itemize}
+\item coherence: cette statistique permet de comptabiliser les échanges de messages nécessaires aux politiques de cohérence, pour que les lignes des caches soient dans les bons états,
+\item snooping: quand un cache fait une demande pour récupérer une donnée via le snooping. \\
+\end{itemize}
+
+
+Mais les statistiques ne sont pas les seuls paramètres d'analyse, la sélection des données à analyser à aussi un rôle important. Le simulateur permet de suivre les statistiques d'une ou plusieurs instructions données, et ainsi de déterminer quelles instructions causent des ralentissements à l'exécution, i.e. un trop grand nombre de \emph{misses}.
 
 \input{validation.tex}
