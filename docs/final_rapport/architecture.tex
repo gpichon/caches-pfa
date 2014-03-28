@@ -8,7 +8,7 @@ L'architecture à simuler peut être générée à partir de l'architecture rée
 \textsf{HWLOC} est un logiciel libre sous licence BSD-2. Il permet de générer un fichier XML qui décrit l'architecture de la machine utilisée (commande \verb?lstopo --of xml?). Il décrit notamment la structure arborescente des caches, et donne des informations essentielles pour chaque cache, comme sa taille, la taille de ses lignes et son associativité. 
 
 \paragraph{}
-Si l'utilisateur choisit un tel fichier en entrée comme décrivant son architecture, ce dernier sera parsé par une feuille \textit{xslt} en un fichier de configuration de l'architecture personnalisé, comme décrit dans la section \ref{config}. Les paramètres non fournis par le fichier généré par \textsf{HWLOC} prendront des valeurs par défaut, proches de celles des architectures \textsf{Intel} moderne. Cette organisation est décrite par un schéma figure \ref{img:archi}. Notons que notre simulateur ne prend pas en compte les caches de niveau 1 dédiés aux instructions (L1i), qui sont décrits par \textsf{HWLOC} mais ne seront pas présent dans le fichier personnalisé.
+Si l'utilisateur choisit un tel fichier en entrée comme décrivant son architecture, ce dernier sera parsé par une feuille \textit{xslt} en un fichier de configuration de l'architecture personnalisé, comme décrit dans la section \ref{config}. Les paramètres non fournis par le fichier généré par \textsf{HWLOC} prendront des valeurs par défaut, proches de celles des architectures \textsf{Intel} moderne. Cette organisation est décrite par un schéma figure \ref{img:archi}. Notons que le simulateur ne prend pas en compte les caches de niveau 1 dédiés aux instructions (L1i), qui sont décrits par \textsf{HWLOC} mais ne seront pas présent dans le fichier personnalisé.
 
 \begin{figure}[!h]
 \begin{center}
@@ -19,7 +19,7 @@ Si l'utilisateur choisit un tel fichier en entrée comme décrivant son architec
 
 \subsection{Fichier de configuration personnalisé}
 \label{config}
-Le fichier de configuration de l'architecture dédié à notre simulateur comprend tous les paramètres d'achitecture utilisables. Une fois généré à partir d'un fichier \textsf{HWLOC}, il est possible de l'utiliser directement en entrée du simulateur, après avoir été modifié à la convenance de l'utilisateur. La documentation précise ainsi qu'un exemple de fichier \textit{.cassis.xml} est disponible dans une page de manuel, donnée en annexe \ref{manarchi} page \pageref{manarchi}.
+Le fichier de configuration de l'architecture dédié au simulateur comprend tous les paramètres d'achitecture utilisables. Une fois généré à partir d'un fichier \textsf{HWLOC}, il est possible de l'utiliser directement en entrée du simulateur, après avoir été modifié à la convenance de l'utilisateur. La documentation précise ainsi qu'un exemple de fichier \textit{.cassis.xml} est disponible dans une page de manuel, donnée en annexe \ref{manarchi} page \pageref{manarchi}.
 
 \paragraph{}
 Il s'agit d'un fichier XML qui contient 3 balises : \textbf{Architecture}, \textbf{Level} et \textbf{Cache}.
@@ -31,7 +31,7 @@ Il s'agit d'un fichier XML qui contient 3 balises : \textbf{Architecture}, \text
   \item \textbf{coherence\_protocol} : MESI, MSI, MOSI, MESI ou MOESI (cf. \ref{coherence} page \pageref{coherence}), qui sont les protocoles implémentés pour le simulateur. Le dernier niveau ne possède pas de protocole de cohérence, car il est le seul cache dans son niveau.
   \item \textbf{type} : l'inclusivité des caches du niveau (cf. \ref{inclusivite} page \pageref{inclusivite}). Ce paramètre n'a pas de sens pour les L1.
   \item \textbf{snooping} : y a-t-il du \emph{snooping} à ce niveau ? (cf. \ref{snooping} page \pageref{snooping}). Le cache du dernier niveau ne peut pas faire de \emph{snooping}.
-  \item \textbf{directory\_manager} : les caches du niveau possèdent-il un \emph{directory manager} ? Ce paramètre n'est pas pris en compte pour les L1.
+  \item \textbf{directory\_manager} : les caches du niveau possèdent-ils un \emph{directory manager} ? Ce paramètre n'est pas pris en compte pour les L1.
 \end{itemize}
 
 \paragraph{Cache} concerne les informations spécifiques à un cache en particulier. Il donne notamment la taille en octets du caches, la taille d'une ligne de cache, l'associativité du cache, et enfin le protocole de cohérence du cache(FIFO, LRU ou LFU, cf. \ref{remplacement} page \pageref{remplacement}).

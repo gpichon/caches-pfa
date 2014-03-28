@@ -3,18 +3,18 @@
 \section{Cadre du simulateur}
 
 \paragraph{}
-Un simulateur est un programme qui va reproduire le fonctionnement d'un système afin de pouvoir en étudier certaine caractéristiques de manière moins contraignante que sur le système réel. Dans le cas du programme \textsc{Cassis}, c'est l'utilisation des caches par un programme donné qui est simulée.
+Un simulateur est un programme qui va reproduire le fonctionnement d'un système afin de pouvoir en étudier certaine caractéristiques de manière moins contraignante que sur le système réel. Dans le cas du programme \textsf{Cassis}, c'est l'utilisation des caches par un programme donné qui est simulée.
 
 \subsection{Origine du projet}
 
 \paragraph{}
-La mémoire est un facteur de ralentissement des programmes très important de nos jours. Une mauvaise gestion de la mémoire peut être désastreuse au niveau des performances, et pourtant, il n'existe pas de moyen efficace et précis de connaître l'utilisation de la mémoire au niveau des caches. Le but de \textsf{Cassis} est donc d'étudier l'utilisation précise des caches par un programme, afin d'aider l'utilisateur à tester les performances du programmes, ainsi que les analyser pour les améliorer.
+La mémoire est un facteur de ralentissement des programmes très important de nos jours. Une mauvaise gestion de la mémoire peut être désastreuse au niveau des performances, et pourtant, il n'existe pas de moyen efficace et précis de connaître l'utilisation de la mémoire au niveau des caches. Le but de \textsf{Cassis} est donc d'étudier l'utilisation précise des caches par un programme, afin d'aider l'utilisateur à tester les performances du programme, ainsi que les analyser pour les améliorer.
 
 \paragraph{}
 Le besoin d'un tel simulateur est avant tout dû au manque d'informations des caches. Deux phénomènes se produisent du côté des constructeurs de processeurs. D'une part ils doivent les optimiser afin d'être concurrents, et il devient alors difficile pour eux de rajouter des fonctionnalités dédiées aux développeurs afin d'améliorer leur code, par exemple des compteurs exacts du nombre de \emph{hits}. D'autre part il n'est pas dans leur intérêt de révéler le fonctionnement de leurs produits, pour des raisons économiques évidentes. Par exemple, le \emph{prefetching} permet de charger des lignes de caches en avance en fonction des accès mémoires courants du programme et cette fonctionnalité n'est pas implémentée dans le simulateur car son fonctionnement n'est pas totalement divulgué.
 
 \paragraph{}
-L'intérêt d'un tel simulateur est donc de pouvoir tester des programmes en produisant certaines statistiques, mais aussi de pouvoir tester l'exécution sur des architectures qui n'existent pas afin de connaître la pertinence d'une nouvelle politique de cohérence par exemple.
+L'intérêt d'un tel simulateur est donc de pouvoir tester des programmes en produisant certaines statistiques, mais aussi de pouvoir tester l'exécution sur des architectures qui n'existent pas afin de connaître la pertinence d'une nouvelle politique de cohérence par exemple. Seuls les caches de données sont simulés, le but étant d'essayer d'optimiser la mémoire d'un programme. Le chargement du code du programme est fait par le processeur sans intervention de l'utilisateur.
 
 \subsection{Données simulées : analyses possibles des résultats}
 
@@ -42,8 +42,7 @@ Le simulateur s'appuie sur des outils préexistants, pour la génération des tr
 \paragraph{MAQAO} (Modular Assembly Quality Analyzer and Optimizer) est un outil d'analyse et d'optimisation de programmes. Une seule fonctionnalité de \textsf{MAQAO} est utilisée, celle qui permet d'instrumenter un programme binaire afin de récupérer les opérations faites lors de l'exécution. Le paramétrage de \textsf{MAQAO} est effectué grâce à un fichier lua pour générer des traces de la forme voulue.
 
 \paragraph{}
-L'utilisateur peut aussi vouloir comparer les résultats de la simulation. Bien qu'il n'existe par actuellement de tel simulateur pour faire la comparaison, il existe des compteurs hardware --par exemple \textsf{PAPI} -- qui permettent de connaître certaines statistiques sur les caches. Ces statistiques sont celles desquelles il faudrait le plus se rapprocher, bien qu'elles ne soient pas non plus exactes.
-
+L'utilisateur peut aussi vouloir comparer les résultats de la simulation. Bien qu'il n'existe par actuellement de tel simulateur pour faire la comparaison, il existe des compteurs hardware -- par exemple \textsf{PAPI} -- qui permettent de connaître certaines statistiques sur les caches. Ces statistiques sont celles desquelles il faudrait le plus se rapprocher, bien qu'elles ne soient pas non plus exactes.
 
 \section{Déroulement de la simulation}
 
@@ -53,10 +52,10 @@ La simulation consiste à rejouer un certain nombre d'instructions, et de compta
 \subsection{Traitement d'une instruction : load/store}
 
 \paragraph{}
-La simulation, même d'un programme parallèle, est une séquence d'instructions effecutant des modifications (lecture ou écriture) sur les caches. Les deux premières possibilités pour une instruction sont soit une lecture de donnée, soit une écriture. Une fois cela déterminé, il faut savoir où se trouve la donnée, elle peut déjà être dans le cache, ou dans un de ses voisins, ou dans un de ses parents. La donnée est alors rappatriée en prévenant les autres caches de l'action en cours. 
+La simulation, même d'un programme parallèle, est une séquence d'instructions effectuant des modifications (lecture ou écriture) sur les caches. Les deux premières possibilités pour une instruction sont, soit une lecture de donnée, soit une écriture. Une fois cela déterminé, il faut savoir où se trouve la donnée, elle peut déjà être dans le cache, dans un de ses voisins, ou dans un de ses parents. La donnée est alors rappatriée en prévenant les autres caches de l'action en cours. 
 
 \paragraph{}
-Tous les caches concernés appliquent alors la politique de cohérence : une action a été faite sur la donnée, elle a été lue ou modifiée, par un autre cache ou par soi-même. L'automate change alors l'état de la ligne suivant la nature de la transition. Il faut aussi penser à gérer le cas ou le cache est plein : le rappatriement d'une donnée donne alors lieu à la suppression d'une autre, il faut aussi propager cette information, et veiller à la cohérence de la donnée dans le reste de l'architecture.
+Tous les caches concernés appliquent alors la politique de cohérence : une action a été faite sur la donnée, elle a été lue ou modifiée, par un autre cache ou par soi-même. \textbf{(première fois qu'on parle de l'automate)}L'automate change alors l'état de la ligne suivant la nature de la transition. Il faut aussi penser à gérer le cas où le cache est plein : le rappatriement d'une donnée entraine alors la suppression d'une autre. Il faut aussi propager cette information, et veiller à la cohérence de la donnée dans le reste de l'architecture.
 
 \paragraph{}
 L'ordre des tests est le suivant : 
@@ -79,7 +78,7 @@ Dans le code du simulateur, le traitement d'une instruction est ainsi différent
 \subsection{Rapatriement prédictif d'une ligne}
 
 \paragraph{}
-Les étapes précédentes de l'algorithme montrent que la ligne est ajoutée avant même que les caches de niveau supérieur aient confirmé qu'ils l'ont ou non. Contrairement au cas réel, nous considérons donc que nous avons la donnée dans tous les cas, et nous propageons uniquement la demande aux niveaux supérieurs. Cela augement la rapidité car il n'y a pas d'aller/retour de messages entre les niveaux de caches, ceux-ci ne font \emph{a priori} que monter vers les caches supérieurs.
+Les étapes précédentes de l'algorithme montrent que la ligne est ajoutée avant même que les caches de niveau supérieur aient confirmé qu'ils l'ont ou non. Contrairement au cas réel, nous considérons donc que nous avons la donnée dans tous les cas, et nous propageons uniquement la demande aux niveaux supérieurs. Cela augmente la rapidité car il n'y a pas d'aller/retour de messages entre les niveaux de caches, ceux-ci ne font \emph{a priori} que monter vers les caches supérieurs.
 
 \paragraph{}
 Cette particularité est à prendre en compte dans l'écriture des politiques de cohérences. En effet certaines politiques se basent sur la présence ou non de la même ligne dans le niveau du cache demandant la donnée, voir à ce sujet les conditions de transitions d'automates dans la partie \ref{aut}. Il faut alors être conscient que la donnée est déjà dans le niveau lorsque les voisins sont prévenus.
