@@ -17,7 +17,9 @@ Le plus grand problème reste toutefois de comprendre les différentes politique
 \section{Limites relatives à \textsf{Cassis}}
 Dans \textsf{Cassis}, le choix de favoriser la paramétrisation de l'architecture a imposé de faire des choix. Les problèmes de \emph{prefetching} et de bande passante n'ont pas été modélisé, ce qui explique que toute comparaison, avec un autre simulateur ou avec les compteurs hardware, donne des résultats difficiles à interpréter. \\
 
-Par ailleurs, les politiques de remplacement sont relativement basiques et propres à un cache. Si avec les \emph{directory manager} il est possible d'adapter les données à remplacer dans un cache en fonction du contenu des caches en dessous, d'autres interactions sont actuellement impossibles.
+Par ailleurs, les politiques de remplacement sont relativement basiques et propres à un cache. Si avec les \emph{directory manager} il est possible d'adapter les données à remplacer dans un cache en fonction du contenu des caches en dessous, d'autres interactions sont actuellement impossibles. \\
+
+Pour finir, si les statistiques produites par le simulateur sont assez variées (évictions, \emph{broadcast}, type de \emph{misses}), elles ne correspondent pas totalement avec par exemple ce qui est disponible grâce aux compteurs hardware.
 
 \section{Moyens pour contrer ces limites}
 Pour finir des statistiques représentatives de ce qui se passe en réalité, il faudrait réaliser un post-traitement afin de calibrer les résultats. En se basant par exemple sur les résultats des compteurs hardware pour un ensemble de benchmarks, il serait sûrement possible d'extraire des facteurs à appliquer sur les statistiques de sortie de \textsf{Cassis}.
