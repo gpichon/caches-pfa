@@ -1,6 +1,6 @@
 /**
  * \file directory_manager.h
- * \brief A way for a cache to trace its sons data.  -- Header
+ * \brief A way for a cache to trace its sons data -- Header
  * \author ~gpichon
  * \version 1.0
  * \date 5th february 2014
@@ -19,9 +19,8 @@
 
 /**
  * \struct directory
- * \brief Abstract Data Type for a directory manager.
+ * \brief Represents a directory manager.
  */
-
 struct directory {
   int nb_sons; 			/**< Number of sons in the hierarchy */
   struct cache **sons_caches;	/**< References to the caches sons */

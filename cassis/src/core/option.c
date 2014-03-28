@@ -21,7 +21,7 @@ unsigned int tracking_instr_count;
 unsigned int tracking_count = 1;
 int tracking_type = TRACKING_DISABLED;
 unsigned long tracking_lower_bound[2] = {0, 0};
-unsigned long tracking_upper_bound[2] = {0xFFFFFFFFFFFFFFFF, 0};
+unsigned long tracking_upper_bound[2] = {0xFFFFFFFFFFFFFFFFul, 0};
 int help = 0;
 unsigned int verbose_mode = 1;
 char *trace_file = NULL;
@@ -60,7 +60,7 @@ void get_options(int argc, char *argv[]) {
       s = optarg;
       if (strcmp(s, "no_stack") == 00) {
 	tracking_lower_bound[1] = 0x0;
-	tracking_upper_bound[1] = 0x6fffffffffff;
+	tracking_upper_bound[1] = 0x6ffffffffffful;
 	tracking_type += TRACKING_BOUND;
 	tracking_count = 2;
 	break;

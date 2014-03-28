@@ -1,3 +1,14 @@
+/**
+ * \file test_replacement.c
+ * \brief Test the replacement policies
+ * \author ~gpichon
+ * \version 1.0
+ * \date 3rd january 2014
+ * 
+ * 
+ *
+ */
+
  #include "test_replacement.h"
 
 int test_replacement(int argc, char** argv) {

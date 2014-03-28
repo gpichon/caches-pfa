@@ -1,6 +1,6 @@
 /**
  * \file option.h
- * \brief define options and tracking
+ * \brief Define options and tracking -- Header
  * \author ~ndubois
  * \version 1.1
  * \date 18th march 2014

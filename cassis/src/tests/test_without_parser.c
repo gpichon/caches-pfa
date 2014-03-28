@@ -1,3 +1,15 @@
+/**
+ * \file test_without_parser.c
+ * \brief Global test with LFU and MESI on inclusive caches, without architecture functions.
+ * \author ~gpichon
+ * \version 1.0
+ * \date 3rd january 2014
+ * 
+ * 
+ *
+ */
+
+
 #include "test_without_parser.h"
 
 int test_without_parser(int argc, char** argv) {
@@ -5,11 +17,11 @@ int test_without_parser(int argc, char** argv) {
   (void) argv;
 
   /* Hierarchy */
-  /*    L3
-	|      |
-	L2     L2
-	|   |  |   |
-	L1  L1 L1  L1 */
+  /*    --- L3 ---
+	|        |
+      - L2 -   - L2 -
+      |    |   |    |
+      L1   L1 L1   L1 */
   
   struct node **threads = malloc(4 * sizeof(struct node *));
 

@@ -1,3 +1,14 @@
+/**
+ * \file test_architecture.c
+ * \brief Test the architecture generation
+ * \author ~gmarait
+ * \version 1.0
+ * \date 3rd january 2014
+ * 
+ * 
+ *
+ */
+
 #include "test_architecture.h"
 
 #define QUOTE(name) #name
