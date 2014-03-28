@@ -8,7 +8,7 @@ L'architecture à simuler peut être générée à partir de l'architecture rée
 \textsf{HWLOC} est un logiciel libre sous licence BSD-2. Il permet de générer un fichier XML qui décrit l'architecture de la machine utilisée (commande \verb?lstopo --of xml?). Il décrit notamment la structure arborescente des caches, et donne des informations essentielles pour chaque cache, comme sa taille, la taille de ses lignes et son associativité. 
 
 \paragraph{}
-Si l'utilisateur choisit un tel fichier en entrée comme décrivant son architecture, ce dernier sera parsé par une feuille \textit{xslt} en un fichier de configuration de l'architecture personnalisé, comme décrit dans la section \ref{config}. Les paramètres non fournis par le fichier généré par \textsf{HWLOC} prendront des valeurs par défaut, proches de celles des architectures \textsf{Intel} moderne. Cette organisation est décrite par un schéma figure \ref{img:archi}. Notons que notre simulateur ne prend pas en compte les caches de niveau 1 dédiés aux instructions (L1i), qui sont décrits par \textsf{HWLOC} mais ne seront pas présent dans le fichier personnalisé.
+Si l'utilisateur choisit un tel fichier en entrée comme décrivant son architecture, ce dernier sera parsé par une feuille \textit{xslt} en un fichier de configuration de l'architecture personnalisé, comme décrit dans la section \ref{config}. Les paramètres non fournis par le fichier généré par \textsf{HWLOC} prendront des valeurs par défaut, proches de celles des architectures \textsf{Intel} moderne (voir l'exemple en annexe \ref{manarchi}). Cette organisation est décrite par un schéma figure \ref{img:archi}. Notons que notre simulateur ne prend pas en compte les caches de niveau 1 dédiés aux instructions (L1i), qui sont décrits par \textsf{HWLOC} mais ne seront pas présent dans le fichier personnalisé.
 
 \begin{figure}[!h]
 \begin{center}
@@ -28,7 +28,7 @@ Il s'agit d'un fichier XML qui contient 3 balises : \textbf{Architecture}, \text
 
 \paragraph{Level} décrit les informations relatives à un niveau de cache en particulier. Il possède notamment les attributs suivants :
 \begin{itemize}
-  \item \textbf{coherence\_protocol} : MESI, MSI, MOSI, MESI ou MOESI (cf. \ref{coherence} page \pageref{coherence}), qui sont les protocoles implémentés pour le simulateur. Le dernier niveau ne possède pas de protocole de cohérence, car il est le seul cache dans son niveau.
+  \item \textbf{coherence\_protocol} : MESI, MSI, MOSI, MESIF, ou MOESI (cf. \ref{coherence} page \pageref{coherence}), qui sont les protocoles implémentés pour le simulateur. Le dernier niveau ne possède pas de protocole de cohérence, car il est le seul cache dans son niveau.
   \item \textbf{type} : l'inclusivité des caches du niveau (cf. \ref{inclusivite} page \pageref{inclusivite}). Ce paramètre n'a pas de sens pour les L1.
   \item \textbf{snooping} : y a-t-il du \emph{snooping} à ce niveau ? (cf. \ref{snooping} page \pageref{snooping}). Le cache du dernier niveau ne peut pas faire de \emph{snooping}.
   \item \textbf{directory\_manager} : les caches du niveau possèdent-il un \emph{directory manager} ? Ce paramètre n'est pas pris en compte pour les L1.

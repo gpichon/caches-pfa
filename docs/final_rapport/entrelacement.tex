@@ -21,10 +21,9 @@ Un modèle de base a été implémenté afin de configurer l'ordre d'exécution 
 
 \subsection{Entrelacement bloc par bloc}
 
-Le choix d'entrelacement qui a été fait permet donc de changer de c\oe ur sur lequel il faut exécuter les instructions de manière cyclique : on passe du premier au second, de second au troisième... du dernier au premier, et ainsi de suite. La technologie utilisée est un script LUA qui retourne le prochain coeur sur lequel le simulateur doit exécuter les instructions. Ce script permet de fixer un nombre d'instructions à exécuter avant de changer de coeur, pour changer de coeur à chaque instructions il faut donc réduire la taille du bloc d'instructions à exécuter à une seule instruction.\\
+Le choix d'entrelacement par défaut qui a été fait permet donc de changer de c\oe ur sur lequel il faut exécuter les instructions de manière cyclique : on passe du premier au second, de second au troisième... du dernier au premier, et ainsi de suite. La technologie utilisée est un script LUA qui retourne le prochain coeur sur lequel le simulateur doit exécuter les instructions. Ce script permet de fixer un nombre d'instructions à exécuter avant de changer de coeur, pour changer de coeur à chaque instructions il faut donc réduire la taille du bloc d'instructions à exécuter à une seule instruction.\\
 
 ===============> Joli schéma de l'exécution bloc par bloc
-
 
 \paragraph{}
 Le modèle d'entrelacement des threads étant placé dans un fichier LUA, celui-ci est modifiable sans nouvelle compilation. Dans le cas où les traces n'ont pas toutes le même nombre d'instructions, il n'est toutefois pas possible depuis le script de savoir si une trace est terminée alors que les autres non. Si le c\oe ur renvoyé par le script n'a plus d'instruction à lire sur la trace associée, rien ne se produira, et le script renverra le c\oe ur suivant. 
