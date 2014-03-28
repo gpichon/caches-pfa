@@ -3,15 +3,15 @@
 \section{Cadre du simulateur}
 
 \paragraph{}
-Un simulateur est un programme qui va reproduire le fonctionnement d'un système afin de pouvoir en étudier certaine caractéristiques de manière moins contraignante que sur le système réel. Dans le cas du programme \textsf{Cassis}, c'est l'utilisation des caches par un programme donné qui est simulée.
+Un simulateur est un programme qui va reproduire le fonctionnement d'un système afin de pouvoir en étudier certaines caractéristiques de manière moins contraignante que sur le système réel. Dans le cas du programme \textsf{Cassis}, c'est l'utilisation des caches par un programme donné qui est simulée.
 
 \subsection{Origine du projet}
 
 \paragraph{}
-La mémoire est un facteur de ralentissement des programmes très important de nos jours. Une mauvaise gestion de la mémoire peut être désastreuse au niveau des performances, et pourtant, il n'existe pas de moyen efficace et précis de connaître l'utilisation de la mémoire au niveau des caches. Le but de \textsf{Cassis} est donc d'étudier l'utilisation précise des caches par un programme, afin d'aider l'utilisateur à tester les performances du programme, ainsi que les analyser pour les améliorer.
+La mémoire est de nos jours l'un des principaux facteurs de ralentissement des programmes. Une mauvaise gestion de la mémoire peut être désastreuse au niveau des performances, et pourtant, il n'existe pas de moyen efficace et précis de connaître l'utilisation de la mémoire au niveau des caches. Le but de \textsf{Cassis} est donc d'étudier l'utilisation précise des caches par un programme, afin d'aider l'utilisateur à tester les performances du programme, ainsi que les analyser pour les améliorer.
 
 \paragraph{}
-Le besoin d'un tel simulateur est avant tout dû au manque d'informations des caches. Deux phénomènes se produisent du côté des constructeurs de processeurs. D'une part ils doivent les optimiser afin d'être concurrents, et il devient alors difficile pour eux de rajouter des fonctionnalités dédiées aux développeurs afin d'améliorer leur code, par exemple des compteurs exacts du nombre de \emph{hits}. D'autre part il n'est pas dans leur intérêt de révéler le fonctionnement de leurs produits, pour des raisons économiques évidentes. Par exemple, le \emph{prefetching} permet de charger des lignes de caches en avance en fonction des accès mémoires courants du programme et cette fonctionnalité n'est pas implémentée dans le simulateur car son fonctionnement n'est pas totalement divulgué.
+Le besoin d'un tel simulateur est avant tout dû au manque d'informations sur les caches. Deux phénomènes se produisent du côté des constructeurs de processeurs. D'une part ils doivent les optimiser afin d'être concurrents, et il devient alors difficile pour eux de rajouter des fonctionnalités dédiées aux développeurs afin d'améliorer leur code, par exemple des compteurs exacts du nombre de \emph{hits}. D'autre part il n'est pas dans leur intérêt de révéler le fonctionnement de leurs produits, pour des raisons économiques évidentes. Par exemple, le \emph{prefetching} permet de charger des lignes de caches en avance en fonction des accès mémoires courants du programme et cette fonctionnalité n'est pas implémentée dans le simulateur car son fonctionnement n'est pas totalement divulgué.
 
 \paragraph{}
 L'intérêt d'un tel simulateur est donc de pouvoir tester des programmes en produisant certaines statistiques, mais aussi de pouvoir tester l'exécution sur des architectures qui n'existent pas afin de connaître la pertinence d'une nouvelle politique de cohérence par exemple. Seuls les caches de données sont simulés, le but étant d'essayer d'optimiser la mémoire d'un programme. Le chargement du code du programme est fait par le processeur sans intervention de l'utilisateur.
@@ -22,58 +22,84 @@ Le simulateur s'appuie sur des outils préexistants, pour la génération des tr
 
 \paragraph{HWLOC} est un logiciel qui permet de récupérer l'architecture des caches d'une machine. Il permet de générer un fichier xml que nous enrichissons. La paramétrisation de l'architecture des caches ne prend pas en compte les caches d'instructions, mais seulement les caches de données. L'utilisation de ce fichier est détaillé dans la section \ref{param_xml}.
 
-\paragraph{MAQAO} (Modular Assembly Quality Analyzer and Optimizer) est un outil d'analyse et d'optimisation de programmes. Une seule fonctionnalité de \textsf{MAQAO} est utilisée, celle qui permet d'instrumenter un programme binaire afin de récupérer les opérations faites lors de l'exécution. Le paramétrage de \textsf{MAQAO} est effectué grâce à un fichier lua pour générer des traces de la forme voulue.
+\paragraph{MAQAO} (Modular Assembly Quality Analyzer and Optimizer) est un outil d'analyse et d'optimisation de programmes. Une seule fonctionnalité de \textsf{MAQAO} est utilisée, celle qui permet d'instrumenter un programme binaire afin de récupérer les instructions réalisées pendant l'exécution. Le paramétrage de \textsf{MAQAO} est effectué grâce à un fichier lua pour générer des traces de la forme voulue.
 
 \paragraph{}
-L'utilisateur peut aussi vouloir comparer les résultats de la simulation. Bien qu'il n'existe par actuellement de tel simulateur pour faire la comparaison, il existe des compteurs hardware -- par exemple \textsf{PAPI} -- qui permettent de connaître certaines statistiques sur les caches. Ces statistiques sont celles desquelles il faudrait le plus se rapprocher, bien qu'elles ne soient pas non plus exactes.
+L'utilisateur peut aussi vouloir comparer les résultats de la simulation. Bien qu'il n'existe par actuellement de tel simulateur pour faire la comparaison, il existe des compteurs hardware -- par exemple \textsf{PAPI} -- qui permettent de connaître certaines statistiques sur les caches. Les limites du simulateur seront donc étudiées, afin de valider son bon fonctionnement par rapport au comportement attendu.
 
 \section{Déroulement de la simulation}
 
 \paragraph{}
 La simulation consiste à rejouer un certain nombre d'instructions, et de comptabiliser certaines métriques à destination de l'utilisateur. Comme il s'agit d'une simulation, tout ne se passe pas exactement comme dans le cas réel. Il est donc nécessaire d'expliciter les similitudes comme les différences afin que l'utilisateur ne soit pas surpris à la fois par les résultats, et à la fois par les méthodes de calculs si son objectif est de modifier le code.
 
+\paragraph{}
+Dans le cadre de la simulation, seules les références aux données sont stockées en mémoire, c'est-à-dire l'ensemble des étiquettes qui permettent d'identifier les différentes données. Pour une ligne de cache de taille $64$ octets par exemple, seule la première case est réellement stockée en mémoire, les $56$ autres octets correspondant aux données sont inutiles pour réaliser les statistiques.
+
 \subsection{Traitement d'une instruction : load/store}
 
 \paragraph{}
-La simulation, même d'un programme parallèle, est une séquence d'instructions effectuant des modifications (lecture ou écriture) sur les caches. Les deux premières possibilités pour une instruction sont, soit une lecture de donnée, soit une écriture. Une fois cela déterminé, il faut savoir où se trouve la donnée, elle peut déjà être dans le cache, dans un de ses voisins, ou dans un de ses parents. La donnée est alors rappatriée en prévenant les autres caches de l'action en cours. 
+La simulation, même d'un programme parallèle, est une séquence d'instructions effectuant des modifications (lecture ou écriture) sur les caches. Les deux premières possibilités pour une instruction sont, soit une lecture de donnée, soit une écriture. Une fois le type d'instruction connu, il faut la faire correspondre au c{\oe}ur sur lequel elle a été effectuée. Si la donnée est déjà présente dans le cache de plus bas niveau (L1), alors il s'agit d'un \emph{Hit}. Sinon, il faut rechercher la donnée dans la hiérarchie. A noter que pour des raisons d'efficacité, la simulation ajoute la donnée au moment même où l'on traite le cache: on prévoit qu'elle sera bientôt fournie par un cache de niveau supérieur en cas de \emph{Miss}.
 
 \paragraph{}
-Tous les caches concernés appliquent alors la politique de cohérence : une action a été faite sur la donnée, elle a été lue ou modifiée, par un autre cache ou par soi-même. \textbf{(première fois qu'on parle de l'automate)}L'automate change alors l'état de la ligne suivant la nature de la transition. Il faut aussi penser à gérer le cas où le cache est plein : le rappatriement d'une donnée entraine alors la suppression d'une autre. Il faut aussi propager cette information, et veiller à la cohérence de la donnée dans le reste de l'architecture.
+L'idée de l'algorithme est donc la suivante: on applique l'instruction courante au L1 correspondant, et si la donnée n'est pas présente, on remonte au niveau d'au dessus. Les protocoles de cohérence étant relatifs à un niveau donné, ils sont appliqués dès que possible afin d'éviter d'avoir à monter puis à redescendre dans la hiérarchie pour des questions de complexité. Cette idée de prévision permet généralement de gagner du temps mais posent certains problèmes qui seront explicités.
 
 \paragraph{}
-L'ordre des tests est le suivant : 
+Un algorithme pour le traitement général d'une instruction est le suivant: 
 \begin{enumerate}
   \item{il s'agit d'un \emph{load} ou d'un \emph{store}}
-  \item{la donnée est présente dans le cache ou non (récursif)
-    \begin{enumerate}
+  \item{la donnée est présente dans le cache ou non
+      \begin{enumerate}
       \item{si non, l'ajouter et faire :}
       \item{appel de la procédure de suppression en cas de cache plein}
-      \item{prévenir le cache supérieur que la donnée est accédée}
-      \item{revenir au point 2}
+      \item{mettre à jour les états de cohérence des différents caches du niveau concernés par la même donnée}
+      \item{chercher la donnée dans la hiérarchie}
+      \item{revenir au point 2 s'il faut chercher la donnée dans un cache de plus haut niveau}
   \end{enumerate}}
-  \item{modifier les statistiques d'utilisation de la ligne}
+  \item{mettre à jour les statistiques de remplacement sachant qu'une ligne a été accédée}
   \item{dans le cas d'un \emph{store}, propager l'action de modification dans tous les caches de niveaux supérieurs}
 \end{enumerate}
 
 \paragraph{}
-Dans le code du simulateur, le traitement d'une instruction est ainsi différent s'il s'agit d'un \emph{load} ou d'un \emph{store}. En effet les deux versions se distinguent par la dernière étape dans le cas d'un \emph{store}, qui nécessite de prévenir tous les caches parents. En effet si la donnée est simplement lue, il n'y a pas lieu de prévenir les caches parents, ni d'augmenter les statistiques de la ligne dans ces caches.
+Dans le code du simulateur, le traitement d'une instruction différe dans le cas d'un \emph{load} ou d'un \emph{store}. En effet les deux versions se distinguent par la dernière étape, où dans le cas d'un \emph{store}, les caches parents doivent être prévenus de la modification même en cas de \emph{Hit}. Si par exemple, en cas de \emph{Hit} lors d'un \emph{store} d'une donnée A dans un L1, le L2 doit être informé afin de pouvoir invalider la même donnée dans les autres L2. Cependant, si la lecture du programme apparaît comme une vraie modification des données (comme pour la politique \emph{Write-Through}), les statistiques sont bien réalisées de manière à suivre le cas du \emph{Write-Back}, où une modification dans un cache de bas niveau provoque une réécriture dans les caches de plus haut niveau le plus tard possible afin de limiter le coût de ces échanges entre les caches.
+
+\paragraph{}
+Le paragraphe précédent pose quelque uns des problèmes issus de la manière prédictive de voir les choses. Les problèmes fondamentaux sont la recherche d'une donnée dans la hiérarchie, l'ajout d'une ligne dans un cache, et la conservation des propriétés des caches inclusifs et exclusifs.
 
 \subsection{Rapatriement prédictif d'une ligne}
 
 \paragraph{}
-Les étapes précédentes de l'algorithme montrent que la ligne est ajoutée avant même que les caches de niveau supérieur aient confirmé qu'ils l'ont ou non. Contrairement au cas réel, nous considérons donc que nous avons la donnée dans tous les cas, et nous propageons uniquement la demande aux niveaux supérieurs. Cela augmente la rapidité car il n'y a pas d'aller/retour de messages entre les niveaux de caches, ceux-ci ne font \emph{a priori} que monter vers les caches supérieurs.
+Le fait de supposer qu'il est possible d'ajouter une donnée avant même de l'avoir trouvé dans la hiérarchie ne change rien au niveau des statistiques produites, mais impose de prendre soin à certaines étapes du traitement d'une instruction. En cas de \emph{Miss}, trois traitements peuvent être réalisés, selon l'architecture fournie en entrée du programme. Une première solution consiste à rechercher les données par snooping, c'est-à-dire parmis les caches du même niveau partageant le même parent. Cette étape doit être réalisée avant la mise à jour des états de cohérence. Par exemple en cas de \emph{store} sur une donnée avec la politique de cohérence MESI, les autres caches vont devoir invalider leur copie locale de la même donnée pour garantir la cohérence. D'où l'obligation de réaliser le protocole de snooping avant d'éventuelles invalidations.
 
 \paragraph{}
-Cette particularité est à prendre en compte dans l'écriture des politiques de cohérences. En effet certaines politiques se basent sur la présence ou non de la même ligne dans le niveau du cache demandant la donnée, voir à ce sujet les conditions de transitions d'automates dans la partie \ref{aut}. Il faut alors être conscient que la donnée est déjà dans le niveau lorsque les voisins sont prévenus.
+Une seconde solution consiste à utiliser un \emph{directory manager}, afin de rechercher les données dans les caches en dessous (impossible pour un L1). Dans l'implémentation choisie, le traitement par directory manager implique de réellement parcourir l'ensemble des caches ayant pour parent le cache courant. Dans le cas réel, une table comportant la partie étiquette des lignes de caches est tenue à jour grâce à un \emph{directory manager}. Cependant, vu la complexité des messages à envoyer pour garantir la consistance de la table, le choix du parcours de tous les caches a été réalisé.
 
 \paragraph{}
-En résumé il faut considérer que le cache effectuant la requête de ligne l'ajoute, prévient ses voisins, puis prévient le niveau supérieur. La cohérence entre les niveaux est toujours assurée, mais celle sur le niveau-même n'est donc pas exactement la même que dans le cas réel où les voisins sont informés avant l'ajout effectif de la ligne.
+Si la donnée n'a pas été trouvée via le \emph{snooping} ou grâce à un \emph{directory manager}, une demander est effectuée au cache de plus haut niveau qui effectue une autre recherche jusqu'à éventuellement joindre la mémoire principale.
 
+\paragraph{}
+La particularité du rapatriement prédictif des données est à prendre en compte dans l'écriture des politiques de cohérences. En effet certaines politiques se basent sur la présence ou non de la même ligne dans le niveau du cache demandant la donnée, voir à ce sujet les conditions de transitions d'automates dans la partie \ref{aut}. Il faut alors être conscient que la donnée est déjà dans le niveau lorsque les voisins sont prévenus.
 
 \subsection{Problème d'ajout de ligne dans un cache plein}
 
+\paragraph{}
+L'ajout d'une donnée dans un cache est également un problème compliqué. Il faut commencer par identifier dans quel block la donnée va se retrouver, puis demander à la politique de remplacement un emplacement dans ce block pour mettre la nouvelle donnée. Si le block n'était pas plein, l'ajout d'une ligne dans un cache se résume à trouver le block et ajouter la donnée.
 
-Donner exemples montrant la nécessité de \verb:not_rm:.
+\paragraph{}
+Cependant, si le cache est plein, une ligne à evincer est choisie. Il faut ensuite rapatrier cette ligne dans le cache de niveau supérieur, si elle n'y était pas déjà présente et faire un \emph{Write-Back} si la ligne supprimée avait été modifiée. Si la donnée n'était pas présente dans le cache de niveau supérieur, il faut l'y ajouter. Une subtilité relative au traitement prédictif de la recherche d'une donnée est à prendre en compte. En effet, si un L1 ajoute une donnée $A$ et qu'il doit pour cela supprimer la donnée $B$, il va falloir ajouter cette donnée dans le L2 correspondant. Or si ce L2 est plein, il peut évincer la donnée $A$. Le traitement étant prédictif, ce n'est pas la situation qui se produirait dans la réalité. Pour palier à ce problème, une donnée à ne surtout pas supprimer à été ajoutée en paramètre des fonctions relatives au replacement.
+
+
+\subsection{Gestion des différents types de cache}
+\paragraph{}
+\textsf{Cassis} permet de gérer différents types de caches: inclusif, exclusif, non-inclusif orienté inclusif et non-inclusif orienté exclusif. Si la gestion des caches non-inclusifs est assez souple (on ne connaît pas précisément les choix faits par les constructeurs), la gestion des caches inclusifs et exclusifs s'attache à assurer que le type des caches est bien respecté.
+
+\paragraph{}
+Pour un cache inclusif, le cas problématique est la suppression d'une donnée. Il faut en effet assurer que les caches de plus bas niveau ayant pour père le cache inclusif ne conservent pas la donnée. La solution mise en {\oe}uvre consiste à invalider dans toute la hiérarchie en dessous de ce cache. Une gestion plus subtile est possible par une utilisation des \emph{directory manager}. Avant de supprimer une donnée, les caches en dessous sont consultés afin de connaître les données qu'ils possèdent. De cette manière, des priorités sont calculées pour la suppression des données, afin d'éviter d'avoir à invalider d'autres caches.
+
+\paragraph{}
+Ce problème est crucial au sens où il est très fréquemment rencontré. En effet, les politiques de remplacement peuvent être différentes entre les niveaux et dans une certaines mesures incohérentes. Si un cache L2 possède un remplacement de type FIFO alors que les L1 associés ont un remplacement de type LRU, les flags de remplacement vont faire que le L2 aura tendance à vouloir supprimer des données qui peuvent avoir été récemment utilisées dans les L1.
+
+\paragraph{}
+invalider hit exclusif
 
 \section{Données simulées : analyses des statistiques}
 

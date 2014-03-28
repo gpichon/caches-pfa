@@ -3,7 +3,9 @@ La simulation d'une hiérarchie de caches étant un problème relativement compl
 
 \subsection{Tests unitaires}
 
-Quelques tests unitaires basiques ont été mis en place afin de valider les bases du logiciel. Ces tests portent notamment sur la création du fichier décrivant l'architecture à partir d'un fichier xml généré par hwloc. Ils permettent également de s'assurer de la justesse des politiques de cohérence et de remplacement pour un petit ensemble de données. En vérifiant le remplissage et les évictions de données, de même que les flags utiles aux protocoles de cohérence, quelques problèmes sont déjà levés.
+Quelques tests unitaires basiques ont été mis en place afin de valider les bases du logiciel. Ces tests portent notamment sur la création du fichier décrivant l'architecture à partir d'un fichier xml généré par hwloc. Ils permettent également de s'assurer de la justesse des politiques de cohérence et de remplacement pour un petit ensemble de données. En vérifiant le remplissage et les évictions de données, de même que les flags utiles aux protocoles de cohérence, quelques problèmes sont déjà levés. \\
+
+Par ailleurs, même si cela ne constitue pas des tests unitaires, des vérifications sont réalisées au sein du code, afin de valider le caractère inclusif ou exclusif des caches. Des messages d'erreur sont renvoyées quand les propriétés des caches ne sont plus respectées, ce qui notamment permis de déceler beaucoup de problèmes durant la phase de développement du simulateur.
 
 \subsection{Validation comparative}
 
