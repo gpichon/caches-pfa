@@ -99,12 +99,11 @@ Pour un cache inclusif, le cas problématique est la suppression d'une donnée. 
 Ce problème est crucial au sens où il est très fréquemment rencontré. En effet, les politiques de remplacement peuvent être différentes entre les niveaux et dans une certaines mesures incohérentes. Si un cache L2 possède un remplacement de type FIFO alors que les L1 associés ont un remplacement de type LRU, les flags de remplacement vont faire que le L2 aura tendance à vouloir supprimer des données qui peuvent avoir été récemment utilisées dans les L1.
 
 \paragraph{}
-invalider hit exclusif
+Pour un cache exclusif, il faut assurer qu'une donnée qu'il possède ne se trouve pas ailleurs dans ses fils et réciproquement. Pour cela, lorsqu'un cache exclusif fait un \emph{Hit}, il supprime la donnée correspondante car elle a été demandée par un de ses fils.
 
 \section{Données simulées : analyses des statistiques}
 
-Différentes statistiques sont relevées par le simulateur, les principales sont les \emph{misses}, les \emph{hits} et les \emph{write-backs}. Dans l'exemple ci dessous, on peut observer une sortie standard de \textsf{Cassis}: \\
-
+Différentes statistiques sont relevées par le simulateur, les principales sont les \emph{misses}, les \emph{hits} et les \emph{write-backs}. Dans l'exemple ci dessous, on peut observer une sortie standard de \textsf{Cassis}:
 \begin{lstlisting}
 L3  basics   (misses:   6, hits:   0, writes_back:   0)
 L2  basics   (misses:   6, hits:   0, writes_back:   0)

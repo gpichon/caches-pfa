@@ -20,7 +20,7 @@ Les mémoires de haut niveau -- les plus proches du processeur sont notées L1 -
 \end{center}
 \end{figure}
 
-==> Préciser source de l'image + légende\\
+%==> Préciser source de l'image + légende\\
 
 De cette manière, quand le processeur utilise une donnée qui est dans le cache, il fait un \textit{hit} : il n'a pas besoin de la charger à partir de la mémoire principale. Lorsque la donnée dont il a besoin n'est pas présente dans le cache, il fait un \textit{miss} et le coût d'accès à la donnée est beaucoup plus important. \\
 
@@ -41,7 +41,7 @@ Pour pouvoir retrouver une donnée dans le cache, une table d'étiquettes est te
 \end{center}
 \end{figure}
 
-==> Préciser source de l'image\\
+%==> Préciser source de l'image\\
 
 Le tag est stocké dans la table des étiquettes, il servira a identifier les différents blocs mémoires pouvant être au même endroit dans un cache. L'index correspond au numéro de set dans lequel se trouve la ligne de cache. Pour finir l'offset correspond au bloc dans la ligne de cache.
 
@@ -70,7 +70,7 @@ Les deux cas présentés précedemment présentent des inconvénients. Général
 \end{center}
 \end{figure}
 
-==> Préciser source de l'image\\
+%==> Préciser source de l'image\\
 
 \subsection{Politiques de remplacement}
 \label{remplacement}
@@ -82,12 +82,18 @@ Les deux cas présentés précedemment présentent des inconvénients. Général
 
 \paragraph{LRU.} La dernière solution, généralement utilisée, consiste à favoriser le principe de localité temporelle en supprimant la ligne du set qui a la plus ancienne date d'utilisation: ``Least Recently Used''.
 
-\newpage
 \section{Gestion de la cohérence}
 Dans les systèmes actuels, un processeur n'est plus composé d'un unique c{\oe}ur, mais de plusieurs. Chaque c{\oe}ur possède généralement deux caches qui lui sont propres : le L1i pour stocker les instructions et le L1d pour stocker les données. Les caches de niveau supérieur sont quant  eux partagés par un nombre variable d'autres caches (et c{\oe}urs). Alors que les interactions entre ces deux premiers caches sont minimes -- il est difficile de mélanger instructions et données --, la cohérence entre les autres est en revanche un problème de taille.
 
 \subsection{Présentation du problème}
-Les caches sont utilisés à chaque \textit{load}/\textit{store}. S'il est possible que plusieurs caches possèdent la même donnée et la lisent en même temps, il est primordial qu'une donnée ne puisse pas être modifiée simultanément dans deux caches. Pour cela, des techniques hardware(mettre du français ?) sont mises en place afin de définir qui a la priorité si plusieurs c{\oe}urs veulent modifier une même donnée. \\
+Les caches sont utilisés à chaque \textit{load}/\textit{store}. S'il est possible que plusieurs caches possèdent la même donnée et la lisent en même temps, il est primordial qu'une donnée ne puisse pas être modifiée simultanément dans deux caches. Pour cela, des techniques hardware sont mises en place afin de définir qui a la priorité si plusieurs c{\oe}urs veulent modifier une même donnée. \\
+
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[scale=0.35]{images/learn_mesi_2.png}
+   \caption{\label{img:mesi} Utilité d'un protocole de cohérence}
+\end{center}
+\end{figure}
 
 Par ailleurs, un protocole de cohérence est mis en {\oe}uvre à chaque \textit{load}/\textit{store} afin que les différents caches soient informés des modifications les concernant et que la consistance du système soit assurée. Ce protocole est propre à un niveau de cache. Dans un cas classique, il y aura un protocole de cohérence entre les L1 et entre les L2.
 
@@ -120,11 +126,11 @@ Le protocole est souvent représenté sous la forme d'un automate, dont les éta
 \end{center}
 \end{figure}
 
-==> Préciser source de l'image + légende\\
+%==> Préciser source de l'image + légende\\
 
 Pour l'état O, la différence est que les interactions avec la mémoire principale sont moins importantes. En effet, lorsqu'un cache qui n'a pas la donnée fait un \textit{load}, le cache possédant la donnée dans l'état O peut lui donner sans faire de \textit{write-Back}. Cela permet de garder plus longtemps la donnée modifiée.
 
-\newpage
+%\newpage
 \section{Fonctionnement global}
 La cohérence expliquée jusqu'à présent correspondait à celle d'un niveau de caches. Mais il peut arriver d'autres problèmes de gestion des données entre ces différents niveaux car les niveaux de caches peuvent être inclusifs, exclusifs ou non-inclusifs. Par ailleurs, les particularités du snooping, qui consiste à demander via un bus une donnée aux autres caches du même niveau, seront aussi explicitées. \\
 
@@ -141,16 +147,12 @@ Le fonctionnement d'un cache inclusif est relativement simple. En cas de \textit
 \end{center}
 \end{figure}
 
-==> Préciser source de l'image + légende\\
-
-D'un point de vue de la simulation, il est utile de modéliser les messages partant du bas de la hiérarchie (les caches L1) et remontant jusqu'à la mémoire principale. Le caractère inclusif prend tout son intérêt : la recherche est simple et la gestion de la cohérence séparée des échanges bruts de données, qui demandent plus de bande passante.\\
-
-==> Pas clair (On parle ici de généralité sur les caches, il ne faudrait pas garder ça pour "notre" partie ?)
+%==> Préciser source de l'image + légende\\
 
 \subsection{Caches exclusifs}
 Cependant, le fait qu'un cache soit inclusif pose un problème : les données sont dupliquées dans la hiérarchie. De ce fait, la taille réellement utilisable de l'ensemble des caches est en fait inférieure à la taille théorique. Les caches exclusifs ont justement pour principal objectif de limiter cette duplication des données. Par exemple, si un L2 est exclusif, les L1 en dessous ne pourront pas contenir une donnée déjà présente dans le L2, et inversement. Concrètement, il y a quatre cas de figure : \\
 
-==>un joli schéma\\
+%==>un joli schéma\\
 \begin{itemize}
 \item Si un L1 fait un \textit{hit}, il transmet la donnée au c{\oe}ur associé
 \item Si un L2 fait un \textit{hit}, il donne la donnée au L1 qui l'a demandé puis la supprime.
