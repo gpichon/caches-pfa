@@ -1,6 +1,6 @@
 \section{Gestion des politiques de coherence}
 
-Les politiques de cohérences pré-implémentées sont MSI, MESI, MOESI, MESIF et MOSI. Elles sont nécessaires pour décrire l'état d'une ligne dans un cache et se représentent facilement par des automates dont les états sont ceux de la ligne, et les transitions sont des actions effectuées sur la ligne. Il est possible de rajouter d'autres politiques comme expliqué dans le tutoriel de la partie \ref{tuto_aut}, la section ci-dessous a pour vocation uniquement de préciser la paramétrisation des politiques déjà définies, sans évoquer la syntaxe à utiliser.
+Les politiques de cohérence pré-implémentées sont MSI, MESI, MOESI, MESIF et MOSI. Elles sont nécessaires pour décrire l'état d'une ligne dans un cache et se représentent facilement par des automates dont les états sont ceux de la ligne, et les transitions sont des actions effectuées sur la ligne. Il est possible de rajouter d'autres politiques comme expliqué dans le tutoriel de la partie \ref{tuto_aut}, la section ci-dessous a pour vocation uniquement de préciser la paramétrisation des politiques déjà définies, sans évoquer la syntaxe à utiliser.
 
 \subsection{Actions réalisées par une politique de cohérence}
 
@@ -27,10 +27,10 @@ Certaines subtilités peuvent toutefois sembler complexe pour l'utilisateur : pa
 La première phase de l'écriture d'une politique est de pouvoir l'initialiser. En effet l'automate de départ n'est qu'un automate de départ vers les politiques : la première transition appelée correspond au choix de la politique, et va placer l'automate dans l'état I (\emph{invalid}) de la politique voulue. Il faut donc ajouter la transition dans l'automate de départ du fichier, automate nommé \texttt{Init} et ne comportant qu'un seul état mais autant de transitions que de politiques différentes.
 
 \paragraph{}
-Chaque politique doit donc contenir au moins l'état I ; et pour chaque état qu'elle définit elle peut ajouter des transitions, éventuellement conditionnelles. Les actions réalisées lors d'une transition doivent contenir à la fois les statistiques si nécessaires et à la fois la modification de l'état dans le structure contenant l'automate. En effet il n'a pas été possible de récupérer l'état courant de l'automate nécessaire à certaines fonctions. Cet état doit donc être sauvegardé dans la structure d'une ligne, en plus de la structure même de l'automate. Il s'agit d'une duplication d'information nécessaire au fonctionnement général du simulateur, et dû à des problèmes d'interfaçage entre le \texttt{C} et \textsf{SMC}.
+Chaque politique doit donc contenir au moins l'état I ; et pour chaque état qu'elle définit elle peut ajouter des transitions, éventuellement conditionnelles. Les actions réalisées lors d'une transition doivent contenir à la fois les statistiques si nécessaires et à la fois la modification de l'état dans la structure contenant l'automate. En effet il n'a pas été possible de récupérer l'état courant de l'automate nécessaire à certaines fonctions. Cet état doit donc être sauvegardé dans la structure d'une ligne, en plus de la structure même de l'automate. Il s'agit d'une duplication d'information nécessaire au fonctionnement général du simulateur, et dû à des problèmes d'interfaçage entre le \texttt{C} et \textsf{SMC}.
 
 \paragraph{}
-\'A la fin de toute description d'une politiqe se trouve aussi un certain de nombre de transitions dites par défaut : si elles sont appelées sur un état ne les définissant pas, elles boucles dessus. Cela sert à factoriser les transitions n'effectuant aucune action sur un état.
+\`A la fin de chaque description de politique se trouve un certain de nombre de transitions par défaut. Si elles sont appelées sur un état ne les définissant pas, elles bouclent dessus. Cela sert à factoriser les transitions n'effectuant aucune action sur un état.
 
 \subsection{\'Eléments paramétrisables}
 

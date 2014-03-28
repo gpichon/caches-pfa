@@ -1,0 +1,25 @@
+Simuler le fonctionnement des caches pour une architecture multi-c{\oe}urs pose un ensemble de problèmes qui expliquent pourquoi, à ce jour, aucun simulateur complet -- connu, les fabricants de processeurs possèdent très certainement un simulateur en interne -- n'est disponible. 
+
+\section{Limites inhéritentes à un simulateur de caches}
+Pour analyser l'execution d'un bianire, deux solutions sont possibles, une analyse durant l'execution (ce que fait \textsf{Cachegrind}) ou une analyse après l'execution. Ce choix a été fait par le client dans le sujet du projet. Cela permet notamment des simuler des architectures qui n'existent pas, et de rejouer la simulation avec différentes paramètrisations en n'executant qu'une seule fois le programme initial. \\
+
+Au niveau des simulateurs de caches différents problèmes se posent, notamment car le fonctionnement précis des architectures actuelles est inconnu. On peut citer: \\
+\begin{itemize}
+\item Le \emph{prefetching} qui permet d'éviter les \emph{compulsory misses}, 
+\item L'introduction de la bande passante, 
+\item Le parallèlisme réalisé par le processeur, qui influe sur l'entrelacement des intructions (\emph{out of order execution}) \\
+\end{itemize}
+
+Certaines simulations permettent de limiter ces problèmes, par exemple en se basant sur des benchmarks pour calibrer les statistiques ou en modélisant les phénomènes cités précédemment. Cependant, fournir une paramétrisation souple d'un simulateur impose de simplifier les modèles existants. \\
+
+Le plus grand problème reste toutefois de comprendre les différentes politiques utilisées actuellement. Si les politiques de cohérence semblent plus ou moins fixées -- les problèmes de cohérence inhérents à un programme multi-threadé ne peuvent être résolus que par le codeur -- les politiques de remplacement semblent beaucoup plus complexes que celles couramment modélisées. Les derniers articles de recherche concernant le remplacement s'appuient sur des connaissances d'un cache mais aussi des caches associés, alors que les politiques ``classiques'', LFU, LRU ou FIFO ne concernent qu'un cache.
+
+\section{Limites relatives à \textsf{Cassis}}
+Dans \textsf{Cassis}, le choix de favoriser la paramétrisation de l'architecture a imposé de faire des choix. Les problèmes de \emph{prefetching} et de bande passante n'ont pas été modélisé, ce qui explique que toute comparaison, avec un autre simulateur ou avec les compteurs hardware, donne des résultats difficiles à interpréter. \\
+
+Par ailleurs, les politiques de remplacement sont relativement basiques et propres à un cache. Si avec les \emph{directory manager} il est possible d'adapter les données à remplacer dans un cache en fonction du contenu des caches en dessous, d'autres interactions sont actuellement impossibles. \\
+
+Pour finir, si les statistiques produites par le simulateur sont assez variées (évictions, \emph{broadcast}, type de \emph{misses}), elles ne correspondent pas totalement avec par exemple ce qui est disponible grâce aux compteurs hardware.
+
+\section{Moyens pour contrer ces limites}
+Pour finir des statistiques représentatives de ce qui se passe en réalité, il faudrait réaliser un post-traitement afin de calibrer les résultats. En se basant par exemple sur les résultats des compteurs hardware pour un ensemble de benchmarks, il serait sûrement possible d'extraire des facteurs à appliquer sur les statistiques de sortie de \textsf{Cassis}.

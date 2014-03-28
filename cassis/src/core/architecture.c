@@ -73,7 +73,7 @@ bool fatal = false;
  */
 #define GET_ATTRIBUT_INT(name,node,target)   tmp = xmlGetProp(node, BAD_CAST name); \
   sprintf(buf, "%s", tmp);						\
-  target = atoi(buf);							\
+  target = strtol(buf, NULL, 0);					\
   xmlFree(tmp);								\
   buf[0] = 0
 
@@ -341,19 +341,21 @@ int parse_archi_file(const char *filename, struct architecture *archi){
 void print_archi_rec(struct node *n, int nb_levels){
   unsigned int i;
   printf("L%d (size: %d) ", n->data->depth, n->data->size);
-  switch(n->data->type){
-  case Inclusive:
-    printf("inclusive");
-    break;
-  case Exclusive:
-    printf("exclusive");
-    break;
-  case NIIO:
-    printf("NIIO");
-    break;
-  case NIEO:
-    printf("NIEO");
-    break;
+  if(n->data->depth > 1){
+    switch(n->data->type){
+    case Inclusive:
+      printf("inclusive");
+      break;
+    case Exclusive:
+      printf("exclusive");
+      break;
+    case NIIO:
+      printf("NIIO");
+      break;
+    case NIEO:
+      printf("NIEO");
+      break;
+    }
   }
   if(n->data->snooping && n->data->depth != nb_levels)
     printf(", with snooping");

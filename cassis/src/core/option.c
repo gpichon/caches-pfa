@@ -79,7 +79,7 @@ void get_options(int argc, char *argv[]) {
       tot = 3;
       break;
     case 'v':	/* -v 1*/
-      verbose_mode = atoi(optarg);
+      verbose_mode = strtol(optarg, NULL, 0);
       if (verbose_mode < 1 || verbose_mode > 4){
 	fprintf(stderr, "Invalid verbose mode\n");
 	exit(1);
@@ -110,7 +110,7 @@ void get_options(int argc, char *argv[]) {
       tracking_count = 2;
       break;
     case 't':	/* -t 4 */
-      nb_threads = atoi(optarg);
+      nb_threads = strtol(optarg, NULL, 0);
       if(nb_threads < 1){
 	fprintf(stderr, "Number of threads (-t) invalid\n");
 	nb_threads = 1;
