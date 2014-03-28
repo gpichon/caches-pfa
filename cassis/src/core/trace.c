@@ -87,7 +87,7 @@ void next_instruction(struct instruction *ins, struct thread **threads, int id_t
       // Thread number which is already known
     }
     else if (i==3) {
-      unsigned int ui = atoi(save);
+      unsigned int ui = strtol(save, NULL, 0);
       ins->number = ui;
       instruction_number = ins->number;
     }
