@@ -83,7 +83,11 @@ bool fatal = false;
  */
 #define FATAL_WARNING   fprintf(stderr, "\033[31mWARNING\033[0m: architecture not valid\n"); \
   fatal = true;
-  
+ 
+/**
+ * \struct level
+ * \brief Temporary ADT.
+ */
 struct level{
   int type;
   enum cache_coherence coherence;

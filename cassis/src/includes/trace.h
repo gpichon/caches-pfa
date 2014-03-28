@@ -34,7 +34,7 @@ enum instruction_type {INSTRUCTION_END_OF_THREAD, INSTRUCTION_LOAD, INSTRUCTION_
 
 /**
  * \struct instruction
- * \brief Abstract Data Type of an instruction.
+ * \brief Represents an instruction.
  */
 struct instruction {
   int type;           /**< Instruction type, an int in the range of the instruction_type enumeration. */
@@ -44,10 +44,10 @@ struct instruction {
 
 /**
  * \struct thread
- * \brief Abstract Data Type of a thread.
+ * \brief Represents a thread.
  */
 struct thread {
-  int fd;
+  int fd; /**< File descriptor of a trace. */
 };
 
 

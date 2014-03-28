@@ -32,7 +32,7 @@ I
 
 M
 {
-	a_read(n: struct node*, i: unsigned long, l: struct line*)        S       {share_line(l);up_stat(n,i,WRITE_BACK);}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)        S       {share_line(l);up_stat(n,i,WRITE_BACK);dirty_line(l, 0);}
 	i_del(n: struct node*, i: unsigned long, l: struct line*)         I       {invalid_line(l);up_stat(n,i,WRITE_BACK);}     
 	a_modify(n: struct node*, i: unsigned long, l: struct line*)      I       {invalid_line(l);up_stat(n,i,WRITE_BACK);up_stat(n,i,COHERENCE_EVINCTION);}
 }
@@ -70,7 +70,7 @@ I
 
 M
 {
-	a_read(n: struct node*, i: unsigned long, l: struct line*)      S       {share_line(l);up_stat(n,i,WRITE_BACK);}                  
+	a_read(n: struct node*, i: unsigned long, l: struct line*)      S       {share_line(l);up_stat(n,i,WRITE_BACK);dirty_line(l, 0);}
 	i_del(n: struct node*, i: unsigned long, l: struct line*)       I       {invalid_line(l);up_stat(n,i,WRITE_BACK);}                  
 	a_modify(n: struct node*, i: unsigned long, l: struct line*)    I       {invalid_line(l);up_stat(n,i,WRITE_BACK);up_stat(n,i,COHERENCE_EVINCTION);}                  	
 }
@@ -117,7 +117,7 @@ I
 
 M
 {
-	a_read(n: struct node*, i: unsigned long, l: struct line*)      S       {share_line(l);up_stat(n,i,WRITE_BACK);}                  
+	a_read(n: struct node*, i: unsigned long, l: struct line*)      S       {share_line(l);up_stat(n,i,WRITE_BACK);dirty_line(l, 0);}
 	i_del(n: struct node*, i: unsigned long, l: struct line*)       I       {invalid_line(l);up_stat(n,i,WRITE_BACK);}                  
 	a_modify(n: struct node*, i: unsigned long, l: struct line*)    I       {invalid_line(l);up_stat(n,i,WRITE_BACK);up_stat(n,i,COHERENCE_EVINCTION);} 
 }
@@ -187,7 +187,8 @@ E
 }
 
 O
-{                 
+{
+	i_del(n: struct node*, i: unsigned long, l: struct line*)    [is_in_level(n,i,I) == 0 && is_dirty(l) == 1]	                                                                                                   I      {invalid_line(l);up_stat(n,i,WRITE_BACK);}   
 	i_del(n: struct node*, i: unsigned long, l: struct line*)          I       {invalid_line(l);up_stat(n,i,COHERENCE_BROADCAST);}
 	a_modify(n: struct node*, i: unsigned long, l: struct line*)       S       {share_line(l);}
 	a_del(n: struct node*, i: unsigned long, l: struct line*) [is_in_level(n,i,I) == 0]   M    {modify_line(l);}

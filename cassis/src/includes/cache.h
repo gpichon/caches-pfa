@@ -33,7 +33,7 @@ enum cache_type{
 
 /**
  * \struct cache
- * \brief Abstract Data Type for a cache.
+ * \brief Represents a cache.
  */
 struct cache {
   int depth;             /**< Level of the cache. From 1 to 3 in general cases.*/

@@ -1,6 +1,6 @@
 /**
  * \file node.h
- * \brief Defines the node structure
+ * \brief Defines the node structure -- Header
  * \author ~gmarait
  * \version 1.0
  * \date 29th january 2014
@@ -15,13 +15,17 @@
 
 #include "cache.h"
 
+/**
+ * \struct node
+ * \brief Represents a cache in the hierarchy, contains also this cache.
+ */
 struct node {
-  struct node *parent;
-  struct node *next_sibling;
-  struct node **child;
-  unsigned int nb_children;
-  unsigned int id;
-  struct cache *data;
+  struct node *parent; /**< Node (cache) above. */
+  struct node *next_sibling; /**< Sibling in the same level. Possibly with a different parent.*/
+  struct node **child; /**< Child list. */
+  unsigned int nb_children; /**< Child number. */
+  unsigned int id; /**< Identifier. */
+  struct cache *data; /**< Cache object. */
 };
 
 /**

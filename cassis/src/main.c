@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     printf("To work with the architecture file: -f file.xml\n");
     printf("To precise number of threads: -t int\n");
     printf("To precise traces directory: -r file.xml\n");
-    printf("To trace a special data set: -b 0x000000000000:0x6fffffffffff or -b no_stack for all values excepting stack values (optional)\n");
+    printf("To trace a special data set: -b 0x000000000000:0xffffffffffff or -b no_stack for all values excepting stack values (optional)\n");
     printf("To print more statistics: -v 1: basic stats (default)\n");
     printf("                          -v 2: evinctions (optional)\n");
     printf("                          -v 3: more detailled misses (optional)\n");

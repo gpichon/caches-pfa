@@ -21,7 +21,6 @@
  * if status == I, return 1 if the entry exist in the level with the same parent, -1 if with another parent,
  * return 0 otherwise. 
  */
-
 int is_in_level(struct node *node,unsigned long entry, enum status status);
 
 /**

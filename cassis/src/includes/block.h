@@ -20,7 +20,7 @@
 
 /**
  * \struct block
- * \brief Abstract Data Type of a block.
+ * \brief Represents a cache block.
  */
 struct block {
   int nb_ways;         /**< Number of lines in the block. */

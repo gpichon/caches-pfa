@@ -1,12 +1,34 @@
 \section{Ajout d'une politique de remplacement}
+Les politiques de remplacement mise en {\oe}uvre dans \textsf{Cassis} sont classiques. Il est envisageable de rajouter des politiques de remplacement, qui par exemple utiliserait plus de statistiques en interne pour mieux choisir les données à évincer.
 
-\subsection{Sources à modifier}
+Grâce à l'utilisation de pointeurs de fonctions, la gestion de la politique de remplacement au sein d'un cache se fait de façons automatique dans la partie du code qui effectue les actions à réaliser en cas de \emph{load} ou \emph{store}. Il suffit d'ajouter dans la structure cache les bons pointeurs de fonctions pour deux fonctions: \\
+\begin{itemize}
+\item update\char`_lines\char`_POLICY(block, nb\char`_ways, entry)
+\item id\char`_line\char`_to\char`_replace\char`_POLICY(block, priorité, not\char`_rm) \\
+\end{itemize}
+La première sert à mettre à jour les flags de remplacement relatifs à la nouvelle politique, alors que la deuxième sert à identifier la ligne à supprimer lorsqu'un cache est plein. A noter que les paramètres priorité et not\char`_rm servent à améliorer le fonctionnement global des politiques de cohérence. La priorité est utilisée dans le cas de l'usage de \emph{directory manager} pour identifier les données qui sont présentes dans les caches en dessous alors que le paramètre not\char`_rm sert à identifier une donnée qui va très probablement être ajoutée dans un futur proche. Ces deux paramètres sont toutefois facultatifs, ils n'empêchent pas de fournir des résultats cohérents, et leur utilisation peut être inutile pour une nouvelle politique. \\
 
-\subsection{Actions possibles}
+Il faut donc créer ces duex fonctions dans le fichier \texttt{block.c}, puis ajouter une function de prototype void replacement\char`_POLICY(cache) dans \texttt{cache.c}. Il faut pour finir permettre d'ajouter la politique au fichier de configuration en XML. Pour cela, il suffir de rajouter, dans la fonction get\char`_replacement\char`_function(cache), présente dans \texttt{architecture.c}, une entrée vers la nouvelle politique. \\
+
+Pour ajouter une politique de remplacement plus globale permettant par exemple d'obtenir des informations à partir d'autres caches, il faut modifier le prototype de fonction pour prendre un n{\oe}ud à la place d'un block. Il faudra cependant s'assurer de modifier toutes les fonctions existantes pour les $3$ politiques déjà implémentées.
 
 \section{Ajout d'une politique de cohérence}
 \label{tuto_aut}
 
 \subsection{Sources à modifier}
 
+Les politiques de cohérence sont toutes décrites dans un seul fichier, écrit grâce à \textsf{SMC} : \texttt{coherence.sm}. Toutefois d'autres sources sont à modifier afin que ces politiques puissent être choisies depuis un fichier d'architecture.
+
+\subsubsection{\texttt{common\_types.h}}
+
+\subsubsection{\texttt{architecture.c}}
+
+\subsubsection{\texttt{coherence.c}}
+
+\subsubsection{\texttt{coherence.sm}}
+
 \subsection{Actions possibles}
+
+\subsubsection{Usage de \textsf{SMC}}
+
+\subsubsection{Uage des fonctions du simulateur}

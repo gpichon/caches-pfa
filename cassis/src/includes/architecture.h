@@ -18,14 +18,14 @@
 
 /**
  * \struct architecture 
- * \brief Abstract Data Type of the global architecture.
+ * \brief Represents the global architecture.
  */
 struct architecture {
   unsigned int nb_bits; /**< architecture 32 or 64 bits */
   char name[30]; /**< for example "x86_64" */
   char CPU_name[100]; /**< for example "Intel(R) Core(TM) i3-3120M CPU @ 2.50GHz" */
-  unsigned int number_threads;
-  unsigned int number_levels;
+  unsigned int number_threads; /**< Explicit */
+  unsigned int number_levels; /**< Explicit */
   struct node ** threads; /**< Leaves of the cache hierarchy tree (corresponding to L1 cache)*/
   bool warning; /**< True if there is an important warning that could create a bug*/
 };

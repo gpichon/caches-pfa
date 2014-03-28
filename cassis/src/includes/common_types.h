@@ -18,8 +18,12 @@
 
 /* fsm */
 
+/**
+ * \struct coherence
+ * \brief Represents a coherence policies state machine.
+ */ 
 struct coherence{
-  struct coherenceContext _fsm;
+  struct coherenceContext _fsm; /**< SMC object */
 };
 
 /* line */
