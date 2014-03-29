@@ -1,4 +1,4 @@
-Le but de cette partie est de résumer un certain nombre de techniques relatives à la gestion de la hiérarchie des caches. Nous commencerons par expliciter le comportement d'un cache en général, avant d'étudier les moyens mis en {\oe}uvre afin d'assurer la cohérence de l'ensemble des caches. Nous finirons par étudier les problèmes posés par la simulation des caches d'une architecture multi-c{\oe}urs, notamment le prefetching.
+Le but de cette partie est de résumer un certain nombre de techniques relatives à la gestion de la hiérarchie des caches. Le comportement général d'un cache sera explicité, avant d'étudier les moyens mis en {\oe}uvre afin d'assurer la cohérence de l'ensemble des caches. Pour finir certaines subtilités qui différencient le comportement global des caches seront étudiées.
 
 \subsection{Utilité des caches}
 
@@ -11,25 +11,23 @@ Jusqu'aux années 2000, la vitesse des processeurs a considérablement augmenté
 
 Les caches permettent de stocker la mémoire utilisée récemment par le processeur, en se basant sur deux concepts: la localité spatiale et la localité temporelle. La localité temporelle stipule qu'une cellule mémoire accédée récemment sera très probablement utilisée dans un futur proche. La localité spatiale est l'idée que si l'on accède à une cellule mémoire $X$, la cellule mémoire $X+1$ a de grandes chances d'être utilisée. \\
 
-Les mémoires de haut niveau -- les plus proches du processeur sont notées L1 -- sont généralement de petite taille. Leur coût est conséquent mais leur accès est très rapide. Il existe plusieurs niveaux de caches, $3$ dans la plupart des architectures récentes. Les L1 sont très rapides mais peuvent contenir peu de données (de l'ordre de la dizaine de Ko) alors que le L3 est plus lent mais contient beaucoup de données (de l'ordre du Mo). On peut résumer comme par la figure \ref{img:hierarchy} une hiérarchie mémoire classique.\\
+Les mémoires de bas niveau -- les plus proches du processeur -- sont notées L1 et sont généralement de petite taille. Leur coût est conséquent mais leur accès est très rapide. Il existe plusieurs niveaux de caches, $3$ dans la plupart des architectures récentes. Les L1 sont très rapides mais peuvent contenir peu de données (de l'ordre de la dizaine de Ko) alors que le L3 est plus lent mais contient beaucoup de données (de l'ordre du Mo). La figure \ref{img:hierarchy} résume une hiérarchie mémoire classique.\\
 
 \begin{figure}[!h]
 \begin{center}
    \includegraphics[scale=0.75]{images/hierarchy.png}
-   \caption{\label{img:hierarchy} Hiérachie mémoire}
+   \caption{\label{img:hierarchy} Hiérachie mémoire - www.pps.univ-paris-diderot.fr}
 \end{center}
 \end{figure}
 
-%==> Préciser source de l'image + légende\\
+De cette manière, quand le processeur utilise une donnée qui est dans le cache, il fait un \textit{hit} : il n'a pas besoin de la charger à partir de la mémoire principale. Lorsque la donnée dont il a besoin n'est pas présente dans le cache, il fait un \textit{miss} et le coût d'accès à la donnée est beaucoup plus important. Si pour un programme donné, il y a 10\% de \emph{Misses}, le temps total d'execution sera le double qu'avance 100\% de \emph{Hits}. \\
 
-De cette manière, quand le processeur utilise une donnée qui est dans le cache, il fait un \textit{hit} : il n'a pas besoin de la charger à partir de la mémoire principale. Lorsque la donnée dont il a besoin n'est pas présente dans le cache, il fait un \textit{miss} et le coût d'accès à la donnée est beaucoup plus important. \\
-
-Les données mémoire vont être lues via des \textit{load} et écrites via des \textit{store}. Lorsqu'une donnée est modifiée, il est nécessaire de propager les modifications jusqu'à la mémoire principale (c'est donc un \textit{store}), afin de garantir la cohérence du système. Une politique basique, le \textit{write-through}, serait de réécrire directement en mémoire après toute modification. Dans la suite de ce document, nous considérerons uniquement la politique \textit{write-back}, qui permet de retarder la réecriture tant que la donnée n'est pas lue pas une autre entité que celle qui l'a modifiée.
+Les données mémoire vont être lues via des \textit{load} et écrites via des \textit{store}. Lorsqu'une donnée est modifiée, il est nécessaire d'informer des modifications jusqu'à la mémoire principale (c'est donc un \textit{store}), afin de garantir la cohérence du système. Une politique basique, le \textit{write-through}, serait de réécrire directement en mémoire après toute modification. Dans la suite de ce document, nous considérerons uniquement la politique \textit{write-back}, qui permet de retarder la réecriture tant que la donnée n'est pas lue pas une autre entité que celle qui l'a modifiée.
 
 \section{Principes généraux d'un cache}
 Cette section entend préciser le fonctionnement général d'un cache : comment il est possible d'y ajouter une donnée, quelle est la correspondance entre les blocs de la mémoire principale et les lignes de cache ou encore comment une donnée peut être evincée d'un cache. \\
 
-Un cache possède un ensemble de sets contenant chacun un ensemble de lignes. Le nombre de lignes par set est appelé l'associativité du cache. Au chargement d'une donnée, elle est insérée dans une ligne vide du set correspondant à sa plage d'adresse. Les données qui suivent (dans la mémoire supérieure) la donnée voulue sont aussi recopiées afin de remplir totalement la ligne -- généralement de $32$ ou $64$ octets -- et exploiter le principe de localité spatiale (footnote ?).
+Un cache possède un ensemble de sets contenant chacun un ensemble de lignes. Le nombre de lignes par set est appelé l'associativité du cache. Au chargement d'une donnée, elle est insérée dans une ligne vide du set correspondant à sa plage d'adresse. Les données qui suivent (dans la mémoire supérieure) la donnée voulue sont aussi recopiées afin de remplir totalement la ligne -- généralement de $32$ ou $64$ octets -- et exploiter le principe de localité spatiale.
 
 \subsection{\'Etiquettes}
 Pour pouvoir retrouver une donnée dans le cache, une table d'étiquettes est tenue à jour. Concrètement, une adresse mémoire est séparée en trois champs comme sur la figure suivante : \\
@@ -37,13 +35,11 @@ Pour pouvoir retrouver une donnée dans le cache, une table d'étiquettes est te
 \begin{figure}[!h]
 \begin{center}
    \includegraphics[scale=0.50]{images/etiquette.jpeg}
-   \caption{\label{img:etiquette} Adresse mémoire}
+   \caption{\label{img:etiquette} Adresse mémoire - common.wikimedia.org}
 \end{center}
 \end{figure}
 
-%==> Préciser source de l'image\\
-
-Le tag est stocké dans la table des étiquettes, il servira a identifier les différents blocs mémoires pouvant être au même endroit dans un cache. L'index correspond au numéro de set dans lequel se trouve la ligne de cache. Pour finir l'offset correspond au bloc dans la ligne de cache.
+Les étiquettes sont stockées dans une table des étiquettes, elles serviront a identifier les différents blocs mémoires pouvant être au même endroit dans un cache. L'index correspond au numéro de set dans lequel se trouve la ligne de cache. Pour finir l'offset correspond au bloc dans la ligne de cache.
 
 \subsection{Fonction de correspondance}
 Un cache de taille $n$ contient un ensemble $p$ de lignes de taille $m$, tel que $n = p \times m$. Afin de placer et récupérer une donnée dans le cache, une fonction de correspondance avec la mémoire est nécessaire. Il existe trois cas de figure. Pour la suite, nous prendrons : \\
@@ -54,19 +50,19 @@ Un cache de taille $n$ contient un ensemble $p$ de lignes de taille $m$, tel que
 \item $k$ l'associativité du cache 
 \end{itemize}
 
-\subsubsection{Direct associative}
+\subsubsection{\emph{Direct associative}}
 Un cache est en correspondance directe si à chaque bloc mémoire est associé une unique ligne du cache. Le nombre de sets, $s$, du cache est alors égal à son nombre de lignes, $p$. Lorsqu'un bloc mémoire $j$ est ajouté dans le cache, la ligne correpondante est chargée à la ligne $i = j\ modulo\ s$. Avec ce type de cache, il est facile d'ajouter ou de retrouver une données. Cependant, si plusieurs blocs mémoires correpondant à la même ligne de cache sont fréquemment utilisés, il faudra sans cesse supprimer et ajouter des données dans le cache.
 
-\subsubsection{Fully associative}
+\subsubsection{\emph{Fully associative}}
 Un cache est en correspondance associative si chaque bloc mémoire peut être mis dans n'importe quelle ligne du cache. Il n'y a alors qu'un seul set. L'inconvénient précédent n'est plus existant, cependant il devient beaucoup plus compliqué de rechercher une donnée dans le cache. L'ensemble des étiquettes doit en effet être parcouru.
 
-\subsubsection{$k$-ways associative}
-Les deux cas présentés précedemment présentent des inconvénients. Généralement, un cache profite des avantages des deux visions en faisant un compromis. Dans le cas de la correspondance associative par ensemble, chaque set possède un nombre $k$ de lignes tel que $p=k \times s$. La fonction de correspondance est telle que $i = j\ modulo\ s$. De cette manière, un bloc mémoire peut se trouver dans un ensemble de $k$ lignes. Il est donc possible d'avoir plusieurs blocs mémoires correspondant au même ensemble et l'algorithme de recherche est plus efficace que dans le cas de la correspondance associative.
+\subsubsection{\emph{$k$-ways associative}}
+Les deux cas présentés précedemment présentent chacun des inconvénients. Généralement, un cache profite des avantages des deux visions en faisant un compromis. Dans le cas de la correspondance associative par ensemble, chaque set possède un nombre $k$ de lignes tel que $p=k \times s$. La fonction de correspondance est telle que $i = j\ modulo\ s$. De cette manière, un bloc mémoire peut se trouver dans un ensemble de $k$ lignes. Il est donc possible d'avoir plusieurs blocs mémoires correspondant au même ensemble et l'algorithme de recherche est plus efficace que dans le cas de la correspondance associative.
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \begin{center}
    \includegraphics[scale=0.60]{images/associative.png}
-   \caption{\label{img:associative} Fonction de correspondance}
+   \caption{\label{img:associative} Fonction de correspondance - www.root.cz}
 \end{center}
 \end{figure}
 
@@ -83,7 +79,7 @@ Les deux cas présentés précedemment présentent des inconvénients. Général
 \paragraph{LRU.} La dernière solution, généralement utilisée, consiste à favoriser le principe de localité temporelle en supprimant la ligne du set qui a la plus ancienne date d'utilisation: ``Least Recently Used''.
 
 \section{Gestion de la cohérence}
-Dans les systèmes actuels, un processeur n'est plus composé d'un unique c{\oe}ur, mais de plusieurs. Chaque c{\oe}ur possède généralement deux caches qui lui sont propres : le L1i pour stocker les instructions et le L1d pour stocker les données. Les caches de niveau supérieur sont quant  eux partagés par un nombre variable d'autres caches (et c{\oe}urs). Alors que les interactions entre ces deux premiers caches sont minimes -- il est difficile de mélanger instructions et données --, la cohérence entre les autres est en revanche un problème de taille.
+Dans les systèmes actuels, un processeur n'est plus composé d'un unique c{\oe}ur, mais de plusieurs. Chaque c{\oe}ur possède généralement deux caches qui lui sont propres : le L1i pour stocker les instructions et le L1d pour stocker les données. Les caches de niveau supérieur sont quant  eux partagés par un nombre variable d'autres c{\oe}urs. Alors que les interactions entre ces deux premiers caches sont minimes -- il est difficile de mélanger instructions et données --, la cohérence entre les différents L1d est en revanche un problème de taille.
 
 \subsection{Présentation du problème}
 Les caches sont utilisés à chaque \textit{load}/\textit{store}. S'il est possible que plusieurs caches possèdent la même donnée et la lisent en même temps, il est primordial qu'une donnée ne puisse pas être modifiée simultanément dans deux caches. Pour cela, des techniques hardware sont mises en place afin de définir qui a la priorité si plusieurs c{\oe}urs veulent modifier une même donnée. \\
@@ -99,40 +95,47 @@ Par ailleurs, un protocole de cohérence est mis en {\oe}uvre à chaque \textit{
 
 \subsection{Protocoles de cohérence}
 \label{coherence}
- Nous étudierons uniquement le protocole de type MSI et ses dérivés : MESI, MOSI et MOESI. Chaque ligne de cache possède un état qui permet de gérer la cohérence. Les différents états sont: \\
+ Nous étudierons uniquement le protocole de type MSI et ses dérivés : MESI, MOSI, MOSIF et MOESI. Chaque ligne de cache possède un état qui permet de gérer la cohérence. Les différents états sont: \\
 \begin{itemize}
-\item M: Une ligne est dans l'état modifié si c'est la seule copie valide dans l'ensemble des caches du niveau. Dans ce cas, si la ligne est evincée du cache, elle doit être recopiée en mémoire, via un write back. \\
-\item S: Une ligne est dans l'état partagé (\textit{shared}) si elle est valide et qu'elle n'a pas été modifiée. Dans ce cas, plusieurs caches peuvent possèder la ligne. \\
-\item I: L'état invalide est utilisé pour une ligne qui n'est pas valide. Le contenu de la ligne n'étant pas viable, il ne faut pas l'utiliser. \\
-\item E: Une ligne est dite exclusive si elle est, dans le niveau, la seule copie valide. Une ligne dans cet état n'a pas été modifiée et les données de la ligne sont identiques à celles de la mémoire principale. \\
-\item O: L'état \textit{owned} est utilisé pour un cache qui possède une donnée invalide dans la mémoire principale. Plusieurs caches peuvent possèder la même donnée, ils seront alors dans l'état S. \\
+\item M: Une ligne est dans l'état modifié si c'est la seule copie valide dans l'ensemble des caches du niveau. Dans ce cas, si la ligne est evincée du cache, elle doit être recopiée en mémoire, via un \emph{write back}. \\
+\item S: Une ligne est dans l'état partagé (\textit{shared}) si elle est valide et qu'elle n'a pas été modifiée (hormis dans le cas de MOESI). Dans ce cas, plusieurs caches peuvent possèder la ligne. \\
+\item I: L'état invalide est utilisé pour une ligne qui n'est pas valide. Le contenu de la ligne n'étant pas valable, il ne faut pas l'utiliser. \\
+\item E: Une ligne est dite exclusive si elle est, dans le niveau, la seule copie valide. Une ligne dans cet état n'a pas été modifiée et les données de la ligne sont donc identiques à celles de la mémoire principale. \\
+\item O: L'état \textit{owned} est utilisé pour un cache qui possède une donnée modifiée par rapport à la mémoire principale. Plusieurs caches peuvent possèder la même donnée, ils seront alors dans l'état S. \\
+\item F: L'état \textit{forward} permet de définir, dans le cas du \emph{snooping}, quel cache doit répondre à la réquête de \emph{snooping}. De cette manière, un seul des caches possèdant la donnée répond et cela évite d'utiliser inutilement de la bande passante.\\
 \end{itemize}
 
 L'état M est utilisé lorsque la donnée a été modifiée par un c{\oe}ur. Il existe deux cas de propagation des modifications. Dans le choix de la politique \textit{write-through}, la donnée est directement recopiée dans la mémoire principale pour éviter de futurs problèmes de cohérence. Dans le cas de la politique \textit{write-back}, la donnée est modifiée uniquement dans le cache. Les autres caches et la mémoire principale peuvent savoir que la donnée a été modifiée, en revanche ils n'ont pas la dernière copie valide. Ils peuvent l'obtenir lors des \textit{Write-Back}: lorsque la donnée est evincée du cache ou lorsqu'elle est demandée à un plus haut niveau pour des soucis de cohérence.\\
 
 Le protocole de cohérence le plus utilisé est MESI. Voici certaines caractéristiques de ce protocole : \\
 \begin{itemize}
-\item Lorsqu'un cache charge une donnée, il demande si un autre cache possède la donnée. Si un cache possède la donnée dans l'état M, alors ce cache fait un Write-Back et invalide sa donnée. Si un autre cache possède la donnée en état E, la donnée passe dans l'état S pour les deux caches. Si plusieurs (ou un seul) caches possèdent la donnée dans l'état S, la donnée est ajoutée dans l'état S.
+\item Lorsqu'un cache charge une donnée, il demande si un autre cache possède la donnée. Si un cache possède la donnée dans l'état M, alors ce cache fait un \emph{Write-Back} et invalide sa donnée. Si un autre cache possède la donnée en état E, la donnée passe dans l'état S pour les deux caches. Si plusieurs (ou un seul) caches possèdent la donnée dans l'état S, la donnée est ajoutée dans l'état S.
 \item Si un cache possède une donnée dans l'état M ou E et fait un nouveau \textit{store} sur la ligne de cache, son état devient M et aucune information n'est transmise aux autres caches.
 \item Si un cache fait un \textit{store} sur une donnée qui est dans l'état S, la même donnée est invalidée dans les autres caches du même niveau. \\
 \end{itemize}
 
 Le protocole est souvent représenté sous la forme d'un automate, dont les états possibles sont ceux des données : \\
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \begin{center}
    \includegraphics[scale=0.45]{images/mesi.png}
-   \caption{\label{img:mesi} Automate du protocole MESI}
+   \caption{\label{img:mesi} Automate du protocole MESI - unisim.org}
 \end{center}
 \end{figure}
 
-%==> Préciser source de l'image + légende\\
+Par rapport à l'automate, voici les différentes significations: \\
+\begin{itemize}
+\item Rd: le cache courant effectue une lecture,
+\item Wr: le cache courant effectue une écriture,
+\item Pr: modification en privé en partant d'un certain état,
+\item Bus: envoie d'un message à l'ensemble des caches en parallèle d'une modification privée. \\
+\end{itemize}
 
 Pour l'état O, la différence est que les interactions avec la mémoire principale sont moins importantes. En effet, lorsqu'un cache qui n'a pas la donnée fait un \textit{load}, le cache possédant la donnée dans l'état O peut lui donner sans faire de \textit{write-Back}. Cela permet de garder plus longtemps la donnée modifiée.
 
 %\newpage
 \section{Fonctionnement global}
-La cohérence expliquée jusqu'à présent correspondait à celle d'un niveau de caches. Mais il peut arriver d'autres problèmes de gestion des données entre ces différents niveaux car les niveaux de caches peuvent être inclusifs, exclusifs ou non-inclusifs. Par ailleurs, les particularités du snooping, qui consiste à demander via un bus une donnée aux autres caches du même niveau, seront aussi explicitées. \\
+La cohérence expliquée jusqu'à présent correspondait à celle d'un niveau de caches. Mais il peut arriver d'autres problèmes de gestion des données entre ces différents niveaux car les niveaux de caches peuvent être inclusifs, exclusifs ou non-inclusifs. Par ailleurs, les particularités du \emph{snooping}, qui consiste à demander via un bus une donnée aux autres caches du même niveau, seront aussi explicitées. \\
 
 Le cas inclusif est plutôt orienté \textsf{Intel} alors que le cas exclusif est plutôt mis en place par \textsf{AMD}. De son côté \textsf{ARM} oscille entre les deux solutions proposées.
 
@@ -140,14 +143,14 @@ Le cas inclusif est plutôt orienté \textsf{Intel} alors que le cas exclusif es
 \subsection{Caches inclusifs}
 Le fonctionnement d'un cache inclusif est relativement simple. En cas de \textit{hit}, la donnée est propagée au cache (ou au processeur) qui a préalablement demandé la donnée. En cas de \textit{miss}, une demande de donnée est effectuée au niveau du dessus. La donnée est ensuite propagée à la mémoire d'en dessous. Dans le cas d'une hiérarchie avec uniquement des caches inclusifs, les messages utilisés pour demander/donner les données se font uniquement de façon verticale dans la hiérarchie. Il y a parallèlement, des messages destinés à garantir la consistance du système qui sont gérés différemment et qui influent sur la totalité de la hiérarchie. Voici un résumé des messages envoyés dans le cas d'une demande de donnée, en ne tenant pas compte de la gestion de la cohérence : \\
 
-\begin{figure}[!h]
+\begin{figure}[H]
 \begin{center}
    \includegraphics[scale=0.7]{images/inclusifs.png}
    \caption{\label{img:inclusifs} Caches de niveau 2 et 3 inclusifs}
 \end{center}
 \end{figure}
 
-%==> Préciser source de l'image + légende\\
+Dans le schéma étudié, un \emph{load} de la donnée $A$ est effectué sur le quatrième cache, puis sur le premier cache. Les données contenues dans les différents caches sont donc appelées $Ai$ avec $i$ l'étape $1$ ou $2$.
 
 \subsection{Caches exclusifs}
 Cependant, le fait qu'un cache soit inclusif pose un problème : les données sont dupliquées dans la hiérarchie. De ce fait, la taille réellement utilisable de l'ensemble des caches est en fait inférieure à la taille théorique. Les caches exclusifs ont justement pour principal objectif de limiter cette duplication des données. Par exemple, si un L2 est exclusif, les L1 en dessous ne pourront pas contenir une donnée déjà présente dans le L2, et inversement. Concrètement, il y a quatre cas de figure : \\
@@ -165,23 +168,23 @@ Il en va de même pour les interactions entre les L2 et les L3, voire d'autres n
 \subsection{Caches non-inclusifs}
 Il existe un autre cas de figure, qui peut être considéré comme une variante du cas exclusif. Lorsqu'un L1 demande une donnée et que le L2 ne l'a pas, il se contentera de propager la donnée sans la conserver en mémoire. Cependant, si il avait préalablement la donnée, il la propagera au L1 sans pour autant la supprimer. Ce cas de figure peut être utilisé pour un L2 avec un L3 inclusif. De cette manière, la hiérarchie permet en moyenne de stocker plus de blocs mémoires sans pour autant compliquer la gestion de la cohérence. \\
 
-Un autre cas de figure est un cache non-inclusif qui fonctionne avec plus de souplesse qu'un cache inclusif. Les données sont toujours laissées au passage, par contre l'inclusivité n'est pas formelle: il peut perdurer dans un L1 une donnée qui a été ejectée d'un L2 par exemple.
+Un autre cas de figure est un cache non-inclusif qui fonctionne avec plus de souplesse qu'un cache inclusif. Les données sont toujours laissées au passage, par contre l'inclusivité n'est pas formelle: il peut perdurer dans un L1 une donnée qui a été evincée d'un L2 par exemple.
 
-\subsection{Ajout du snooping}
+\subsection{Ajout du \emph{snooping}}
 \label{snooping}
- Il est possible que les caches d'un même niveau soient reliés ensemble par un bus. La méthode de recherche sur ce bus est alors appelée snooping. Prenons l'exemple d'une hiérarchie à trois niveaux où les L2 seraient reliés par un bus. Lorsqu'un L1 fait un \textit{miss}, il demande au L2 associé de lui fournir la donnée. En cas de nouveau \textit{miss}, la demande est envoyée en broadcast sur le bus afin de récupérer la donnée sans passer par le L3. Si aucun cache ne possède la donnée, la demande est alors transmise au L3.
+ Il est possible que des caches d'un même niveau soient reliés ensemble par un bus. La méthode de recherche sur ce bus est alors appelée \emph{snooping}. Prenons l'exemple d'une hiérarchie à trois niveaux où les L2 seraient reliés par un bus. Lorsqu'un L1 fait un \textit{miss}, il demande au L2 associé de lui fournir la donnée. En cas de nouveau \textit{miss}, la demande est envoyée en broadcast sur le bus afin de récupérer la donnée sans passer par le L3. Si aucun cache ne possède la donnée, la demande est alors transmise au L3.
 
 \newpage
 \section{Comportements spéciaux}
 Les politiques de remplacement, de cohérence et les différents types de caches offrent un ensemble de modularités dans la gestion d'une hiérarchie de caches. Cependant, d'autres possibilités existent afin d'améliorer les performances de l'ensemble.
 
 \subsection{Utilisation d'un \textit{victim cache}}
-Généralement, des caches à $k$ voies associatifs sont utilisés, car la fonction de recherche d'une donnée est peu coûteuse et plusieurs blocs mémoire correspondant à un même set peuvent être stocké dans un cache. Dans la plupart des cas, le nombre de voies varie entre $2$ et $12$. \\
+Généralement, des caches à $k$ voies associatifs sont utilisés, car la fonction de recherche d'une donnée est peu coûteuse et plusieurs blocs mémoire correspondant à un même set peuvent être stockés dans un cache. Dans la plupart des cas, le nombre de voies varie entre $2$ et $12$. \\
 
 Dans certains cas, il est possible que le nombre de voies ne soit pas suffisant car un ensemble de blocs mémoire correspondant au même set est très utilisé. Cela est notamment vrai pour les L1 qui possèdent généralement peu de voies. Pour pallier ce problème et limiter les échanges de données entre les L1 et les L2, il est possible d'utiliser un buffer pour stocker les victimes d'éviction. Ce buffer est de petite taille, par exemple $8$ fois la taille d'une ligne de cache. De cette manière, lorsqu'un donnée est supprimée du L1, elle est placée dans le buffer correspondant. Lorsque le L1 fait un \textit{miss}, il commence par regarder dans le buffer (le coût est alors faible). Les données arrivant dans le L2 sont alors celles evincées du buffer.
 
 \subsection{Suivi des données}
- Il existe différentes manières de localiser les données dans une hiérarchie mémoire -- il ne s'agit pas ici de la recherche au sein d'un cache, cela est géré par la table d'étiquettes, mais bien entre les caches. Deux cas fréquents se posent, ils sont réglés la plupart du temps par un \textit{tracking} : dans quels caches se trouvent les données.
+ Il existe différentes manières de localiser les données dans une hiérarchie mémoire, il ne s'agit pas ici de la recherche au sein d'un cache, cela est géré par la table d'étiquettes, mais bien entre les caches. Deux cas fréquents se posent, ils sont réglés la plupart du temps par un \textit{tracking} : savoir dans quels caches se trouvent les données.
 
 \subsubsection{Supprimer les données}
 Lorsqu'un cache L1 utilise une donnée qu'il possède déjà dans son cache, les flags utilisés par les politiques de remplacement sont mis à jour afin de supprimer les bonnes données lorsqu'un set sera plein. Cependant, les caches de plus haut niveau (L2, L3) ne sont pas mis au courant que la donnée a été utilisée et ils ne changent donc pas les flags de remplacement. Ainsi, lorsque le L2 aura un set plein, il se peut qu'il supprime une donnée très utilisée dans un L1. \\
@@ -189,4 +192,4 @@ Lorsqu'un cache L1 utilise une donnée qu'il possède déjà dans son cache, les
 Dans le cas d'un cache inclusif, il faut donc, à la suppression d'une donnée, invalider la donnée dans les caches en dessous afin de conserver le caractère inclusif. Pour limiter ce problème, les L2 et les L3 peuvent suivre les données, c'est-à-dire posséder une table indiquant quels caches de niveau plus bas ont également la donnée. De cette manière, les politiques de remplacement peuvent être adaptées en définissant des priorités: par exemple, éviter de supprimer les données qui sont contenues dans beaucoup de caches.
 
 \subsubsection{Savoir qui a les données}
-Dans le cas d'un cache de dernier niveau et exclusif, s'il se produit un \textit{miss}, il faut parcourir l'ensemble de la hiérarchie avant d'évenetuellement faire appel à la mémoire principale. Cela pose des problèmes, tant au niveau de la recherche des données que de la gestion de la consistance du système. Pour pallier ce problème, le cache de dernier niveau peut être lié à un table d'étiquettes, permettant de savoir quelles sont les données contenues dans chaque cache. Cela évite d'avoir à parcourir l'ensemble de la hiérarchie mais il y a un coût en terme de mémoire. Cependant, ce coup est faible (les données ne sont pas stockées) et bien inférieur au coût mémoire de la duplication dans le cache d'un cache de dernier niveau inclusif.
+Dans le cas d'un cache de dernier niveau et exclusif, s'il se produit un \textit{miss}, il faut parcourir l'ensemble de la hiérarchie avant d'éventuellement faire appel à la mémoire principale. Cela pose des problèmes, tant au niveau de la recherche des données que de la gestion de la consistance du système. Pour pallier ce problème, le cache de dernier niveau peut être lié à une table d'étiquettes, permettant de recenser les données contenues dans chaque cache. Cela évite d'avoir à parcourir l'ensemble de la hiérarchie mais il y a un coût en terme de mémoire. Cependant, ce coup est faible (les données ne sont pas stockées) et bien inférieur au coût mémoire de la duplication dans le cas d'un cache de dernier niveau inclusif.

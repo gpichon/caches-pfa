@@ -24,12 +24,12 @@ Le fichier de configuration de l'architecture dédié au simulateur comprend tou
 \paragraph{}
 Il s'agit d'un fichier XML qui contient 3 balises : \textbf{Architecture}, \textbf{Level} et \textbf{Cache}.
 
-\paragraph{Architecture} donne les infomations générales sur l'architecture, telles que le son nom, le modèle du microprocesseur et le nombre de niveaux de cache.
+\paragraph{Architecture} donne les informations générales sur l'architecture, telles que le son nom, le modèle du microprocesseur et le nombre de niveaux de cache.
 
 \paragraph{Level} décrit les informations relatives à un niveau de cache en particulier. Il possède notamment les attributs suivants :
 \begin{itemize}
   \item \textbf{coherence\_protocol} : MESI, MSI, MOSI, MESIF, ou MOESI (cf. \ref{coherence} page \pageref{coherence}), qui sont les protocoles implémentés pour le simulateur. Le dernier niveau ne possède pas de protocole de cohérence, car il est le seul cache dans son niveau.
-  \item \textbf{type} : l'inclusivité des caches du niveau (cf. \ref{inclusivite} page \pageref{inclusivite}). Ce paramètre n'a pas de sens pour les L1.
+  \item \textbf{type} : le type des caches du niveau (cf. \ref{inclusivite} page \pageref{inclusivite}). Ce paramètre n'a pas de sens pour les L1.
   \item \textbf{snooping} : y a-t-il du \emph{snooping} à ce niveau ? (cf. \ref{snooping} page \pageref{snooping}). Le cache du dernier niveau ne peut pas faire de \emph{snooping}.
   \item \textbf{directory\_manager} : les caches du niveau possèdent-ils un \emph{directory manager} ? Ce paramètre n'est pas pris en compte pour les L1.
 \end{itemize}
