@@ -19,10 +19,18 @@ Dans \textsf{Cassis}, le choix de favoriser la paramétrisation de l'architectur
 
 Par ailleurs, les politiques de remplacement sont relativement basiques et propres à un cache. Si avec les \emph{directory manager} il est possible d'adapter les données à remplacer dans un cache en fonction du contenu des caches en dessous, d'autres interactions sont actuellement impossibles. \\
 
-Pour finir, si les statistiques produites par le simulateur sont assez variées (évictions, \emph{broadcast}, type de \emph{misses}), elles ne correspondent pas totalement avec par exemple ce qui est disponible grâce aux compteurs hardware.
+Pour fournir des statistiques représentatives de ce qui se passe en réalité, il faudrait réaliser un post-traitement afin de calibrer les résultats. En se basant par exemple sur les résultats des compteurs hardware pour un ensemble de benchmarks, il serait sûrement possible d'extraire des facteurs à appliquer sur les statistiques de sortie de \textsf{Cassis}. Le problème posé ici est le choix des statistiques produites par le simulateur qui, si elles sont assez variées (évictions, \emph{broadcast}, type de \emph{misses}), ne correspondent pas totalement avec par exemple ce qui est disponible grâce aux compteurs hardware. \\
 
-\section{Moyens pour contrer ces limites}
-Pour finir des statistiques représentatives de ce qui se passe en réalité, il faudrait réaliser un post-traitement afin de calibrer les résultats. En se basant par exemple sur les résultats des compteurs hardware pour un ensemble de benchmarks, il serait sûrement possible d'extraire des facteurs à appliquer sur les statistiques de sortie de \textsf{Cassis}.
+Un autre ensemble de limitations du simulateur est dû au format de trace qui est actuellement géré au sein d'un simulateur. On suppose qu'on a accès à un flot d'instructions par c{\oe}ur, sans aucune connaissance des interactions entre les c{\oe}urs. L'entrelacement est facilement configurable donc cela peut en partie régler ce programme, mais il est difficile d'imaginer représenter justement l'execution d'un programme complexe. Avec les synchronisations, des barrières où tous les threads s'attendent avant de changer de programme, il y aurait un entrelacement plus juste. \\
 
-%parler changement de contextes, synchronisations et so-on
-%parler des limites des directory manager à cause des priorités
+Pour finir, avec des programmes utilisant des contextes (ce qui est le cas dans une partie des applications parallèles), les changements de contextes pourraient poser des problèmes. En effet, les traces fournissent des instructions sur des adresses virtuelles, et l'ensemble du simulateur travaille sur ces adresses virtuelles. Dans la réalité, seuls les L1 travaillent sur les adresses virtuelles, les L2 et L3 traitent des adresses physiques. En cas de changement de contexte, il faut vider les L1 alors que les L2 et les L3 restent cohérents avec le reste.
+
+\newpage
+\section{Evolution par rapport au cahier des charges}
+Par rapport au cahier des charges, les engagements fixés ont globalement été tenus. L'idée essentielle de faire un outil facilement paramétrisable sans recompilation a bien été respectée. Par ailleurs, il est relativement facile de rajouter une politique de remplacement ou de cohérence. \\ 
+
+La plus grosse différence réside dans la gestion des traces. Le format présenté au début de projet a évolué et ne permet plus de réaliser des optimisations. Il offre cependant plus de flexibilité et plus d'informations vis à vis du code source à tester, ce qui a notamment permis de mettre en {\oe}uvre assez facilement un suivi de données paramétrisable. \\
+
+Au niveau des politiques, ce qui avait été présenté dans le rapport a été implémenté. A noter que la politique de cohérence MOESI n'a pas été testée et est donc proposée à titre expérimental. Cependant, la gestion des politiques de cohérences grâce aux automates facilite leur compréhension et permet leur modification sans rentrer dans le reste du code. D'autres politiques non présentes dans le cahier des charges sotn donc également fournies à titre expérimental. Le problème reste toutefois de bien mettre à jour les statistiques, voire d'en ajouter pour des comportements spéciaux qui n'existent pas dans MSI ou MOESI. \\
+
+Le principal problème réside sûrement dans la validation des résultats. Ce problème n'a pas été assez mis en avant au début du projet et a été rencontré assez tard, ce qui explique qu'aucune des comparaisons effectuées avec \textsf{PAPI} ou \textsf{Cachegrind} n'a donné de résultats exploitables.
