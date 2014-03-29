@@ -1,16 +1,27 @@
 \section{Ajout d'une politique de remplacement}
-Les politiques de remplacement mise en {\oe}uvre dans \textsf{Cassis} sont classiques. Il est envisageable de rajouter des politiques de remplacement, qui par exemple utiliserait plus de statistiques en interne pour mieux choisir les données à évincer.
 
-Grâce à l'utilisation de pointeurs de fonctions, la gestion de la politique de remplacement au sein d'un cache se fait de façons automatique dans la partie du code qui effectue les actions à réaliser en cas de \emph{load} ou \emph{store}. Il suffit d'ajouter dans la structure cache les bons pointeurs de fonctions pour deux fonctions: \\
+\paragraph{}
+Les politiques de remplacement mises en {\oe}uvre dans \textsf{Cassis} sont assez classiques. Il est envisageable d'en rajouter, qui par exemple utiliseraient plus de statistiques en interne pour mieux choisir les données à évincer.
+
+\paragraph{}
+Grâce à l'utilisation de pointeurs de fonctions, l'appel de la politique de remplacement voulue au sein d'un cache se fait de façon automatique dans la partie du code qui effectue les actions à réaliser en cas de \emph{load} ou \emph{store}. Il faut ajouter trois fonctions au total :
 \begin{itemize}
-\item update\char`_lines\char`_POLICY(block, nb\char`_ways, entry)
-\item id\char`_line\char`_to\char`_replace\char`_POLICY(block, priorité, not\char`_rm) \\
+\item \texttt{(void) replacement\_POLICY(cache)}, dans \texttt{cache.c}
+\item \texttt{(void) update\_lines\_POLICY(block, nb\_ways, entry)}, dans \texttt{block.c}
+\item \texttt{(int) id\_line\_to\_replace\_POLICY(block, priorité, not\_rm)}, dans \texttt{block.c}
 \end{itemize}
-La première sert à mettre à jour les flags de remplacement relatifs à la nouvelle politique, alors que la deuxième sert à identifier la ligne à supprimer lorsqu'un cache est plein. A noter que les paramètres priorité et not\char`_rm servent à améliorer le fonctionnement global des politiques de cohérence. La priorité est utilisée dans le cas de l'usage de \emph{directory manager} pour identifier les données qui sont présentes dans les caches en dessous alors que le paramètre not\char`_rm sert à identifier une donnée qui va très probablement être ajoutée dans un futur proche. Ces deux paramètres sont toutefois facultatifs, ils n'empêchent pas de fournir des résultats cohérents, et leur utilisation peut être inutile pour une nouvelle politique. \\
 
-Il faut donc créer ces duex fonctions dans le fichier \texttt{block.c}, puis ajouter une function de prototype void replacement\char`_POLICY(cache) dans \texttt{cache.c}. Il faut pour finir permettre d'ajouter la politique au fichier de configuration en XML. Pour cela, il suffir de rajouter, dans la fonction get\char`_replacement\char`_function(cache), présente dans \texttt{architecture.c}, une entrée vers la nouvelle politique. \\
+\paragraph{}
+La première fonction sert à initialiser la structure contenant les pointeurs de fonctions sur les deux fonctions suivantes. Cependant il faut que l'architecture puisse appeler la bonne fonction d'initialisation. Pour cela, il suffir de rajouter, dans la fonction get\_replacement\_function(cache), présente dans \texttt{architecture.c}, une entrée vers la nouvelle politique.
 
-Pour ajouter une politique de remplacement plus globale permettant par exemple d'obtenir des informations à partir d'autres caches, il faut modifier le prototype de fonction pour prendre un n{\oe}ud à la place d'un block. Il faudra cependant s'assurer de modifier toutes les fonctions existantes pour les $3$ politiques déjà implémentées.
+\paragraph{}
+La seconde sert à mettre à jour les flags de remplacement relatifs à la nouvelle politique, alors que la troisième sert à identifier la ligne à supprimer lorsqu'un cache est plein. A noter que les paramètres priorité et not\_rm servent à améliorer le fonctionnement global des politiques de cohérence. La priorité est utilisée dans le cas de l'usage de \emph{directory manager} pour identifier les données qui sont présentes dans les caches en dessous alors que le paramètre not\_rm sert à identifier une donnée qui va très probablement être ajoutée dans un futur proche. Ces deux paramètres sont toutefois facultatifs, ils n'empêchent pas de fournir des résultats cohérents, et leur utilisation peut être inutile pour une nouvelle politique.
+
+\paragraph{}
+La politique de remplacement peut se baser sur toutes les données stockées dans les structures \texttt{block} et \texttt{line}. Actuellement c'est l'entier \texttt{line.use} qui est utilisée, mais l'utilisateur peut ici décider d'en rajouter, ou de se baser sur d'autres informations telles que l'état de la ligne.
+
+\paragraph{}
+Pour ajouter une politique de remplacement plus globale permettant par exemple d'obtenir des informations à partir d'autres caches, il faut modifier le prototype de fonction pour prendre un n{\oe}ud à la place d'un block. Il faudra cependant s'assurer de modifier toutes les fonctions existantes pour les trois politiques déjà implémentées.
 
 \section{Ajout d'une politique de cohérence}
 \label{tuto_aut}
@@ -21,14 +32,134 @@ Les politiques de cohérence sont toutes décrites dans un seul fichier, écrit 
 
 \subsubsection{\texttt{common\_types.h}}
 
+Il faut modifier dans ce fichier les deux énumérations \texttt{status} et \texttt{cache\_coherence} qui contiennent pour la première les status possibles pour les lignes, et pour la seconde les noms des politiques de cohérence.
+
 \subsubsection{\texttt{architecture.c}}
+
+L'analyse du fichier d'architecture en \texttt{XML} doit reférencer le nom de la nouvelle politique POLICY. Pour cela il faut rajouter le cas adéquat dans la fonction \texttt{coherence(...)} de ce fichier.
 
 \subsubsection{\texttt{coherence.c}}
 
+La fonction \texttt{coherence\_init(...)} initilise l'automate vers la bonne politique de cohérence. Il convient ici d'appeler la transition qui permet de passer de la carte\footnote{Notons que nous parlons ici de \og carte \fg. En effet il n'y a qu'un seul automate contenant toutes les politiques du point de vue de \textsf{SMC}, mais pouvant s'appuyer sur plusieurs cartes. Chacune des cartes correspond à la vision classique d'un automate de cohérence, nous continuerons ici d'employer le terme \og carte \fg afin de distinguer l'automate tel que vu par \textsf{SMC} (qui correspond à l'ensemble des politiques, plus l'initialisation), de l'automate de cohérence d'une politique, appelé ici \og carte \fg.} de l'automate de départ vers la carte de l'automate POLICY. Le cas à rajouter ne peut être ici fait que d'une seule façon, avec un nom précis de fonction :
+\begin{framed}
+\begin{lstlisting}[frame=none,language=C]
+  case POLICY:
+    coherenceContext_POLICY(&this->_fsm);
+    break;
+\end{lstlisting}
+\end{framed}
+Cela nécessite de nommer la carte de cette politique de cohérence POLICY dans le point suivant.
+
 \subsubsection{\texttt{coherence.sm}}
+
+
+Deux parties sont à modifier dans ce fichier. La première permet de changer de carte vers la bonne politique :
+\begin{framed}
+\begin{verbatim}
+%map Init
+%%
+// State    Transition  End State       Action(s)
+Start
+{
+            MSI        jump(MSI::I)     {}
+            ...
+            ...
+            POLICY     jump(POLICY::I)  {}
+}
+%%
+\end{verbatim}
+\end{framed}
+
+Par ailleurs il faut rajouter après cette première carte, la carte de la nouvelle politique, il s'agit ici d'une recopie de MSI :
+\begin{framed}
+\begin{verbatim}
+%map POLICY
+%%
+// State         Transition        End State       Action(s)
+
+I
+{
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)       
+            M      {modify_line(l); up_stat(n,i,COHERENCE_BROADCAST);}
+	i_read(n: struct node*, i: unsigned long, l: struct line*)         
+            S      {share_line(l); up_stat(n,i,COHERENCE_BROADCAST);}           
+}
+
+M
+{
+	a_read(n: struct node*, i: unsigned long, l: struct line*)        
+            S       {share_line(l);up_stat(n,i,WRITE_BACK);
+                     dirty_line(l, 0);}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)         
+            I       {invalid_line(l);up_stat(n,i,WRITE_BACK);}     
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)      
+            I       {invalid_line(l);up_stat(n,i,WRITE_BACK);
+                     up_stat(n,i,COHERENCE_EVINCTION);}
+}
+
+S
+{
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)      
+            M       {modify_line(l);up_stat(n,i,COHERENCE_BROADCAST);}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)      
+            I       {invalid_line(l);up_stat(n,i,COHERENCE_EVINCTION);}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)         
+            I       {invalid_line(l);}                 
+}
+
+
+Default
+{
+	i_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	i_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	i_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+	a_read(n: struct node*, i: unsigned long, l: struct line*)     nil    {}
+	a_modify(n: struct node*, i: unsigned long, l: struct line*)   nil    {}
+	a_del(n: struct node*, i: unsigned long, l: struct line*)      nil     {}
+
+}
+%%
+\end{verbatim}
+\end{framed}
+
+Remarquons que l'état \verb!Default! permet ici de créer une boucle sur tous les états ne définissant pas toutes les transitions possibles. Cela évite de définir les transitions qui ne donnent pas lieu à un changement d'état ni à des actions particulières. Il est par ailleurs nécessaire que soit \verb!Default! soit présent, soit toutes les transitions soient définies pour chaque état, car l'automate ne fonctionnera pas si une transition est appelée sur un état qui ne la définit pas.
+
 
 \subsection{Actions possibles}
 
+L'exemple de code précédent contient déjà quelques exemples des possibilités offertes par \textsf{SMC}. Toutefois, il y a d'une part d'autres possibilités -- notamment les transitions conditionnelles -- et d'autre part quelques restrictions.
+
 \subsubsection{Usage de \textsf{SMC}}
+
+L'usage de \textsf{SMC} n'est pas vu en détail ici, pour cela vous pouvez consulter la documentation officielle sur leur \href{http://smc.sourceforge.net/SmcManual.htm}{site}. Seuls quelques aspects sont ici précisés.
+
+\paragraph{Arguments des transitions.}
+Les arguments des transition peuvent utiliser n'importe quel type primaire de \texttt{C} mais en ce qui concerne les structures, il faut alors qu'elles soient redéclarées au tout début du fichier, mais si celles-ci sont présentes dans les inclusions du fichier \texttt{coherence.h}.
+
+\begin{framed}
+\begin{verbatim}
+%declare struct node;
+%declare struct line;
+
+%start Init::Start
+%class coherence
+%header coherence.h
+\end{verbatim}
+\end{framed}
+
+\paragraph{Transitions conditionnelles.}
+Il est possible de définir plusieurs fois la même transition avec des conditions différentes, afin de permettre de passer dans un autre état, ou bien de faire d'autres actions que la première définition. Les conditions sont des comparaisons simples écrites en \texttt{C}. Par exemple :
+\begin{framed}
+\begin{verbatim}
+a_del(n: struct node*, i: unsigned long, l: struct line*)  
+    [is_in_level(n,i,I) != 0 && is_dirty(l) == 1 && is_in_level(n,i,O) == 0]                                                                                                         O       {owned_line(l);}
+a_del(n: struct node*, i: unsigned long, l: struct line*)    [is_in_level(n,i,I) == 0 && is_dirty(l) == 1]   M      {modify_line(l);}
+\end{verbatim}
+\end{framed}
+
+\paragraph{Code dans les actions.}
+
+\paragraph{Ajout de transition.}
+
 
 \subsubsection{Uage des fonctions du simulateur}
