@@ -3,12 +3,13 @@
 Les politiques de cohérence pré-implémentées sont MSI, MESI, MOESI, MESIF et MOSI. Elles sont nécessaires pour décrire l'état d'une ligne dans un cache et se représentent facilement par des automates dont les états sont ceux de la ligne, et les transitions sont des actions effectuées sur la ligne. Il est possible de rajouter d'autres politiques comme expliqué dans le tutoriel de la partie \ref{tuto_aut}, la section ci-dessous a pour vocation uniquement de préciser la paramétrisation des politiques déjà définies, sans évoquer la syntaxe à utiliser.
 
 \subsection{Actions réalisées par une politique de cohérence}
+\label{actions}
 
 \paragraph{}
 Une politique de cohérence est utilisée afin de garantir la cohérence des données dans tous les caches d'un même niveau : c'est-à-dire éviter qu'un cache ne possède une donnée qui n'est pas à jour car modifiée par un autre cache. L'objectif des constructeurs est donc de limiter les invalidations de lignes ou les messages de cohérence (voire l'envoi de la ligne) entre les caches, en cas de modification d'une ligne par un cache tiers. 
 
 \paragraph{}
-Dans le cas de \textsf{Cassis}, les politiques de cohérence s'occupent donc simplement de renvoyer le nouvel état de la ligne en cas d'action sur celle-ci. Les actions (qui sont donc les transitions des automates) peuvent être une lecture, une écriture ou une suppression, par le cache-même ou par un des caches du même niveau. Certaines statistiques dépendent aussi de ces actions. Ainsi les \verb!COHERENCE_EVINCTION!, \verb!COHERENCE_BROADCAST! et les \verb!WRITE_BACK! sont comptabilisées par les politiques de cohérence, respectivement dans le cas d'une invalidation de la ligne pour cause de modification dans un autre cache, pour l'envoi d'un message ou d'une donnée aux autres caches et enfin pour l'écriture de la donnée dans le cache parent. 
+Dans le cas de \textsf{Cassis}, les politiques de cohérence s'occupent donc simplement de modifier le nouvel état de la ligne en cas d'action sur celle-ci. Les actions (qui sont donc les transitions des automates) peuvent être une lecture, une écriture ou une suppression, par le cache-même ou par un des caches du même niveau. Certaines statistiques dépendent aussi de ces actions. Ainsi les \verb!COHERENCE_EVINCTION!, \verb!COHERENCE_BROADCAST! et les \verb!WRITE_BACK! sont comptabilisées par les politiques de cohérence, respectivement dans le cas d'une invalidation de la ligne pour cause de modification dans un autre cache, pour l'envoi d'un message ou d'une donnée aux autres caches et enfin pour l'écriture de la donnée dans le cache parent. 
 
 \subsection{Utilisation de SMC}
 

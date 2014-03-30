@@ -127,15 +127,10 @@ Remarquons que l'état \verb!Default! permet ici de créer une boucle sur tous l
 
 \subsection{Actions possibles}
 
-L'exemple de code précédent contient déjà quelques exemples des possibilités offertes par \textsf{SMC}. Toutefois, il y a d'une part d'autres possibilités -- notamment les transitions conditionnelles -- et d'autre part quelques restrictions.
-
-\subsubsection{Usage de \textsf{SMC}}
-
-L'usage de \textsf{SMC} n'est pas vu en détail ici, pour cela vous pouvez consulter la documentation officielle sur leur \href{http://smc.sourceforge.net/SmcManual.htm}{site}. Seuls quelques aspects sont ici précisés.
+L'exemple de code précédent contient déjà quelques exemples des possibilités offertes par \textsf{SMC}. Toutefois, il y a d'une part d'autres possibilités -- notamment les transitions conditionnelles -- et d'autre part quelques restrictions. L'usage de \textsf{SMC} n'est pas vu en détail ici, pour cela il est possible de consulter la documentation officielle sur leur \href{http://smc.sourceforge.net/SmcManual.htm}{site}. Seuls quelques aspects sont ici précisés, et notamment les lien avec les fichiers du simulateur.
 
 \paragraph{Arguments des transitions.}
 Les arguments des transition peuvent utiliser n'importe quel type primaire de \texttt{C} mais en ce qui concerne les structures, il faut alors qu'elles soient redéclarées au tout début du fichier, mais si celles-ci sont présentes dans les inclusions du fichier \texttt{coherence.h}.
-
 \begin{framed}
 \begin{verbatim}
 %declare struct node;
@@ -152,14 +147,27 @@ Il est possible de définir plusieurs fois la même transition avec des conditio
 \begin{framed}
 \begin{verbatim}
 a_del(n: struct node*, i: unsigned long, l: struct line*)  
-    [is_in_level(n,i,I) != 0 && is_dirty(l) == 1 && is_in_level(n,i,O) == 0]                                                                                                         O       {owned_line(l);}
-a_del(n: struct node*, i: unsigned long, l: struct line*)    [is_in_level(n,i,I) == 0 && is_dirty(l) == 1]   M      {modify_line(l);}
+    [is_in_level(n,i,I) != 0 && is_dirty(l) == 1 
+                             && is_in_level(n,i,O) == 0] 
+          O       {owned_line(l);}
+
+a_del(n: struct node*, i: unsigned long, l: struct line*)    
+    [is_in_level(n,i,I) == 0 && is_dirty(l) == 1]   
+          M       {modify_line(l);}
 \end{verbatim}
 \end{framed}
+Les fonctions appelées par les conditions doivent être définies depuis les inclusions du fichier \texttt{coherence.h}.
 
 \paragraph{Code dans les actions.}
+Le code dans les actions ne peut \emph{a priori} qu'être une succession d'appels de fonctions avec une règle de nommage spécifique. En effet toute fonction appelée depuis les règles d'actions dans le fichier \texttt{coherence.sm} doit être définie (dans une des inclusions comme précédemment) avec le même nom préfixé par \texttt{coherence\_}. En effet \textsf{SMC} était à l'origine prévu pour des langages orientés objet, et pour le \texttt{C} il est tout de même nécessaire de préciser une classe, ici \texttt{coherence}. Pour plus de précisions sur les actions à effectuer, voir la section \ref{actions}.
 
 \paragraph{Ajout de transition.}
-
-
-\subsubsection{Uage des fonctions du simulateur}
+L'ajout d'une transition nécessite beaucoup de modifications. D'une part il faut l'ajouter dans toutes les cartes pour garder l'indépendance de l'appel de la cohérence vis-à-vis des différentes politiques possibles. D'autre part \textsf{SMC} introduit ici encore une obligation syntaxique, la définition de la transition dans \texttt{coherence.sm} et la fonction telle que définie par le \texttt{coherence\_sm.h } n'ont en effet pas les mêmes prototypes :
+\begin{framed}
+\begin{verbatim}
+\\dans coherence.sm :
+i_del(n: struct node*, i: unsigned long, l: struct line*)
+\\tel qu'appelé depuis add_line_hierarchy.c :
+coherenceContext_i_del(&line->coher->_fsm, current_node, entry, line);
+\end{verbatim}
+\end{framed}

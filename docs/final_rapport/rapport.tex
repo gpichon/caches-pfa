@@ -65,6 +65,8 @@
 \renewcommand{\labelitemi}{$\bullet$}
 
 \newpage
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
 \input{intro.tex}
 \newpage
 \chapter{Généralités sur les caches}
@@ -80,6 +82,7 @@
 \input{limites.tex}
 \newpage
 \chapter*{Conclusion}
+\addcontentsline{toc}{chapter}{Conclusion}
 \input{conc.tex}
 \newpage
 \appendix
@@ -89,6 +92,8 @@
 \input{automates.tex}
 \chapter{Tutoriel d'ajout d'une politique de cohérence/remplacement}
 \input{tutoriel.tex}
+\newpage
+\addcontentsline{toc}{chapter}{Bibliographie}
 \nocite{*}
 \bibliographystyle{plain}
 \bibliography{rapport}
