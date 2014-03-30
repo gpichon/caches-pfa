@@ -44,7 +44,6 @@ mots = []
 for i in range(0, nb_functions):
     place.append(3*i+1.5)
     mots.append(file2_l[i].replace('\n',''))
-print place, mots 
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
