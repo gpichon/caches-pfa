@@ -1,0 +1,44 @@
+\section{Format d'une trace}
+
+\subsection{Présentation du format}
+\begin{framed}
+\begin{verbatim}
+  1 - Intrumented LOAD (MOV)@400c61 SRC@27 par._omp_fn.3
+  2 - Intrumented LOAD (MOV)@400c6e SRC@27 par._omp_fn.3
+  3 - Intrumented LOAD (MOV)@400c72 SRC@27 par._omp_fn.3
+  4 - Intrumented STORE (MOV)@400c82 SRC@27 par._omp_fn.3
+  5 - Intrumented LOAD (ADD)@400c85 SRC@27 par._omp_fn.3
+  6 - Intrumented LOAD (CMP)@400c89 SRC@27 par._omp_fn.3
+  7 - Intrumented LOAD (MOV)@400ce9 SRC@31 par._omp_fn.4
+  8 - Intrumented LOAD (MOV)@400cf6 SRC@31 par._omp_fn.4
+  9 - Intrumented LOAD (MOV)@400cfa SRC@31 par._omp_fn.4
+
+
+LOAD 7fff71d376b0 1 11
+LOAD 1660c18 1 12
+STORE 1660c18 1 13
+LOAD 7f0b333d0e1c 1 14
+LOAD 7f0b333d0e1c 1 15
+LOAD 7f0b333d0e1c 1 6
+LOAD 7f0b333d0e08 1 7
+LOAD 7fff71d376b0 1 8
+LOAD 7f0b333d0e1c 1 9
+LOAD 7f0b333d0e08 1 10
+LOAD 7fff71d376b0 1 11
+LOAD 1660c20 1 12
+STORE 1660c20 1 13
+LOAD 7f0b333d0e1c 1 14
+LOAD 7f0b333d0e1c 1 15
+LOAD 7f0b333d0e1c 1 6
+LOAD 7f0b333d0e08 1 7
+LOAD 7fff71d376b0 1 8
+LOAD 7f0b333d0e1c 1 9
+LOAD 7f0b333d0e08 1 10
+LOAD 7fff71d376b0 1 11
+LOAD 1660c28 1 12
+STORE 1660c28 1 13
+LOAD 7f0b333d0e1c 1 14
+\end{verbatim}
+\end{framed}
+
+\subsection{Suivi de données spéciales}

@@ -109,13 +109,24 @@ Différentes statistiques sont relevées par le simulateur, les principales sont
 L3  basics   (misses:   6, hits:   0, writes_back:   0)
 L2  basics   (misses:   6, hits:   0, writes_back:   0)
 L1  basics   (misses:   4, hits:  44, writes_back:   1)
+L2  basics   (misses:   7, hits:   2, writes_back:   0)
 L1  basics   (misses:   6, hits:  42, writes_back:   2)
 L2  basics   (misses:   0, hits:   0, writes_back:   0)
 L1  basics   (misses:   0, hits:   0, writes_back:   0)
+L2  basics   (misses:   6, hits:   3, writes_back:   0)
 L1  basics   (misses:   0, hits:   0, writes_back:   0)
 \end{lstlisting}
 
-%TODO: rajouter sortie de lstopo
+
+Voici par ailleurs, une sortie possible de \textsf{MAQAO} correspondant à la même architecture: \\
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\textwidth]{images/lstopo.png}
+   \caption{\label{img:archi} Sortie possible de \textsf{MAQAO}}
+\end{center}
+\end{figure}
+
+Par rapport à la sortie du simulateur, le premier L2 qui apparaît correspond au $Core \ P\#0$.
 
 Il est également possible d'avoir plus de statistiques, voici le schéma maximal pour un seul cache:
 \begin{lstlisting}
@@ -154,3 +165,5 @@ Pour finir, deux types de \emph{broadcast} font partie des statistiques:
 Mais les statistiques ne sont pas les seuls paramètres d'analyse, la sélection des données à analyser à aussi un rôle important. Le simulateur permet de suivre les statistiques d'une ou plusieurs instructions données, et ainsi de déterminer quelles instructions causent des ralentissements à l'exécution, i.e. un trop grand nombre de \emph{misses}.
 
 \input{validation.tex}
+\newpage
+\input{lecture_trace.tex}
