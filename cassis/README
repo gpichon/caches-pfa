@@ -1,12 +1,17 @@
+/!\ Warning : this tool and Maqao work only on x64 processors.
+
 ### COMPILATION ###
 
 To compile, use:
 
-cmake dir
+cmake dir [-DTEST=ON] [-DDEBUG=ON] [-DOPT]
 make
 make doc (if you want to generate doxygen documentation)
 
 We advise you to choose <dir> out of cassis directory. It may bother the bench.
+TEST builds the unitary tests executable.
+DEBUG compile with -g.
+OPT compile with -O3.
 
 ### EXECUTION ###
 

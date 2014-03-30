@@ -12,7 +12,7 @@ Grâce à l'utilisation de pointeurs de fonctions, l'appel de la politique de re
 \end{itemize}
 
 \paragraph{}
-La première fonction sert à initialiser la structure contenant les pointeurs de fonctions sur les deux fonctions suivantes. Cependant il faut que l'architecture puisse appeler la bonne fonction d'initialisation. Pour cela, il suffir de rajouter, dans la fonction get\_replacement\_fun\-ction(cache), présente dans \texttt{architecture.c}, une entrée vers la nouvelle politique.
+La première fonction sert à initialiser la structure contenant les pointeurs de fonctions sur les deux fonctions suivantes. Cependant il faut que l'architecture puisse appeler la bonne fonction d'initialisation. Pour cela, il suffit de rajouter une entrée vers la nouvelle politique dans la fonction \texttt{get\_replacement\_function}, présente dans \texttt{architecture.c}.
 
 \paragraph{}
 La seconde sert à mettre à jour les flags de remplacement relatifs à la nouvelle politique, alors que la troisième sert à identifier la ligne à supprimer lorsqu'un cache est plein. A noter que les paramètres priorité et not\_rm servent à améliorer le fonctionnement global des politiques de cohérence. La priorité est utilisée dans le cas de l'usage de \emph{directory manager} pour identifier les données qui sont présentes dans les caches en dessous alors que le paramètre not\_rm sert à identifier une donnée qui va très probablement être ajoutée dans un futur proche. Ces deux paramètres sont toutefois facultatifs, ils n'empêchent pas de fournir des résultats cohérents, et leur utilisation peut être inutile pour une nouvelle politique.
@@ -21,7 +21,7 @@ La seconde sert à mettre à jour les flags de remplacement relatifs à la nouve
 La politique de remplacement peut se baser sur toutes les données stockées dans les structures \texttt{block} et \texttt{line}. Actuellement c'est l'entier \texttt{line.use} qui est utilisée, mais l'utilisateur peut ici décider d'en rajouter, ou de se baser sur d'autres informations telles que l'état de la ligne.
 
 \paragraph{}
-Pour ajouter une politique de remplacement plus globale permettant par exemple d'obtenir des informations à partir d'autres caches, il faut modifier le prototype de fonction pour prendre un n{\oe}ud à la place d'un bloc. Il faudra cependant s'assurer de modifier toutes les fonctions existantes pour les trois politiques déjà implémentées.
+Pour ajouter une politique de remplacement plus globale permettant par exemple d'obtenir des informations à partir d'autres caches, il faut modifier le prototype du pointeur de fonction de remplacement pour prendre un n{\oe}ud à la place d'un bloc. Il faudra cependant aussi s'assurer de modifier toutes les fonctions existantes pour les trois politiques déjà implémentées.
 
 \section{Ajout d'une politique de cohérence}
 \label{tuto_aut}
