@@ -1,6 +1,10 @@
 \section{Format d'une trace}
+Actuellement, le simulateur utilise en entrées des traces fournies par \textsf{MAQAO}. Bien qu'il soit envisageable d'utiliser un autre format de trace respectant la vision interne au simulateur, le suivi des données reste propre au format de sortie de \textsf{MAQAO}.
 
 \subsection{Présentation du format}
+Deux étapes sont nécessaires à la création des traces par \textsf{MAQAO}. La première consiste à instrumenter un fichier source, écrit en \textsf{C} et en \textsf{OpenMP}. Chaque instruction possède un numéro, un type, et notamment une référence à la ligne du code source. A noter que cette référence peut parfois être erronée, à cause des optimisations du compilateur. Pour limiter ce problème, il est préférable de compiler avec les options \texttt{-g -O0}. \\
+
+Voici un exemple de sortie de cette première étape: \\
 \begin{framed}
 \begin{verbatim}
   1 - Intrumented LOAD (MOV)@400c61 SRC@27 par._omp_fn.3
@@ -12,8 +16,14 @@
   7 - Intrumented LOAD (MOV)@400ce9 SRC@31 par._omp_fn.4
   8 - Intrumented LOAD (MOV)@400cf6 SRC@31 par._omp_fn.4
   9 - Intrumented LOAD (MOV)@400cfa SRC@31 par._omp_fn.4
+\end{verbatim}
+\end{framed}
 
+La seconde étape consiste à executer l'executable produit. Il en résulte un ensemble d'instructions (\emph{load} ou \emph{store}). Chaque ligne présente le type d'instruction, l'adresse virtuelle sur laquelle est réalisée l'instruction, le numéro du threads et l'instruction correspondante. L'utilisation d'adresse virtuelle impose de prendre des précautions avec l'utilisation des traces. En créant les traces deux fois à partir d'un même programme, le résultat obtenu n'est pas le même.\\
 
+Voici un exemple de la seconde sortie: \\
+\begin{framed}
+\begin{verbatim}
 LOAD 7fff71d376b0 1 11
 LOAD 1660c18 1 12
 STORE 1660c18 1 13
@@ -23,22 +33,18 @@ LOAD 7f0b333d0e1c 1 6
 LOAD 7f0b333d0e08 1 7
 LOAD 7fff71d376b0 1 8
 LOAD 7f0b333d0e1c 1 9
-LOAD 7f0b333d0e08 1 10
-LOAD 7fff71d376b0 1 11
-LOAD 1660c20 1 12
-STORE 1660c20 1 13
-LOAD 7f0b333d0e1c 1 14
-LOAD 7f0b333d0e1c 1 15
-LOAD 7f0b333d0e1c 1 6
-LOAD 7f0b333d0e08 1 7
-LOAD 7fff71d376b0 1 8
-LOAD 7f0b333d0e1c 1 9
-LOAD 7f0b333d0e08 1 10
-LOAD 7fff71d376b0 1 11
-LOAD 1660c28 1 12
-STORE 1660c28 1 13
-LOAD 7f0b333d0e1c 1 14
+LOAD 7fff71d371b0 3 11
+LOAD 1670c18 3 12
+STORE 1670c18 3 13
 \end{verbatim}
 \end{framed}
 
+A la fin de cette seconde étape, un script \textsf{awk} est utilisé afin de créer une trace par thread. L'ensemble des traces constituera une des entrées de \textsf{Cassis}.
+
 \subsection{Suivi de données spéciales}
+Avec le format de traces décrit précédemment, il est possible de suivre certaines données en particulier. Le premier choix consiste à suivre une plage d'adresses virtuelles, cela est rendu possible avec l'option \texttt{-b @a:@b} qui permet de suivre les données comprises entre l'adresse de $a$ et l'adresse de $b$. \\
+
+Il est également possible de suivre des instructions avec l'option \texttt{-i i1:i1} pour par exemple suivre uniquement les instructions $i1$ et $i2$. Le résultat obtenu en utilisant les deux options citées est l'intersection des données suivies. \\
+
+Ce suivi d'instructions permet d'autres opportunités. Un script permet de recenser les instructions relatives à chaque ligne du code source, il est donc possible de connaître les statistiques pour une ligne donnée. Cette idée offre des perspectives, notamment par rapport à l'annotation du code source, pour par exemple indiquer les lignes qui posent des problèmes du point de vue des caches.
+

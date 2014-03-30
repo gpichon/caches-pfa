@@ -173,7 +173,6 @@ Un autre cas de figure est un cache non-inclusif qui fonctionne avec plus de sou
 \label{snooping}
  Il est possible que des caches d'un même niveau soient reliés ensemble par un bus. La méthode de recherche sur ce bus est alors appelée \emph{snooping}. Prenons l'exemple d'une hiérarchie à trois niveaux où les L2 seraient reliés par un bus. Lorsqu'un L1 fait un \textit{miss}, il demande au L2 associé de lui fournir la donnée. En cas de nouveau \textit{miss}, la demande est envoyée en broadcast sur le bus afin de récupérer la donnée sans passer par le L3. Si aucun cache ne possède la donnée, la demande est alors transmise au L3.
 
-\newpage
 \section{Comportements spéciaux}
 Les politiques de remplacement, de cohérence et les différents types de caches offrent un ensemble de modularités dans la gestion d'une hiérarchie de caches. Cependant, d'autres possibilités existent afin d'améliorer les performances de l'ensemble.
 
