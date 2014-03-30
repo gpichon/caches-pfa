@@ -12,7 +12,7 @@ Grâce à l'utilisation de pointeurs de fonctions, l'appel de la politique de re
 \end{itemize}
 
 \paragraph{}
-La première fonction sert à initialiser la structure contenant les pointeurs de fonctions sur les deux fonctions suivantes. Cependant il faut que l'architecture puisse appeler la bonne fonction d'initialisation. Pour cela, il suffir de rajouter, dans la fonction get\_replacement\_function(cache), présente dans \texttt{architecture.c}, une entrée vers la nouvelle politique.
+La première fonction sert à initialiser la structure contenant les pointeurs de fonctions sur les deux fonctions suivantes. Cependant il faut que l'architecture puisse appeler la bonne fonction d'initialisation. Pour cela, il suffir de rajouter, dans la fonction get\_replacement\_fun\-ction(cache), présente dans \texttt{architecture.c}, une entrée vers la nouvelle politique.
 
 \paragraph{}
 La seconde sert à mettre à jour les flags de remplacement relatifs à la nouvelle politique, alors que la troisième sert à identifier la ligne à supprimer lorsqu'un cache est plein. A noter que les paramètres priorité et not\_rm servent à améliorer le fonctionnement global des politiques de cohérence. La priorité est utilisée dans le cas de l'usage de \emph{directory manager} pour identifier les données qui sont présentes dans les caches en dessous alors que le paramètre not\_rm sert à identifier une donnée qui va très probablement être ajoutée dans un futur proche. Ces deux paramètres sont toutefois facultatifs, ils n'empêchent pas de fournir des résultats cohérents, et leur utilisation peut être inutile pour une nouvelle politique.
@@ -21,7 +21,7 @@ La seconde sert à mettre à jour les flags de remplacement relatifs à la nouve
 La politique de remplacement peut se baser sur toutes les données stockées dans les structures \texttt{block} et \texttt{line}. Actuellement c'est l'entier \texttt{line.use} qui est utilisée, mais l'utilisateur peut ici décider d'en rajouter, ou de se baser sur d'autres informations telles que l'état de la ligne.
 
 \paragraph{}
-Pour ajouter une politique de remplacement plus globale permettant par exemple d'obtenir des informations à partir d'autres caches, il faut modifier le prototype de fonction pour prendre un n{\oe}ud à la place d'un block. Il faudra cependant s'assurer de modifier toutes les fonctions existantes pour les trois politiques déjà implémentées.
+Pour ajouter une politique de remplacement plus globale permettant par exemple d'obtenir des informations à partir d'autres caches, il faut modifier le prototype de fonction pour prendre un n{\oe}ud à la place d'un bloc. Il faudra cependant s'assurer de modifier toutes les fonctions existantes pour les trois politiques déjà implémentées.
 
 \section{Ajout d'une politique de cohérence}
 \label{tuto_aut}
@@ -40,7 +40,7 @@ L'analyse du fichier d'architecture en \texttt{XML} doit reférencer le nom de l
 
 \subsubsection{\texttt{coherence.c}}
 
-La fonction \texttt{coherence\_init(...)} initilise l'automate vers la bonne politique de cohérence. Il convient ici d'appeler la transition qui permet de passer de la carte\footnote{Notons que nous parlons ici de \og carte \fg. En effet il n'y a qu'un seul automate contenant toutes les politiques du point de vue de \textsf{SMC}, mais pouvant s'appuyer sur plusieurs cartes. Chacune des cartes correspond à la vision classique d'un automate de cohérence, nous continuerons ici d'employer le terme \og carte \fg afin de distinguer l'automate tel que vu par \textsf{SMC} (qui correspond à l'ensemble des politiques, plus l'initialisation), de l'automate de cohérence d'une politique, appelé ici \og carte \fg.} de l'automate de départ vers la carte de l'automate POLICY. Le cas à rajouter ne peut être ici fait que d'une seule façon, avec un nom précis de fonction :
+La fonction \texttt{coherence\_init(...)} initialise l'automate vers la bonne politique de cohérence. Il convient ici d'appeler la transition qui permet de passer de la carte\footnote{Notons que nous parlons ici de \og carte \fg. En effet il n'y a qu'un seul automate contenant toutes les politiques du point de vue de \textsf{SMC}, mais pouvant s'appuyer sur plusieurs cartes. Chacune des cartes correspond à la vision classique d'un automate de cohérence, nous continuerons ici d'employer le terme \og carte \fg afin de distinguer l'automate tel que vu par \textsf{SMC} (qui correspond à l'ensemble des politiques, plus l'initialisation), de l'automate de cohérence d'une politique, appelé ici \og carte \fg.} de l'automate de départ vers la carte de l'automate POLICY. Le cas à rajouter ne peut être ici fait que d'une seule façon, avec un nom précis de fonction :
 \begin{framed}
 \begin{lstlisting}[frame=none,language=C]
   case POLICY:
@@ -122,15 +122,15 @@ Default
 \end{verbatim}
 \end{framed}
 
-Remarquons que l'état \verb!Default! permet ici de créer une boucle sur tous les états ne définissant pas toutes les transitions possibles. Cela évite de définir les transitions qui ne donnent pas lieu à un changement d'état ni à des actions particulières. Il est par ailleurs nécessaire que soit \verb!Default! soit présent, soit toutes les transitions soient définies pour chaque état, car l'automate ne fonctionnera pas si une transition est appelée sur un état qui ne la définit pas.
+Remarquons que l'état \verb!Default! permet ici de créer une boucle sur tous les états ne définissant pas toutes les transitions possibles. Cela évite de définir les transitions qui ne donnent pas lieu à un changement d'état ni à des actions particulières. Il est par ailleurs nécessaire que \verb!Default! soit présent, soit toutes les transitions soient définies pour chaque état, car l'automate ne fonctionnera pas si une transition est appelée sur un état qui ne la définit pas.
 
 
 \subsection{Actions possibles}
 
-L'exemple de code précédent contient déjà quelques exemples des possibilités offertes par \textsf{SMC}. Toutefois, il y a d'une part d'autres possibilités -- notamment les transitions conditionnelles -- et d'autre part quelques restrictions. L'usage de \textsf{SMC} n'est pas vu en détail ici, pour cela il est possible de consulter la documentation officielle sur leur \href{http://smc.sourceforge.net/SmcManual.htm}{site}. Seuls quelques aspects sont ici précisés, et notamment les lien avec les fichiers du simulateur.
+L'exemple de code précédent contient déjà quelques unes des possibilités offertes par \textsf{SMC}. Toutefois, il y a d'une part d'autres possibilités -- notamment les transitions conditionnelles -- et d'autre part quelques restrictions. L'usage de \textsf{SMC} n'est pas vu en détail ici, pour cela il est possible de consulter la documentation officielle sur leur \href{http://smc.sourceforge.net/SmcManual.htm}{site}. Seuls quelques aspects sont ici précisés, et notamment les liens avec les fichiers du simulateur.
 
 \paragraph{Arguments des transitions.}
-Les arguments des transition peuvent utiliser n'importe quel type primaire de \texttt{C} mais en ce qui concerne les structures, il faut alors qu'elles soient redéclarées au tout début du fichier, mais si celles-ci sont présentes dans les inclusions du fichier \texttt{coherence.h}.
+Les arguments des transition peuvent utiliser n'importe quel type primaire de \texttt{C}, mais en ce qui concerne les structures, il faut alors qu'elles soient redéclarées au tout début du fichier, mais si celles-ci sont présentes dans les inclusions du fichier \texttt{coherence.h}.
 \begin{framed}
 \begin{verbatim}
 %declare struct node;
