@@ -13,6 +13,10 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+/**
+ * \def NO_COHERENCE_SM_MACRO
+ * \brief Allow to use SMC functions instead of macros.
+ */
 #define NO_COHERENCE_SM_MACRO
 #include "coherence_sm.h"
 

@@ -20,6 +20,15 @@ endif (NOT LUA_INCLUDE_DIR)
 
 set(test_main_file src/main_test.c)
 
+
+option(DEBUG "Build debug" OFF)
+option(OPT "Build with optimizations" OFF)
+if (DEBUG)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+elseif (OPT)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
+endif (DEBUG)
+
 option(TEST "Build tests" OFF)
 set(main_file src/main.c)
 set(executable_name cassis)
