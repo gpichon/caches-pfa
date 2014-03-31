@@ -1,14 +1,14 @@
 \paragraph{}
 Dans un ordinateur, les instructions du programme à exécuter ainsi que les données nécessaires
-à son exécution sont stockées dans la mémoire. Le processeur exécute le programme en récupérant ces informations dans celle-ci. De ce fait, la mémoire est un élément déterminant de performance car c'est elle qui est le facteur limitant du processeur : elle est son fournisseur.
+à son exécution sont stockées dans la mémoire. Le processeur exécute le programme en récupérant des informations dans celle-ci. De ce fait, la mémoire est un élément déterminant de performance car c'est elle qui est le facteur limitant du processeur : elle est son fournisseur.
 
 \paragraph{}
-Acutellement plusieurs types de mémoires sont présents dans un ordinateur, et les plus rapides sont les plus chères et également celles de plus petite taille.
-Pour pallier ce peu d'espace mémoire, il existe ainsi une hiérarchie de la mémoire. Plus on s'éloigne du processeur, plus les mémoires sont grandes et peu chères, et en contrepartie, leur vitesse diminue. 
+Actuellement plusieurs types de mémoires sont présents dans un ordinateur, et les plus rapides sont les plus chères et également celles de plus petite taille.
+Pour pallier au coût d'accès à l'espace mémoire, il existe ainsi une hiérarchie de la mémoire. Plus on s'éloigne du processeur, plus les mémoires sont grandes et peu chères, et en contrepartie, leur vitesse diminue. 
 
 \paragraph{}
 Dans le cadre de ce projet, nous nous intéressons à la mémoire cache. Dans la hiérarchie, elle se situe entre les registres du processeur et la mémoire RAM. Tout comme les registres, elle est interne au processeur.
-Le point de départ du projet est que l'amélioration des performances d'un processeur, outre l'augmentation du nombre de coeurs ou de sa fréquence d'horloge peut également provenir de l'optimisation de sa mémoire cache. Le simulateur de caches \textsf{Cassis} a donc pour objectif d'étudier l'utilisation de la mémoire cache par un programme, afin de détecter une mauvaise utilisation des caches, ou de tester une nouvelle organisation des caches. Si les métriques obtenues par \textsf{Cassis} sont relativement peu utiles pour l'utilisateur lambda, elles peuvent néanmoins être très utiles pour la recherche, d'autant plus qu'il existe actuellement peu d'outils similaires.
+Le point de départ du projet est que l'amélioration des performances d'un processeur, outre l'augmentation du nombre de c{\oe}urs ou de sa fréquence d'horloge peut également provenir de l'optimisation de sa mémoire cache. Le simulateur de caches \textsf{Cassis} a donc pour objectif d'étudier l'utilisation de la mémoire cache par un programme, afin de détecter une mauvaise utilisation des caches, ou de tester une nouvelle organisation des caches. Si les métriques obtenues par \textsf{Cassis} sont relativement peu utiles pour l'utilisateur lambda, elles peuvent néanmoins être très utiles pour la recherche, d'autant plus qu'il existe actuellement peu d'outils similaires.
 
 \paragraph{}
 Ce document s'adresse donc spécifiquement à des informaticiens désireux d'étudier le comportement de leurs programme, spécifiquement parallèles. Afin de comprendre comment \textsf{Cassis} fonctionne, il faut tout d'abord se familiariser avec la problématique qu'il est censé étudier : les caches. Tandis qu'une utilisation standard permettra de vérifier certains comportements de programmes et d'identifier plus précisément les causes de mauvaise utilisation des caches, l'utilisateur averti pourra configurer un certain nombre de paramètres afin de simuler des architectures actuellement inexistantes.
