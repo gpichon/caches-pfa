@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2014 Nicolas Dubois, Pierre Goudet, Nicolas Heng,
- * Alexandre Honorat, Gilles Marait, Grégoire Pichon.
+ * Alexandre Honorat, Gilles Marait, GrÃ©goire Pichon.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -13,7 +13,7 @@
 
 To compile, use:
 
-cmake dir [-DTEST=ON] [-DDEBUG=ON] [-DOPT]
+cmake dir [-DTEST=ON] [-DDEBUG=ON] [-DOPT] [-DLUA_LIBRARIES=-llua5.2] [-DLUA_INCLUDE_DIR=/usr/include/lua5.2]
 make
 make doc (if you want to generate doxygen documentation)
 
@@ -21,6 +21,7 @@ We advise you to choose <dir> out of cassis directory. It may bother the bench.
 TEST builds the unitary tests executable.
 DEBUG compile with -g.
 OPT compile with -O3.
+LUA_LIBRARIES and LUA_INCLUDE_DIR might not be found, so you'll have to precise the path on your computer.
 
 ### EXECUTION ###
 

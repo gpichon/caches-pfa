@@ -18,3 +18,10 @@ You will find the software and the documentation in cassis/ directory. Some docu
 Written by the CASSIS team at ENSEIRB-Matmeca, FRANCE. The team is composed of Nicolas Dubois, Pierre Goudet, Nicolas Heng, Alexandre Honorat, Gilles Marait, Grégoire Pichon.
 
 # License
+
+Copyright (c) 2014 Nicolas Dubois, Pierre Goudet, Nicolas Heng, 
+Alexandre Honorat, Gilles Marait, Grégoire Pichon.
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
