@@ -2,7 +2,7 @@
 Actuellement, le simulateur utilise en entrées des traces fournies par \textsf{MAQAO}. Bien qu'il soit envisageable d'utiliser un autre format de trace respectant la vision interne au simulateur, le suivi des données reste propre au format de sortie de \textsf{MAQAO}.
 
 \subsection{Présentation du format}
-Deux étapes sont nécessaires à la création des traces par \textsf{MAQAO}. La première consiste à instrumenter un fichier source, écrit en \textsf{C} et en \textsf{OpenMP}. Chaque instruction possède un numéro, un type, et notamment une référence à la ligne du code source. A noter que cette référence peut parfois être erronée, à cause des optimisations du compilateur. Pour limiter ce problème, il est préférable de compiler avec les options \texttt{-g -O0}. \\
+Deux étapes sont nécessaires à la création des traces par \textsf{MAQAO}. La première consiste à instrumenter un fichier source, écrit en \texttt{C} et en \texttt{OpenMP}. Chaque instruction possède un numéro, un type, et notamment une référence à la ligne du code source. A noter que cette référence peut parfois être erronée, à cause des optimisations du compilateur. Pour limiter ce problème, il est préférable de compiler avec les options \texttt{-g -O0}. \\
 
 Voici un exemple de sortie de cette première étape: \\
 \begin{framed}
@@ -19,7 +19,7 @@ Voici un exemple de sortie de cette première étape: \\
 \end{verbatim}
 \end{framed}
 
-La seconde étape consiste à executer l'executable produit. Il en résulte un ensemble d'instructions (\emph{load} ou \emph{store}). Chaque ligne présente le type d'instruction, l'adresse virtuelle sur laquelle est réalisée l'instruction, le numéro du threads et l'instruction correspondante. L'utilisation d'adresse virtuelle impose de prendre des précautions avec l'utilisation des traces. En créant les traces deux fois à partir d'un même programme, le résultat obtenu n'est pas le même.\\
+La seconde étape consiste à executer l'executable produit. Il en résulte un ensemble d'instructions (\emph{load} ou \emph{store}). Chaque ligne présente le type d'instruction, l'adresse virtuelle sur laquelle est réalisée l'instruction, le numéro du thread et l'instruction correspondante. L'utilisation d'adresse virtuelle impose de prendre des précautions avec l'utilisation des traces. En créant les traces deux fois à partir d'un même programme, le résultat obtenu n'est pas le même.\\
 
 Voici un exemple de la seconde sortie: \\
 \begin{framed}

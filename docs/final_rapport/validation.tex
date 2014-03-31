@@ -1,4 +1,5 @@
 \section{Validation de la simulation}
+
 La simulation d'une hiérarchie de caches étant un problème relativement compliqué, il convient de valider le fonctionnement du logiciel par différentes études des statistiques produites.
 
 \subsection{Tests unitaires}
@@ -11,7 +12,7 @@ Par ailleurs, même si cela ne constitue pas des tests unitaires, des vérificat
 
 Les tests unitaires sont assez limités au sens où la validation complète du logiciel impose d'étudier l'ensemble des cas pouvant se produire sur un ensemble assez conséquent de données. Connaître précisement les résultats après $n$ opérations en déroulant soi-même l'execution de ces instructions est délicat. Il a donc fallut se tourner vers d'autres moyens de vérification. \\
 
-Dans un premier temps, le logiciel PAPI (Performance Application Programming Interface), permettant d'utiliser les compteurs hardware d'une machine données, a été utilisé. Ce logiciel permet d'exploiter les compteurs hardware natifs présents dans les processeurs actuels. Nous avons donc utilisé ces compteurs, afin de comparer nos résultats avec les résultats obtenus sur différentes architectures. \\
+Dans un premier temps, le logiciel \textsf{PAPI} (Performance Application Programming Interface), permettant d'utiliser les compteurs hardware d'une machine données, a été utilisé. Ce logiciel permet d'exploiter les compteurs hardware natifs présents dans les processeurs actuels. Nous avons donc utilisé ces compteurs, afin de comparer nos résultats avec les résultats obtenus sur différentes architectures. \\
 
 Le problème posé ici est que les caches ne constituent pas l'unique solution par rapport au problème de l'accès à la mémoire principale. En effet, un autre phénomène, le \emph{prefetching}, est mis en place, et il permet notamment d'éviter les \emph{compulsory misses}, c'est-à-dire les \emph{misses} qui interviennent au moment où l'on charge les données dans les caches. Par exemple, lors du chargement d'un tableau, le \emph{prefetching} permet de détecter qu'on est en train de charger progressivement une zone mémoire contigue, et précharge donc les données à un emplacement proche des caches. L'accès n'est alors plus compté comme un \emph{miss}. \\
 
@@ -25,18 +26,18 @@ Il faut noter que l'entrelacement choisi est d'effectuer une instruction par c{\
 \begin{figure}[H]
    \begin{minipage}[l]{.46\textwidth}
      \includegraphics[scale=0.35]{images/stats_L1.png}
-     \caption{\label{img:inclusifs} Statistiques pour les L1 avec des problèmes connus}
+     \caption{\label{img:inclusifs1} Statistiques pour les L1 avec des problèmes connus}
    \end{minipage} \hfill
    \begin{minipage}[r]{.46\textwidth}
      \includegraphics[scale=0.35]{images/stats_L2.png}
-     \caption{\label{img:inclusifs} Statistiques pour les L2 avec des problèmes connus}
+     \caption{\label{img:inclusifs2} Statistiques pour les L2 avec des problèmes connus}
    \end{minipage}
 \end{figure}
 
 \begin{figure}[H]
 \begin{center}
    \includegraphics[scale=0.35]{images/stats_L3.png}
-   \caption{\label{img:inclusifs} Statistiques pour les L3 avec des problèmes connus}
+   \caption{\label{img:inclusifs3} Statistiques pour les L3 avec des problèmes connus}
 \end{center}
 \end{figure}
 
@@ -47,11 +48,11 @@ Une autre étude permet de valider en partie le fonctionnement du \emph{snooping
 \begin{figure}[H]
    \begin{minipage}[l]{.46\textwidth}
      \includegraphics[scale=0.35]{images/stats_falsesharing_snooping.png}
-     \caption{\label{img:inclusifs} Statistiques de la fonction falsesharing avec du snooping}
+     \caption{\label{img:inclusifs_fs_s} Statistiques de la fonction falsesharing avec du snooping}
    \end{minipage} \hfill
    \begin{minipage}[r]{.46\textwidth}
      \includegraphics[scale=0.35]{images/stats_falsesharing_no_snooping.png}
-     \caption{\label{img:inclusifs} Statistiques de la fonction falsesharing sans snooping}
+     \caption{\label{img:inclusifs_fs} Statistiques de la fonction falsesharing sans snooping}
    \end{minipage}
 \end{figure}
 
@@ -60,21 +61,21 @@ La dernière fonctionnalité importante du simulateur est l'ajout des \emph{dire
 \begin{figure}[H]
    \begin{minipage}[l]{.46\textwidth}
      \includegraphics[scale=0.35]{images/stats_falsesharing_directory.png}
-     \caption{\label{img:inclusifs} Statistiques de la fonction falsesharing avec des directory manager}
+     \caption{\label{img:inclusifs_fs_dm} Statistiques de la fonction falsesharing avec des directory manager}
    \end{minipage} \hfill
    \begin{minipage}[r]{.46\textwidth}
      \includegraphics[scale=0.35]{images/stats_falsesharing_no_directory.png}
-     \caption{\label{img:inclusifs} Statistiques de la fonction falsesharing sans directory manager}
+     \caption{\label{img:inclusifs_fs_} Statistiques de la fonction falsesharing sans directory manager}
    \end{minipage}
 \end{figure}
 
 Pour les politiques de cohérence, MSI et MESI ont été testé. Sur un exemple basique ou les c{\oe}urs partagent correctement les données entre eux, et où un tableau est lu avant d'être modifié, les résultats attendus sont corrects. En effet, dans le cas de MSI il y a deux fois plus de \emph{broadcast} nécessaires à la gestion de la cohérence que dans le cas de MESI. On voit bien l'apport de l'état E qui permet de modifier une donnée sans informer les autres caches du même niveau, étant donné que la donnée est connue pour être exclusive au cache étudié. \\
 
-Par ailleurs, une petite étude afin de prouver que les performances du logiciel sont bien linéaire en fonction du temps est présentée figure \ref{img:inclusifs}. \\
+Par ailleurs, une petite étude afin de prouver que les performances du logiciel sont bien linéaire en fonction du temps est présentée figure \ref{img:inclusifs}. Ces tests ont été réalisé sur une moyenne de $9$ architectures, pour les quatres fonctions du fichier \texttt{test.c} et avec différentes tailles du problème (nombre d'octets des tableaux traités).\\
 
 \begin{figure}[H]
 \begin{center}
-   \includegraphics[scale=0.35]{images/scalability.png}
+   \includegraphics[scale=0.5]{images/scalability.png}
    \caption{\label{img:inclusifs} Etude de la scalabilite du programme}
 \end{center}
 \end{figure}

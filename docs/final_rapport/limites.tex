@@ -1,21 +1,22 @@
 Simuler le fonctionnement des caches pour une architecture multi-c{\oe}urs pose un ensemble de problèmes qui expliquent pourquoi, à ce jour, aucun simulateur complet -- connu, les fabricants de processeurs possèdent très certainement un simulateur en interne -- n'est disponible. 
 
-\section{Limites inhéritentes à un simulateur de caches}
-Pour analyser l'execution d'un bianire, deux solutions sont possibles, une analyse durant l'execution (ce que fait \textsf{Cachegrind}) ou une analyse après l'execution. Ce choix a été fait par le client dans le sujet du projet. Cela permet notamment des simuler des architectures qui n'existent pas, et de rejouer la simulation avec différentes paramètrisations en n'executant qu'une seule fois le programme initial. \\
+\section{Limites inhérentes à un simulateur de caches}
+Pour analyser l'exécution d'un bianire, deux solutions sont possibles, une analyse durant l'execution (ce que fait \textsf{Cachegrind}) ou une analyse après l'execution. Ce choix a été fait par le client dans le sujet du projet. Cela permet notamment des simuler des architectures qui n'existent pas, et de rejouer la simulation avec différentes paramètrisations en n'exécutant qu'une seule fois le programme initial. \\
 
-Au niveau des simulateurs de caches différents problèmes se posent, notamment car le fonctionnement précis des architectures actuelles est inconnu. On peut citer: \\
+Au niveau des simulateurs de caches différents problèmes se posent, notamment car le fonctionnement précis des architectures actuelles est inconnu. On peut citer:
 \begin{itemize}
-\item Le \emph{prefetching} qui permet d'éviter les \emph{compulsory misses}, 
-\item L'introduction de la bande passante, 
-\item Le parallèlisme réalisé par le processeur, qui influe sur l'entrelacement des intructions (\emph{out of order execution}) \\
+\item le \emph{prefetching} qui permet d'éviter les \emph{compulsory misses}, 
+\item l'introduction de la bande passante, 
+\item le parallèlisme réalisé par le processeur, qui influe sur l'entrelacement des intructions (\emph{out of order execution}) \\
 \end{itemize}
 
 Certaines simulations permettent de limiter ces problèmes, par exemple en se basant sur des benchmarks pour calibrer les statistiques ou en modélisant les phénomènes cités précédemment. Cependant, fournir une paramétrisation souple d'un simulateur impose de simplifier les modèles existants. \\
 
-Le plus grand problème reste toutefois de comprendre les différentes politiques utilisées actuellement. Si les politiques de cohérence semblent plus ou moins fixées -- les problèmes de cohérence inhérents à un programme multi-threadé ne peuvent être résolus que par le codeur -- les politiques de remplacement semblent beaucoup plus complexes que celles couramment modélisées. Les derniers articles de recherche concernant le remplacement s'appuient sur des connaissances d'un cache mais aussi des caches associés, alors que les politiques ``classiques'', LFU, LRU ou FIFO ne concernent qu'un cache.
+Le plus grand problème reste toutefois de comprendre les différentes politiques utilisées actuellement. Si les politiques de cohérence semblent plus ou moins fixées, les politiques de remplacement semblent beaucoup plus complexes que celles couramment modélisées. Les derniers articles de recherche concernant le remplacement s'appuient sur les données d'un cache mais aussi des autres caches associés, alors que les politiques ``classiques'', LFU, LRU ou FIFO ne dépendent que d'un seul cache.
 
 \section{Limites relatives à \textsf{Cassis}}
-Dans \textsf{Cassis}, le choix de favoriser la paramétrisation de l'architecture a imposé de faire des choix. Les problèmes de \emph{prefetching} et de bande passante n'ont pas été modélisé, ce qui explique que toute comparaison, avec un autre simulateur ou avec les compteurs hardware, donne des résultats difficiles à interpréter. \\
+
+Dans \textsf{Cassis}, le choix de favoriser la paramétrisation de l'architecture n'a pas permi de modéliser le fonctionnement actuel de la plupart des caches. Les problèmes de \emph{prefetching} et de bande passante n'ont ainsi pas été modélisé, ce qui explique que toute comparaison, avec un autre simulateur ou avec les compteurs hardware, donne des résultats difficiles à interpréter. \\
 
 Par ailleurs, les politiques de remplacement sont relativement basiques et propres à un cache. Si avec les \emph{directory manager} il est possible d'adapter les données à remplacer dans un cache en fonction du contenu des caches en dessous, d'autres interactions sont actuellement impossibles. \\
 
@@ -25,12 +26,12 @@ Un autre ensemble de limitations du simulateur est dû au format de trace qui es
 
 Pour finir, avec des programmes utilisant des contextes (ce qui est le cas dans une partie des applications parallèles), les changements de contextes pourraient poser des problèmes. En effet, les traces fournissent des instructions sur des adresses virtuelles, et l'ensemble du simulateur travaille sur ces adresses virtuelles. Dans la réalité, seuls les L1 travaillent sur les adresses virtuelles, les L2 et L3 traitent des adresses physiques. En cas de changement de contexte, il faut vider les L1 alors que les L2 et les L3 restent cohérents avec le reste.
 
-\newpage
-\section{Evolution par rapport au cahier des charges}
-Par rapport au cahier des charges, les engagements fixés ont globalement été tenus. L'idée essentielle de faire un outil facilement paramétrisable sans recompilation a bien été respectée. Par ailleurs, il est relativement facile de rajouter une politique de remplacement ou de cohérence. \\ 
+\section{\'Evolution par rapport au cahier des charges}
 
-La plus grosse différence réside dans la gestion des traces. Le format présenté au début de projet a évolué et ne permet plus de réaliser des optimisations. Il offre cependant plus de flexibilité et plus d'informations vis à vis du code source à tester, ce qui a notamment permis de mettre en {\oe}uvre assez facilement un suivi de données paramétrisable. \\
+Par rapport au cahier des charges, les engagements fixés ont globalement été tenus. L'idée essentielle de faire un outil facilement paramétrisable sans recompilation a bien été respectée. Par ailleurs, il est relativement facile de rajouter une politique de remplacement ou de cohérence. \\
 
-Au niveau des politiques, ce qui avait été présenté dans le rapport a été implémenté. A noter que la politique de cohérence MOESI n'a pas été testée et est donc proposée à titre expérimental. Cependant, la gestion des politiques de cohérences grâce aux automates facilite leur compréhension et permet leur modification sans rentrer dans le reste du code. D'autres politiques non présentes dans le cahier des charges sotn donc également fournies à titre expérimental. Le problème reste toutefois de bien mettre à jour les statistiques, voire d'en ajouter pour des comportements spéciaux qui n'existent pas dans MSI ou MOESI. \\
+La plus grande différence réside dans la gestion des traces. Le format présenté au début de projet a évolué et ne permet plus de réaliser des optimisations dûes à la compression des instructions sous forme de boucles du format initial. Il offre cependant plus de flexibilité et plus d'informations vis à vis du code source à tester, ce qui a notamment permis de mettre en {\oe}uvre assez facilement un suivi de données paramétrisable. \\
 
-Le principal problème réside sûrement dans la validation des résultats. Ce problème n'a pas été assez mis en avant au début du projet et a été rencontré assez tard, ce qui explique qu'aucune des comparaisons effectuées avec \textsf{PAPI} ou \textsf{Cachegrind} n'a donné de résultats exploitables.
+Au niveau des politiques, ce qui avait été présenté dans le rapport a été implémenté. \`A noter que les politiques de cohérence MOESI, MOSI et MESIF n'ont pas été testées et sont donc proposées à titre expérimental. Cependant, la gestion des politiques de cohérences grâce aux automates facilite leur compréhension et permet leur modification sans rentrer dans le reste du code. Le problème reste toutefois de bien mettre à jour les statistiques, voire d'en ajouter pour des comportements spéciaux qui n'existent pas dans MSI ou MOESI. \\
+
+La principale difficulté du projet réside sûrement dans la validation des résultats. Elle n'a pas été assez mise en \oe uvre assez tôt, ce qui explique qu'aucune des comparaisons effectuées avec \textsf{PAPI} ou \textsf{Cachegrind} n'a donné de résultats exploitables.

@@ -86,7 +86,7 @@ La particularité du rapatriement prédictif des données est à prendre en comp
 L'ajout d'une donnée dans un cache est également un problème compliqué. Il faut commencer par identifier dans quel bloc la donnée va se retrouver, puis demander à la politique de remplacement un emplacement dans ce bloc pour mettre la nouvelle donnée. Si le bloc n'était pas plein, l'ajout d'une ligne dans un cache se résume à trouver le bloc et ajouter la donnée.
 
 \paragraph{}
-Cependant, si le cache est plein, une ligne à evincer est choisie. Il faut ensuite rapatrier cette ligne dans le cache de niveau supérieur, si elle n'y était pas déjà présente et faire un \emph{write-back} si la ligne supprimée avait été modifiée. Si la donnée n'était pas présente dans le cache de niveau supérieur, il faut l'y ajouter. Une subtilité relative au traitement prédictif de la recherche d'une donnée est alors à prendre en compte. En effet, si un L1 ajoute une donnée $A$ et qu'il doit pour cela supprimer la donnée $B$, il va falloir ajouter cette donnée dans le L2 correspondant. Or si ce L2 est plein, il peut évincer la donnée $A$. Le traitement étant prédictif, ce n'est pas la situation qui se produirait dans la réalité. Pour pallier à ce problème, une donnée à ne surtout pas supprimer à été ajoutée en paramètre des fonctions relatives au remplacement.
+Cependant, si le cache est plein, une ligne à evincer est choisie. Il faut ensuite rapatrier cette ligne dans le cache de niveau supérieur, si elle n'y était pas déjà présente et faire un \emph{write-back} si la ligne supprimée avait été modifiée. Si la donnée n'était pas présente dans le cache de niveau supérieur, il faut l'y ajouter. Une subtilité relative au traitement prédictif de la recherche d'une donnée est alors à prendre en compte. En effet, si un L1 ajoute une donnée $A$ et qu'il doit pour cela supprimer la donnée $B$, il va falloir ajouter cette donnée dans le L2 correspondant. Or si ce L2 est plein, il peut évincer la donnée $A$. Le traitement étant prédictif, ce n'est pas la situation qui se produirait dans la réalité. Pour pallier ce problème, une donnée à ne surtout pas supprimer à été ajoutée en paramètre des fonctions relatives au remplacement.
 
 
 \subsection{Gestion des différents types de cache}
@@ -122,7 +122,7 @@ Voici par ailleurs, une sortie possible de \textsf{HWLOC} correspondant à la m�
 \begin{figure}[H]
 \begin{center}
    \includegraphics[width=0.7\textwidth]{images/lstopo.png}
-   \caption{\label{img:archi} Sortie possible de \textsf{HWLOC}}
+   \caption{\label{img:archi_hwloc} Sortie possible de \textsf{HWLOC}}
 \end{center}
 \end{figure}
 

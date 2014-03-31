@@ -28,7 +28,7 @@ Pour ajouter une politique de remplacement plus globale permettant par exemple d
 
 \subsection{Sources à modifier}
 
-Les politiques de cohérence sont toutes décrites dans un seul fichier, écrit grâce à \textsf{SMC} : \texttt{coherence.sm}. Toutefois d'autres sources sont à modifier afin que ces politiques puissent être choisies depuis un fichier d'architecture.
+Les politiques de cohérence sont toutes décrites dans un seul fichier, écrit grâce à \textsf{SMC} : \texttt{coherence.sm}. Toutefois d'autres sources sont à modifier afin que ces politiques puissent être choisies depuis un fichier d'architecture. Dès que \texttt{coherence.sm} est modifié, la commande \verb!cmake <build_dir>! doit être de nouveau exécutée, et non simplement \verb!make!, car les sources \texttt{C} créées à partir de ce fichier n'en dépendent pas du point de vue de \textsf{CMake}.
 
 \subsubsection{\texttt{common\_types.h}}
 
