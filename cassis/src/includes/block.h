@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2014 Nicolas Dubois, Pierre Goudet, Nicolas Heng,
+ * Alexandre Honorat, Gilles Marait, Grégoire Pichon.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 /**
  * \file block.h
  * \brief Manage a block: update replacement flags and add a line in a block -- Header
