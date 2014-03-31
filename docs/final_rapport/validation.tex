@@ -71,7 +71,7 @@ La dernière fonctionnalité importante du simulateur est l'ajout des \emph{dire
 
 Pour les politiques de cohérence, MSI et MESI ont été testé. Sur un exemple basique ou les c{\oe}urs partagent correctement les données entre eux, et où un tableau est lu avant d'être modifié, les résultats attendus sont corrects. En effet, dans le cas de MSI il y a deux fois plus de \emph{broadcast} nécessaires à la gestion de la cohérence que dans le cas de MESI. On voit bien l'apport de l'état E qui permet de modifier une donnée sans informer les autres caches du même niveau, étant donné que la donnée est connue pour être exclusive au cache étudié. \\
 
-Par ailleurs, une petite étude afin de prouver que les performances du logiciel sont bien linéaire en fonction du temps est présentée figure \ref{img:inclusifs}. Ces tests ont été réalisé sur une moyenne de $9$ architectures, pour les quatres fonctions du fichier \texttt{test.c} et avec différentes tailles du problème (nombre d'octets des tableaux traités).\\
+Par ailleurs, une petite étude afin de prouver que les performances du logiciel sont bien linéaire en fonction du temps est présentée figure \ref{img:inclusifs}. Ces tests ont été réalisé sur une moyenne de $9$ architectures, pour les quatre fonctions du fichier \texttt{test.c} et avec différentes tailles du problème (nombre d'octets des tableaux traités).\\
 
 \begin{figure}[H]
 \begin{center}

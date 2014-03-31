@@ -15,14 +15,14 @@ Il y a deux cas extrêmes :
   \item \textbf{Lecture une par une} des instructions, en changeant de thread à chaque fois. Cela permet de mieux préserver la localité temporelle. Les ressources partagées par deux threads auront plus de chances d'être lues et écrites souvent par différents threads et la cohérence des données prend une plus grande importance.
 \end{itemize} 
 
-Ces deux cas ne sont pas réalistes, mais sont néanmoins intéressant pour évaluer les cas les plus critiques en théorie.\\
+Ces deux cas ne sont pas réalistes, mais sont néanmoins intéressants pour évaluer les cas les plus critiques en théorie.\\
 
 
 Un modèle de base a été implémenté afin de configurer l'ordre d'exécution des traces, appelé entrelacement des threads. Celui choisi pour le simulateur fonctionne de la manière suivante : un certain nombre d'instructions sont exécutées sur un thread, une fois terminées ce sont autant d'instructions qui sont exécutées sur le c\oe ur suivant. Cela revient à rendre le programme  séquentiel en entrelaçant les instructions sur les différents threads.
 
 \subsection{Entrelacement bloc par bloc}
 
-Le choix d'entrelacement par défaut qui a été fait permet donc de changer de c\oe ur sur lequel il faut exécuter les instructions de manière cyclique entre les c\oe urs, toutes les $x$ instructions, $x$ étant la taille choisie pour les blocs d'instructions. La figure \ref{img:entrelacement} explicite visuellement quand sont exécutées les instructions par blocs, numérotés par orde de lecture. La technologie utilisée est un script LUA qui retourne le prochain coeur sur lequel le simulateur doit exécuter les instructions. Ce script permet de fixer un nombre d'instructions à exécuter avant de changer de coeur, pour changer de coeur à chaque instructions il faut donc réduire la taille du bloc d'instructions à exécuter à une seule instruction.\\
+Le choix d'entrelacement par défaut qui a été fait permet donc de changer de c\oe ur sur lequel il faut exécuter les instructions de manière cyclique entre les c\oe urs, toutes les $x$ instructions, $x$ étant la taille choisie pour les blocs d'instructions. La figure \ref{img:entrelacement} explicite visuellement quand sont exécutées les instructions par blocs, numérotés par ordre de lecture. La technologie utilisée est un script LUA qui retourne le prochain coeur sur lequel le simulateur doit exécuter les instructions. Ce script permet de fixer un nombre d'instructions à exécuter avant de changer de coeur, pour changer de coeur à chaque instruction il faut donc réduire la taille du bloc d'instructions à exécuter à une seule instruction.\\
 
 \begin{figure}[!h]
 \begin{center}
