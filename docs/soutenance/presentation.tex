@@ -56,18 +56,37 @@
 
 \end{frame}
 
-%\AtBeginSection[]
-%{
-%\begin{frame}<beamer>
-%  \frametitle{Plan}
-%  \tableofcontents[currentsection]
-%\end{frame}
-%}
+\AtBeginSection[]
+{
+\begin{frame}<beamer>
+  \frametitle{Plan}
+  \tableofcontents[currentsection]
+\end{frame}
+}
 
+
+\section*{Introduction}
+\begin{frame}
+  intro
+\end{frame}
+
+
+\section{Présentation générales des caches}
+\begin{frame}
+  first real frame
+\end{frame}
 \input{caches.tex}
+
+\section{Gestion de la cohérence}
 \input{coherence.tex}
+
+\section{Présentation de Cassis}
 \input{simulateur.tex}
+
+\section{Gestion de l'architecture}
 \input{architecture.tex}
+
+\section{Validation des résultats}
 \input{validation.tex}
 
 \end{document}
