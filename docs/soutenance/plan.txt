@@ -1,0 +1,43 @@
+0) Introduction - présentation du projet
+Pierre Goudet
+
+- Cadre du projet / préparation du projet
+
+1) Présentation générale des caches
+Nicolas Heng
+
+- Utilité / hiérarchie
+- Remplacement, ajout d'une ligne
+
+2) Cohérence
+Alexandre Honorat
+
+- Problème de la cohérence
+- Solution MESI
+- Autres protocoles et automates
+
+3) Présentation du simulateur
+Nicolas Dubois
+
+- Entrée du programme
+- Problèmes
+
+Entrelacement des threads
+Pierre Goudet
+
+4) Architecture
+Gilles Marait
+
+- Snooping
+- Directory manager
+- Inclusivité des caches
+- HWLOC, XML ...
+
+5) Validatio des résultats
+Grégoire Pichon
+
+- Nos méthodes de vérification
+- Limites
+- Evolution
+- Correction
+- Conclusion
