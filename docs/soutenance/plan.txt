@@ -1,43 +1,63 @@
-0) Introduction - présentation du projet
-Pierre Goudet
+/*
+Plan de la soutenance
+-> Préparer ses slides
+-> Faire des slides beaux (pas de texte rédigé si possible, ou très court)
+-> Faire plein de schémas (beaux aussi)
+-> S'entraîner et regarder combien de temps on met à présenter la chose
+-> Proposer d'ajouter / supprimer des éléments dans sa partie (ou celle d'un autre)
+-> Eviter de parler trop du code
+-> Ne pas hésiter à contacter ses camarades en cas d'incompréhension de ce qu'on doit présenter
+*/
 
-- Cadre du projet / préparation du projet
+
+0) Introduction - présentation du projet
+Pierre Goudet (2min)
+
+- Cadre du projet / présentation du projet
 
 1) Présentation générale des caches
-Nicolas Heng
+Nicolas Heng (5min)
 
-- Utilité / hiérarchie
-- Remplacement, ajout d'une ligne
+- Utilité
+- Associativité
+- Remplacement, ajout d'une ligne et politiques de remplacement
+- Hiérarchie (L1/L2/L3)
+
+~transition sur les problèmes de cohérence
 
 2) Cohérence
-Alexandre Honorat
+Alexandre Honorat (5min)
 
-- Problème de la cohérence
+- Problème de la cohérence (joli schéma avec les LOAD/STORE p9 du rapport)
 - Solution MESI
-- Autres protocoles et automates
+- Autres protocoles 
+- Automates, smc vite fait
 
 3) Présentation du simulateur
-Nicolas Dubois
+Nicolas Dubois (5min)
 
-- Entrée du programme
-- Problèmes
+- Entrées du programme : traces type MAQAO
+- Suivi des données, plage d'adresses, instructions ou ligne de code
+- Présentation rapide des paramètres en ligne de code correspondants
 
 Entrelacement des threads
-Pierre Goudet
+Pierre Goudet (2 min)
+- Problème de l'entrelacement des threads et enjeux sur le résultat de la simulation
+- Présentation rapide de l'utilisation du script lua
 
 4) Architecture
-Gilles Marait
+Gilles Marait (5min)
 
 - Snooping
 - Directory manager
 - Inclusivité des caches
 - HWLOC, XML ...
 
-5) Validatio des résultats
-Grégoire Pichon
+5) Validation des résultats
+Grégoire Pichon (5min)
 
 - Nos méthodes de vérification
+- Correction
 - Limites
 - Evolution
-- Correction
 - Conclusion
