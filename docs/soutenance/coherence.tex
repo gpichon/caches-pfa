@@ -1,5 +1,20 @@
 \begin{frame}{Nécessité de la cohérence}
-    \includegraphics[scale=.3]{images/learn_mesi_2.png}  
+ \begin{columns}[T]
+    \begin{column}{.4\textwidth}
+    \includegraphics[scale=.3]{images/learn_mesi_2.png} 
+    \end{column}
+    \begin{column}{.6\textwidth}
+      \begin{block}{Partage}
+        Plusieurs caches peuvent contenir la même donnée lorsque celle-ci est lue.
+      \end{block}
+      \begin{block}{Modification}
+        Lorsqu'un cache la modifie, il doit en informer les autres et éventuellement transmettre la nouvelle donnée.
+      \end{block}
+      \begin{block}{Messages}
+        Pour informer les autres et transmettre, des messages sont envoyés entre les caches.
+      \end{block}
+    \end{column}
+ \end{columns}
 \end{frame}
 
 \begin{frame}{Solution MESI}
