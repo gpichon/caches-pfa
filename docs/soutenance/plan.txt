@@ -19,12 +19,17 @@ Pierre Goudet (2min)
 Nicolas Heng (5min)
 
 - Utilité
+	(Temps d'accèes mémoire, hiérarchie ==> [+schéma])
 - Associativité
+	(Comment accéder aux données, par ligne/tout le cache,...)
 - Remplacement, ajout d'une ligne et politiques de remplacement
+	(algorithmes LRU, LFU, FIFO...)
 - Hiérarchie (L1/L2/L3)
-
-~transition sur les problèmes de cohérence
-
+	(inclusivité (Intel) /exclusivité (AMD))
+	
+~transition sur les problèmes de cohérence 
+	(passage avec plusieurs coeurs, plusieurs L1,L2...)
+ 
 2) Cohérence
 Alexandre Honorat (5min)
 
