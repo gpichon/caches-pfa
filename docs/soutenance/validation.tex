@@ -8,30 +8,63 @@
       \item Benchmarks
     \end{itemize}
   \end{block}
+  \begin{block}{Premiers outils de v\'erification}
+    \begin{itemize}
+      \item Validation des politiques basiques
+      \item Validation du comportement inclusif
+      \item Utilisation de \textsf{PAPI}
+    \end{itemize}
+  \end{block}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Benchmarks basiques}
 \begin{figure}[H]
    \begin{minipage}[l]{.46\textwidth}
-     \includegraphics[scale=0.25]{images/stats_L1.png}
+     \includegraphics[scale=0.22]{images/stats_L1.png}
    \end{minipage} \hfill
    \begin{minipage}[r]{.46\textwidth}
-     \includegraphics[scale=0.25]{images/stats_L2.png}
+     \includegraphics[scale=0.22]{images/stats_L2.png}
    \end{minipage}
 \end{figure}
 
 \begin{figure}[t!]
-  \includegraphics[width=.4\textwidth]{images/stats_L3.png}
+  \includegraphics[scale=0.22]{images/stats_L3.png}
 \end{figure}
+\end{frame}
+
+\begin{frame}{Benchmarks avanc\'es}
+\begin{figure}[H]
+   \begin{minipage}[l]{.46\textwidth}
+     \includegraphics[scale=0.22]{images/stats_falsesharing_snooping.png}
+   \end{minipage} \hfill
+   \begin{minipage}[r]{.46\textwidth}
+     \includegraphics[scale=0.22]{images/stats_falsesharing_no_snooping.png}
+   \end{minipage}
+\end{figure}
+  \begin{block}{Autres benchmarks}
+    \begin{itemize}
+      \item \emph{Directory manager}
+      \item Politiques de coh\'erence MSI vs MESI
+      \item Scalabilit\'e
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \subsection{Limites \`a  propos de la simulation des caches}
 \begin{frame}
-  \begin{block}{Limites usuelles}
+  \begin{block}{Probl\`emes li\'es aux architectures multi-c{\oe}ur}
     \begin{itemize}
       \item \textsf{prefetching}
       \item synchronisations
       \item changements de contextes 
+    \end{itemize}
+  \end{block}
+  \begin{block}{Limites de \textsf{Cassis}}
+    \begin{itemize}
+      \item bande passante non mod\'elis\'ee
+      \item \textsf{Directory manager} basiquement mod\'elis\'es
+      \item statistiques non calibr\'ees avec des benchmarks classiques
+      \item utilisation de m\'etriques non usuelles
     \end{itemize}
   \end{block}
 \end{frame}
