@@ -72,12 +72,24 @@ Passage d'un fichier xml \emph{Cassis} directement en entrée \\
 \end{frame}
 
 \begin{frame}
-  \frametitle{Snooping entre les caches}
+  \frametitle{\emph{Snooping} entre les caches}
   
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Présence d'un directory manager}
-  
+  \frametitle{Présence d'un \emph{directory manager}}
+\begin{block}{Définition}
+  \begin{itemize}
+  \item Stocker les étiquettes des caches de niveau inférieur
+  \item Connaître le contenu des descendants sans gaspiller trop d'espace mémoire (< 10\%)
+  \end{itemize}
+\end{block}
+
+\begin{block}{Utilité}
+\begin{itemize}
+\item Chercher les données: par exemple pour le LLC dans le cas exclusif
+\item Adadpter le remplacement des données pour les caches inclusifs, en évitant d'évincer des données présentes dans les caches descendants
+\end{itemize}
+\end{block}  
 \end{frame}
