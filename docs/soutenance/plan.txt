@@ -11,9 +11,22 @@ Plan de la soutenance
 
 
 0) Introduction - présentation du projet
-Pierre Goudet (2min)
+Pierre Goudet (2min) 
 
-- Cadre du projet / présentation du projet
+
+-Presentation de Cassis(1 slide, liste sommaire)
+  -Objectif du simulateur
+  -choix d'architecture 
+  -choix politique de cohérence
+  -Différents dégrès de modularité
+
+-Outils actuels sur ce sujet (pourpquoi il ne conviennent pas) (1 slide, liste sommaire)
+	-cachegrind (simulation séquentiel)
+	-papy
+
+-Explication de différents composant qui entre jeux dans le programme sur une schéma (1 schéma explicatif grossier, boîtes/flèches)
+
+
 
 1) Présentation générale des caches
 Nicolas Heng (5min)
@@ -46,9 +59,16 @@ Nicolas Dubois (5min)
 - Présentation rapide des paramètres en ligne de code correspondants
 
 Entrelacement des threads
+
 Pierre Goudet (2 min)
-- Problème de l'entrelacement des threads et enjeux sur le résultat de la simulation
-- Présentation rapide de l'utilisation du script lua
+- Problème de l'entrelacement des threads et enjeux sur le résultat de la simulation (1 slide, schéma explicatif avec traces ..... pas celui du rapport)
+  Nécessité de l'entrelacement pour se rapprocher d'un comportement normal
+  Justification du choix d'un entralacement par bloc
+
+- Présentation rapide de l'utilisation du script lua (1 slide, schéma représentant les échanges)
+  Explication des échanges entre le script et le simulateur.
+  Rappel sur la possibilité de modifier le script
+  
 
 4) Architecture
 Gilles Marait (5min)
