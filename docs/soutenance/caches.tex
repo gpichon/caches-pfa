@@ -1,15 +1,26 @@
 \begin{frame}{Utilité des caches}
-	\begin{figure}[h!]
-		\includegraphics[scale=.6]{images/hierarchy.png}
-	\end{figure}
-	\begin{block}{Objectif}
+	\begin{columns}[T]
+		\begin{column}{.5\textwidth}
+			\begin{figure}[h!]
+				\includegraphics[scale=.45]{images/hierarchy.png}
+			\end{figure}
+		\end{column}
+		\begin{column}{.5\textwidth}
+			\begin{block}{Objectif}
+				\begin{itemize}
+					\item{Trouver un bon compromis entre vitesse et coût}
+				\end{itemize}
+			\end{block}
+		\end{column}
+	\end{columns}
+	\begin{block}{Cache Hit et cache Miss}
 		\begin{itemize}
-			\item{Trouver un bon compromis entre vitesse et coût}
+			\item{Si le processeur trouve la donnée recherchée dans le cache : il fait un Hit}
+			\item{Sinon, la donnée est rapatriée à partir de la mémoire centrale : c'est un Miss}
 		\end{itemize}
 	\end{block}
 \end{frame}
 
-%~ Ajouter définition de hit/miss
 %~ Ajout d'une partie sur l'organisation interne d'un cache... (Set/ligne/bloc mémoire)
 
 \begin{frame}{Associativité}
