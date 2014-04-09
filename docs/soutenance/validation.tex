@@ -28,7 +28,14 @@
 \end{figure}
 
 \begin{figure}[t!]
-  \includegraphics[scale=0.22]{images/stats_L3.png}
+  \begin{minipage}[l]{.46\textwidth}
+    \includegraphics[scale=0.22]{images/stats_L3.png}
+  \end{minipage} \hfill
+   \begin{minipage}[r]{.46\textwidth}
+     Gauche: L1 \\
+     Droite: L2 \\
+     Bas: L3
+   \end{minipage}
 \end{figure}
 \end{frame}
 
@@ -36,9 +43,11 @@
 \begin{figure}[H]
    \begin{minipage}[l]{.46\textwidth}
      \includegraphics[scale=0.22]{images/stats_falsesharing_snooping.png}
+     \caption{Avec \emph{snooping}}
    \end{minipage} \hfill
    \begin{minipage}[r]{.46\textwidth}
      \includegraphics[scale=0.22]{images/stats_falsesharing_no_snooping.png}
+     \caption{Sans \emph{snooping}}
    \end{minipage}
 \end{figure}
   \begin{block}{Autres benchmarks}
@@ -84,6 +93,7 @@
     \begin{itemize}
       \item Complage avec un simulateur \textsf{on-line}?
       \item Utilisation de benchmarks pour calibrer les r\'esultats?
+      \item Annotation du code source
     \end{itemize}
   \end{block}
 \end{frame}
