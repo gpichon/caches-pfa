@@ -1,3 +1,12 @@
+\begin{frame}
+  \frametitle{Lecture d'une ligne par le simulateur}
+  
+  \begin{figure}[h!]
+    \includegraphics[width=0.75\textwidth]{images/cassis_deroulement.png}
+  \end{figure}
+  
+\end{frame}
+
 \begin{frame}[fragile]
   \frametitle{Données d'entrée de \emph{Cassis}}
   
@@ -6,8 +15,8 @@
 %  \end{figure}
   
   \begin{itemize}
-    \item Fichier de description d'architecture
-    \item Trace d'exécution
+    \item{Fichier de description d'architecture}
+    \item{Trace d'exécution}
   \end{itemize}
   
 \begin{verbatim}
@@ -26,12 +35,60 @@ STORE b70578 0 3
 
 \end{frame}
 
-\begin{frame}
-  \frametitle{Lecture d'une ligne par le simulateur}
+\begin{frame}[fragile]
+  \frametitle{Statistiques}
   
-  \begin{figure}[h!]
-    \includegraphics[width=.8\textwidth]{images/cassis_deroulement.png}
-  \end{figure}
+  \begin{block}{Statistiques basiques}
+    \begin{itemize}
+    \item{Hit}
+    \item{Write-back}
+    \end{itemize}
+  \end{block}
   
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \begin{figure}[h!]
+	\includegraphics[scale=.4]{images/evictions.png}
+      \end{figure}
+    \end{column}
+    \begin{column}{.5\textwidth}
+      \bigskip
+      \begin{block}{Types d'évictions}
+	\begin{itemize}
+	\item{Cohérence}
+        \item{Capacité}
+        \item{Type de cache         }
+	\end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
 \end{frame}
 
+\begin{frame}[fragile]
+  \frametitle{Statistiques}
+  
+  \begin{block}{Statistiques globales}
+    \begin{itemize}
+    \item{Broadcast}
+    \item{Snooping}
+    \end{itemize}
+  \end{block}
+  
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \begin{figure}[h!]
+	\includegraphics[scale=.4]{images/misses.png}
+      \end{figure}
+    \end{column}
+    \begin{column}{.5\textwidth}
+      \bigskip
+      \begin{block}{Types de misses}
+	\begin{itemize}
+	\item{Snooping}
+        \item{Cache de niveau supérieur}
+        \item{Cache de niveau inférieur}
+	\end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}

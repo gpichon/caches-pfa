@@ -23,7 +23,7 @@
 \end{verbatim}
 
 \begin{figure}[h!]
-  \includegraphics[width=.4\textwidth]{images/archicassis1.png}
+  \includegraphics[width=.6\textwidth]{images/archicassis1.png}
 \end{figure}
 
 Passage d'un fichier xml \emph{Cassis} directement en entrée \\
@@ -32,7 +32,7 @@ Passage d'un fichier xml \emph{Cassis} directement en entrée \\
 \end{verbatim}
 
 \begin{figure}[t!]
-  \includegraphics[width=.4\textwidth]{images/archicassis2.png}
+  \includegraphics[width=.6\textwidth]{images/archicassis2.png}
 \end{figure}
 \end{frame}
 
@@ -72,12 +72,28 @@ Passage d'un fichier xml \emph{Cassis} directement en entrée \\
 \end{frame}
 
 \begin{frame}
-  \frametitle{Snooping entre les caches}
+  \frametitle{\emph{Snooping} entre les caches}
+  
+  \begin{figure}[h!]
+    \includegraphics[width=.8\textwidth]{images/DiagrammeSnooping.png}
+  \end{figure}  
   
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Présence d'un directory manager}
-  
+  \frametitle{Présence d'un \emph{directory manager}}
+\begin{block}{Définition}
+  \begin{itemize}
+  \item Stocker les étiquettes des caches de niveau inférieur
+  \item Connaître le contenu des descendants sans gaspiller trop d'espace mémoire (< 10\%)
+  \end{itemize}
+\end{block}
+
+\begin{block}{Utilité}
+\begin{itemize}
+\item Chercher les données: par exemple pour le LLC dans le cas exclusif
+\item Adapter le remplacement des données pour les caches inclusifs, en évitant d'évincer des données présentes dans les caches descendants
+\end{itemize}
+\end{block}  
 \end{frame}
