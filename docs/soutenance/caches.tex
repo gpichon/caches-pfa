@@ -1,5 +1,5 @@
 \begin{frame}{Utilité des caches}
-	\begin{columns}[T]
+	\begin{columns}[c]
 		\begin{column}{.5\textwidth}
 			\begin{figure}[h!]
 				\includegraphics[scale=.45]{images/hierarchy.png}
@@ -13,19 +13,18 @@
 			\end{block}
 		\end{column}
 	\end{columns}
-	\begin{block}{Cache Hit et cache Miss}
+	\begin{block}{\emph{Cache hit} et \emph{cache miss}}
 		\begin{itemize}
-			\item{Si le processeur trouve la donnée recherchée dans le cache : il fait un Hit}
-			\item{Sinon, la donnée est rapatriée à partir de la mémoire centrale : c'est un Miss}
+			\item{Si le processeur trouve la donnée recherchée dans le cache : il fait un \emph{hit}}
+			\item{Sinon, la donnée est rapatriée à partir de la mémoire de niveau supérieur : c'est un \emph{miss}}
 		\end{itemize}
 	\end{block}
 \end{frame}
 
-%~ Ajout d'une partie sur l'organisation interne d'un cache... (Set/ligne/bloc mémoire)
 
-\begin{frame}{Associativité}
+\begin{frame}{Lien mémoire centrale/caches - Associativité}
 	\begin{block}{Comment localiser une donnée dans le cache ?}
-		Il existe différentes fonctions de correspondance
+		Il existe différentes fonctions de correspondance (ligne => emplacement) :
 		\begin{itemize}
 			\item{Direct associative}
 			\item{Fully associative}
@@ -33,7 +32,7 @@
 		\end{itemize}
 	\end{block}
 	\begin{figure}[h!]
-		\includegraphics[scale=.4]{images/associative.png}
+		\includegraphics[scale=.33]{images/associative.png}
 	\end{figure}
 \end{frame}
 
@@ -50,13 +49,20 @@
 \end{frame}
 
 \begin{frame}{Hiérarchie de caches et problèmes de cohérence}
-On utilise plusieurs niveaux de caches
-%~  Schéma d'une hiérarchie de caches.
+	\begin{columns}[c]
+		\begin{column}{.6\textwidth}
+			On utilise plusieurs niveaux de caches
+		\end{column}
+		\begin{column}{.4\textwidth}
+			\begin{figure}[h!]
+				\includegraphics[scale=.3]{images/lstopo.png}
+			\end{figure}
+		\end{column}
+	\end{columns}
 \begin{block}{Comment gérer les données entre différents niveaux?}
 		\begin{itemize}
 			\item{Caches inclusifs (Intel)}
 			\item{Caches exclusifs (AMD)}
-%~ Schéma d'illustration pour l'inclusivité ?
 		\end{itemize}
 	\end{block}
 	\begin{block}{Comment gérer les données entre caches de même niveau?}
