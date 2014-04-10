@@ -1,8 +1,8 @@
-\begin{frame}{Utilité des caches}
+\begin{frame}{Hiérarchie mémoire}
 	\begin{columns}[c]
 		\begin{column}{.5\textwidth}
 			\begin{figure}[h!]
-				\includegraphics[scale=.45]{images/hierarchy.png}
+				\includegraphics[scale=.35]{images/hierarchy.png}
 			\end{figure}
 		\end{column}
 		\begin{column}{.5\textwidth}
@@ -13,19 +13,14 @@
 			\end{block}
 		\end{column}
 	\end{columns}
-	\begin{block}{\emph{Cache hit} et \emph{cache miss}}
-		\begin{itemize}
-			\item{Si le processeur trouve la donnée recherchée dans le cache : il fait un \emph{hit}}
-			\item{Sinon, la donnée est rapatriée à partir de la mémoire de niveau supérieur : c'est un \emph{miss}}			
-			\end{itemize}
-	\end{block}
-\end{frame}
-
-
-\begin{frame}{Structure d'un cache}
 	\begin{columns}[c]
 		\begin{column}{.6\textwidth}
-			On utilise plusieurs niveaux de caches
+			\begin{block}{Hiérarchie de caches}
+				\begin{itemize}
+					\item{Plusieurs niveaux de cache}
+					\item{Caches inclusifs/exclusifs}
+				\end{itemize}
+			\end{block}
 		\end{column}
 		\begin{column}{.4\textwidth}
 			\begin{figure}[h!]
@@ -33,8 +28,21 @@
 			\end{figure}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+
+\begin{frame}{Recherche d'une donnée dans le cache}
+	Caches organisés par ligne. 1 ligne <=> 1 étiquette = 1 adresse mémoire
+	\begin{figure}[h!]
+		\includegraphics[scale=.3]{images/etiquette.jpeg}
+	\end{figure}
 	
-	+ parler des lignes de caches et d'étiquettes...
+	\begin{block}{\emph{Cache hit} et \emph{cache miss}}
+		\begin{itemize}
+			\item{Si le processeur trouve la donnée recherchée dans le cache : il fait un \emph{hit}}
+			\item{Sinon, la donnée est rapatriée à partir de la mémoire de niveau supérieur : c'est un \emph{miss}}			
+			\end{itemize}
+	\end{block}
 \end{frame}	
 
 \begin{frame}{Associativité}
@@ -58,18 +66,18 @@
 			\item{LFU (Supprimer la moins utilisée)}
 			\item{LRU (Supprimer la plus anciennement utilisée)}
 		\end{itemize}
-		Les données évincées sont déplacées vers la mémoire de niveau supérieur
+		En général, les données évincées sont déplacées vers la mémoire de niveau supérieur
 	\end{block}
 \end{frame}
 
 \begin{frame}{Hiérarchie de caches et problèmes de cohérence}
-\begin{block}{Comment gérer les données entre différents niveaux?}
+	\begin{block}{Gestion des données entre différents niveaux}
 		\begin{itemize}
-			\item{Caches inclusifs/exclusifs}
+			\item{\emph{Write-through} : Une donnée modifiée est tout de suite reportée aux niveaux supérieurs}
+			\item{\emph{Write-back} : Le report est fait à l'éviction du cache}
 		\end{itemize}
 	\end{block}
-	+ Parler de write-through / write-back
-	\begin{block}{Comment gérer les données entre caches de même niveau?}
-		Que faire lorsque deux caches doivent se partager une même donnée ?
+	\begin{block}{Gestion des données entre caches de même niveau}
+		Nécéssité d'un protocole de cohérence
 	\end{block}
 \end{frame}
