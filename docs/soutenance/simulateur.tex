@@ -2,7 +2,7 @@
   \frametitle{Lecture d'une ligne par le simulateur}
   
   \begin{figure}[h!]
-    \includegraphics[width=0.75\textwidth]{images/cassis_deroulement.png}
+    \includegraphics[width=0.75\textwidth]{images/schema_cassis.png}
   \end{figure}
   
 \end{frame}
@@ -92,4 +92,21 @@ STORE b70578 0 3
       \end{block}
     \end{column}
   \end{columns}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Nécessité de l'entrelacement}
+ Architecture multi-coeur => Exécution parallèle\\
+ \'Etat des caches dépendant de l'orde d'exécution
+ \begin{columns}[T]
+   \begin{column}{.5\textwidth}
+     \includegraphics[scale=0.25]{images/schema_entrelacement.png}
+   \end{column}
+   \begin{column}{.5\textwidth}
+     \includegraphics[scale=0.35]{images/schema_lua.png}\\
+     \`A gch. : exécution sur 2 c\oe urs.\\
+     \`A drt. : entrelacement dans Cassis.
+   \end{column}
+ \end{columns}
+ 
 \end{frame}

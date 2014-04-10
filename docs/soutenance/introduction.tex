@@ -8,7 +8,7 @@
   \begin{block}{A quels besoins répond le projet CASSIS ?}
   \begin{itemize}  
   \item Rejouer une exécution mutli-threadée d'un programme donné
-  \item Architecture libre des caches
+  \item Architecture configurable des caches
   \item Gestion configurable des politique de caches 
   \item Réutilisation possible du code
   \end{itemize}
@@ -16,33 +16,18 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Outils existants d'étude de caches}
-  \begin{block}{Papi}
-  \begin{itemize}
-    \item Compteur hardware
-    \item Paramètres difficillement simulables
-    \end{itemize}    
+  \frametitle{Intérêt d'une simulation}
+  \begin{block}{Outils existants}
+    PAPI : compteur \emph{hardware}\\
+    CacheGrind : exécution non parallèle\\
+    => dépendant de la machine exécutant le programme
   \end{block}
-  \begin{block}{Cachegrind}
-    \begin{itemize}
-    \item Simulation d'un thread
-    \item Exécution séquentielle
-    \end{itemize}
-  \end{block}   
 
   \begin{block}{Intérêts d'une simulation}
     \begin{itemize}
-        \item Architecture libre
-        \item Choix des politiques
+    \item Indépendant de la machine de simulation
+    \item Architecture configurable
+    \item Choix des politiques
     \end{itemize}
   \end{block}
-\end{frame}
-
-
-
-\begin{frame}
-  \frametitle{Autour de CASSIS}
-  \begin{figure}
-    \includegraphics[scale=0.4]{images/schema_cassis.png}
-  \end{figure}
 \end{frame}
