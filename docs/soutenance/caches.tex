@@ -31,19 +31,19 @@
 \end{frame}
 
 \begin{frame}{Ajout d'une donnée dans un cache (1)}  
+  \begin{block}{Organisation d'un cache}
+    Cache contenant plusieurs lignes, référencées par des étiquettes.
+  \end{block}
+  \begin{center}
+  \includegraphics[scale=.35]{images/etiquette.jpeg}
+  \end{center}
+
   \begin{block}{Recherche de la donnée}
     \begin{itemize}
     \item{Si le c\oe ur trouve la donnée recherchée dans le cache : il fait un \emph{hit}.}
     \item{Sinon, la donnée est rapatriée à partir de la mémoire de niveau supérieur : c'est un \emph{miss}.}
     \end{itemize}
   \end{block}
-
-  \begin{block}{Organisation des caches}
-    Cache contenant plusieurs lignes, référencées par des étiquettes.
-  \end{block}
-  \begin{center}
-  \includegraphics[scale=.35]{images/etiquette.jpeg}
-  \end{center}
 \end{frame}	
 
 \begin{frame}{Associativité}
@@ -60,7 +60,7 @@
 \end{frame}
 
 \begin{frame}{Ajout d'une donnée dans un cache (2)}
-  \begin{block}{Rappatriement de la donnée : cas du \emph{set} plein}
+  \begin{block}{Rapatriement de la donnée : cas du \emph{set} plein}
     Il existe différentes politiques de remplacement :
     \begin{itemize}
     \item{FIFO (Supprimer la plus ancienne)}
@@ -69,17 +69,11 @@
     \end{itemize}
     En général, les données évincées sont déplacées vers la mémoire de niveau supérieur.
   \end{block}
-\end{frame}
-
-
-\begin{frame}{Hiérarchie de caches et problèmes de cohérence}
-  \begin{block}{Gestion des données entre différents niveaux}
+  \begin{block}{Réécriture des données en cas de modification}
     \begin{itemize}
-    \item{\emph{Write-through} : Une donnée modifiée est tout de suite reportée aux niveaux supérieurs}
-    \item{\emph{Write-back} : Le report est fait à l'éviction du cache}
+    \item{\emph{Write-through} : Une donnée modifiée est tout de suite reportée aux niveaux supérieurs.}
+    \item{\emph{Write-back} : Le report est fait au plus tard.}
     \end{itemize}
   \end{block}
-  \begin{block}{Gestion des données entre caches de même niveau}
-    Nécéssité d'un protocole de cohérence
-  \end{block}
+
 \end{frame}
