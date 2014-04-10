@@ -25,24 +25,23 @@
   
   \begin{block}{Les états :}
     \begin{itemize}
-    \item{I (donnée invalide),}
     \item{M (donnée modifiée),}
     \item{S (donnée partagée),}
-    \item{E (donnée unique).}
+    \item{I (donnée invalide).}
     \end{itemize}
   \end{block}
 \end{frame}
 
-\begin{frame}{Automate MESI : les transitions}
-    \includegraphics[scale=.3]{images/MESI_simple.png}
+\begin{frame}{Automate MSI : les transitions}
+    \includegraphics[scale=.4]{images/MSI_simple.png}
 \end{frame}
 
 \begin{frame}{Autres protocoles}
   \begin{block}{Protocoles implémentés}
     Les autres protocoles courants sont :
     \begin{itemize}
-    \item{MSI (le plus basique),}
-    \item{MOSI/MESIF (alternative presque équivalente à MESI),}
+    \item{MESI (amélioration de MSI pour la modification),}
+    \item{MOSI/MESIF (améliorations de MESI pour le \emph{snooping}),}
     \item{MOESI (le plus complexe).}
     \end{itemize}
   \end{block}
